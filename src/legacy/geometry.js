@@ -1,6 +1,6 @@
 /* MAINTAINER GUIDE
  * Original Frontier geometry utilities retained for compatibility. Coordinates are ground-plane points; native elevation-aware combat lives in spatial.js. Keep source provenance and compare reference archives before altering inherited behavior.
- * See CODE-GUIDE.md for load order, ownership and extension recipes.
+ * See docs/CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 /*
   METROPOLIS FRONTIER 0.18.2 — shared Prop geometry helpers.

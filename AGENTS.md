@@ -12,6 +12,10 @@ These are standing user requirements, recorded October 8, 2026.
 - Deliver complete new iterations and full Windows/Mac browser packages. Preserve previous releases; do not deliver patches or hotfix files.
 - Treat these requirements as persistent. Do not weaken or remove them in future iterations without explicit user authorization.
 
-## October 9, 2026 � locked sprite presentation
+## October 9, 2026 — locked sprite presentation
 
 Keep 0.15.17 camera-facing sprite tilt, proportions and frame presentation. Do not substitute world-upright/cylindrical billboards or change this behavior without explicit user authorization. Fix clipping through matching depth, anchoring and collision, not by changing sprite presentation. Preserve the superseded 0.15.18 history.
+
+## October 14, 2026 — authorized documentation cleanup
+
+The user explicitly authorized deleting superseded documentation: old per-version iteration notes, older function references, test reports and generated test output. Git history keeps them (commit 7fca396). Guides now live in `docs/`. The rules above still apply to all current documentation and source comments; further removals need the same explicit authorization.

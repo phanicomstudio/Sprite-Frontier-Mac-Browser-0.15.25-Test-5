@@ -1,7 +1,7 @@
 /* October 14, 2026: transient editorFlight bypasses camera geometry clearance only in authoring; playtest retains normal camera collision and locked sprite presentation. */
 /* MAINTAINER GUIDE
  * Perspective projection and depth-sorted billboard drawing. Crosshair is a fixed logical screen point. World placement and aim share camera/project functions; changing projection must update muzzle inversion and ray construction too.
- * See CODE-GUIDE.md for load order, ownership and extension recipes.
+ * See docs/CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 /* Historical contract retained; October 14, 2026 reviewed explanation follows. @function render.callback.1 — Provides the callback for a callback. Inputs: root. Updates: root frontier render. */
 (/* @function render.installReviewed — Installs perspective projection, aiming/depth and camera-facing sprite drawing services. Logical crosshair/projection units remain independent of physical framebuffer density. Preserve locked 0.15.17 tilt/proportions/frame behavior; clipping is handled through depth/collision/anchoring. Inputs: browser/global namespace root. Returns nothing; publishes module API and initializes private ownership tables. Dependency/registration errors propagate. Exported operations own later authoring, simulation or rendering work; this does not create a second active game. */ function (

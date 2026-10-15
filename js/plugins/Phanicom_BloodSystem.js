@@ -1,6 +1,6 @@
 /* MAINTAINER GUIDE
- * Native Phanicom_BloodSystem runtime integration. This host adapts supplied behavior into world XYZ; source-specific engine hooks are listed in PLUGIN-PORT.md.
- * See CODE-GUIDE.md for load order, ownership and extension recipes.
+ * Native Phanicom_BloodSystem runtime integration. This host adapts supplied behavior into world XYZ; source-specific engine hooks are listed in docs/PLUGIN-PORT.md.
+ * See docs/CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 /* 3D world host for Phanicom_BloodSystem 1.0.1; particle equations in Core. */
 (/* @function Phanicom_BloodSystem.callback.1 — Provides the callback for a callback. Inputs: root. Updates: root phanicom blood. Uses: number. */ function(root){

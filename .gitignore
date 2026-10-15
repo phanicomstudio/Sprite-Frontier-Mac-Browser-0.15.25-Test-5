@@ -1,0 +1,18 @@
+# macOS Finder metadata
+.DS_Store
+._*
+
+# Dependencies (npm install recreates these)
+node_modules/
+
+# Test output: screenshots, logs and measurements written by test runs
+test-artifacts/
+validation/
+verification/
+preview*.png
+
+# Editor and OS clutter
+.vscode/
+.idea/
+*.swp
+Thumbs.db

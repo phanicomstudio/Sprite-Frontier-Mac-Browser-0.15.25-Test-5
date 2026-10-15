@@ -1,4 +1,54 @@
-# 0.15.3
+# Changelog
+
+Newest entries first. Everything from 0.15.3 down is the original changelog, kept as written. Files they mention were removed on October 14, 2026 and remain in git history at commit 7fca396 (`git show 7fca396:<file>`).
+
+## October 14, 2026 — repository cleanup
+
+User-authorized cleanup; no engine or editor behavior changed.
+
+- Removed superseded per-version notes: `ITERATION-*` for 0.5 to 0.15.24, `FUNCTION-REFERENCE` 0.15.16 to 0.15.23, `TEST-REPORT-*`, Test 1/3/4 build notes, older validation and performance reports, `*-HISTORY.md`, and finished work-in-progress notes.
+- Removed generated output: preview screenshots, `validation/`, `verification/`, the stale `DISTRIBUTION-MANIFEST.json` and old benchmark JSON. Test runs write these again; `.gitignore` now excludes them.
+- Removed `.DS_Store` files and added `.gitignore`.
+- Moved the remaining guides and references into `docs/`. Source comments and `tools/asset-inventory.cjs` now point there.
+- Rewrote `README.md` as a short current guide.
+
+## 0.15.25 Test 5 — October 14, 2026
+
+Scene list multi-select (Shift range, Ctrl/Cmd toggle, Select all shown, Delete selected in one Undo step). Build Structures opens a separate modal Tile Room Editor with wall, floor and ceiling texture pickers and PNG/JPEG/WebP import up to 8 MB. Map deletion explains why it is refused. See docs/TEST-BUILD-0.15.25-TEST-5.md.
+
+## 0.15.25 Test 4 — October 14, 2026
+
+Playtest finds a clear nearby spawn point when the editor position or spawn overlaps geometry, instead of rewriting authored data. Tile painting and doorway insertion validate before changing the draft; invalid grid sizes keep the previous grid.
+
+## 0.15.25 Test 3 — October 14, 2026
+
+Editor layout: project actions on top, a scrollable left dock for scene, tools and properties, the playable view on the right. Scene entries have Delete; Undo and Redo are on the toolbar. Shared asset files are kept when instances are deleted.
+
+## 0.15.25 Test 2 — October 14, 2026
+
+New/Open/Save Project, map folders, Tile Structure Builder, terrain sculpting and texture painting, 33 item sprites with pickup, inventory, dropping and item lights, and named door arrivals. See docs/TEST-BUILD-0.15.25-TEST-2.md.
+
+## 0.15.25 — October 14, 2026
+
+Visible Build Room, Place Object, Place Door, Events, Items and Fullscreen actions; smoother wheel zoom; editor flight that ignores collision; fixed-camera shots aligned to the displayed sprite and calibrated muzzle. See docs/ITERATION-0.15.25.md.
+
+## 0.15.24 — October 14, 2026
+
+Engine/editor workspace, modular and round room construction, supplied castle and prop assets, geometry collision, per-instance materials and bounded local lighting. See docs/RELEASE-VALIDATION-0.15.24.md.
+
+## 0.15.23 — October 12, 2026
+
+Rendering preparation ownership and performance work; native Windows startup, moving-scene timing and door lifecycle verified. See docs/PERFORMANCE-REPORT-1523.md.
+
+## 0.15.22 — October 10, 2026
+
+Resolution and filtering options, native breathing effect with preview, aspect and fullscreen preferences. See docs/RENDERING-1522.md.
+
+## 0.15.18 to 0.15.21 — October 9, 2026
+
+Camera, sprite, door collision and pause fixes. 0.15.17's camera-facing sprite presentation was restored and locked after 0.15.18 tried upright billboards. See docs/CAMERA-SPRITE-PAUSE-GUIDE.md.
+
+## 0.15.3
 
 Restored continuous room cursor shots; retained exterior exit and outdoor startup. Added optional third-person per-sheet/per-frame muzzle/barrel guides, forward depth, real-ray reticle, undo and JSON workflow. Audited room/map/dialogue/normal tools; improved template feedback/IDs and expanded-only debugger sampling. See ITERATION-0.15.3.md.
 

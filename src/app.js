@@ -1,6 +1,6 @@
 /* MAINTAINER GUIDE
  * Application coordinator: creates playtests, routes input, drives simulation and binds editor/HUD controls. Change gameplay rules in their modules; keep this file responsible for orchestration. Authored world and runtime game are separate objects: editor mutations restart a temporary playtest.
- * See CODE-GUIDE.md for load order, ownership and extension recipes.
+ * See docs/CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 /* Historical contract retained; October 14, 2026 reviewed explanation follows. @function app.callback.1 — Provides the callback for a callback. Inputs: no explicit arguments; uses enclosing module state. Updates: audio music; pause panel id; pause panel hidden; pause panel inner html; $ using "pauseResume" onclick. Uses: $; mf create frontier audio; frontier music create; document create element. */
 (/* @function app.bootstrapReviewed — Boots the single application coordinator. Inputs: none; requires the installed DOM, MF/native modules and fixed script load order. Returns nothing. Creates reusable audio/HUD/editor/runtime services, binds input/menu controls, starts the initial playtest and one animation-frame loop, then loads validated saved editor data. Runtime-only exports start at their authored active cell and avoid editor storage. Synchronous dependency/DOM errors propagate; owned asynchronous loaders report their own failures. Authored world and temporary game stay separate. */ function () {

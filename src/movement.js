@@ -1,7 +1,7 @@
 /* October 14: editorFlight uses free-camera yaw navigation even while authoring fixed artwork cells; ordinary playtest retains fixed-room affine movement. */
 /* MAINTAINER GUIDE
  * Camera-relative locomotion using original Frontier speed and collision feel. Tuning lives in project-data.js. Inputs normalize diagonals; axis substeps slide against obstacles and prevent tunneling.
- * See CODE-GUIDE.md for load order, ownership and extension recipes.
+ * See docs/CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 /* Historical contract retained; October 14, 2026 reviewed explanation follows. @function movement.callback.1 — Provides the callback for a callback. Inputs: mf. Updates: mf frontier movement. Uses: object freeze. */
 (/* @function movement.installReviewed — Installs camera-relative locomotion using original speed/collision feel. Diagonal input normalization and axis substeps prevent tunneling while sliding against obstacles; project tuning remains separate. Inputs: existing MF engine namespace MF. Returns nothing; publishes API and initializes private tables/cache ownership. Dependency/registration errors propagate. Calls to exported operations own later simulation, rendering or authoring work. */ function (

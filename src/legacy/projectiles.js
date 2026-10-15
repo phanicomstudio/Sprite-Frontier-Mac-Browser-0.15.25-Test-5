@@ -1,6 +1,6 @@
 /* MAINTAINER GUIDE
  * Original Frontier 2D projectile implementation retained for baseline tests. spatial.js replaces its public entry points in the running game. Update the native host, not this reference implementation, for 3D behavior.
- * See CODE-GUIDE.md for load order, ownership and extension recipes.
+ * See docs/CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 /* 0.20.2d — World-space ballistics, independent of camera and effects lifetime.
  * Units: x/y and radii are world cells; speed is cells/second; time is seconds.

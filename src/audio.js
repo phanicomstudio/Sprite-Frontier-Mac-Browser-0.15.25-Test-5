@@ -1,6 +1,6 @@
 /* MAINTAINER GUIDE
  * Shared Web Audio context and the original synth-footstep bridge. Audio resumes only after a user gesture. Context/gain ownership is shared with weapon and blood sounds; stop footsteps when replacing a playtest.
- * See CODE-GUIDE.md for load order, ownership and extension recipes.
+ * See docs/CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 /* Historical contract retained; October 14, 2026 reviewed explanation follows. @function audio.callback.1 — Provides the callback for a callback. Inputs: mf. Updates: mf plugins; mf create frontier audio. */
 (/* @function audio.reviewed1 — Installs shared audio services and the footstep plugin registry. Inputs: existing MF engine namespace. Returns nothing; exposes registration and audio factory APIs. Requires MF/load order, does not unlock audio until a user gesture. */ function (

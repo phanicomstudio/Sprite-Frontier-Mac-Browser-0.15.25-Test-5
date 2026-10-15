@@ -1,6 +1,6 @@
 /* MAINTAINER GUIDE
  * Offline MZ-style audio/se playback using a bounded voice pool. Manifest filenames preserve spaces/case; URL encoding happens only at playback. Voice limit bounds repeated automatic-fire audio allocation.
- * See CODE-GUIDE.md for load order, ownership and extension recipes.
+ * See docs/CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 /* Historical contract retained; October 14, 2026 reviewed explanation follows. @function se-audio.callback.1 — Provides the callback for a callback. Inputs: root. Updates: root phanicom se. Uses: root phanicom audio manifest or a list of map. */
 (/* @function se-audio.installReviewed — Installs offline named sound-effect playback and bounded voice ownership. Manifest filenames preserve spaces/case and playback encodes URLs; repeated-fire sounds cannot allocate unbounded live voices. Inputs: browser/global namespace root. Returns nothing; publishes API/defaults and initializes private ownership tables. Dependency/registration errors propagate. Later exported operations own simulation/rendering/authoring work; this does not start a second active game. */ function (

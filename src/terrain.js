@@ -1,6 +1,6 @@
 /* MAINTAINER GUIDE
  * Height-field ground, step-up support and jump clearance. Terrain samples are world elevations. Grounded support can be terrain or an object top; horizontal collision compares feet elevation to obstacle height.
- * See CODE-GUIDE.md for load order, ownership and extension recipes.
+ * See docs/CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 /* Historical contract retained; October 14, 2026 reviewed explanation follows. @function terrain.callback.1 — Provides the callback for a callback. Inputs: root. Updates: root frontier terrain. */
 (/* @function terrain.installReviewed — Installs height-field ground/support/jump-clearance rules. Terrain samples are world Z elevations and support may be terrain/object tops; horizontal blocking compares feet elevation with obstacle height. Inputs: browser/global namespace root. Returns nothing; publishes API/defaults and initializes private ownership tables. Dependency/registration errors propagate. Later exported operations own simulation/rendering/authoring work; this does not start a second active game. */ function (

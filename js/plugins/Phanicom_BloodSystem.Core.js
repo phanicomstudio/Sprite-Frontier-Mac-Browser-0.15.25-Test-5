@@ -1,6 +1,6 @@
 /* MAINTAINER GUIDE
  * Selected original Phanicom_BloodSystem equations/parsers. MZ engine services are replaced by the native host. The unchanged original is in reference/.
- * See CODE-GUIDE.md for load order, ownership and extension recipes.
+ * See docs/CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 /* Original regular and synth particle equations from BloodSystem 1.0.1. */
 (/* @function Phanicom_BloodSystem.Core.callback.1 — Provides the callback for a callback. Inputs: root. Updates: root phanicom blood core. Uses: number; a callback. */ function(root){

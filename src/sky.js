@@ -1,6 +1,6 @@
 /* MAINTAINER GUIDE
  * Independent horizon/parallax layers. Distance and parallax control perceived depth; cloud speed is driven by elapsed simulation time. Replace vector drawing with images while retaining layer metadata.
- * See CODE-GUIDE.md for load order, ownership and extension recipes.
+ * See docs/CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 /* Historical contract retained; October 14, 2026 reviewed explanation follows. @function sky.callback.1 — Provides the callback for a callback. Inputs: root. Updates: root frontier sky. */
 (/* @function sky.installReviewed — Installs independent per-map horizon/parallax data and drawing services. Layer distance/parallax controls perceived depth and cloud motion uses elapsed simulation seconds; it does not render inactive cells. Inputs: browser/global namespace root. Returns nothing; publishes API/defaults and initializes private ownership tables. Dependency/registration errors propagate. Later exported operations own simulation/rendering/authoring work; this does not start a second active game. */ function (

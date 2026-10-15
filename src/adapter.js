@@ -1,6 +1,6 @@
 /* MAINTAINER GUIDE
  * Frontier compatibility host for the original isometric combat. Builds entity registries and the services expected by MF. Engine objects use world X/Y and elevation Z, not screen pixels. Extend makeFrontierGame when adding runtime state.
- * See CODE-GUIDE.md for load order, ownership and extension recipes.
+ * See docs/CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 /* Historical contract retained; October 14, 2026 reviewed explanation follows. @function adapter.callback.1 — Provides the callback for a callback. Inputs: mf. Updates: mf screen to iso; mf hit test; mf update aim; mf make frontier game. */
 (/* @function adapter.installReviewed — Installs Frontier compatibility services on the existing MF engine namespace: entity registry, screen-to-world aiming and game factory. Engine positions are world X/Y and Z elevation, not screen pixels. Inputs: existing MF engine namespace MF. Returns nothing; exposes the module API and initializes its private registration/cache state. Dependency or registration errors propagate. Does not create a second active simulation; exported operations own later session/UI work. */ function (

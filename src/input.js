@@ -1,6 +1,6 @@
 /* MAINTAINER GUIDE
  * Pure input-state helpers: gamepad deadzones/edge detection and relative/absolute mouse deltas. Browser focus and pointer-lock ownership are coordinated by app.js. Reset baselines when switching modes to avoid camera snapping.
- * See CODE-GUIDE.md for load order, ownership and extension recipes.
+ * See docs/CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 /* Historical contract retained; October 14, 2026 reviewed explanation follows. @function input.callback.1 — Provides the callback for a callback. Inputs: root. Updates: root frontier input. */
 (/* @function input.installReviewed — Installs pure input-state helpers for deadzones, gamepad edges and pointer deltas. App coordination owns focus/pointer lock; mode switches reset baselines to avoid camera jumps. Inputs: browser/global namespace root. Returns nothing; publishes API and initializes private tables/cache ownership. Dependency/registration errors propagate. Calls to exported operations own later simulation, rendering or authoring work. */ function (

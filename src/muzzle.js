@@ -1,6 +1,6 @@
 /* MAINTAINER GUIDE
  * Validated per-sheet/per-direction/per-animation-frame muzzle authoring. Stored X/Y coordinates are full-sheet pixels; projection converts them into world positions. Projectile and flash have separate points plus yaw/pitch offsets in degrees.
- * See CODE-GUIDE.md for load order, ownership and extension recipes.
+ * See docs/CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 /* Historical contract retained; October 14, 2026 reviewed explanation follows. @function muzzle.callback.1 — Provides the callback for a callback. Inputs: root. Updates: root frontier muzzle. Uses: load. */
 (/* @function muzzle.installReviewed — Installs validated per-sheet/direction/frame muzzle authoring and projection services. Stored points are full-sheet pixels; projectile/flash locations and degree yaw/pitch offsets remain independent of camera-facing sprite presentation. Inputs: browser/global namespace root. Returns nothing; publishes module API and initializes private ownership tables. Dependency/registration errors propagate. Exported operations own later authoring, simulation or rendering work; this does not create a second active game. */ function (

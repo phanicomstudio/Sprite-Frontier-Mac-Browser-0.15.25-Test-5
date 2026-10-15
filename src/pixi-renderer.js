@@ -1,6 +1,6 @@
 /* MAINTAINER GUIDE
  * Pooled Pixi graphics, sprites and text behind a Canvas-like drawing interface. Simulation remains renderer-independent. Pools and texture caches avoid creating GPU objects each frame; begin resets state, end submits one frame.
- * See CODE-GUIDE.md for load order, ownership and extension recipes.
+ * See docs/CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 /* Historical contract retained; October 14, 2026 reviewed explanation follows. @function pixi-renderer.callback.1 — Provides the callback for a callback. Inputs: root. Updates: root frontier pixi. */
 (/* @function pixiRenderer.reviewed1 — Installs pooled Pixi drawing services. Inputs: browser root with loaded PIXI. Returns nothing; registers FrontierPixi API and shared tone state. Context/application initialization is deferred until first context request; simulation remains renderer-independent. */ function (

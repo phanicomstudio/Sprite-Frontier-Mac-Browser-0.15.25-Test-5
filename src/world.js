@@ -1,6 +1,6 @@
 /* MAINTAINER GUIDE
  * Seeded world generation and import validation. Rectangular bounds, legacy migration and bounded generation are shared with movement, events, saves and rendering.
- * See CODE-GUIDE.md for load order, ownership and extension recipes.
+ * See docs/CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 /* Historical contract retained; October 14, 2026 reviewed explanation follows. @function world.callback.1 — Provides the callback for a callback. Inputs: root. Updates: root frontier world. */
 (/* @function world.installReviewed — Installs seeded world generation, bounded import validation and explicit legacy migration. Authored rectangular bounds and validated terrain/events are shared with movement, saves and rendering; registration does not generate a separate live playtest. Inputs: browser/global namespace root. Returns nothing; publishes API/defaults and initializes private ownership tables. Dependency/registration errors propagate. Later exported operations own simulation/rendering/authoring work; this does not start a second active game. */ function (

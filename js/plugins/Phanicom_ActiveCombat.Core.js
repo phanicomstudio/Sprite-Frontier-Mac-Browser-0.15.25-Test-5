@@ -1,6 +1,6 @@
 /* MAINTAINER GUIDE
  * Selected original Phanicom_ActiveCombat equations/parsers. MZ engine services are replaced by the native host. The unchanged original is in reference/.
- * See CODE-GUIDE.md for load order, ownership and extension recipes.
+ * See docs/CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 /* Pure parsers, weapon spread and procedural audio carried from Phanicom_ActiveCombat v0.9.0. Native host adapter supplies world, input and rendering. */
 (/* @function Phanicom_ActiveCombat.Core.callback.1 — Provides the callback for a callback. Inputs: root. Updates: root phanicom combat core. Uses: number; parse struct array using params weapon profiles map using compile weapon profile filter; parse struct array using params weapon profiles map; parse struct array. */ function(root){
