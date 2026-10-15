@@ -3793,6 +3793,10 @@
         }
       },
   });
+  // October 15, 2026: the campaign tree (src/campaign-shell.js) reads and edits
+  // campaign areas through this controller. Authoring builds only; exported
+  // runtime games never show the tree.
+  if (!window.FRONTIER_RUNTIME_ONLY) window.FrontierMapLibrary = mapLibrary;
   if (!window.FRONTIER_RUNTIME_ONLY)
     FrontierEffectsEditor.create({
       world:

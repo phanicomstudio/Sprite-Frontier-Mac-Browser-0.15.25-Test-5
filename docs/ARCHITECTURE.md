@@ -43,3 +43,8 @@ map resources remain shared. Scene-transition owns transfer commit/resume and
 cancels previews. Every new callback/function has its own source contract; the
 current dated reference is FUNCTION-REFERENCE-0.15.17.md. Earlier explanations
 above remain historical where behavior differs.
+
+
+## October 15, 2026 — campaign structure and shell
+
+Projects carry `campaign.areas` (Campaign → Area → Map). `src/campaign.js` owns the pure rules; `map-library.js` stores, reconciles and persists the campaign with the project and includes it in map-operation history; `src/campaign-shell.js` is the authoring-only left pane and routes map actions to the existing library controls. Areas are organisation only and never affect map IDs, transfers or loading. Authoring is now three panes (tree, view, inspector/palette). See docs/CAMPAIGN-EDITOR.md.

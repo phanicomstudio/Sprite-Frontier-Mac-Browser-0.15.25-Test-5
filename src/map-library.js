@@ -113,6 +113,11 @@
         value.gameplayDefaults,
       ),
       templates,
+      // October 15, 2026: campaign Areas group maps for authoring only. Missing
+      // campaigns (projects saved before 0.16) are derived from map folders;
+      // damaged ones are repaired rather than blocking an import. See
+      // src/campaign.js for the invariants and docs/CAMPAIGN-EDITOR.md.
+      campaign: root.FrontierCampaign.reconcile(value.campaign, maps),
     };
   }
 
@@ -306,6 +311,8 @@
         ],
       },
       ready = false,
+      // October 15, 2026: area that receives the next newly created map.
+      campaignPreferredArea1600 = null,
       revision = 0,
       timer,
       templateSource = null,
@@ -457,6 +464,19 @@
 
     if (root.FrontierHubFixtures)
       project.maps.push(...root.FrontierHubFixtures.create());
+    // October 15, 2026: group the bundled example maps into areas so a fresh
+    // install shows how a campaign is organised. Reconcile keeps this valid if
+    // a fixture is unavailable, and adds any other bundled map to the first area.
+    project.campaign = root.FrontierCampaign.reconcile(
+      {
+        areas: [
+          { id: "vector-frontier", name: "Vector Frontier", maps: ["demo", "room-test", "ruin-test"] },
+          { id: "hub-town", name: "Hub town", maps: ["hub-test", "hub-saloon", "hub-shop", "hub-home", "hub-wilderness"] },
+          { id: "asset-tests", name: "Asset tests", maps: ["outdoor-assets-test"] },
+        ],
+      },
+      project.maps,
+    );
 
     const label = document.createElement("label");
     label.textContent = "Active map";
@@ -631,6 +651,19 @@
         folders.get(folder).append(option);
       }
       picker.value = project.active;
+      // October 15, 2026: keep the campaign consistent after every map
+      // create/duplicate/delete/import. A map not yet in any area joins the
+      // area the author was last working in (or one the campaign tree chose
+      // explicitly), then that area becomes the remembered one.
+      project.campaign = root.FrontierCampaign.reconcile(
+        project.campaign,
+        project.maps,
+        campaignPreferredArea1600,
+      );
+      campaignPreferredArea1600 =
+        root.FrontierCampaign.areaOf(project.campaign, project.active)?.id ||
+        campaignPreferredArea1600;
+      root.dispatchEvent?.(new CustomEvent("frontier-campaign-change"));
       folderInput.value = project.maps.find(
         /* @function mapLibrary.selectedFolder1525 — Inputs: map record. Returns active-ID match; read-only. */
         function (entry) { return entry.id === project.active; }).folder || "";
@@ -859,8 +892,12 @@
     /* @function mapLibrary.commitManagement1524 — Inputs: validated candidate and before-membership snapshot. Returns nothing. Records one bounded map-operation history and adopts the candidate. Undo/Redo control state is transient editor preference, not authored data. */
     function commitManagement1524(candidate, before) {
       mapHistory1524 = {
-        before,
-        after: { maps: candidate.maps.slice(), active: candidate.active },
+        before: { campaign: structuredClone(project.campaign), ...before },
+        after: {
+          maps: candidate.maps.slice(),
+          active: candidate.active,
+          campaign: structuredClone(candidate.campaign),
+        },
       };
       mapHistoryUndone1524 = false;
       mapUndoButton.disabled = false;
@@ -965,8 +1002,15 @@
           );
         },
       );
+      // October 15, 2026: restore the campaign layout recorded with this
+      // membership too, so an undone delete returns the map to its own area.
       adoptManagement1524(
-        validate({ ...current, maps, active: target.active }),
+        validate({
+          ...current,
+          maps,
+          active: target.active,
+          campaign: target.campaign || current.campaign,
+        }),
       );
     }
 
@@ -1113,7 +1157,7 @@
             const id = createMap($("newMapName").value, $("newMapTemplate").value);
             const created = project.maps.find(/* @function mapLibrary.newProjectMap1525 — Inputs: map. Returns newly created stable-ID match. */ function (map) { return map.id === id; });
             created.folder = "Outside";
-            const blank = validate({ ...project, title:$("newMapName").value.trim(), projectMode:"blank", maps:[created], active:id, templates:FrontierEventTemplates.empty(), gameplayDefaults:undefined });
+            const blank = validate({ ...project, title:$("newMapName").value.trim(), projectMode:"blank", maps:[created], active:id, campaign:undefined, templates:FrontierEventTemplates.empty(), gameplayDefaults:undefined });
             controller1525.restore(blank);
             status("Blank project created. Prior maps retained in local project backups.");
           } else createMap($("newMapName").value, $("newMapTemplate").value);
@@ -1344,10 +1388,57 @@
 
     project.maps = FrontierMapIdentities.assign(project.maps);
     refresh();
+    // October 15, 2026: campaign tree API used by src/campaign-shell.js.
+    // Reads return detached copies; writes validate through FrontierCampaign
+    // before adoption, then refresh selectors and schedule normal persistence.
+    // Map content, IDs and transfer targets are never changed here.
+    /* @function mapLibrary.campaignView1600 — Inputs: none. Returns a detached view { title, active, campaign, maps:[{id,name,folder}] } for drawing the campaign tree. Reconciles first so the view always satisfies campaign invariants. No persistence or history change. */
+    function campaignView1600() {
+      project.campaign = root.FrontierCampaign.reconcile(project.campaign, project.maps, campaignPreferredArea1600);
+      const maps = [];
+      for (const m of project.maps) maps.push({ id: m.id, name: m.name, folder: m.folder || "" });
+      return structuredClone({ title: project.title || "Sprite Frontier project", active: project.active, campaign: project.campaign, maps });
+    }
+    /* @function mapLibrary.updateCampaign1600 — Inputs: candidate campaign record produced by a FrontierCampaign operation. Returns nothing. Validates strictly against current maps (a candidate that would need repair is rejected with a readable error and nothing changes), adopts it, refreshes map selectors and schedules local saving. Campaign Undo is owned by the tree, not by map-operation history. */
+    function updateCampaign1600(candidate) {
+      project.campaign = root.FrontierCampaign.validate(candidate, project.maps);
+      refresh();
+      remember();
+    }
+    /* @function mapLibrary.renameCampaign1600 — Inputs: author-entered campaign title. Returns nothing; stores a trimmed 1–80 character project title and schedules saving. Throws a readable error for blank or overlong titles without changing anything. */
+    function renameCampaign1600(title) {
+      if (typeof title !== "string" || !title.trim()) throw Error("Enter a campaign name.");
+      if (title.trim().length > 80) throw Error("Names are limited to 80 characters.");
+      project.title = title.trim();
+      refresh();
+      remember();
+    }
+    /* @function mapLibrary.renameMap1600 — Inputs: stable map ID and author-entered name. Returns nothing; renames any map (not only the active one) with the same 1–80 character rule as Rename current map, refreshes selectors and saves. Unknown IDs or invalid names throw readable errors with no change. The map ID, and therefore every door and transfer, is unchanged. */
+    function renameMap1600(id, name) {
+      if (typeof name !== "string" || !name.trim()) throw Error("Enter a map name.");
+      if (name.trim().length > 80) throw Error("Names are limited to 80 characters.");
+      const record = project.maps.find(
+        /* @function mapLibrary.renameTarget1600 — Inputs: map record. Returns true for the requested stable ID; read-only. */
+        function (m) { return m.id === id; });
+      if (!record) throw Error("That map no longer exists.");
+      record.name = name.trim();
+      if (id === project.active) $("mapName").value = record.name;
+      refresh();
+      remember();
+    }
+    /* @function mapLibrary.preferArea1600 — Inputs: area ID. Returns nothing; the next newly created map is placed in that area instead of the active map's area. Unknown IDs fall back to the first area at the next reconcile. Transient editor state only; not saved. */
+    function preferArea1600(id) {
+      campaignPreferredArea1600 = id;
+    }
     return controller1525 = {
       remember,
       switchTo,
       snapshot,
+      campaignView: campaignView1600,
+      updateCampaign: updateCampaign1600,
+      renameCampaign: renameCampaign1600,
+      renameMap: renameMap1600,
+      preferArea: preferArea1600,
       get gameplayDefaults /* Historical contract retained; October 14 reviewed explanation follows. @function map-library.gameplayDefaults.57 — Handles gameplay defaults within map library. Inputs: no explicit arguments; uses enclosing module state. Uses: structured clone. Returns: structured clone using project gameplay defaults. */
   /* @function mapLibrary.reviewedgameplayDefaults_57 — Returns an isolated starting-gameplay-value draft. Inputs: none. Returns structured clone of project defaults so dialog edits cannot mutate project before Apply. No writes; uncloneable unsupported data would throw, although schema requires portable values. */() {
         return structuredClone(project.gameplayDefaults);

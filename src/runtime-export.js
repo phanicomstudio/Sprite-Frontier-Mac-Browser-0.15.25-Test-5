@@ -25,6 +25,8 @@
     "model-gizmo",
     "model-material-editor",
     "mz-editor",
+    // October 15, 2026: the campaign tree is authoring-only.
+    "campaign-shell",
   ];
   /* @function runtimeExport.entry — Inputs: original engine HTML and portable authored project. Returns generated HTML plus omitted source paths. Validates through the production project validator before emitting bootstrap. Script data escapes HTML-sensitive characters so map names cannot close the bootstrap element. Rejects malformed markup/projects; does not write files, modify input data or claim asset closure. */
   function entry(html, project) {
