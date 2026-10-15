@@ -1,9 +1,12 @@
+/* October 15, 2026: the editor uses one system font everywhere (supersedes the
+   mixed Arial/Checkbook editor text). Game text has its own switchable font. */
+:root{--frontier-editor-font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
 /* October 12, 2026. Workspace chrome is separate from the game frame, so HUD
  * anchors and the locked camera-facing sprite presentation are unaffected. */
 #workspaceBar{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid #18385b;gap:16px}
-#workspaceBar strong{font:20px Checkbook,monospace}
+#workspaceBar strong{font:20px var(--frontier-editor-font)}
 #workspaceSettings{flex:1;min-width:0}
-#workspaceSettings>summary,.workspaceGroup>summary{cursor:pointer;padding:12px;font:16px Checkbook,monospace;color:#b5d9ff}
+#workspaceSettings>summary,.workspaceGroup>summary{cursor:pointer;padding:12px;font:16px var(--frontier-editor-font);color:#b5d9ff}
 .workspaceGroup{border:1px solid #18385b;border-radius:4px;margin:8px 0;background:#07111e}
 .workspaceGroup fieldset{border:0;margin:0;padding:12px}
 .engineAuthoring{max-width:none;padding:0 16px 16px}
@@ -11,7 +14,7 @@
 .engineAuthoring>header>div:first-child{display:none}
 .engineAuthoring main{grid-template-columns:260px minmax(0,1fr) 320px;gap:12px;margin-top:12px}
 #workspaceAssets{max-height:calc(100vh - 130px);overflow:auto;padding:0 8px;border-right:1px solid #18385b}
-#workspaceAssets h2{font:20px Checkbook,monospace}
+#workspaceAssets h2{font:20px var(--frontier-editor-font)}
 #workspaceAssets fieldset{border:0;padding:0}
 #workspaceAssets label{font-size:14px;margin-top:10px}
 #workspaceAssets input,#workspaceAssets select{width:100%}
@@ -31,12 +34,12 @@
  * A bounded scroll region keeps large cells from displacing construction tools. */
 #sceneHierarchyList{max-height:280px;overflow:auto;margin-top:10px}
 #sceneHierarchyList details{margin-bottom:8px}
-#sceneHierarchyList summary{font:14px Checkbook,monospace;cursor:pointer}
+#sceneHierarchyList summary{font:14px var(--frontier-editor-font);cursor:pointer}
 #sceneHierarchyList button{display:block;width:100%;text-align:left;margin:3px 0;font-size:13px;overflow-wrap:anywhere}
 #sceneHierarchyList button[aria-pressed=true]{border-color:#ffdc72;color:#ffdc72}
 
 /* October 14, 2026: readable authoring controls; runtime HUD styling stays separate. */
-body.engineAuthoring #editor, body.engineAuthoring #workspaceAssets, body.engineAuthoring #workspaceSettings { font-family: Arial, sans-serif; font-size: 17px; line-height: 1.5; }
+body.engineAuthoring #editor, body.engineAuthoring #workspaceAssets, body.engineAuthoring #workspaceSettings { font-family: var(--frontier-editor-font); font-size: 17px; line-height: 1.5; }
 body.engineAuthoring input, body.engineAuthoring select, body.engineAuthoring button { font-size: 17px; min-height: 38px; }
 #workspaceMaps { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
 body.enginePlaytest #workspaceMaps { display:none; }
@@ -55,7 +58,7 @@ body.engineAuthoring #workspaceAssets{grid-column:1;grid-row:1;height:100%;max-h
 body.engineAuthoring #workspaceAssets aside{max-height:none;overflow:visible;padding:0;border:0;min-width:0}
 body.engineAuthoring #viewport{grid-column:2;grid-row:1;min-width:0;width:100%;max-height:100%;overflow:auto;align-self:start}
 body.engineAuthoring>footer{display:none}
-body.engineAuthoring #workspaceBar *,body.engineAuthoring #workspaceAssets *,body.engineAuthoring #workspaceSettings *{font-family:Arial,sans-serif!important;letter-spacing:normal;box-sizing:border-box}
+body.engineAuthoring #workspaceBar *,body.engineAuthoring #workspaceAssets *,body.engineAuthoring #workspaceSettings *{font-family:var(--frontier-editor-font)!important;letter-spacing:normal;box-sizing:border-box}
 body.engineAuthoring #workspaceAssets label,body.engineAuthoring #workspaceAssets p,body.engineAuthoring #workspaceAssets summary{font-size:16px;line-height:1.45}
 body.engineAuthoring #workspaceAssets h2{font-size:20px}
 body.engineAuthoring #workspaceAssets button,body.engineAuthoring #workspaceAssets input,body.engineAuthoring #workspaceAssets select{font-size:16px}
@@ -83,7 +86,7 @@ body.engineAuthoring #workspaceAssets select,body.engineAuthoring #workspaceAsse
  * controls and logical grid coordinates while giving the drawing space room. */
 #tileRoomWindow{width:min(1400px,96vw);height:min(940px,94vh);max-width:96vw;max-height:94vh;background:#101b28;color:#e1ecf5;border:1px solid #597c9b;padding:16px;overflow:auto}
 #tileRoomWindow::backdrop{background:#000a}
-#tileRoomWindow,#tileRoomWindow *{font-family:Arial,sans-serif!important;box-sizing:border-box;font-size:17px;line-height:1.4}
+#tileRoomWindow,#tileRoomWindow *{font-family:var(--frontier-editor-font)!important;box-sizing:border-box;font-size:17px;line-height:1.4}
 #tileRoomWindow>header{position:sticky;top:-16px;background:#101b28;z-index:2;padding:10px 0;display:flex;justify-content:space-between}
 #tileRoomWindow h2{font-size:24px;margin:0}
 #tileRoomWindow #roomLayoutTools{display:grid!important;grid-template-columns:320px minmax(0,1fr);gap:20px;border:0;padding:12px 0;min-width:0}
@@ -123,11 +126,11 @@ body.engineAuthoring #workspaceAssets select,body.engineAuthoring #workspaceAsse
    Supersedes the October 14 two-column dock; #workspaceAssets is now the
    right-hand pane. Playtest hides both side panes as before. */
 body.engineAuthoring.campaignShell main{grid-template-columns:clamp(220px,18vw,300px) minmax(0,1fr) clamp(300px,25vw,420px);gap:12px}
-body.engineAuthoring.campaignShell #campaignPane{grid-column:1;grid-row:1;height:100%;min-height:0;overflow:auto;position:relative;padding:0 10px 12px 0;border-right:1px solid #18385b;font-family:Arial,sans-serif;font-size:15px;line-height:1.4}
+body.engineAuthoring.campaignShell #campaignPane{grid-column:1;grid-row:1;height:100%;min-height:0;overflow:auto;position:relative;padding:0 10px 12px 0;border-right:1px solid #18385b;font-family:var(--frontier-editor-font);font-size:15px;line-height:1.4}
 body.engineAuthoring.campaignShell #viewport{grid-column:2}
 body.engineAuthoring.campaignShell #workspaceAssets{grid-column:3;padding:0 0 12px 12px;border-right:0;border-left:1px solid #18385b}
 body.enginePlaytest #campaignPane{display:none}
-#campaignPane *{font-family:Arial,sans-serif!important;letter-spacing:normal}
+#campaignPane *{font-family:var(--frontier-editor-font)!important;letter-spacing:normal}
 #campaignPane button,#campaignPane input{font-size:14px;min-height:32px}
 #campaignPane .campaignHeader{display:flex;flex-direction:column;gap:2px;padding-top:4px}
 #campaignPane .campaignKicker{font-size:12px;text-transform:uppercase;letter-spacing:.08em!important;color:#588abd}
@@ -163,7 +166,7 @@ body.enginePlaytest #campaignPane{display:none}
 .campaignMenu button:hover,.campaignMenu button:focus-visible{background:#1b3554}
 .campaignMenu button:disabled{opacity:.45}
 .campaignDanger{color:#ffc4c4!important}
-.campaignDialog{background:#07111e;color:#b5d9ff;border:1px solid #5f9fd9;max-width:420px;font-family:Arial,sans-serif}
+.campaignDialog{background:#07111e;color:#b5d9ff;border:1px solid #5f9fd9;max-width:420px;font-family:var(--frontier-editor-font)}
 .campaignDialog h2{font-size:18px;margin-top:0}
 .campaignDialog select{width:100%}
 .campaignDialogButtons{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}

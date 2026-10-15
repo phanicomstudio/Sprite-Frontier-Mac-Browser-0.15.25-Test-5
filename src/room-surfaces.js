@@ -38,7 +38,7 @@
         failed.add(url);
         console.warn("Room texture unavailable:", url);
       };
-    image.src = root.FrontierRoomTextureData?.[url] || url;
+    image.src = root.FrontierAssets.url(url); /* 0.15.27: PNG file, or offline copy from disk */
     return null;
   }
   /* @function room-surfaces.uv — Inputs: a face and its world point. Returns planar UV in repeats, using the face's dominant normal. This keeps adjoining panels aligned and textures unchanged when boxes resize. No mutation. */

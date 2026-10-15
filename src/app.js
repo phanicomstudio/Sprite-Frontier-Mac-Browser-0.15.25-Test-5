@@ -3,7 +3,11 @@
  * See docs/CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 /* Historical contract retained; October 14, 2026 reviewed explanation follows. @function app.callback.1 — Provides the callback for a callback. Inputs: no explicit arguments; uses enclosing module state. Updates: audio music; pause panel id; pause panel hidden; pause panel inner html; $ using "pauseResume" onclick. Uses: $; mf create frontier audio; frontier music create; document create element. */
-(/* @function app.bootstrapReviewed — Boots the single application coordinator. Inputs: none; requires the installed DOM, MF/native modules and fixed script load order. Returns nothing. Creates reusable audio/HUD/editor/runtime services, binds input/menu controls, starts the initial playtest and one animation-frame loop, then loads validated saved editor data. Runtime-only exports start at their authored active cell and avoid editor storage. Synchronous dependency/DOM errors propagate; owned asynchronous loaders report their own failures. Authored world and temporary game stay separate. */ function () {
+/* October 15, 2026 (0.15.27): starts through FrontierAssets.whenReady, after the
+ * startup assets (door models) have loaded; see src/asset-source.js. Callbacks run
+ * in script order, so app.js still runs before the workspace, scene list and
+ * campaign shell. */
+FrontierAssets.whenReady(/* @function app.bootstrapReviewed — Boots the single application coordinator. Inputs: none; requires the installed DOM, MF/native modules and fixed script load order. Returns nothing. Creates reusable audio/HUD/editor/runtime services, binds input/menu controls, starts the initial playtest and one animation-frame loop, then loads validated saved editor data. Runtime-only exports start at their authored active cell and avoid editor storage. Synchronous dependency/DOM errors propagate; owned asynchronous loaders report their own failures. Authored world and temporary game stay separate. */ function () {
   "use strict";
   const elements = new Map(),
     $ =
@@ -63,6 +67,21 @@
     "afterbegin",
     '<label>Rendering resolution<select id="renderScale"><option value="1">Performance — 1×</option><option value="1.5">Sharper — 1.5×</option><option value="2">High — 2×</option></select><output id="renderDimensions"></output></label><label>Texture filtering<select id="renderFiltering"><option value="crisp">Crisp</option><option value="smooth">Smooth</option></select></label>',
   );
+  // October 15, 2026: game text font choice. The same preference is offered in
+  // the editor's Project and view settings; both selects stay in step.
+  $("pauseSettings").insertAdjacentHTML(
+    "afterbegin",
+    '<label>Text font<select id="pauseFont"></select></label>',
+  );
+  FrontierTypography.bind($("pauseFont"));
+  if (!window.FRONTIER_RUNTIME_ONLY) {
+    const editorFont = document.createElement("label");
+    editorFont.textContent = "Game text font";
+    const editorFontSelect = document.createElement("select");
+    editorFontSelect.id = "editorGameFont";
+    editorFont.append(FrontierTypography.bind(editorFontSelect));
+    document.querySelector("header .tools")?.append(editorFont);
+  }
   /* @function app.displayControls1522 — Inputs: none. Synchronizes local resolution/filter controls and physical dimension label. No simulation changes; called after initialization and quality/aspect changes. */
   function displayControls() {
     const display = FrontierDisplay.get();
@@ -198,7 +217,8 @@
   )) {
     control.style.setProperty(
       "font-family",
-      "PhanicomCheckbook, monospace",
+      // October 15, 2026: follows the switchable game font (src/typography.js).
+      "var(--frontier-game-font, PhanicomCheckbook, monospace)",
       "important",
     );
     control.style.setProperty(
@@ -3270,7 +3290,7 @@
     $("badge").lastElementChild.textContent =
       (world.interior?.mode === "fixed" ? "Fixed interior · " : "") +
       (game.camera.firstPerson ? "First person" : "Third person") +
-      " · prototype 0.15.25";
+      " · prototype " + window.FrontierVersion;
     if (world.interior)
       $("intro").textContent =
         world.interior.mode === "fixed"
@@ -4034,4 +4054,4 @@
   restart();
   mapLibrary.load();
   requestAnimationFrame(frame);
-})();
+});

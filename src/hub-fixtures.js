@@ -67,11 +67,9 @@
   /* @function hub-fixtures.create — Inputs: none. Returns four independent new map records: hub/shop/protected home/wilderness. Linking uses named arrivals and explicit door styles; no existing map/test fixture is overwritten. */
   function create() {
     if (!root.FrontierModelLibrary.get("builtin-antique-door")) {
-      const bytes = Uint8Array.from(
-        atob(root.FrontierAntiqueDoor),
-        /* @function hub-fixtures.assetByte — Inputs: decoded character. Returns GLB byte, no effects. */ (
-          c,
-        ) => c.charCodeAt(0),
+      // 0.15.27: the GLB file, preloaded at startup by FrontierAssets.
+      const bytes = root.FrontierAssets.preloadedBytes(
+        "assets/models/runtime/antique-door-transition/assembly.glb",
       );
       root.FrontierModelLibrary.importBundle({
         id: "builtin-antique-door",
@@ -81,11 +79,9 @@
       });
     }
     if (!root.FrontierModelLibrary.get("builtin-saloon-door")) {
-      const bytes = Uint8Array.from(
-        atob(root.FrontierSaloonDoor),
-        /* @function hub-fixtures.saloonByte — Inputs: decoded character. Returns one unsigned GLB byte; no effects. */ (
-          c,
-        ) => c.charCodeAt(0),
+      // 0.15.27: the GLB file, preloaded at startup by FrontierAssets.
+      const bytes = root.FrontierAssets.preloadedBytes(
+        "assets/models/runtime/saloon-doors/pair.glb",
       );
       root.FrontierModelLibrary.importBundle({
         id: "builtin-saloon-door",

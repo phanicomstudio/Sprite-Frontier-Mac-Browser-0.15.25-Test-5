@@ -16,3 +16,6 @@ preview*.png
 .idea/
 *.swp
 Thumbs.db
+# Generated offline bundles for opening index.html from disk (npm run build:offline)
+offline/
+offline.tmp-*/

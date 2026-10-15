@@ -677,10 +677,9 @@
     if (!src) return null;
     if (!images.has(src)) {
       const im = new Image();
-      im.src =
-        src === "img/interiors/Room_Test_A.png" && root.FrontierRoomArt
-          ? root.FrontierRoomArt
-          : src;
+      // 0.15.27: the image file, or its offline copy when opened from disk
+      // (replaces the Room_Test_A-only FrontierRoomArt mirror).
+      im.src = root.FrontierAssets.url(src);
       images.set(src, im);
       if (images.size > 64) images.delete(images.keys().next().value);
     }

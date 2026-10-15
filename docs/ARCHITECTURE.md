@@ -48,3 +48,7 @@ above remain historical where behavior differs.
 ## October 15, 2026 — campaign structure and shell
 
 Projects carry `campaign.areas` (Campaign → Area → Map). `src/campaign.js` owns the pure rules; `map-library.js` stores, reconciles and persists the campaign with the project and includes it in map-operation history; `src/campaign-shell.js` is the authoring-only left pane and routes map actions to the existing library controls. Areas are organisation only and never affect map IDs, transfers or loading. Authoring is now three panes (tree, view, inspector/palette). See docs/CAMPAIGN-EDITOR.md.
+
+## October 15, 2026 (0.15.27) — asset files and loading
+
+Images and models exist only as files (`img/`, `assets/models/`). `src/asset-source.js` (`FrontierAssets`) resolves them: paths and fetch over http(s); generated `offline/` bundles (tools/build-offline.cjs) when opened from disk. `app.js` and the editor shell start through `FrontierAssets.whenReady` after the built-in door models load. Catalogue scripts carry metadata only. The superseded embedded mirrors are described in git history before 0.15.27. See docs/ASSETS-AND-HOSTING.md.

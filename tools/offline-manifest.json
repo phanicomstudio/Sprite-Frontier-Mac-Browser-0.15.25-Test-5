@@ -1,0 +1,24 @@
+{
+  "about": "October 15, 2026 (0.15.27): files copied into offline/*.js by tools/build-offline.cjs so the game also works when index.html is opened from disk. Same set the 0.15.25 embedded mirrors covered. Add an entry here when new code needs pixel or byte access to an asset in file mode. Bundle names come from FrontierAssets.groupOf in src/asset-source.js.",
+  "files": [
+    "assets/models/runtime/antique-door-transition/assembly.glb",
+    "assets/models/runtime/saloon-doors/pair.glb",
+    "img/characters/Candy_Armed_8R_3C.png",
+    "img/characters/$Candy 1.png",
+    "img/interiors/Room_Test_A.png",
+    "img/materials/walls/prop_wood_panel_wall1.png",
+    "img/materials/walls/prop_wall_1.png",
+    "img/materials/floors/prop_wood_floor1.png",
+    "img/materials/floors/prop_tile_floor1.png",
+    "img/materials/ceilings/prop_tin_ceiling1.png"
+  ],
+  "folders": [
+    { "path": "img/items", "extensions": [".png"] },
+    { "path": "img/skyboxes", "extensions": [".png"] }
+  ],
+  "catalogs": [
+    { "script": "src/outdoor-assets.js", "field": "image" },
+    { "script": "assets/models/castle-catalog.js", "field": "path" },
+    { "script": "assets/models/supplied-catalog.js", "field": "path" }
+  ]
+}

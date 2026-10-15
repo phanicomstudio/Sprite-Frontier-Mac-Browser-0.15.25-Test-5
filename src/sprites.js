@@ -36,7 +36,7 @@
       const asset = item?.properties?.sprite;
       if (!asset) return null;
       let image = images.get(asset.src);
-      if (!image) { image = new Image(); image.src = root.FrontierItemImageData?.[asset.src] || asset.src; images.set(asset.src, image); }
+      if (!image) { image = new Image(); image.src = root.FrontierAssets.url(asset.src); /* 0.15.27: item PNG file, or its offline copy */ images.set(asset.src, image); }
       return { id, image, columns: 1, referenceHeight: asset.height,
         frames: [{ x:0, y:0, w:asset.width, h:asset.height, anchorX:asset.width/2 }],
         direction: { rows:[0], idleColumn:0, walkSequence:[0], frameSeconds:1 } };
@@ -54,7 +54,9 @@
     let image = images.get(p.sheetData || p.sheet);
     if (!image) {
       image = new Image();
-      image.src = p.sheetData || p.sheet;
+      // 0.15.27: an authored embedded sheet wins; otherwise the sheet file
+      // (or its offline copy when opened from disk).
+      image.src = p.sheetData || root.FrontierAssets.url(p.sheet);
       images.set(p.sheetData || p.sheet, image);
     }
     return {
