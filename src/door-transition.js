@@ -237,11 +237,9 @@
         return found;
       }
       if (!privateAssets.has(id)) {
-        const bytes = Uint8Array.from(
-          atob(root.FrontierAntiqueDoor),
-          /* @function door-transition.byte — Inputs: base64-decoded character. Returns its byte code; no effects. */ (
-            c,
-          ) => c.charCodeAt(0),
+        // 0.15.27: the GLB file, preloaded at startup by FrontierAssets.
+        const bytes = root.FrontierAssets.preloadedBytes(
+          "assets/models/runtime/antique-door-transition/assembly.glb",
         );
         const decoded = root.FrontierModelLibrary.decodeStatic({
           entry: "assembly.glb",

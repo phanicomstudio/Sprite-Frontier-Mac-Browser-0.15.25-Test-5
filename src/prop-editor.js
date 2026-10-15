@@ -5,12 +5,33 @@
   root,
 ) {
   "use strict";
+  /* @function propEditor.withBytes - Inputs: catalog records from a metadata script (each with a "path" to its GLB). Returns a promise for the same records with a "data" Uint8Array attached, loading every GLB through FrontierAssets (files over http(s), the offline copy from disk). Already-loaded records are kept. Rejects with the first readable load error. Added October 15, 2026 (0.15.27), replacing base64 bytes embedded in the catalog scripts. */
+  async function withBytes(records) {
+    await Promise.all(
+      records.map(
+        /* @function propEditor.recordBytes - Inputs: one catalog record. Returns a promise that attaches its GLB bytes once. */ async function (record) {
+          if (!record.data) record.data = await root.FrontierAssets.bytes(record.path);
+        },
+      ),
+    );
+    return records;
+  }
+  /* @function propEditor.retryable - Inputs: a catalog promise and a function that clears its cache slot. Returns a promise with the same result; on failure it clears the slot first so the author can retry (for example after a dropped connection). */
+  function retryable(promise, clear) {
+    return promise.catch(
+      /* @function propEditor.retryClear - Inputs: load error. Clears the cached promise and rethrows the error unchanged. */ function (error) {
+        clear();
+        throw error;
+      },
+    );
+  }
   let catalogPromise = null;
   /* @function propEditor.catalog — Inputs: none. Returns: promise resolving supplied asset metadata/encoded bytes. Loads one local data script; errors reject and allow a later retry. No imported asset is decoded until selected. */
   function catalog() {
-    if (root.FrontierSuppliedModels)
-      return Promise.resolve(root.FrontierSuppliedModels);
     if (catalogPromise) return catalogPromise;
+    // 0.15.27: metadata comes from the script, model bytes from the GLB files.
+    if (root.FrontierSuppliedModels)
+      return (catalogPromise = retryable(withBytes(root.FrontierSuppliedModels), /* @function propEditor.clearSupplied - Inputs: none. Clears the supplied catalog cache for a retry. */ function () { catalogPromise = null; }));
     catalogPromise = new Promise(
       /* @function propEditor.catalogLoad — Inputs: promise resolve/reject. Returns: nothing. Adds a trusted local script; listeners report success or failure and release the script node after loading. */ function (
         resolve,
@@ -22,7 +43,7 @@
           /* @function propEditor.catalogReady — Inputs: load event (unused). Returns: nothing. Resolves installed data or rejects a malformed catalog, then removes the loader element. */ function () {
             script.remove();
             if (root.FrontierSuppliedModels)
-              resolve(root.FrontierSuppliedModels);
+              resolve(retryable(withBytes(root.FrontierSuppliedModels), /* @function propEditor.clearSuppliedLoad - Inputs: none. Clears the supplied catalog cache for a retry. */ function () { catalogPromise = null; }));
             else {
               catalogPromise = null;
               reject(Error("Supplied catalog is missing."));
@@ -42,9 +63,10 @@
   let castlePromise = null;
   /* @function propEditor.castleCatalog — Inputs: none. Returns: promise for authored castle prefab records. Loads a separate local catalog only after author request; no model is decoded until chosen. Failure releases retry state and reports through the caller. No world mutation. */
   function castleCatalog() {
-    if (root.FrontierCastleModels)
-      return Promise.resolve(root.FrontierCastleModels);
     if (castlePromise) return castlePromise;
+    // 0.15.27: metadata comes from the script, model bytes from the GLB files.
+    if (root.FrontierCastleModels)
+      return (castlePromise = retryable(withBytes(root.FrontierCastleModels), /* @function propEditor.clearCastle - Inputs: none. Clears the castle catalog cache for a retry. */ function () { castlePromise = null; }));
     castlePromise = new Promise(
       /* @function propEditor.loadCastle — Inputs: promise completion handlers. Returns: nothing. Creates trusted catalog loader and removes it on completion/failure, leaving originals untouched. */ function (
         resolve,
@@ -55,7 +77,7 @@
         script.onload =
           /* @function propEditor.castleReady — Inputs: load event (unused). Returns: nothing. Resolves installed records; malformed data rejects and allows retry. */ function () {
             script.remove();
-            if (root.FrontierCastleModels) resolve(root.FrontierCastleModels);
+            if (root.FrontierCastleModels) resolve(retryable(withBytes(root.FrontierCastleModels), /* @function propEditor.clearCastleLoad - Inputs: none. Clears the castle catalog cache for a retry. */ function () { castlePromise = null; }));
             else {
               castlePromise = null;
               reject(Error("Castle catalog is missing."));
@@ -475,9 +497,8 @@
         },
       );
       if (!record) return null;
-      const text = atob(record.bytes),
-        bytes = new Uint8Array(text.length);
-      for (let i = 0; i < text.length; i++) bytes[i] = text.charCodeAt(i);
+      // 0.15.27: bytes were loaded from the GLB file when the catalog opened.
+      const bytes = record.data.slice();
       root.FrontierModelLibrary.importBundle({
         id: record.id,
         name: record.name,

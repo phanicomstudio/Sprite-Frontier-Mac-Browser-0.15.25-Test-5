@@ -89,32 +89,19 @@
           record.failed = true;
           console.warn("Sky panorama unavailable:", entry.url);
         };
-      // Local file images are opaque origins in browser packages. Load the
-      // unchanged PNG from a trusted lazy data script to keep WebGL uploads
-      // origin-clean without weakening browser security settings.
-      const script = document.createElement("script");
-      script.src = "assets/skyboxes/" + id + ".js";
-      script.onload =
-        /* @function skyPanorama.embeddedReady — Inputs: unused script load. Returns nothing; assigns original PNG data bytes to the owned image, or marks malformed catalog failure. Loader is removed; subsequent calls reuse the same image. */ function () {
-          script.remove();
-          const data = root.FrontierSkyImageData?.[id];
-          if (
-            typeof data !== "string" ||
-            !data.startsWith("data:image/png;base64,")
-          ) {
-            record.failed = true;
-            console.warn("Sky panorama data unavailable:", id);
-            return;
-          }
-          record.image.src = data;
-        };
-      script.onerror =
-        /* @function skyPanorama.embeddedFailed — Inputs: unused script error. Returns nothing; releases loader and records one failure, preventing repeated requests every frame. Procedural fallback remains available. */ function () {
-          script.remove();
+      // Local file images are opaque origins in browser packages. Historical
+      // 0.15.25 approach: a lazy assets/skyboxes/<id>.js data script.
+      // October 15, 2026 (0.15.27): load the PNG file itself over http(s);
+      // from disk, FrontierAssets supplies its offline copy (skyboxes bundle).
+      root.FrontierAssets.imageURL(entry.url).then(
+        /* @function skyPanorama.sourceReady — Inputs: image URL or data URI. Returns nothing; starts loading the panorama into the owned image. */ function (url) {
+          record.image.src = url;
+        },
+        /* @function skyPanorama.sourceFailed — Inputs: load error. Returns nothing; records one failure (no retry storm) and keeps the procedural sky. */ function (error) {
           record.failed = true;
-          console.warn("Sky panorama catalog unavailable:", id);
-        };
-      document.head.append(script);
+          console.warn("Sky panorama unavailable:", entry.url, error.message);
+        },
+      );
     }
     const record = images.get(id);
     return record.ready ? record.image : null;

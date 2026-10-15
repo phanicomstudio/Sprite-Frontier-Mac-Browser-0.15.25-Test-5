@@ -47,7 +47,7 @@
       if (option.value) {
         const thumbnail = document.createElement("img");
         thumbnail.src =
-          root.FrontierRoomTextureData?.[option.value] || option.value;
+          root.FrontierAssets.url(option.value) /* 0.15.27 */;
         thumbnail.alt = "";
         thumbnail.loading = "lazy";
         thumbnail.style.cssText = "width:88px;height:66px;object-fit:contain";

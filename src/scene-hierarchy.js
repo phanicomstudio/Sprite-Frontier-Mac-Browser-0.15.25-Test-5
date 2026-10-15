@@ -1,7 +1,11 @@
 /* October 12, 2026: searchable scene inventory. Existing authoritative selection
  * controls retain ownership of editing/history; this panel only routes selection.
  * Labels are inserted as text, never interpreted as markup. Runtime has no panel. */
-(/* @function sceneHierarchy.install — Inputs: none; initialized document. Returns: nothing. Adds grouped scene inventory only to the editor palette. Missing controls or runtime-only mode leave gameplay unchanged. Owns DOM observers; no per-frame world scans. */ function () {
+/* October 15, 2026 (0.15.27): starts through FrontierAssets.whenReady, after the
+ * startup assets (door models) have loaded; see src/asset-source.js. Callbacks run
+ * in script order, so app.js still runs before the workspace, scene list and
+ * campaign shell. */
+FrontierAssets.whenReady(/* @function sceneHierarchy.install — Inputs: none; initialized document. Returns: nothing. Adds grouped scene inventory only to the editor palette. Missing controls or runtime-only mode leave gameplay unchanged. Owns DOM observers; no per-frame world scans. */ function () {
   "use strict";
   const host = document.getElementById("workspaceAssets");
   if (!host || window.FRONTIER_RUNTIME_ONLY) return;
@@ -215,4 +219,4 @@
     control.addEventListener("change", render);
   }
   render();
-})();
+});

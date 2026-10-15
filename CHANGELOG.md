@@ -2,6 +2,15 @@
 
 Newest entries first. From 0.15.26 each fix or feature release increments the last number; the version lives in src/version.js and package.json. Everything from 0.15.3 down is the original changelog, kept as written. Files they mention were removed on October 14, 2026 and remain in git history at commit 7fca396 (`git show 7fca396:<file>`).
 
+## 0.15.27 — October 15, 2026 — separate asset files
+
+- **Images and 3D models are individual files only.** Removed 14 scripts of embedded base64 copies (about 215 MB of text; `outdoor-assets.js` alone was 96 MB, now 37 KB), after checking every copy byte for byte against its PNG or GLB. Model catalogues hold metadata and paths; GLBs load from `assets/models/`.
+- **New loader:** `src/asset-source.js` loads files over http(s) and uses generated `offline/` bundles only when `index.html` is opened from disk. The game and editor start once the built-in door models are loaded; a missing asset shows a plain message.
+- **How to run changes:** use `npm start` (or a static host). To open `index.html` directly, run `npm run build:offline` first.
+- **Fixed:** 36 outdoor bank entries named files that do not exist (`$` instead of `$$` in the file name). Unnoticed while the embedded copies were used; each now points to the file matching its recorded SHA-256.
+- **Cloudflare-ready:** `wrangler.jsonc`, `.assetsignore`, and `npm run check:assets` (25 MiB per-file and 20,000-file limits; currently 531 files, none over). `serve.cjs` now sends correct content types for images, models, audio and fonts.
+- Browser tests run over local HTTP by default (`FRONTIER_TEST_FILE=1` for from-disk). New tests: `tests/offline-assets1600.cjs`, `tests/browser/asset-loading1600.cjs`. See docs/ASSETS-AND-HOSTING.md.
+
 ## 0.15.26 — October 15, 2026 — switchable game font
 
 - **Pause → Options → Text font** (and **Game text font** in the editor's Project and view settings) switches game text between Phanicom Checkbook, System sans-serif, System serif and System monospace. It covers menus, HUD, dialogue, device screens and in-world labels, and is remembered per browser.

@@ -1,0 +1,12 @@
+// October 15, 2026 (0.15.27): Cloudflare Workers static-assets deployment.
+// No Worker script: Cloudflare serves the files in this folder as they are.
+// .assetsignore keeps docs, tests, tools and the offline/ bundles out.
+// Deploy with:  npx wrangler deploy        (preview locally: npx wrangler dev)
+// Check sizes first with:  npm run check:assets
+{
+  "name": "sprite-frontier",
+  "compatibility_date": "2026-10-15",
+  "assets": {
+    "directory": "."
+  }
+}

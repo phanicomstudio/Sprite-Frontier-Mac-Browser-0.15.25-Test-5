@@ -1,0 +1,23 @@
+# October 15, 2026 (0.15.27): files Wrangler must NOT upload when this folder is
+# deployed as Cloudflare Workers static assets (wrangler.jsonc, directory ".").
+# Same syntax as .gitignore. Everything else here is the playable game.
+.git
+.github
+.gitignore
+.gitattributes
+.assetsignore
+.wrangler
+node_modules
+wrangler.jsonc
+package.json
+package-lock.json
+*.md
+docs/
+tests/
+tools/
+reference/
+test-artifacts/
+offline/
+offline.tmp-*
+serve.cjs
+.DS_Store

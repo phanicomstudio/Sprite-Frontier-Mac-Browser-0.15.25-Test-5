@@ -175,10 +175,16 @@ window.FrontierCandy = {
     },
   ],
 };
-FrontierCandy.image.src =
-  location.protocol === "file:"
-    ? window.FrontierCandyImageData
-    : "img/characters/Candy_Armed_8R_3C.png";
+// October 15, 2026 (0.15.27): the sheet file over http(s); from disk, its
+// offline copy (characters bundle) once loaded. Replaces candy-image-data.js.
+window.FrontierAssets.imageURL("img/characters/Candy_Armed_8R_3C.png").then(
+  /* @function candy.sheetReady — Inputs: image URL or data URI. Returns nothing; assigns the armed Candy sheet. */ function (url) {
+    FrontierCandy.image.src = url;
+  },
+  /* @function candy.sheetFailed — Inputs: load error. Returns nothing; logs why the armed sheet is unavailable (the offline copy is missing). */ function (error) {
+    console.error(error);
+  },
+);
 FrontierCandy.direction = {
   rows: [3, 6, 2, 5, 0, 4, 1, 7],
   walkSequence: [1, 2, 1, 0],

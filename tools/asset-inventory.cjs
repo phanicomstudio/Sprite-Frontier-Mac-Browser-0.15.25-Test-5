@@ -33,9 +33,12 @@ const root = path.resolve(process.argv[2] || path.join(__dirname, "..")),
     for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
       const f = path.join(dir, e.name);
       if (e.isDirectory()) {
-        if (!["node_modules", ".git"].includes(e.name)) await walk(f);
+        if (!["node_modules", ".git", "offline"].includes(e.name)) await walk(f);
       } else if (/\.(png|webp|jpg|jpeg)$/i.test(e.name))
         await inspect(fs.readFileSync(f), path.relative(root, f));
+      // October 15, 2026 (0.15.27): embedded image banks were removed; every
+      // image is now a file inspected above. This branch finds nothing in
+      // current source and is kept for inventories of older iterations.
       else if (["outdoor-assets.js", "candy-image-data.js"].includes(e.name)) {
         let i = 0;
         for (const m of fs

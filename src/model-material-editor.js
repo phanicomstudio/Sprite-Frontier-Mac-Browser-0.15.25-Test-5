@@ -77,7 +77,7 @@
       /* @function modelMaterialEditor.preview — Inputs: image selection event unused. Returns: nothing; displays assigned/shared image or original source thumbnail. No texture pixels are rewritten; URLs are released on modal close. */
       function showPreview() {
         const uri = texture.value
-          ? root.FrontierRoomTextureData?.[texture.value] || texture.value
+          ? root.FrontierAssets.url(texture.value) /* 0.15.27 */
           : originalURL;
         preview.hidden = !uri;
         if (uri) preview.src = uri;

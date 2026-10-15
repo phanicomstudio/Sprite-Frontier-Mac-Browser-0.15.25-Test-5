@@ -142,7 +142,7 @@
     /* @function layoutEditor.updateThumbnail — Inputs: surface role wall/floor/ceiling. Returns nothing; updates its image using embedded/offline catalog data. Plain-color selections hide the preview. No authored changes. */
     function updateThumbnail(role) {
       const value = control("layout-material-"+role).value, image = control("layout-preview-"+role);
-      image.hidden = !value; if (value) image.src = root.FrontierRoomTextureData?.[value] || value;
+      image.hidden = !value; if (value) image.src = root.FrontierAssets.url(value); /* 0.15.27 */
     }
     /* @function layoutEditor.compileDraft — Inputs: validated layout and existing primitives. Returns generated layout with optional explicit role-texture replacement; manual geometry deltas are retained by the original compiler. Only when the visible replacement checkbox is checked are prior per-piece texture overrides replaced. No authored mutation. */
     function compileDraft(value, existing) {

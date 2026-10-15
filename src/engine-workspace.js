@@ -2,7 +2,11 @@
  * handlers or source data. This is the workspace presentation layer; gameplay
  * and editor transactions remain owned by app.js and the existing workbenches.
  * Runtime exports must set FRONTIER_RUNTIME_ONLY before app.js executes. */
-(/* @function engineWorkspace.initialize — Inputs: none; reads the initialized document. Returns: nothing. Moves existing controls into collapsible groups without cloning IDs or handlers. Missing required elements leave the old layout intact. */ function () {
+/* October 15, 2026 (0.15.27): starts through FrontierAssets.whenReady, after the
+ * startup assets (door models) have loaded; see src/asset-source.js. Callbacks run
+ * in script order, so app.js still runs before the workspace, scene list and
+ * campaign shell. */
+FrontierAssets.whenReady(/* @function engineWorkspace.initialize — Inputs: none; reads the initialized document. Returns: nothing. Moves existing controls into collapsible groups without cloning IDs or handlers. Missing required elements leave the old layout intact. */ function () {
   "use strict";
   // October 12, 2026: shared startup has bound gameplay preferences to their
   // existing nodes. Runtime keeps those private references but removes editor
@@ -188,4 +192,4 @@
   const inspector = document.querySelector("main > aside");
   if (inspector) assets.prepend(inspector);
   refresh();
-})();
+});

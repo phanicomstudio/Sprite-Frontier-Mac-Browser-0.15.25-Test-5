@@ -22,7 +22,15 @@ function build(source,entry,destination){
  for(const match of entry.html.matchAll(/<link\b[^>]*href="([^"]+\.css)"[^>]*>/g))collect(match[1]);
  for(const bank of ['img','audio','fonts'])collect(bank);
  // October 13: origin-clean lazy sky bytes are runtime resources, not editor catalogs.
- if(entry.scripts.includes('src/sky-panorama.js'))collect('assets/skyboxes');
+ // October 15, 2026 (0.15.27): supersedes the assets/skyboxes data scripts. Skies
+ // are the PNGs in img/skyboxes (already in the img bank). The game needs the
+ // built-in door models at startup (src/asset-source.js), and the offline/
+ // bundles when the package is opened from disk; copy those bundles when built.
+ // Both apply only to engines that include the loader (src/asset-source.js).
+ if(entry.scripts.includes('src/asset-source.js')){
+  for(const model of ['assets/models/runtime/antique-door-transition/assembly.glb','assets/models/runtime/saloon-doors/pair.glb'])collect(model);
+  if(fs.existsSync(path.join(source,'offline','core.js')))collect('offline');
+ }
  // October 13, 2026: authored local textures/sounds outside the built-in banks
  // must accompany the game. Read the already escaped project JSON as data;
  // never evaluate its bootstrap script or resolve paths outside this engine.

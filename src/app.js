@@ -3,7 +3,11 @@
  * See docs/CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 /* Historical contract retained; October 14, 2026 reviewed explanation follows. @function app.callback.1 — Provides the callback for a callback. Inputs: no explicit arguments; uses enclosing module state. Updates: audio music; pause panel id; pause panel hidden; pause panel inner html; $ using "pauseResume" onclick. Uses: $; mf create frontier audio; frontier music create; document create element. */
-(/* @function app.bootstrapReviewed — Boots the single application coordinator. Inputs: none; requires the installed DOM, MF/native modules and fixed script load order. Returns nothing. Creates reusable audio/HUD/editor/runtime services, binds input/menu controls, starts the initial playtest and one animation-frame loop, then loads validated saved editor data. Runtime-only exports start at their authored active cell and avoid editor storage. Synchronous dependency/DOM errors propagate; owned asynchronous loaders report their own failures. Authored world and temporary game stay separate. */ function () {
+/* October 15, 2026 (0.15.27): starts through FrontierAssets.whenReady, after the
+ * startup assets (door models) have loaded; see src/asset-source.js. Callbacks run
+ * in script order, so app.js still runs before the workspace, scene list and
+ * campaign shell. */
+FrontierAssets.whenReady(/* @function app.bootstrapReviewed — Boots the single application coordinator. Inputs: none; requires the installed DOM, MF/native modules and fixed script load order. Returns nothing. Creates reusable audio/HUD/editor/runtime services, binds input/menu controls, starts the initial playtest and one animation-frame loop, then loads validated saved editor data. Runtime-only exports start at their authored active cell and avoid editor storage. Synchronous dependency/DOM errors propagate; owned asynchronous loaders report their own failures. Authored world and temporary game stay separate. */ function () {
   "use strict";
   const elements = new Map(),
     $ =
@@ -4050,4 +4054,4 @@
   restart();
   mapLibrary.load();
   requestAnimationFrame(frame);
-})();
+});

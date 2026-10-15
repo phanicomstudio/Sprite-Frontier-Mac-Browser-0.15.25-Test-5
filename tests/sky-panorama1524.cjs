@@ -47,22 +47,14 @@ assert.equal(
   0,
   "Validation alone does not decode images",
 );
-for (let number = 1; number <= 4; number++) {
-  const original = fs.readFileSync(
-    path.join(__dirname, "../img/skyboxes/SkyBox_" + number + ".png"),
-  );
-  const source = fs.readFileSync(
-    path.join(__dirname, "../assets/skyboxes/sky-" + number + ".js"),
-    "utf8",
-  );
-  const encoded = source.match(/data:image\/png;base64,([A-Za-z0-9+/=]+)"/);
-  assert(encoded, "Trusted origin-clean bank exists");
-  assert.deepEqual(
-    Buffer.from(encoded[1], "base64"),
-    original,
-    "Offline bank preserves supplied PNG bytes exactly",
-  );
-}
+// October 15, 2026 (0.15.27): supersedes the assets/skyboxes/sky-N.js data-script
+// check. Skies load their PNG files through FrontierAssets; from disk, the
+// generated offline bundle holds the same bytes (tests/offline-assets1600.cjs).
+const skySource = fs.readFileSync(path.join(__dirname, "../src/sky-panorama.js"), "utf8");
+assert(skySource.includes("FrontierAssets.imageURL(entry.url)"), "Skies load their PNG files through FrontierAssets");
+assert(!/script\.src\s*=\s*"assets\/skyboxes\//.test(skySource), "No sky data scripts are requested");
+for (let number = 1; number <= 4; number++)
+  assert(fs.statSync(path.join(__dirname, "../img/skyboxes/SkyBox_" + number + ".png")).size > 0, "Sky PNG " + number + " exists");
 console.log(
-  "PASS per-map panorama schema, historical defaults, invalid settings and unchanged offline sky bytes",
+  "PASS per-map panorama schema, historical defaults, invalid settings and sky PNG files loaded through FrontierAssets",
 );
