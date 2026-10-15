@@ -4,5 +4,5 @@
  * shown in the game badge and recorded in CHANGELOG.md. */
 (/* @function version.install — Inputs: browser or Node global root. Returns nothing; publishes the frozen FrontierVersion string. No side effects beyond that one global. */ function (root) {
   "use strict";
-  root.FrontierVersion = "0.15.27";
+  root.FrontierVersion = "0.15.28";
 })(globalThis);

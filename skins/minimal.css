@@ -1,0 +1,284 @@
+/* October 15, 2026 (0.15.28): the minimal interface.
+ *
+ * Used for every device a skin pack does not supply, and for all of them when
+ * the player chooses "Minimal". Quiet glass panels over the game, one hairline
+ * weight, warm off-white text, and one signal colour reserved for state
+ * (weapon art, warnings). No images. src/ui-skins.js marks each device
+ * .skinPlain or .skinFramed and sets html[data-skin-*] for the pause menu.
+ *
+ * Selectors start at #deviceHud / html[data-skin-*] so they outrank the
+ * layered image-device rules in style.css without !important, except where
+ * those rules already use it (pause menu).
+ */
+:root {
+  --ui-glass: rgba(18, 20, 22, 0.76);
+  --ui-glass-strong: rgba(18, 20, 22, 0.9);
+  --ui-ink: #ece8e1;
+  --ui-ink-dim: rgba(236, 232, 225, 0.62);
+  --ui-rule: rgba(236, 232, 225, 0.2);
+  --ui-rule-strong: rgba(236, 232, 225, 0.5);
+  --ui-signal: #d9642b;
+  --ui-radius: 3px;
+  --ui-text: 13px;
+}
+
+/* Controls: a row of plain buttons, bottom left. Labels come from data-label,
+   key hints from data-key, so element IDs and behaviour stay unchanged. */
+#deviceHud .remoteDevice.skinPlain {
+  width: auto;
+  height: auto;
+  display: flex;
+  gap: 4px;
+  left: 2%;
+  bottom: 3%;
+}
+#deviceHud .remoteDevice.skinPlain button {
+  position: static;
+  width: auto;
+  height: auto;
+  min-height: 30px;
+  padding: 0 12px;
+  border: 1px solid var(--ui-rule);
+  border-radius: var(--ui-radius);
+  background: var(--ui-glass);
+  color: var(--ui-ink);
+  box-shadow: none;
+  font: var(--ui-text) / 1 var(--frontier-game-font, PhanicomCheckbook, monospace);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+#deviceHud .remoteDevice.skinPlain button::before {
+  content: attr(data-label);
+}
+#deviceHud .remoteDevice.skinPlain button[data-key]::after {
+  content: attr(data-key);
+  margin-left: 8px;
+  color: var(--ui-ink-dim);
+}
+.hudCursor #deviceHud .remoteDevice.skinPlain button:hover,
+#deviceHud .remoteDevice.skinPlain button:focus-visible {
+  border-color: var(--ui-rule-strong);
+  outline: none;
+}
+
+/* Portrait: the screen window of the portrait art, cropped from the 766 x 681
+   canvas (window 85,86 to 597,525, the lens area), with Blood and Cerebral
+   underneath. */
+#deviceHud .portraitDevice.skinPlain {
+  width: clamp(128px, 11%, 176px);
+  aspect-ratio: auto;
+  left: 50%;
+  bottom: 3%;
+  transform: translateX(-50%);
+  padding: 4px 4px 6px;
+  border: 1px solid var(--ui-rule);
+  border-radius: var(--ui-radius);
+  background: var(--ui-glass);
+}
+.portraitDevice .portraitWindow {
+  display: contents;
+}
+#deviceHud .portraitDevice.skinPlain .portraitWindow {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 512 / 439;
+  border-radius: 2px;
+}
+#deviceHud .portraitDevice.skinPlain #candyPortrait {
+  position: absolute;
+  inset: auto;
+  left: -16.6%;
+  top: -19.59%;
+  width: 149.61%;
+  height: 155.13%;
+  border-radius: 0;
+  background: transparent;
+}
+#deviceHud .portraitDevice.skinPlain #portraitStats {
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip-path: none;
+  white-space: pre-line;
+  margin: 6px 2px 0;
+  color: var(--ui-ink-dim);
+  font: 11px / 1.35 var(--frontier-game-font, PhanicomCheckbook, monospace);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Status: weapon above, inspection below, bottom right. */
+#deviceHud .combinedDevice.skinPlain {
+  width: clamp(190px, 21%, 300px);
+  aspect-ratio: auto;
+  right: 2%;
+  bottom: 3%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+#deviceHud .combinedDevice.skinPlain .deviceScreen {
+  position: relative;
+  left: auto;
+  top: auto;
+  width: auto;
+  height: auto;
+  padding: 10px 12px;
+  border: 1px solid var(--ui-rule);
+  border-radius: var(--ui-radius);
+  background: var(--ui-glass);
+  color: var(--ui-ink);
+  text-align: left;
+  font-size: var(--ui-text);
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+}
+#deviceHud .combinedDevice.skinPlain #equipmentScreen {
+  top: auto;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+}
+#deviceHud .combinedDevice.skinPlain .weaponIcon {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 26px;
+}
+#deviceHud .combinedDevice.skinPlain #equipmentScreen > span {
+  max-height: none;
+  overflow: visible;
+}
+#deviceHud .combinedDevice.skinPlain .immersionScreen {
+  top: auto;
+  max-height: 9.5em;
+  overflow: auto;
+}
+/* The image screens size the scroll area by flex; a plain panel sizes it to
+   its text instead. With nothing to show, the panel disappears. */
+#deviceHud .combinedDevice.skinPlain #inspectionScroll {
+  flex: none;
+}
+#deviceHud .combinedDevice.skinPlain .immersionScreen:has(#targetLabel:empty):has(#descriptionScreen:empty) {
+  display: none;
+}
+#deviceHud .combinedDevice.skinPlain #targetLabel {
+  color: var(--ui-ink);
+  margin-bottom: 2px;
+}
+#deviceHud .combinedDevice.skinPlain #descriptionScreen {
+  color: var(--ui-ink-dim);
+}
+
+/* Drag handles (HUD layout mode, P) sit above a plain device, not inside it. */
+#deviceHud .skinPlain > .moduleHandle {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 4px);
+}
+
+/* Pause: a single centred column of actions; options in a quiet panel. */
+html[data-skin-pause="plain"] #pauseControls {
+  background: rgba(12, 13, 14, 0.84) !important;
+  backdrop-filter: blur(6px);
+}
+html[data-skin-pause="plain"] #pauseArtwork {
+  background: none;
+}
+html[data-skin-pause="plain"] #pauseMain {
+  left: 50%;
+  top: 50%;
+  width: min(320px, 80%);
+  height: auto;
+  transform: translate(-50%, -50%);
+  grid-template-rows: none;
+  border-top: 1px solid var(--ui-rule);
+}
+html[data-skin-pause="plain"] #pauseMain button {
+  padding: 14px 4px !important;
+  border-bottom: 1px solid var(--ui-rule) !important;
+  color: var(--ui-ink);
+  text-align: left;
+  text-shadow: none;
+  font-size: 22px !important;
+}
+html[data-skin-pause="plain"] #pauseMain button:hover,
+html[data-skin-pause="plain"] #pauseMain button:focus-visible {
+  color: var(--ui-ink);
+  text-shadow: none;
+  padding-left: 12px !important;
+  box-shadow: inset 2px 0 0 var(--ui-signal) !important;
+  outline: none;
+}
+html[data-skin-pause="plain"] #pauseSettings {
+  left: 50% !important;
+  top: 50% !important;
+  width: min(620px, 88%) !important;
+  max-height: 84% !important;
+  transform: translate(-50%, -50%);
+  padding: 20px 24px !important;
+  border: 1px solid var(--ui-rule);
+  border-radius: var(--ui-radius);
+  background: var(--ui-glass-strong) !important;
+  color: var(--ui-ink);
+  font-size: 16px;
+}
+
+html[data-skin-pause="plain"] #pauseSettings label {
+  color: var(--ui-ink-dim);
+}
+html[data-skin-pause="plain"] #pauseSettings select,
+html[data-skin-pause="plain"] #pauseSettings input:not([type="range"]):not([type="checkbox"]),
+html[data-skin-pause="plain"] #pauseSettings button {
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  min-height: 36px;
+  margin-top: 4px;
+  padding: 0 10px;
+  border: 1px solid var(--ui-rule);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--ui-ink);
+  font: inherit;
+}
+html[data-skin-pause="plain"] #pauseSettings button {
+  display: inline-block;
+  width: auto;
+  margin: 12px 6px 0 0;
+}
+html[data-skin-pause="plain"] #pauseSettings select:focus-visible,
+html[data-skin-pause="plain"] #pauseSettings input:focus-visible,
+html[data-skin-pause="plain"] #pauseSettings button:hover,
+html[data-skin-pause="plain"] #pauseSettings button:focus-visible {
+  border-color: var(--ui-rule-strong);
+  outline: none;
+}
+html[data-skin-pause="plain"] #pauseSettings input[type="range"] {
+  width: 100%;
+  max-width: 360px;
+  accent-color: var(--ui-signal);
+}
+html[data-skin-pause="plain"] #pauseSettings fieldset {
+  margin-top: 16px;
+  border: 0;
+  border-top: 1px solid var(--ui-rule);
+  padding: 8px 0 0;
+}
+html[data-skin-pause="plain"] #pauseSettings legend {
+  padding: 0 8px 0 0;
+  color: var(--ui-ink);
+}
+
+/* Journal, inventory and dialogue follow the same quiet panel when the whole
+   interface is minimal. A skin pack keeps the original styling. */
+html[data-skin="minimal"] #journalPanel,
+html[data-skin="minimal"] #inventoryPanel,
+html[data-skin="minimal"] #dialogue:not([data-background="1"]):not([data-background="2"]) {
+  border: 1px solid var(--ui-rule);
+  border-radius: var(--ui-radius);
+  background: var(--ui-glass-strong);
+  color: var(--ui-ink);
+  box-shadow: none;
+}
