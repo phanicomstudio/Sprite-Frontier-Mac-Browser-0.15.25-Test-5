@@ -1,21 +1,21 @@
 # Changelog
 
-Newest entries first. Everything from 0.15.3 down is the original changelog, kept as written. Files they mention were removed on October 14, 2026 and remain in git history at commit 7fca396 (`git show 7fca396:<file>`).
+Newest entries first. From 0.15.26 each fix or feature release increments the last number; the version lives in src/version.js and package.json. Everything from 0.15.3 down is the original changelog, kept as written. Files they mention were removed on October 14, 2026 and remain in git history at commit 7fca396 (`git show 7fca396:<file>`).
 
-## October 15, 2026 — switchable game font
+## 0.15.26 — October 15, 2026 — switchable game font
 
 - **Pause → Options → Text font** (and **Game text font** in the editor's Project and view settings) switches game text between Phanicom Checkbook, System sans-serif, System serif and System monospace. It covers menus, HUD, dialogue, device screens and in-world labels, and is remembered per browser.
 - The editor's own panels now use one system font throughout instead of a mix of Arial and Checkbook.
 - Source: src/typography.js; test: tests/typography1600.cjs.
 
-## October 15, 2026 — campaign shell (campaign editor phase 1)
+## 0.15.25 Test 6 — October 15, 2026 — campaign shell (campaign editor phase 1)
 
 - Authoring now uses three panes: a **campaign tree** on the left, the game view in the centre, and the inspector and build palette on the right.
 - Projects are campaigns made of **areas**, each holding maps. Open, rename, add, reorder, drag, duplicate and delete from the tree, with its own Undo/Redo. The placed-object list moved under **In this map**.
 - The campaign is saved inside the existing project format. Older projects get areas from their map folders automatically; bundled examples are grouped into Vector Frontier, Hub town and Asset tests.
 - See docs/CAMPAIGN-EDITOR.md.
 
-## October 14, 2026 — repository cleanup
+## 0.15.25 — October 14, 2026 — repository cleanup
 
 User-authorized cleanup; no engine or editor behavior changed.
 

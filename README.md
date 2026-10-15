@@ -1,8 +1,8 @@
-# Sprite Frontier 0.15.25 (Test 5)
+# Sprite Frontier 0.15.26
 
 Sprite Frontier is a browser game engine and editor that combines 2D sprite characters with 3D terrain, perspective and fixed-camera views, and static 3D models. It targets Daggerfall/Fallout-style exploration, quests and combat. The event and quest system follows RPG Maker MZ's workflow; full MZ parity is not a goal.
 
-This is a user test build, not a certified release. Current changes are in [docs/TEST-BUILD-0.15.25-TEST-5.md](docs/TEST-BUILD-0.15.25-TEST-5.md).
+This is a user test build, not a certified release. Changes are listed in [CHANGELOG.md](CHANGELOG.md); the version number is in `src/version.js`.
 
 ## Play
 
