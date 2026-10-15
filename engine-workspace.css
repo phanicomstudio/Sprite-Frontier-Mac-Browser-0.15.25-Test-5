@@ -172,3 +172,6 @@ body.enginePlaytest #campaignPane{display:none}
 .campaignDialogButtons{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
 @media(max-width:1100px){body.engineAuthoring.campaignShell main{grid-template-columns:clamp(200px,24vw,260px) minmax(0,1fr)}body.engineAuthoring.campaignShell #workspaceAssets{grid-column:1/-1;grid-row:2;height:auto;border-left:0;padding-left:0}}
 @media(max-width:700px){body.engineAuthoring.campaignShell main{grid-template-columns:1fr}body.engineAuthoring.campaignShell #campaignPane,body.engineAuthoring.campaignShell #viewport,body.engineAuthoring.campaignShell #workspaceAssets{grid-column:1;grid-row:auto;height:auto;border:0;padding:0}}
+/* 0.15.28: campaign interface skin row under the campaign name. */
+#campaignPane .campaignSkin{display:flex;align-items:center;gap:8px;margin:4px 0 0;font-size:13px;color:#a6cfff}
+#campaignPane .campaignSkin select{flex:1;min-width:0;min-height:30px;font-size:13px}

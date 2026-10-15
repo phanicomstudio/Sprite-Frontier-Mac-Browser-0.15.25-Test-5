@@ -2,6 +2,15 @@
 
 Newest entries first. From 0.15.26 each fix or feature release increments the last number; the version lives in src/version.js and package.json. Everything from 0.15.3 down is the original changelog, kept as written. Files they mention were removed on October 14, 2026 and remain in git history at commit 7fca396 (`git show 7fca396:<file>`).
 
+## 0.15.28 — October 15, 2026 — interface skins
+
+- **Interface skins.** The four in-game devices (controls, portrait, status, pause) take their frame art and the positions of their buttons and screens from a skin pack instead of fixed CSS. Packs live in `skins/<id>/` with a `skin.js` manifest; see docs/INTERFACE-SKINS.md.
+- **Phanicom devices** is the first pack. Its art moved from `img/ui/` to `skins/phanicom-devices/`, and its geometry is measured from 0.15.27, so it looks exactly as before.
+- **Minimal interface.** With no pack, or for any device a pack leaves out: quiet glass panels, one hairline border, warm off-white text and a single signal orange, with no images. The pause menu becomes a single column, and Options get plain controls. Controls show their names and keys (Journal J, Inventory I); the portrait shows Blood and Cerebral underneath.
+- **Choosing:** Pause → Options → **Interface** for players (remembered per browser); **Interface** under the campaign name in the editor sets the campaign's skin, saved as `project.uiSkin` and used by exported games.
+- The portrait now draws the skin's frame layers over the portrait instead of a fixed chassis and lens; Blood and Cerebral are on two lines.
+- Tests: `tests/ui-skins1600.cjs`, `tests/browser/ui-skins1600.cjs` (`npm run test:skins`).
+
 ## 0.15.27 — October 15, 2026 — separate asset files
 
 - **Images and 3D models are individual files only.** Removed 14 scripts of embedded base64 copies (about 215 MB of text; `outdoor-assets.js` alone was 96 MB, now 37 KB), after checking every copy byte for byte against its PNG or GLB. Model catalogues hold metadata and paths; GLBs load from `assets/models/`.

@@ -58,7 +58,9 @@ FrontierAssets.whenReady(/* @function app.bootstrapReviewed — Boots the single
   });
   // October 9, 2026: supplied mechanical panel remains an unmodified background; controls use readable native text.
   pausePanel.style.cssText +=
-    ';top:3%;left:20%;width:60%;height:90%;padding:0;border:0;background:transparent url("img/ui/pause-menu.png") center/contain no-repeat';
+    ';top:3%;left:20%;width:60%;height:90%;padding:0;border:0;background:transparent';
+  // October 15, 2026 (0.15.28): the pause art comes from the interface skin
+  // (#pauseArtwork, --skin-pause-image); this panel itself has no background.
   pausePanel.innerHTML =
     '<div id="pauseArtwork"><div id="pauseActions"><div id="pauseMain" style="display:grid;gap:8px"><button id="pauseResume">Resume</button><button id="pauseSave">Save</button><button id="pauseLoad">Load</button><button id="pauseOptions">Options</button></div><div id="pauseSettings" hidden style="position:absolute;left:-15%;bottom:0;width:130%;background:#151b25f5;padding:16px;font:20px Arial"><label>Master Volume <output id="pauseVolumeValue">70%</output><input id="pauseVolume" type="range" min="0" max="1" step="0.01" value="0.7" style="width:100%"></label><label>Hand cursor<select id="pauseHand"><option value="Ang">Ang hand</option><option value="Fem">Fem hand</option><option value="Glove">Glove hand</option></select></label><button id="getUnstuck">Get Unstuck</button><button id="pauseExitFullscreen">Exit Fullscreen</button><button id="pauseBack">Back</button><p id="recoveryStatus" role="status"></p></div></div></div>';
   $("gameFrame").append(pausePanel);
@@ -74,6 +76,13 @@ FrontierAssets.whenReady(/* @function app.bootstrapReviewed — Boots the single
     '<label>Text font<select id="pauseFont"></select></label>',
   );
   FrontierTypography.bind($("pauseFont"));
+  // October 15, 2026 (0.15.28): interface skin. "Campaign default" follows the
+  // campaign's choice (editor: Campaign interface); Minimal uses no images.
+  $("pauseSettings").insertAdjacentHTML(
+    "afterbegin",
+    '<label>Interface<select id="pauseSkin"></select></label>',
+  );
+  FrontierSkins.bind($("pauseSkin"));
   if (!window.FRONTIER_RUNTIME_ONLY) {
     const editorFont = document.createElement("label");
     editorFont.textContent = "Game text font";

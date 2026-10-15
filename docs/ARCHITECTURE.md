@@ -52,3 +52,7 @@ Projects carry `campaign.areas` (Campaign → Area → Map). `src/campaign.js` o
 ## October 15, 2026 (0.15.27) — asset files and loading
 
 Images and models exist only as files (`img/`, `assets/models/`). `src/asset-source.js` (`FrontierAssets`) resolves them: paths and fetch over http(s); generated `offline/` bundles (tools/build-offline.cjs) when opened from disk. `app.js` and the editor shell start through `FrontierAssets.whenReady` after the built-in door models load. Catalogue scripts carry metadata only. The superseded embedded mirrors are described in git history before 0.15.27. See docs/ASSETS-AND-HOSTING.md.
+
+## October 15, 2026 (0.15.28) — interface skins
+
+The four in-game devices (controls, portrait, status, pause) are framed by a skin. `src/ui-skins.js` (`FrontierSkins`) validates pack manifests (`skins/<id>/skin.js`), applies their images and percent geometry, and marks each device framed or plain; `skins/minimal.css` draws plain devices. Device placement on screen stays in `style.css`. The player's choice is a local preference; the campaign's default is `project.uiSkin`. See docs/INTERFACE-SKINS.md.

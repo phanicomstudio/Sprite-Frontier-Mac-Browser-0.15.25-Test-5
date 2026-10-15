@@ -118,6 +118,12 @@
       // damaged ones are repaired rather than blocking an import. See
       // src/campaign.js for the invariants and docs/CAMPAIGN-EDITOR.md.
       campaign: root.FrontierCampaign.reconcile(value.campaign, maps),
+      // October 15, 2026 (0.15.28): the campaign's interface skin ID, or
+      // absent for the default. Unknown IDs are kept (a pack may be installed
+      // later) and FrontierSkins falls back to the default pack at runtime.
+      ...(typeof value.uiSkin === "string" && /^[a-z0-9][a-z0-9-]{0,63}$/.test(value.uiSkin)
+        ? { uiSkin: value.uiSkin }
+        : {}),
     };
   }
 
@@ -664,6 +670,8 @@
         root.FrontierCampaign.areaOf(project.campaign, project.active)?.id ||
         campaignPreferredArea1600;
       root.dispatchEvent?.(new CustomEvent("frontier-campaign-change"));
+      // 0.15.28: the campaign's interface skin applies unless the player chose one.
+      root.FrontierSkins?.setCampaignDefault(project.uiSkin);
       folderInput.value = project.maps.find(
         /* @function mapLibrary.selectedFolder1525 — Inputs: map record. Returns active-ID match; read-only. */
         function (entry) { return entry.id === project.active; }).folder || "";
@@ -1397,7 +1405,7 @@
       project.campaign = root.FrontierCampaign.reconcile(project.campaign, project.maps, campaignPreferredArea1600);
       const maps = [];
       for (const m of project.maps) maps.push({ id: m.id, name: m.name, folder: m.folder || "" });
-      return structuredClone({ title: project.title || "Sprite Frontier project", active: project.active, campaign: project.campaign, maps });
+      return structuredClone({ title: project.title || "Sprite Frontier project", active: project.active, campaign: project.campaign, maps, uiSkin: project.uiSkin || root.FrontierSkins?.DEFAULT_PACK || "" });
     }
     /* @function mapLibrary.updateCampaign1600 — Inputs: candidate campaign record produced by a FrontierCampaign operation. Returns nothing. Validates strictly against current maps (a candidate that would need repair is rejected with a readable error and nothing changes), adopts it, refreshes map selectors and schedules local saving. Campaign Undo is owned by the tree, not by map-operation history. */
     function updateCampaign1600(candidate) {
@@ -1426,6 +1434,16 @@
       refresh();
       remember();
     }
+    /* @function mapLibrary.setCampaignSkin1600 — Inputs: interface skin ID chosen for this campaign ("minimal" or a pack ID from skins/index.js). Returns nothing; stores it as project.uiSkin, applies it (unless the author's own player choice overrides it) and schedules saving. Throws a readable error for IDs that are not offered, changing nothing. Added October 15, 2026 (0.15.28). */
+    function setCampaignSkin1600(id) {
+      const offered = root.FrontierSkins.options(false).some(
+        /* @function mapLibrary.skinOffered — Inputs: option. Returns true for the requested ID. */
+        function (o) { return o.value === id; });
+      if (!offered) throw Error("Choose an interface from the list.");
+      project.uiSkin = id;
+      refresh();
+      remember();
+    }
     /* @function mapLibrary.preferArea1600 — Inputs: area ID. Returns nothing; the next newly created map is placed in that area instead of the active map's area. Unknown IDs fall back to the first area at the next reconcile. Transient editor state only; not saved. */
     function preferArea1600(id) {
       campaignPreferredArea1600 = id;
@@ -1437,6 +1455,7 @@
       campaignView: campaignView1600,
       updateCampaign: updateCampaign1600,
       renameCampaign: renameCampaign1600,
+      setCampaignSkin: setCampaignSkin1600,
       renameMap: renameMap1600,
       preferArea: preferArea1600,
       get gameplayDefaults /* Historical contract retained; October 14 reviewed explanation follows. @function map-library.gameplayDefaults.57 — Handles gameplay defaults within map library. Inputs: no explicit arguments; uses enclosing module state. Uses: structured clone. Returns: structured clone using project gameplay defaults. */

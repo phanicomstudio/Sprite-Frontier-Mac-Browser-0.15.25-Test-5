@@ -17,8 +17,8 @@
       ) => "img/portraits/sanity/Sanity Level " + n + ".png",
     ),
     "img/portraits/candy/Candy Portrait 1A.png",
-    "img/ui/portrait-tv/Portrait Chassis.png",
-    "img/ui/portrait-tv/Portrait TV Lense.png",
+    // October 15, 2026 (0.15.28): the TV chassis and lens moved to the
+    // phanicom-devices skin pack; frames now come from FrontierSkins.
   ];
   let dirty = true,
     lastBand = -1,
@@ -96,7 +96,9 @@
       }
       ctx.globalCompositeOperation = "source-over";
       ctx.globalAlpha = 1;
-      for (const image of [images[4], images[5], images[6]])
+      // 0.15.28: portrait content first, then the active skin's frame layers
+      // (none for the minimal interface, which frames the portrait in CSS).
+      for (const image of [images[4], ...(root.FrontierSkins?.portraitFrames() || [])])
         if (image.complete && image.naturalWidth)
           ctx.drawImage(image, 0, 0, 766, 681);
       dirty = false;
@@ -104,10 +106,12 @@
       face.dataset.blending = String(progress < 1);
       face.dataset.state = "neutral";
     }
+    // 0.15.28: two lines, so the minimal interface can show them under the
+    // portrait; screen readers read the same text.
     const stats =
       "Blood " +
       p.hp +
-      " / 100; Cerebral " +
+      " / 100\nCerebral " +
       Math.round(p.cerebral ?? rules.max) +
       " / " +
       rules.max;
@@ -213,6 +217,11 @@
         (drag = null);
   }
   document.querySelector(".rightDevices").remove();
+  // 0.15.28: repaint the portrait when the interface skin (and so its frame
+  // layers) changes or a frame image finishes loading.
+  root.addEventListener("frontier-skin-change", /* @function deviceHud.skinChanged — Inputs: skin-change event ignored. Returns nothing; marks the portrait for repaint on the next update. */ function () {
+    dirty = true;
+  });
   const oldSkin = document.querySelector("select#hudSkin");
   if (oldSkin) oldSkin.closest("label").hidden = true;
   root.FrontierDeviceHUD = {

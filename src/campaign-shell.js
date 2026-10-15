@@ -53,6 +53,9 @@ FrontierAssets.whenReady(/* @function campaignShell.install — Inputs: none; us
   const pane = el("section", { id: "campaignPane", "aria-label": "Campaign" });
   const titleButton = el("button", { type: "button", id: "campaignTitle", title: "Rename campaign" });
   const status = el("p", { id: "campaignStatus", role: "status" });
+  // 0.15.28: the campaign's interface skin (players may still choose their own).
+  const skinSelect = el("select", { id: "campaignSkin" });
+  const skinRow = el("label", { className: "campaignSkin", textContent: "Interface" }, [skinSelect]);
   const addAreaButton = el("button", { type: "button", id: "campaignAddArea", textContent: "+ Area", title: "Add an area" });
   const addMapButton = el("button", { type: "button", id: "campaignAddMap", textContent: "+ Map", title: "Create a map in the current area" });
   const undoButton = el("button", { type: "button", id: "campaignUndo", textContent: "Undo", title: "Undo campaign tree change", disabled: true });
@@ -62,6 +65,7 @@ FrontierAssets.whenReady(/* @function campaignShell.install — Inputs: none; us
   const sceneHeading = el("h2", { id: "campaignSceneHeading", textContent: "In this map" });
   pane.append(
     el("div", { className: "campaignHeader" }, [el("span", { className: "campaignKicker", textContent: "Campaign" }), titleButton]),
+    skinRow,
     el("div", { className: "campaignActions" }, [addAreaButton, addMapButton, undoButton, redoButton]),
     filter,
     tree,
@@ -486,6 +490,9 @@ FrontierAssets.whenReady(/* @function campaignShell.install — Inputs: none; us
     const scroll = tree.scrollTop;
     const hadFocus = tree.contains(document.activeElement);
     titleButton.textContent = view.title;
+    if (window.FrontierSkins && !skinSelect.options.length)
+      for (const o of window.FrontierSkins.options(false)) skinSelect.append(new Option(o.label, o.value));
+    if (document.activeElement !== skinSelect) skinSelect.value = view.uiSkin;
     undoButton.disabled = !undoStack.length;
     redoButton.disabled = !redoStack.length;
     const closed = loadClosedAreas();
@@ -533,6 +540,15 @@ FrontierAssets.whenReady(/* @function campaignShell.install — Inputs: none; us
   addMapButton.onclick = /* @function campaignShell.addMap — Inputs: click ignored. Returns nothing; creates a map in the open map's area using the existing New map dialog. */ function () {
     const view = library.campaignView();
     newMapIn(C.areaOf(view.campaign, view.active)?.id || view.campaign.areas[0].id);
+  };
+  skinSelect.onchange = /* @function campaignShell.skinChange — Inputs: change event ignored. Returns nothing; sets the campaign's interface skin through the library. A player's own choice in Options still takes precedence for that player. */ function () {
+    attempt(/* @function campaignShell.skinApply — Inputs: none. Stores the campaign skin and reports it. */ function () {
+      library.setCampaignSkin(skinSelect.value);
+      say("Campaign interface set to " + skinSelect.selectedOptions[0].textContent + ".");
+    });
+  };
+  skinSelect.onkeydown = /* @function campaignShell.skinKeys — Inputs: keyboard event. Returns nothing; keeps arrow keys in the list from moving the player. */ function (event) {
+    event.stopPropagation();
   };
   filter.oninput = /* @function campaignShell.filterInput — Inputs: input event ignored. Returns nothing; shows only maps (or areas) whose names contain the typed text. */ function () {
     filterText = filter.value;

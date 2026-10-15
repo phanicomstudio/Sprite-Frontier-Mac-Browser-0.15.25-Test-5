@@ -27,6 +27,9 @@ function build(source,entry,destination){
  // built-in door models at startup (src/asset-source.js), and the offline/
  // bundles when the package is opened from disk; copy those bundles when built.
  // Both apply only to engines that include the loader (src/asset-source.js).
+ // October 15, 2026 (0.15.28): interface skin packs keep their art beside
+ // their skin.js; copy the whole skins/ folder when the game uses skins.
+ if(entry.scripts.includes('src/ui-skins.js'))collect('skins');
  if(entry.scripts.includes('src/asset-source.js')){
   for(const model of ['assets/models/runtime/antique-door-transition/assembly.glb','assets/models/runtime/saloon-doors/pair.glb'])collect(model);
   if(fs.existsSync(path.join(source,'offline','core.js')))collect('offline');

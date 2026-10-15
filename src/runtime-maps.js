@@ -13,6 +13,8 @@
       ),
       bank = null;
     root.FrontierModelLibrary.restore(project.models);
+    // October 15, 2026 (0.15.28): exported games show the campaign's skin.
+    root.FrontierSkins?.setCampaignDefault(project.uiSkin);
     /* @function runtimeMaps.get — Inputs: stable map ID. Returns owned authored map record or undefined. Gameplay reads its world for transition preparation; callers must not edit that record. No scene or storage effects. */
     function get(id) {
       for (const map of project.maps) if (map.id === id) return map;
