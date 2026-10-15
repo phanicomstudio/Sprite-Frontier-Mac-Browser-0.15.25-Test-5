@@ -21,6 +21,8 @@ This is a user test build, not a certified release. Current changes are in [docs
 | P | Point-and-click mode |
 | F2 | Open or close the editor |
 
+To use a plain system font for game text, open **Pause → Options → Text font**.
+
 In the editor, E or Space rises, Q descends and Shift speeds up flight. Playtest starts from the editor's current position.
 
 Choose **Hub Test** or **Supplied Assets Forest Test** under Active map to try doors, shops, items and textured terrain. Bundled test maps stay available alongside your own.

@@ -925,14 +925,16 @@
         (this.texts[this.ti] = new P.Text({
           text: "",
           style: {
-            fontFamily: "PhanicomCheckbook",
+            fontFamily: root.FrontierTypography?.family() || "PhanicomCheckbook",
             fontSize: 12,
           },
         }));
       this.ti++;
       text.text = String(value);
       text.style.fontSize = Number(this.font.match(/([\d.]+)px/)?.[1] || 12);
-      text.style.fontFamily = "PhanicomCheckbook";
+      // October 15, 2026: follow the player's game font choice (src/typography.js);
+      // Checkbook remains the default when that module is absent.
+      text.style.fontFamily = root.FrontierTypography?.family() || "PhanicomCheckbook";
       text.style.fill = this.painted(this.fillStyle).color;
       text.alpha = this.globalAlpha;
       text.anchor.set(
