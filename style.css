@@ -1,7 +1,8 @@
 /* Layout uses a logical 4:3/16:9 viewport fitted to available height.
  * Device screens/backings must stay opaque and inside their artwork apertures.
  * Percentage positions keep draggable HUD modules proportional at fullscreen.
- * Checkbook is the shared visible font; portrait pixels use nearest-neighbor. */
+ * Checkbook is the default game font; since October 15, 2026 players can switch
+ * game text to a system font (src/typography.js sets --frontier-game-font); portrait pixels use nearest-neighbor. */
 :root{color-scheme:dark;font-family:Georgia,serif;background:#111b18;color:#dfd8bd}*{box-sizing:border-box}body{margin:0;padding:24px;max-width:1500px;margin-inline:auto}header{display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:1px solid #465344;padding-bottom:18px}small{font:11px monospace;letter-spacing:2px;color:#9ea889}h1{font-size:32px;margin:7px 0 0;font-weight:normal}h2{font-size:25px;font-weight:normal}.tools{display:flex;align-items:end;gap:8px;flex-wrap:wrap}label{display:block;font:12px monospace;color:#abb6a3}input,select,button,.file{font:12px monospace;border:1px solid #53604e;background:#202e26;color:#e2ddc8;border-radius:3px;padding:10px}input,select{display:block;margin-top:6px;width:160px}button,.file{cursor:pointer}button:hover,.file:hover{background:#344637}main{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:22px;margin-top:24px}#viewport{position:relative;background:#0a100d;border:1px solid #53604e;align-self:start;overflow:hidden}#view{display:block;width:100%;aspect-ratio:1.6;image-rendering:pixelated;touch-action:none}#badge{position:absolute;top:18px;left:20px;font:11px monospace;letter-spacing:2px;text-shadow:0 2px 2px #000}#badge span{display:block;letter-spacing:0;margin-top:7px;color:#c4c7ad}#crosshair{position:absolute;left:50%;top:50%;font:20px monospace;opacity:.5;pointer-events:none}#hud{position:absolute;bottom:54px;left:20px;font:12px monospace;white-space:pre-line;line-height:1.7;text-shadow:0 1px 3px #000}#message{position:absolute;bottom:0;padding:12px 20px;background:#101b19dc;width:100%;font:12px monospace;min-height:38px}aside p{font-size:14px;line-height:1.55;color:#b2baa5}#map{width:240px;max-width:100%;image-rendering:pixelated;border:1px solid #53604e;margin-top:10px}dl{display:grid;grid-template-columns:116px 1fr;gap:10px;font:11px monospace}dt{color:#e6cb87}dd{margin:0;color:#a4b09e}.note{border-top:1px solid #465344;padding-top:14px;font-size:12px}#editor button{margin:6px 0}.file{display:block}#import{width:100%;padding:5px;font-size:10px}footer{border-top:1px solid #465344;margin-top:20px;padding-top:14px;font:10px monospace;letter-spacing:1px;color:#83947d}footer span{float:right;letter-spacing:0}@media(max-width:900px){body{padding:12px}header{align-items:start;flex-direction:column}main{grid-template-columns:1fr}aside{display:grid;grid-template-columns:1fr 1fr;gap:12px}aside h2,aside>small{grid-column:1/-1}footer span{float:none;display:block;margin-top:10px}}
 
 :root{background:#03060b;color:#b5d9ff}header,footer,.note{border-color:#18385b}small{color:#588abd}button,input,select,.file{background:#07111e;border-color:#1b4a78;color:#9fceff}button:hover{background:#0e2340}#viewport,#map{border-color:#184976}#message{background:#040b16ed;color:#a6cfff}dt{color:#ff6073}aside p{color:#799abc}#badge span{color:#83b5e8}
@@ -79,9 +80,9 @@ main{grid-template-columns:minmax(0,1fr) 350px}
 #descriptionScreen{overflow:auto;max-height:100%;text-align:left;white-space:pre-wrap;overflow-wrap:anywhere}.hudCursor #descriptionScreen{pointer-events:auto}#descriptionScreen::-webkit-scrollbar{width:4px}#descriptionScreen::-webkit-scrollbar-thumb{background:#967542}
 
 @font-face{font-family:PhanicomCheckbook;src:url('fonts/CHECKBK0.TTF') format('truetype');font-weight:normal;font-style:normal;font-display:swap}
-.deviceScreen,#deviceHud #targetLabel,#descriptionScreen,#inventoryPanel{font-family:PhanicomCheckbook,monospace;font-weight:normal}
+.deviceScreen,#deviceHud #targetLabel,#descriptionScreen,#inventoryPanel{font-family:var(--frontier-game-font,PhanicomCheckbook,monospace);font-weight:normal}
 
-body,button,input,select,textarea,h1,h2,h3,small,dt,dd,#badge,#hud,#message{font-family:PhanicomCheckbook,monospace!important;font-weight:normal}
+body,button,input,select,textarea,h1,h2,h3,small,dt,dd,#badge,#hud,#message{font-family:var(--frontier-game-font,PhanicomCheckbook,monospace)!important;font-weight:normal}
 
 #askPanel,#muzzlePanel{position:absolute;z-index:30;left:10%;right:10%;bottom:8%;padding:16px;background:#0a111c;border:1px solid #80b1ff}#askInput{width:80%}#muzzlePanel{top:5%;bottom:5%;}#muzzleFrame{width:100%;height:90%;border:0}#remoteAsk{position:absolute;left:20%;top:54%;font-size:10px;padding:2px}#askPanel[hidden],#muzzlePanel[hidden]{display:none}
 
@@ -203,8 +204,8 @@ body.menuHandCursorActive dialog[open],body.menuHandCursorActive dialog[open] *,
 #pauseMain[hidden]{display:none!important}
 #pauseMain button{background:transparent!important;border:0!important;border-radius:0;padding:0!important;font-size:clamp(22px,3.3vh,42px)!important;color:#e2d3ad;text-shadow:0 2px 3px #000;box-shadow:none!important}
 #pauseMain button:hover,#pauseMain button:focus-visible{color:#fff2cc;text-shadow:0 0 8px #e3a65a}
-#pauseSettings{left:27%!important;top:57%!important;bottom:auto!important;width:46%!important;max-height:37%;overflow:auto;background:#100e0bf2!important;padding:12px!important;font-family:PhanicomCheckbook,monospace!important}
-#pauseSettings label,#pauseSettings button,#pauseSettings select,#pauseSettings output,#pauseSettings p{font-family:PhanicomCheckbook,monospace!important}
+#pauseSettings{left:27%!important;top:57%!important;bottom:auto!important;width:46%!important;max-height:37%;overflow:auto;background:#100e0bf2!important;padding:12px!important;font-family:var(--frontier-game-font,PhanicomCheckbook,monospace)!important}
+#pauseSettings label,#pauseSettings button,#pauseSettings select,#pauseSettings output,#pauseSettings p{font-family:var(--frontier-game-font,PhanicomCheckbook,monospace)!important}
 
 /* October 10, 2026: supersedes the short four-action options region above. Extended rendering/breathing controls scroll within the artwork rather than extending below the display. Main action hitboxes remain aligned to their original plates. */
 #pauseSettings{left:12%!important;top:8%!important;width:76%!important;max-height:84%!important;box-sizing:border-box;font-size:20px;line-height:1.4}

@@ -63,6 +63,21 @@
     "afterbegin",
     '<label>Rendering resolution<select id="renderScale"><option value="1">Performance — 1×</option><option value="1.5">Sharper — 1.5×</option><option value="2">High — 2×</option></select><output id="renderDimensions"></output></label><label>Texture filtering<select id="renderFiltering"><option value="crisp">Crisp</option><option value="smooth">Smooth</option></select></label>',
   );
+  // October 15, 2026: game text font choice. The same preference is offered in
+  // the editor's Project and view settings; both selects stay in step.
+  $("pauseSettings").insertAdjacentHTML(
+    "afterbegin",
+    '<label>Text font<select id="pauseFont"></select></label>',
+  );
+  FrontierTypography.bind($("pauseFont"));
+  if (!window.FRONTIER_RUNTIME_ONLY) {
+    const editorFont = document.createElement("label");
+    editorFont.textContent = "Game text font";
+    const editorFontSelect = document.createElement("select");
+    editorFontSelect.id = "editorGameFont";
+    editorFont.append(FrontierTypography.bind(editorFontSelect));
+    document.querySelector("header .tools")?.append(editorFont);
+  }
   /* @function app.displayControls1522 — Inputs: none. Synchronizes local resolution/filter controls and physical dimension label. No simulation changes; called after initialization and quality/aspect changes. */
   function displayControls() {
     const display = FrontierDisplay.get();
@@ -198,7 +213,8 @@
   )) {
     control.style.setProperty(
       "font-family",
-      "PhanicomCheckbook, monospace",
+      // October 15, 2026: follows the switchable game font (src/typography.js).
+      "var(--frontier-game-font, PhanicomCheckbook, monospace)",
       "important",
     );
     control.style.setProperty(

@@ -2,6 +2,12 @@
 
 Newest entries first. Everything from 0.15.3 down is the original changelog, kept as written. Files they mention were removed on October 14, 2026 and remain in git history at commit 7fca396 (`git show 7fca396:<file>`).
 
+## October 15, 2026 — switchable game font
+
+- **Pause → Options → Text font** (and **Game text font** in the editor's Project and view settings) switches game text between Phanicom Checkbook, System sans-serif, System serif and System monospace. It covers menus, HUD, dialogue, device screens and in-world labels, and is remembered per browser.
+- The editor's own panels now use one system font throughout instead of a mix of Arial and Checkbook.
+- Source: src/typography.js; test: tests/typography1600.cjs.
+
 ## October 15, 2026 — campaign shell (campaign editor phase 1)
 
 - Authoring now uses three panes: a **campaign tree** on the left, the game view in the centre, and the inspector and build palette on the right.
