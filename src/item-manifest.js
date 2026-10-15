@@ -1,0 +1,616 @@
+// October 14, 2026: original supplied PNG item assets; no gameplay effects inferred.
+// Shared item definitions; data/items.json is authoritative.
+window.FrontierItems = [
+  {
+    "id": "test-token",
+    "name": "Test token",
+    "graphic": "chest",
+    "price": 5,
+    "properties": {
+      "category": "misc"
+    }
+  },
+  {
+    "id": "healing-herb",
+    "name": "Healing herb",
+    "graphic": "chest",
+    "price": 12,
+    "properties": {
+      "category": "ingredient"
+    }
+  },
+  {
+    "id": "asset-brieskuget-cheese1",
+    "name": "Brieskuget Cheese1",
+    "graphic": "chest",
+    "price": 1,
+    "properties": {
+      "category": "misc",
+      "worldHeight": 0.35,
+      "pickupMethod": "interact",
+      "pickupRange": 0.5,
+      "sprite": {
+        "src": "img/items/prop_Brieskuget Cheese1.png",
+        "width": 116,
+        "height": 48
+      },
+      "description": ""
+    }
+  },
+  {
+    "id": "asset-chiban-chicken1",
+    "name": "chiban chicken1",
+    "graphic": "chest",
+    "price": 1,
+    "properties": {
+      "category": "misc",
+      "worldHeight": 0.35,
+      "pickupMethod": "interact",
+      "pickupRange": 0.5,
+      "sprite": {
+        "src": "img/items/prop_chiban_chicken1.png",
+        "width": 69,
+        "height": 112
+      },
+      "description": ""
+    }
+  },
+  {
+    "id": "asset-coil-sausage1",
+    "name": "Coil Sausage1",
+    "graphic": "chest",
+    "price": 1,
+    "properties": {
+      "category": "misc",
+      "worldHeight": 0.35,
+      "pickupMethod": "interact",
+      "pickupRange": 0.5,
+      "sprite": {
+        "src": "img/items/prop_Coil Sausage1.png",
+        "width": 78,
+        "height": 72
+      },
+      "description": ""
+    }
+  },
+  {
+    "id": "asset-communication-device1",
+    "name": "Communication Device1",
+    "graphic": "chest",
+    "price": 1,
+    "properties": {
+      "category": "misc",
+      "worldHeight": 0.35,
+      "pickupMethod": "interact",
+      "pickupRange": 0.5,
+      "sprite": {
+        "src": "img/items/prop_Communication Device1.png",
+        "width": 367,
+        "height": 212
+      },
+      "description": ""
+    }
+  },
+  {
+    "id": "asset-horseshoe-crab-hemolymph1",
+    "name": "horseshoe crab hemolymph1",
+    "graphic": "chest",
+    "price": 1,
+    "properties": {
+      "category": "misc",
+      "worldHeight": 0.35,
+      "pickupMethod": "interact",
+      "pickupRange": 0.5,
+      "sprite": {
+        "src": "img/items/prop_horseshoe_crab_hemolymph1.png",
+        "width": 54,
+        "height": 127
+      },
+      "description": ""
+    }
+  },
+  {
+    "id": "asset-mi-go-brain-cylinder1",
+    "name": "Mi-Go Brain Cylinder1",
+    "graphic": "chest",
+    "price": 1,
+    "properties": {
+      "category": "misc",
+      "worldHeight": 0.35,
+      "pickupMethod": "interact",
+      "pickupRange": 0.5,
+      "sprite": {
+        "src": "img/items/prop_Mi-Go Brain Cylinder1.png",
+        "width": 56,
+        "height": 138
+      },
+      "description": ""
+    }
+  },
+  {
+    "id": "asset-moloko-triangle1",
+    "name": "Moloko Triangle1",
+    "graphic": "chest",
+    "price": 1,
+    "properties": {
+      "category": "misc",
+      "worldHeight": 0.35,
+      "pickupMethod": "interact",
+      "pickupRange": 0.5,
+      "sprite": {
+        "src": "img/items/prop_Moloko Triangle1.png",
+        "width": 54,
+        "height": 59
+      },
+      "description": ""
+    }
+  },
+  {
+    "id": "asset-cryo-mod2",
+    "name": "cryo mod2",
+    "graphic": "chest",
+    "price": 1,
+    "properties": {
+      "category": "misc",
+      "worldHeight": 0.35,
+      "pickupMethod": "interact",
+      "pickupRange": 0.5,
+      "sprite": {
+        "src": "img/items/prop_cryo_mod2.png",
+        "width": 143,
+        "height": 78
+      },
+      "description": ""
+    }
+  },
+  {
+    "id": "asset-muther-board1",
+    "name": "MUTHER Board1",
+    "graphic": "chest",
+    "price": 1,
+    "properties": {
+      "category": "misc",
+      "worldHeight": 0.35,
+      "pickupMethod": "interact",
+      "pickupRange": 0.5,
+      "sprite": {
+        "src": "img/items/prop_MUTHER Board1.png",
+        "width": 199,
+        "height": 180
+      },
+      "description": ""
+    }
+  },
+  {
+    "id": "asset-oozi-bio-tech-battery1",
+    "name": "Oozi Bio-Tech Battery1",
+    "graphic": "chest",
+    "price": 1,
+    "properties": {
+      "category": "misc",
+      "worldHeight": 0.35,
+      "pickupMethod": "interact",
+      "pickupRange": 0.5,
+      "sprite": {
+        "src": "img/items/prop_Oozi Bio-Tech Battery1.png",
+        "width": 39,
+        "height": 31
+      },
+      "description": ""
+    }
+  },
+  {
+    "id": "asset-cryo-mod1",
+    "name": "cryo mod1",
+    "graphic": "chest",
+    "price": 1,
+    "properties": {
+      "category": "misc",
+      "worldHeight": 0.35,
+      "pickupMethod": "interact",
+      "pickupRange": 0.5,
+      "sprite": {
+        "src": "img/items/prop_cryo_mod1.png",
+        "width": 143,
+        "height": 64
+      },
+      "description": ""
+    }
+  },
+  {
+    "id": "asset-hotdog1",
+    "name": "Hotdog1",
+    "graphic": "chest",
+    "price": 1,
+    "properties": {
+      "category": "misc",
+      "worldHeight": 0.35,
+      "pickupMethod": "interact",
+      "pickupRange": 0.5,
+      "sprite": {
+        "src": "img/items/prop_Hotdog1.png",
+        "width": 85,
+        "height": 57
+      },
+      "description": ""
+    }
+  },
+  {
+    "id": "asset-perflurocarbon-blood1",
+    "name": "perflurocarbon blood1",
+    "graphic": "chest",
+    "price": 1,
+    "properties": {
+      "category": "misc",
+      "worldHeight": 0.35,
+      "pickupMethod": "interact",
+      "pickupRange": 0.5,
+      "sprite": {
+        "src": "img/items/prop_perflurocarbon_blood1.png",
+        "width": 50,
+        "height": 100
+      },
+      "description": ""
+    }
+  },
+  {
+    "id": "asset-large-medkit1",
+    "name": "large medkit1",
+    "graphic": "chest",
+    "price": 1,
+    "properties": {
+      "category": "misc",
+      "worldHeight": 0.35,
+      "pickupMethod": "interact",
+      "pickupRange": 0.5,
+      "sprite": {
+        "src": "img/items/prop_large_medkit1.png",
+        "width": 61,
+        "height": 71
+      },
+      "description": ""
+    }
+  },
+  {
+    "id": "asset-soviet-monocular-night-vision-device1",
+    "name": "Soviet Monocular Night Vision Device1",
+    "graphic": "chest",
+    "price": 1,
+    "properties": {
+      "category": "misc",
+      "worldHeight": 0.35,
+      "pickupMethod": "interact",
+      "pickupRange": 0.5,
+      "sprite": {
+        "src": "img/items/prop_Soviet Monocular Night Vision Device1.png",
+        "width": 85,
+        "height": 108
+      },
+      "description": ""
+    }
+  },
+  {
+    "id": "asset-glass-of-absinthe1",
+    "name": "Glass of Absinthe1",
+    "graphic": "chest",
+    "price": 1,
+    "properties": {
+      "category": "misc",
+      "worldHeight": 0.35,
+      "pickupMethod": "interact",
+      "pickupRange": 0.5,
+      "sprite": {
+        "src": "img/items/prop_Glass of Absinthe1.png",
+        "width": 64,
+        "height": 66
+      },
+      "description": ""
+    }
+  },
+  {
+    "id": "asset-sausage-and-kraut-1",
+    "name": "Sausage and Kraut 1",
+    "graphic": "chest",
+    "price": 1,
+    "properties": {
+      "category": "misc",
+      "worldHeight": 0.35,
+      "pickupMethod": "interact",
+      "pickupRange": 0.5,
+      "sprite": {
+        "src": "img/items/prop_Sausage and Kraut 1.png",
+        "width": 122,
+        "height": 65
+      },
+      "description": ""
+    }
+  },
+  {
+    "id": "asset-korzekoff1",
+    "name": "Korzekoff1",
+    "graphic": "chest",
+    "price": 1,
+    "properties": {
+      "category": "misc",
+      "worldHeight": 0.35,
+      "pickupMethod": "interact",
+      "pickupRange": 0.5,
+      "sprite": {
+        "src": "img/items/prop_Korzekoff1.png",
+        "width": 35,
+        "height": 182
+      },
+      "description": ""
+    }
+  },
+  {
+    "id": "asset-cornmuffin-and-chickenwrap1",
+    "name": "cornmuffin and chickenwrap1",
+    "graphic": "chest",
+    "price": 1,
+    "properties": {
+      "category": "misc",
+      "worldHeight": 0.35,
+      "pickupMethod": "interact",
+      "pickupRange": 0.5,
+      "sprite": {
+        "src": "img/items/prop_cornmuffin_and_chickenwrap1.png",
+        "width": 71,
+        "height": 53
+      },
+      "description": ""
+    }
+  },
+  {
+    "id": "asset-creamed-dumplings-with-butter1",
+    "name": "creamed dumplings with butter1",
+    "graphic": "chest",
+    "price": 1,
+    "properties": {
+      "category": "misc",
+      "worldHeight": 0.35,
+      "pickupMethod": "interact",
+      "pickupRange": 0.5,
+      "sprite": {
+        "src": "img/items/prop_creamed_dumplings_with_butter1.png",
+        "width": 124,
+        "height": 130
+      },
+      "description": ""
+    }
+  },
+  {
+    "id": "asset-cpu-board1",
+    "name": "CPU Board1",
+    "graphic": "chest",
+    "price": 1,
+    "properties": {
+      "category": "misc",
+      "worldHeight": 0.35,
+      "pickupMethod": "interact",
+      "pickupRange": 0.5,
+      "sprite": {
+        "src": "img/items/prop_CPU Board1.png",
+        "width": 116,
+        "height": 136
+      },
+      "description": ""
+    }
+  },
+  {
+    "id": "asset-magic-mushrooms1",
+    "name": "Magic Mushrooms1",
+    "graphic": "chest",
+    "price": 1,
+    "properties": {
+      "category": "misc",
+      "worldHeight": 0.35,
+      "pickupMethod": "interact",
+      "pickupRange": 0.5,
+      "sprite": {
+        "src": "img/items/prop_Magic Mushrooms1.png",
+        "width": 68,
+        "height": 112
+      },
+      "description": ""
+    }
+  },
+  {
+    "id": "asset-custard-meal1",
+    "name": "custard meal1",
+    "graphic": "chest",
+    "price": 1,
+    "properties": {
+      "category": "misc",
+      "worldHeight": 0.35,
+      "pickupMethod": "interact",
+      "pickupRange": 0.5,
+      "sprite": {
+        "src": "img/items/prop_custard_meal1.png",
+        "width": 120,
+        "height": 67
+      },
+      "description": ""
+    }
+  },
+  {
+    "id": "asset-box-of-sugar-cubes1",
+    "name": "Box Of Sugar Cubes1",
+    "graphic": "chest",
+    "price": 1,
+    "properties": {
+      "category": "misc",
+      "worldHeight": 0.35,
+      "pickupMethod": "interact",
+      "pickupRange": 0.5,
+      "sprite": {
+        "src": "img/items/prop_Box Of Sugar Cubes1.png",
+        "width": 35,
+        "height": 43
+      },
+      "description": ""
+    }
+  },
+  {
+    "id": "asset-boxed-pig",
+    "name": "boxed pig!",
+    "graphic": "chest",
+    "price": 1,
+    "properties": {
+      "category": "misc",
+      "worldHeight": 0.35,
+      "pickupMethod": "interact",
+      "pickupRange": 0.5,
+      "sprite": {
+        "src": "img/items/prop_boxed_pig!.png",
+        "width": 91,
+        "height": 115
+      },
+      "description": ""
+    }
+  },
+  {
+    "id": "asset-bottle-of-absinthe1",
+    "name": "Bottle of Absinthe1",
+    "graphic": "chest",
+    "price": 1,
+    "properties": {
+      "category": "misc",
+      "worldHeight": 0.35,
+      "pickupMethod": "interact",
+      "pickupRange": 0.5,
+      "sprite": {
+        "src": "img/items/prop_Bottle of Absinthe1.png",
+        "width": 43,
+        "height": 160
+      },
+      "description": ""
+    }
+  },
+  {
+    "id": "asset-box-o-waffles1",
+    "name": "box-o-waffles1",
+    "graphic": "chest",
+    "price": 1,
+    "properties": {
+      "category": "misc",
+      "worldHeight": 0.35,
+      "pickupMethod": "interact",
+      "pickupRange": 0.5,
+      "sprite": {
+        "src": "img/items/prop_box-o-waffles1.png",
+        "width": 125,
+        "height": 166
+      },
+      "description": ""
+    }
+  },
+  {
+    "id": "asset-ammo1",
+    "name": "ammo1",
+    "graphic": "chest",
+    "price": 1,
+    "properties": {
+      "category": "misc",
+      "worldHeight": 0.35,
+      "pickupMethod": "interact",
+      "pickupRange": 0.5,
+      "sprite": {
+        "src": "img/items/prop_ammo1.png",
+        "width": 134,
+        "height": 83
+      },
+      "description": ""
+    }
+  },
+  {
+    "id": "asset-ammo2",
+    "name": "ammo2",
+    "graphic": "chest",
+    "price": 1,
+    "properties": {
+      "category": "misc",
+      "worldHeight": 0.35,
+      "pickupMethod": "interact",
+      "pickupRange": 0.5,
+      "sprite": {
+        "src": "img/items/prop_ammo2.png",
+        "width": 134,
+        "height": 90
+      },
+      "description": ""
+    }
+  },
+  {
+    "id": "asset-ammo3",
+    "name": "ammo3",
+    "graphic": "chest",
+    "price": 1,
+    "properties": {
+      "category": "misc",
+      "worldHeight": 0.35,
+      "pickupMethod": "interact",
+      "pickupRange": 0.5,
+      "sprite": {
+        "src": "img/items/prop_ammo3.png",
+        "width": 144,
+        "height": 104
+      },
+      "description": ""
+    }
+  },
+  {
+    "id": "asset-big-ammo-mag-a1",
+    "name": "Big Ammo Mag A1",
+    "graphic": "chest",
+    "price": 1,
+    "properties": {
+      "category": "misc",
+      "worldHeight": 0.35,
+      "pickupMethod": "interact",
+      "pickupRange": 0.5,
+      "sprite": {
+        "src": "img/items/prop_Big Ammo Mag A1.png",
+        "width": 85,
+        "height": 123
+      },
+      "description": ""
+    }
+  },
+  {
+    "id": "asset-big-ammo-mag-b2",
+    "name": "Big Ammo Mag B2",
+    "graphic": "chest",
+    "price": 1,
+    "properties": {
+      "category": "misc",
+      "worldHeight": 0.35,
+      "pickupMethod": "interact",
+      "pickupRange": 0.5,
+      "sprite": {
+        "src": "img/items/prop_Big Ammo Mag B2.png",
+        "width": 129,
+        "height": 177
+      },
+      "description": ""
+    }
+  },
+  {
+    "id": "asset-aelita1",
+    "name": "Aelita1",
+    "graphic": "chest",
+    "price": 1,
+    "properties": {
+      "category": "misc",
+      "worldHeight": 0.35,
+      "pickupMethod": "interact",
+      "pickupRange": 0.5,
+      "sprite": {
+        "src": "img/items/prop_Aelita1.png",
+        "width": 48,
+        "height": 93
+      },
+      "description": ""
+    }
+  }
+];

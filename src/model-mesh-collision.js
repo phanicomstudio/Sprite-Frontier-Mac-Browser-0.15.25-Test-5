@@ -1,0 +1,500 @@
+/* Exact static triangle collision. One local BVH per decoded asset is shared
+ * by all instances. Queries transform conservative body bounds into model
+ * space, then test candidate triangles in world space. Continuous SAT stops
+ * large movement steps crossing a thin wall without sealing real openings. */
+/* Historical contract retained; October 14, 2026 reviewed explanation follows. @function model-mesh-collision.callback.1 — Provides the callback for a callback. Inputs: root. Updates: root frontier model mesh collision. */
+(/* @function model-mesh-collision.installReviewed — Installs static triangle/BVH collision queries shared across model instances. Conservative local candidate queries are tested in world space using continuous SAT, preserving genuine openings and stopping thin-wall tunneling. Inputs: browser/global namespace root. Returns nothing; publishes API and initializes private tables/cache ownership. Dependency/registration errors propagate. Calls to exported operations own later simulation, rendering or authoring work. */ function (
+  root,
+) {
+  "use strict";
+  const caches = new WeakMap(),
+    dot =
+      /* @function model-mesh-collision.dot.2 — Returns a reduce using a callback, 0. Inputs: a; b. Uses: a reduce. Returns: a reduce using a callback, 0. */ (
+        a,
+        b,
+      ) =>
+        a.reduce(
+          /* @function model-mesh-collision.callback.3 — Returns n plus v multiplied by b at i. Inputs: n; v; i. Returns: n plus v multiplied by b at i. */ (
+            n,
+            v,
+            i,
+          ) => n + v * b[i],
+          0,
+        ),
+    sub =
+      /* @function model-mesh-collision.sub.4 — Returns a map using a callback. Inputs: a; b. Uses: a map. Returns: a map using a callback. */ (
+        a,
+        b,
+      ) =>
+        a.map(
+          /* @function model-mesh-collision.callback.5 — Returns v minus b at i. Inputs: v; i. Returns: v minus b at i. */ (
+            v,
+            i,
+          ) => v - b[i],
+        ),
+    cross =
+      /* @function model-mesh-collision.cross.6 — Returns a list of a at 1 multiplied by b at 2 minus a at 2 multiplied by b at 1, a at 2 multiplied by b at 0 minus a at 0 multiplied by b at 2, a at 0 multiplied by b at 1 minus a at 1 multiplied by b at 0. Inputs: a; b. Returns: a list of a at 1 multiplied by b at 2 minus a at 2 multiplied by b at 1, a at 2 multiplied by b at 0 minus a at 0 multiplied by b at 2, a at 0 multiplied by b at 1 minus a at 1 multiplied by b at 0. */ (
+        a,
+        b,
+      ) => [
+        a[1] * b[2] - a[2] * b[1],
+        a[2] * b[0] - a[0] * b[2],
+        a[0] * b[1] - a[1] * b[0],
+      ],
+    basis = [
+      [1, 0, 0],
+      [0, 1, 0],
+      [0, 0, 1],
+    ];
+  // Bounds encloses all supplied vertices in a world/local axis-aligned box.
+  /* @function model-mesh-collision.bounds.7 — Bounds encloses all supplied vertices in a world/local axis-aligned box. Inputs: points. Uses: a list of 0, 1, 2 map. Returns: a record containing min, max. */ function bounds(
+    points,
+  ) {
+    return {
+      min: [0, 1, 2].map(
+        /* @function model-mesh-collision.callback.8 — Returns math min using spread element. Inputs: i. Uses: points map. Returns: math min using spread element. */ (
+          i,
+        ) =>
+          Math.min(
+            ...points.map(
+              /* @function model-mesh-collision.callback.9 — Returns p at i. Inputs: p. Returns: p at i. */ (
+                p,
+              ) => p[i],
+            ),
+          ),
+      ),
+      max: [0, 1, 2].map(
+        /* @function model-mesh-collision.callback.10 — Returns math max using spread element. Inputs: i. Uses: points map. Returns: math max using spread element. */ (
+          i,
+        ) =>
+          Math.max(
+            ...points.map(
+              /* @function model-mesh-collision.callback.11 — Returns p at i. Inputs: p. Returns: p at i. */ (
+                p,
+              ) => p[i],
+            ),
+          ),
+      ),
+    };
+  }
+  // Overlap rejects disjoint query/BVH boxes before any triangle math.
+  /* @function model-mesh-collision.overlap.12 — Overlap rejects disjoint query/BVH boxes before any triangle math. Inputs: a; b. Uses: a min every. Returns: a min every using a callback. */ function overlap(
+    a,
+    b,
+  ) {
+    return a.min.every(
+      /* @function model-mesh-collision.callback.13 — Returns v is at most b max at i plus 1e-7 and a max at i is at least b min at i minus 1e-7. Inputs: v; i. Returns: v is at most b max at i plus 1e-7 and a max at i is at least b min at i minus 1e-7. */ (
+        v,
+        i,
+      ) => v <= b.max[i] + 1e-7 && a.max[i] >= b.min[i] - 1e-7,
+    );
+  }
+  // Build bakes node transforms once and retains a shared median-split BVH.
+  /* @function model-mesh-collision.build.14 — Build bakes node transforms once and retains a shared median-split BVH. Inputs: asset. Uses: caches has; caches get; frontier model scene triangles; frontier model transform identity. Returns: caches get using asset; result. */ function build(
+    asset,
+  ) {
+    if (caches.has(asset)) return caches.get(asset);
+    const triangles = [];
+    FrontierModelScene.triangles(
+      asset,
+      asset.scene,
+      FrontierModelTransform.identity(),
+      /* @function model-mesh-collision.callback.15 — Returns triangles push using a record containing points, bounds. Inputs: points. Uses: triangles push; bounds. Returns: triangles push using a record containing points, bounds. */ (
+        points,
+      ) => triangles.push({ points, bounds: bounds(points) }),
+    );
+    /* @function model-mesh-collision.node.16 — Handles node within shared triangle collision queries. Inputs: indices. Updates: box min at k; box max at k. Uses: box max map; lengths index of; indices sort; node. Returns: a record containing copied fields, indices; a record containing copied fields, children. */ function node(
+      indices,
+    ) {
+      const box = {
+        min: [Infinity, Infinity, Infinity],
+        max: [-Infinity, -Infinity, -Infinity],
+      };
+      for (const i of indices)
+        for (let k = 0; k < 3; k++) {
+          box.min[k] = Math.min(box.min[k], triangles[i].bounds.min[k]);
+          box.max[k] = Math.max(box.max[k], triangles[i].bounds.max[k]);
+        }
+      if (indices.length <= 8) return { ...box, indices };
+      const lengths = box.max.map(
+          /* @function model-mesh-collision.callback.17 — Returns v minus box min at i. Inputs: v; i. Returns: v minus box min at i. */ (
+            v,
+            i,
+          ) => v - box.min[i],
+        ),
+        axis = lengths.indexOf(Math.max(...lengths));
+      indices.sort(
+        /* @function model-mesh-collision.callback.18 — Returns triangles at a bounds min at axis plus triangles at a bounds max at axis minus triangles at b bounds min at axis plus triangles at b bounds max at axis. Inputs: a; b. Returns: triangles at a bounds min at axis plus triangles at a bounds max at axis minus triangles at b bounds min at axis plus triangles at b bounds max at axis. */ (
+          a,
+          b,
+        ) =>
+          triangles[a].bounds.min[axis] +
+          triangles[a].bounds.max[axis] -
+          (triangles[b].bounds.min[axis] + triangles[b].bounds.max[axis]),
+      );
+      const mid = Math.floor(indices.length / 2);
+      return {
+        ...box,
+        children: [node(indices.slice(0, mid)), node(indices.slice(mid))],
+      };
+    }
+    const result = {
+      triangles,
+      tree: node(
+        triangles.map(
+          /* @function model-mesh-collision.callback.19 — Returns i. Inputs: ; i. Returns: i. */ (
+            _,
+            i,
+          ) => i,
+        ),
+      ),
+    };
+    caches.set(asset, result);
+    return result;
+  }
+  // Triangle versus swept upright body: intersect overlap intervals on all
+  // separating axes. Boundary contact alone is allowed (standing/tangency).
+  /* @function model-mesh-collision.sweepTriangle.20 — separating axes. Boundary contact alone is allowed (standing/tangency). Inputs: points; start; end; half. Updates: inside; depth; escape; enter; exit. Uses: sub; cross; edges flat map; raw map. Returns: null; null. */ function sweepTriangle(
+    points,
+    start,
+    end,
+    half,
+  ) {
+    const edges = [
+        sub(points[1], points[0]),
+        sub(points[2], points[1]),
+        sub(points[0], points[2]),
+      ],
+      axes = [
+        ...basis,
+        cross(edges[0], edges[1]),
+        ...edges.flatMap(
+          /* @function model-mesh-collision.callback.21 — Returns basis map using a callback. Inputs: e. Uses: basis map. Returns: basis map using a callback. */ (
+            e,
+          ) =>
+            basis.map(
+              /* @function model-mesh-collision.callback.22 — Returns cross using e, b. Inputs: b. Uses: cross. Returns: cross using e, b. */ (
+                b,
+              ) => cross(e, b),
+            ),
+        ),
+      ],
+      delta = sub(end, start);
+    let enter = 0,
+      exit = 1,
+      inside = true,
+      depth = Infinity,
+      escape = 0;
+    for (const raw of axes) {
+      const length = Math.hypot(...raw);
+      if (length < 1e-10) continue;
+      const axis = raw.map(
+          /* @function model-mesh-collision.callback.23 — Returns v divided by length. Inputs: v. Returns: v divided by length. */ (
+            v,
+          ) => v / length,
+        ),
+        p = points.map(
+          /* @function model-mesh-collision.callback.24 — Returns dot using v, axis. Inputs: v. Uses: dot. Returns: dot using v, axis. */ (
+            v,
+          ) => dot(v, axis),
+        ),
+        radius = half.reduce(
+          /* @function model-mesh-collision.callback.25 — Returns n plus v multiplied by math abs using axis at i. Inputs: n; v; i. Returns: n plus v multiplied by math abs using axis at i. */ (
+            n,
+            v,
+            i,
+          ) => n + v * Math.abs(axis[i]),
+          0,
+        ),
+        lo = Math.min(...p) - radius + 1e-5,
+        hi = Math.max(...p) + radius - 1e-5,
+        c = dot(start, axis),
+        d = dot(delta, axis);
+      if (c <= lo || c >= hi) inside = false;
+      else {
+        const near = Math.min(c - lo, hi - c);
+        if (near < depth) {
+          depth = near;
+          escape = c - lo < hi - c ? -d : d;
+        }
+      }
+      if (Math.abs(d) < 1e-12) {
+        if (c <= lo || c >= hi) return null;
+        continue;
+      }
+      const a = (lo - c) / d,
+        b = (hi - c) / d;
+      enter = Math.max(enter, Math.min(a, b));
+      exit = Math.min(exit, Math.max(a, b));
+      if (enter >= exit) return null;
+    }
+    if (inside && escape > 1e-10) return null;
+    return exit > 1e-7 && enter < 1 ? Math.max(0, enter) : null;
+  }
+  // October 13: sweeps may begin inside a conservative camera volume when
+  // the actor is legitimately closer to a wall than the camera near-plane
+  // corners permit. A static minimum translation repairs that endpoint without
+  // moving actors or replacing the locked billboard presentation.
+  /* @function modelMeshCollision.triangleSeparation — Inputs: world triangle, stationary axis-aligned volume centre and positive half extents, all metres. Returns minimum separating translation plus 5 mm skin, or null for nonoverlap/tangency. Uses the same SAT axes/1e-5 boundary tolerance as sweeping; never changes geometry. Winding-independent direction follows the nearer separating side. */
+  function triangleSeparation(points, center, half) {
+    const edges = [
+        sub(points[1], points[0]),
+        sub(points[2], points[1]),
+        sub(points[0], points[2]),
+      ],
+      axes = [...basis, cross(edges[0], edges[1])];
+    for (const edge of edges)
+      for (const axis of basis) axes.push(cross(edge, axis));
+    let distance = Infinity,
+      direction = null;
+    for (const raw of axes) {
+      const length = Math.hypot(...raw);
+      if (length < 1e-10) continue;
+      const axis = [raw[0] / length, raw[1] / length, raw[2] / length],
+        a = dot(points[0], axis),
+        b = dot(points[1], axis),
+        c = dot(points[2], axis),
+        radius =
+          half[0] * Math.abs(axis[0]) +
+          half[1] * Math.abs(axis[1]) +
+          half[2] * Math.abs(axis[2]),
+        lo = Math.min(a, b, c) - radius + 1e-5,
+        hi = Math.max(a, b, c) + radius - 1e-5,
+        position = dot(center, axis);
+      if (position <= lo || position >= hi) return null;
+      const lower = position - lo,
+        upper = hi - position,
+        amount = Math.min(lower, upper);
+      if (amount < distance) {
+        distance = amount;
+        const sign = lower < upper ? -1 : 1;
+        direction = [axis[0] * sign, axis[1] * sign, axis[2] * sign];
+      }
+    }
+    return direction
+      ? [
+          direction[0] * (distance + 0.005),
+          direction[1] * (distance + 0.005),
+          direction[2] * (distance + 0.005),
+        ]
+      : null;
+  }
+  /* @function modelMeshCollision.separation — Inputs: decoded asset, instance matrix, stationary world volume centre/half extents and optional diagnostic accumulator. Returns deepest candidate triangle's minimum separating translation or null when clear. Reuses the shared local BVH; conservative inverse bounds visit nearby triangles only. No mesh decoding, actor mutation, history or per-frame logging. */
+  function separation(asset, matrix, center, half, stats = {}) {
+    const data = build(asset),
+      T = FrontierModelTransform,
+      inverse = T.inverse(matrix),
+      corners = [];
+    for (const x of [-1, 1])
+      for (const y of [-1, 1])
+        for (const z of [-1, 1])
+          corners.push(
+            T.vector(inverse, [
+              center[0] + x * half[0],
+              center[1] + y * half[1],
+              center[2] + z * half[2],
+            ]),
+          );
+    const box = bounds(corners);
+    let result = null,
+      deepest = 0;
+    /* @function modelMeshCollision.visitSeparation — Inputs: shared BVH node. Returns nothing; rejects disjoint bounds and retains deepest actual static overlap correction. Writes only caller-owned diagnostics. */
+    function visit(node) {
+      stats.separationNodes = (stats.separationNodes || 0) + 1;
+      if (!overlap(node, box)) return;
+      if (node.children) {
+        for (const child of node.children) visit(child);
+        return;
+      }
+      for (const index of node.indices) {
+        const triangle = data.triangles[index];
+        if (!overlap(triangle.bounds, box)) continue;
+        stats.separationTriangles = (stats.separationTriangles || 0) + 1;
+        const points = [];
+        for (const point of triangle.points)
+          points.push(T.vector(matrix, point));
+        const correction = triangleSeparation(points, center, half);
+        if (!correction) continue;
+        const depth = Math.hypot(...correction);
+        if (depth > deepest) {
+          deepest = depth;
+          result = correction;
+        }
+      }
+    }
+    visit(data.tree);
+    return result;
+  }
+  // Query transforms conservative swept bounds into the shared local BVH,
+  // then returns the earliest world-space body/triangle contact or null.
+  /* @function model-mesh-collision.query.26 — then returns the earliest world-space body/triangle contact or null. Inputs: asset; matrix; start; end; half; assignment pattern. Uses: build; t inverse; corners push; t vector. Returns: null; nearest. */ function query(
+    asset,
+    matrix,
+    start,
+    end,
+    half,
+    stats = {},
+  ) {
+    const data = build(asset),
+      T = FrontierModelTransform,
+      inverse = T.inverse(matrix);
+    if (!inverse) return null;
+    const corners = [];
+    for (const center of [start, end])
+      for (const x of [-1, 1])
+        for (const y of [-1, 1])
+          for (const z of [-1, 1])
+            corners.push(
+              T.vector(
+                inverse,
+                center.map(
+                  /* @function model-mesh-collision.callback.27 — Returns v plus a list of x, y, z at i multiplied by half at i. Inputs: v; i. Returns: v plus a list of x, y, z at i multiplied by half at i. */ (
+                    v,
+                    i,
+                  ) => v + [x, y, z][i] * half[i],
+                ),
+              ),
+            );
+    const box = bounds(corners);
+    let nearest = null;
+    /* @function model-mesh-collision.visit.28 — Handles visit within shared triangle collision queries. Inputs: n. Updates: stats nodes; stats triangles; nearest. Uses: overlap; visit; triangle points map; sweep triangle. Returns: without a result; without a result. */ function visit(
+      n,
+    ) {
+      stats.nodes = (stats.nodes || 0) + 1;
+      if (!overlap(n, box)) return;
+      if (n.children) {
+        for (const child of n.children) visit(child);
+        return;
+      }
+      for (const index of n.indices) {
+        const triangle = data.triangles[index];
+        if (!overlap(triangle.bounds, box)) continue;
+        stats.triangles = (stats.triangles || 0) + 1;
+        const points = triangle.points.map(
+            /* @function model-mesh-collision.callback.29 — Returns t vector using matrix, p. Inputs: p. Uses: t vector. Returns: t vector using matrix, p. */ (
+              p,
+            ) => T.vector(matrix, p),
+          ),
+          time = sweepTriangle(points, start, end, half);
+        if (time !== null && (nearest === null || time < nearest))
+          nearest = time;
+      }
+    }
+    visit(data.tree);
+    return nearest;
+  }
+  // Vertical support ray uses the same shared BVH as wall sweeps. Test in world
+  // space so rotated and nonuniformly scaled instances retain correct slopes.
+  // Winding is deliberately ignored: imported double-sided static floors work.
+  /* @function model-mesh-collision.support.30 — Winding is deliberately ignored: imported double-sided static floors work. Inputs: asset; matrix; x; y; low; high; assignment pattern; assignment pattern. Uses: build; t inverse; corners push; t vector. Returns: null; best. */ function support(
+    asset,
+    matrix,
+    x,
+    y,
+    low,
+    high,
+    stats = {},
+    radius = 0,
+  ) {
+    const data = build(asset),
+      T = FrontierModelTransform,
+      inverse = T.inverse(matrix);
+    if (!inverse) return null;
+    const corners = [];
+    for (const dx of [-radius, radius])
+      for (const dy of [-radius, radius])
+        for (const z of [low, high])
+          corners.push(T.vector(inverse, [x + dx, y + dy, z]));
+    const box = bounds(corners);
+    let best = null;
+    /* @function model-mesh-collision.visit.31 — Handles visit within shared triangle collision queries. Inputs: n. Updates: stats nodes; stats triangles; z; polygon; best. Uses: overlap; n children for each; t points map; sub. Returns: without a result; without a result. */ function visit(
+      n,
+    ) {
+      stats.nodes = (stats.nodes || 0) + 1;
+      if (!overlap(n, box)) return;
+      if (n.children) {
+        n.children.forEach(visit);
+        return;
+      }
+      for (const index of n.indices) {
+        const t = data.triangles[index];
+        if (!overlap(t.bounds, box)) continue;
+        stats.triangles = (stats.triangles || 0) + 1;
+        const p = t.points.map(
+            /* @function model-mesh-collision.callback.32 — Returns t vector using matrix, v. Inputs: v. Uses: t vector. Returns: t vector using matrix, v. */ (
+              v,
+            ) => T.vector(matrix, v),
+          ),
+          a = sub(p[1], p[0]),
+          b = sub(p[2], p[0]),
+          normal = cross(a, b),
+          length = Math.hypot(...normal);
+        if (!length || Math.abs(normal[2]) / length < Math.cos(Math.PI / 3))
+          continue;
+        const det = a[0] * b[1] - a[1] * b[0];
+        if (Math.abs(det) < 1e-10) continue;
+        let z;
+        if (!radius) {
+          const dx = x - p[0][0],
+            dy = y - p[0][1],
+            u = (dx * b[1] - dy * b[0]) / det,
+            v = (a[0] * dy - a[1] * dx) / det;
+          if (u < -1e-7 || v < -1e-7 || u + v > 1 + 1e-7) continue;
+          z = p[0][2] + u * a[2] + v * b[2];
+        } else {
+          // Clip the triangle to the complete body footprint. A sparse ray grid can
+          // miss narrow peaks and snap the body inside irregular imported ledges.
+          let polygon = p;
+          for (const [axis, edge, sign] of [
+            [0, x - radius, 1],
+            [0, x + radius, -1],
+            [1, y - radius, 1],
+            [1, y + radius, -1],
+          ]) {
+            const out = [];
+            for (let i = 0; i < polygon.length; i++) {
+              const a = polygon[i],
+                b = polygon[(i + 1) % polygon.length],
+                da = (a[axis] - edge) * sign,
+                db = (b[axis] - edge) * sign;
+              if (da >= 0) out.push(a);
+              if (da >= 0 !== db >= 0) {
+                const t = da / (da - db);
+                out.push(
+                  a.map(
+                    /* @function model-mesh-collision.callback.33 — Returns v plus b at k minus v multiplied by t. Inputs: v; k. Returns: v plus b at k minus v multiplied by t. */ (
+                      v,
+                      k,
+                    ) => v + (b[k] - v) * t,
+                  ),
+                );
+              }
+            }
+            polygon = out;
+            if (!polygon.length) break;
+          }
+          if (!polygon.length) continue;
+          z = Math.max(
+            ...polygon.map(
+              /* @function model-mesh-collision.callback.34 — Returns p at 2. Inputs: p. Returns: p at 2. */ (
+                p,
+              ) => p[2],
+            ),
+          );
+        }
+        if (z >= low - 1e-6 && z <= high + 1e-6 && (best === null || z > best))
+          best = z;
+      }
+    }
+    visit(data.tree);
+    return best;
+  }
+  root.FrontierModelMeshCollision = {
+    build,
+    query,
+    sweepTriangle,
+    support,
+    triangleSeparation,
+    separation,
+  };
+})(typeof window === "undefined" ? globalThis : window);

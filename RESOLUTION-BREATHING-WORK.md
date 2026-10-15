@@ -1,0 +1,13 @@
+# October 10, 2026 — active 0.15.22 work
+
+Full scope: whole-game resolution and independent filtering controls, native breathing with fades/preview/map defaults/event commands, coordinate and sprite invariants, validation/performance measurements, full Windows/Mac browser packages. Not complete.
+
+Inspection: projection uses a 480-high logical view and several render/input consumers assume that height. Model and terrain occlusion use a two-pixel raster step; changing output size alone cannot improve those samples. Pixi owns the visible canvas dimensions, so resolution must have an explicit logical-to-render coordinate contract rather than blindly doubling canvas.width. Door cinematics have a separate 640x480 buffer. All must participate in quality settings. Existing sprite presentation is locked.
+
+Next: inspect all projection/aim/depth consumers and reference BreathingOverlay.js; introduce a shared display configuration and runtime breathing service, then wire options and tests before packaging.
+
+Checkpoint: display-settings.js validates/saves 1/1.5/2 and crisp/smooth preferences; Options controls are wired. Pixi renders physical density with independent logical screen; app pointer dimensions and render width use FrontierDisplay. Geometry/depth raster step changes from 2 to 2/scale. Door canvas scales physical output. Baseline sprite browser passed; resolution1522 browser passed actual 1280x960 with logical 640 width, room rendering, emitter/craft/cipher flow. Comment coverage 4007 passed. No release packaged.
+
+Remaining: CPU model texture bilinear filtering (GPU image filters alone are insufficient); verify all shader sampler refresh paths, aspect/fullscreen/save reload/aim/depth and effects raster widths. Native breathing currently remains old CSS stretch; replace with reference radial warp, fades/runtime/map/event controls/live preview and inverse targeting. Detailed performance/memory matrix, docs, full required suite and archives still required. Keep goal active. No blockers.
+
+October 10 continuation: model/room textures now have CPU bilinear sampling with repeat/mirror/clamp-aware neighbors; filtering flag read has no per-pixel snapshot allocation. Added screen-breathing.js pure validation, seconds-based fade controller, radial map and inverse projection with stationary edge taper. tests/breathing1522.cjs passes frame-rate independence, frozen phase/fade, exact disable endpoint, edges and inverse round-trip. Coverage passed 4019 before adding two test functions. Service is loaded but not yet wired to app/Pixi/map schema/events/UI; old CSS stretch must be superseded next. Continue full goal; no package or completion claim.

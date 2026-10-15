@@ -1,0 +1,12 @@
+{
+  "id": "benchmark-1500",
+  "name": "Generated 1500-triangle performance fixture",
+  "triangles": 1500,
+  "textureDimensions": [
+    256,
+    256
+  ],
+  "textureDecodedBytes": 262144,
+  "authoringSource": "Procedurally generated test geometry; not a supplied hostile model",
+  "license": "Project test fixture"
+}

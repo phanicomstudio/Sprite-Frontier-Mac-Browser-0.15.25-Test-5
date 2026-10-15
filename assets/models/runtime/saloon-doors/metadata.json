@@ -1,0 +1,90 @@
+{
+  "door": {
+    "file": "Saloon_Doors_Pair.glb",
+    "source": "C:\\Users\\Phanicom Admin\\Documents\\Codex\\2026-10-07\\can\\outputs\\Antique_Saloon_Doors\\Saloon_Doors_Pair.glb",
+    "sha256": "6d9aba8a1ce4a98454d8f62c017a2655c2cd75df07467488d029400122cc2272",
+    "nodes": [
+      {
+        "mesh": 0,
+        "name": "Saloon Door Left",
+        "translation": [
+          -0.5320000052452087,
+          0.6499999761581421,
+          0
+        ]
+      },
+      {
+        "mesh": 1,
+        "name": "Saloon Door Right",
+        "translation": [
+          0.5320000052452087,
+          0.6499999761581421,
+          0
+        ]
+      }
+    ],
+    "selection": "Pair contains independently transformable hinge nodes; separate leaves not included."
+  },
+  "existingRoomTextures": [
+    {
+      "image": "img/materials/walls/.gitkeep"
+    },
+    {
+      "image": "img/materials/walls/prop_cantina_1.png"
+    },
+    {
+      "image": "img/materials/walls/prop_wall_1.png"
+    },
+    {
+      "image": "img/materials/walls/prop_wall_10.png"
+    },
+    {
+      "image": "img/materials/walls/prop_wall_2.png"
+    },
+    {
+      "image": "img/materials/walls/prop_wall_3.png"
+    },
+    {
+      "image": "img/materials/walls/prop_wall_4.png"
+    },
+    {
+      "image": "img/materials/walls/prop_wall_5.png"
+    },
+    {
+      "image": "img/materials/walls/prop_wall_6.png"
+    },
+    {
+      "image": "img/materials/walls/prop_wall_7.png"
+    },
+    {
+      "image": "img/materials/walls/prop_wall_8.png"
+    },
+    {
+      "image": "img/materials/walls/prop_wall_9.png"
+    },
+    {
+      "image": "img/materials/walls/prop_wood_panel_wall1.png"
+    },
+    {
+      "image": "img/materials/walls/prop_wood_panel_wall2.png"
+    },
+    {
+      "image": "img/materials/floors/.gitkeep"
+    },
+    {
+      "image": "img/materials/floors/prop_desert_tile_floor.png"
+    },
+    {
+      "image": "img/materials/floors/prop_tile_floor1.png"
+    },
+    {
+      "image": "img/materials/floors/prop_wood_floor1.png"
+    },
+    {
+      "image": "img/materials/ceilings/.gitkeep"
+    },
+    {
+      "image": "img/materials/ceilings/prop_tin_ceiling1.png"
+    }
+  ]
+}

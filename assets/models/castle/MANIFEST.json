@@ -1,0 +1,221 @@
+[
+  {
+    "name": "Square_Room_4m",
+    "file": "Square_Room_4m.glb",
+    "dimensions": {
+      "clearWidth": 4,
+      "clearDepth": 4,
+      "storyHeight": 3,
+      "wallThickness": 0.2
+    },
+    "connectors": {
+      "bottom": [
+        0,
+        0,
+        0
+      ],
+      "top": [
+        0,
+        0,
+        3
+      ],
+      "door": [
+        0,
+        -2.2,
+        0
+      ]
+    },
+    "triangles": 84,
+    "notes": "Open ceiling; next story floor or separate roof closes top. Door opening 1.2m x 2.1m."
+  },
+  {
+    "name": "Square_Room_6m",
+    "file": "Square_Room_6m.glb",
+    "dimensions": {
+      "clearWidth": 6,
+      "clearDepth": 6,
+      "storyHeight": 3,
+      "wallThickness": 0.2
+    },
+    "connectors": {
+      "bottom": [
+        0,
+        0,
+        0
+      ],
+      "top": [
+        0,
+        0,
+        3
+      ],
+      "door": [
+        0,
+        -3.2,
+        0
+      ]
+    },
+    "triangles": 84,
+    "notes": "Open ceiling; next story floor or separate roof closes top. Door opening 1.2m x 2.1m."
+  },
+  {
+    "name": "Square_Room_8m",
+    "file": "Square_Room_8m.glb",
+    "dimensions": {
+      "clearWidth": 8,
+      "clearDepth": 8,
+      "storyHeight": 3,
+      "wallThickness": 0.2
+    },
+    "connectors": {
+      "bottom": [
+        0,
+        0,
+        0
+      ],
+      "top": [
+        0,
+        0,
+        3
+      ],
+      "door": [
+        0,
+        -4.2,
+        0
+      ]
+    },
+    "triangles": 84,
+    "notes": "Open ceiling; next story floor or separate roof closes top. Door opening 1.2m x 2.1m."
+  },
+  {
+    "name": "Tower_Section_6m",
+    "file": "Tower_Section_6m.glb",
+    "dimensions": {
+      "clearDiameter": 6,
+      "storyHeight": 3,
+      "wallThickness": 0.2
+    },
+    "connectors": {
+      "bottom": [
+        0,
+        0,
+        0
+      ],
+      "top": [
+        0,
+        0,
+        3
+      ],
+      "door": [
+        0,
+        -3.2,
+        0
+      ]
+    },
+    "triangles": 328,
+    "notes": "Hollow open-ended section; add circular floor modules independently. This permits stacked floor/stair openings."
+  },
+  {
+    "name": "Tower_Section_8m",
+    "file": "Tower_Section_8m.glb",
+    "dimensions": {
+      "clearDiameter": 8,
+      "storyHeight": 3,
+      "wallThickness": 0.2
+    },
+    "connectors": {
+      "bottom": [
+        0,
+        0,
+        0
+      ],
+      "top": [
+        0,
+        0,
+        3
+      ],
+      "door": [
+        0,
+        -4.2,
+        0
+      ]
+    },
+    "triangles": 328,
+    "notes": "Hollow open-ended section; add circular floor modules independently. This permits stacked floor/stair openings."
+  },
+  {
+    "name": "Castle_Wall_4m",
+    "file": "Castle_Wall_4m.glb",
+    "dimensions": {
+      "width": 4,
+      "depth": 1.2,
+      "walkwayHeight": 3,
+      "totalHeight": 3.8
+    },
+    "connectors": {
+      "left": [
+        -2,
+        0,
+        3
+      ],
+      "right": [
+        2,
+        0,
+        3
+      ]
+    },
+    "triangles": 108,
+    "notes": "Walkable wall top with side parapets; end anchors continue the walkway."
+  },
+  {
+    "name": "Castle_Gable_Roof_6m",
+    "file": "Castle_Gable_Roof_6m.glb",
+    "dimensions": {
+      "width": 6.4,
+      "depth": 6.4,
+      "height": 2.4
+    },
+    "connectors": {
+      "bottom": [
+        0,
+        0,
+        0
+      ]
+    },
+    "triangles": 8,
+    "notes": "Fits 6m square room including outer wall thickness. Solid roof volume; not a furnished attic."
+  },
+  {
+    "name": "Tower_Roof_6m",
+    "file": "Tower_Roof_6m.glb",
+    "dimensions": {
+      "radius": 3.2,
+      "height": 3
+    },
+    "connectors": {
+      "bottom": [
+        0,
+        0,
+        0
+      ]
+    },
+    "triangles": 62,
+    "notes": "Matches tower outer wall radius; solid roof cap. No attic or hatch in this variant."
+  },
+  {
+    "name": "Tower_Roof_8m",
+    "file": "Tower_Roof_8m.glb",
+    "dimensions": {
+      "radius": 4.2,
+      "height": 3
+    },
+    "connectors": {
+      "bottom": [
+        0,
+        0,
+        0
+      ]
+    },
+    "triangles": 62,
+    "notes": "Matches tower outer wall radius; solid roof cap. No attic or hatch in this variant."
+  }
+]

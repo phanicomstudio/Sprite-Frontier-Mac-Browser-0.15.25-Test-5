@@ -1,0 +1,225 @@
+/* Layered HUD. PNGs share a 766x681 canvas; never crop individual layers.
+ * Repaint the portrait only on image load or Cerebral-band changes. Blood damage
+ * deliberately retains Candy's single authored portrait until more art arrives. */
+/* Historical contract retained; October 14, 2026 reviewed explanation follows. @function device-hud.callback.1 — Provides the callback for a callback. Inputs: root. Updates: el dataset module; bar class name; bar text content; min text content; min title. Uses: document get element by id; face get context; a list of 1, 2, 3 map; weights slice. */
+(/* @function device-hud.installReviewed — Installs layered device HUD services and portrait ownership. Original layers share the 766x681 layout; portrait repaint depends on image/Cerebral changes rather than per-frame reconstruction. Inputs: browser/global namespace root. Returns nothing; exposes the module API and initializes its private registration/cache state. Dependency or registration errors propagate. Does not create a second active simulation; exported operations own later session/UI work. */ function (
+  root,
+) {
+  "use strict";
+  const face = document.getElementById("candyPortrait"),
+    ctx = face.getContext("2d");
+  const paths = [
+    "img/portraits/sanity/Portrait TV Background.png",
+    ...[1, 2, 3].map(
+      /* Historical contract retained; October 14 reviewed explanation follows. @function device-hud.callback.2 — Returns "img/portraits/sanity/Sanity Level " plus n plus ".png". Inputs: n. Returns: "img/portraits/sanity/Sanity Level " plus n plus ".png". */
+  /* @function deviceHud.reviewedcallback_2 — Constructs Cerebral overlay asset URL. Inputs: band overlay n1-3. Returns known sanity PNG path; no load/state mutation. */ (
+        n,
+      ) => "img/portraits/sanity/Sanity Level " + n + ".png",
+    ),
+    "img/portraits/candy/Candy Portrait 1A.png",
+    "img/ui/portrait-tv/Portrait Chassis.png",
+    "img/ui/portrait-tv/Portrait TV Lense.png",
+  ];
+  let dirty = true,
+    lastBand = -1,
+    weaponKey = "",
+    statsKey = "",
+    weights = [1, 0, 0, 0],
+    from = weights.slice(),
+    progress = 1,
+    lastTime = 0,
+    lastWorld = null;
+  const images = paths.map(
+    /* Historical contract retained; October 14 reviewed explanation follows. @function device-hud.callback.3 — Provides the callback for paths map. Inputs: path. Updates: image onload; image src. Returns: image. */
+  /* @function deviceHud.reviewedcallback_3 — Preloads one layered HUD image. Inputs: known path. Returns Image, assigns load listener/source once. Loading marks portrait dirty; failure lacks explicit handler and unavailable layers are skipped in update. No per-frame fetch. */ (
+      path,
+    ) => {
+      const image = new Image();
+      image.onload =
+        /* Historical contract retained; October 14 reviewed explanation follows. @function device-hud.onload.4 — Processes a resource after it finishes loading. Inputs: no explicit arguments; uses enclosing module state. Updates: dirty. Returns: assignment. */
+  /* @function deviceHud.reviewedonload_4 — Requests portrait repaint after asset load. Inputs: ignored load event. Returns assigned true; sets private dirty only, no source mutation. */ () =>
+          (dirty = true);
+      image.src = path;
+      return image;
+    },
+  );
+  /* Historical contract retained; October 14 reviewed explanation follows. @function device-hud.update.5 — Advances this system using the current state and elapsed time. Inputs: game. Updates: last time; last world; weights; weights at band; progress. Uses: frontier cerebral band; performance now; weights slice; from map. */
+  /* @function deviceHud.reviewedupdate_5 — Refreshes portrait and equipment HUD from live player. Inputs: game. Returns undefined; computes Cerebral band, resets blend on cell identity change and smoothsteps layer weights using wall-clock dt capped0.1 second. Repaints dirty portrait766x681 with original alpha layers, updates Blood/Cerebral text only on change and replaces weapon icon/ammo when keyed values differ. Uses one authored neutral portrait irrespective of Blood damage. Does not mutate player/source or schedule timers; required DOM/Cerebral errors propagate. Seconds govern blend, artwork logical pixels remain fixed. */ function update(
+    game,
+  ) {
+    const rules = game.sourceWorld.cerebral || FrontierCerebral.defaults,
+      p = game.player,
+      band = FrontierCerebral.band(
+        p.cerebral ?? rules.max,
+        rules.max,
+        rules.thresholds,
+      );
+    const time = performance.now() / 1000,
+      dt = Math.min(0.1, Math.max(0, time - lastTime));
+    lastTime = time;
+    if (lastWorld !== game.sourceWorld) {
+      lastWorld = game.sourceWorld;
+      weights = [0, 0, 0, 0];
+      weights[band] = 1;
+      progress = 1;
+      lastBand = band;
+      dirty = true;
+    }
+    if (band !== lastBand) {
+      from = weights.slice();
+      progress = 0;
+      lastBand = band;
+      dirty = true;
+    }
+    if (progress < 1) {
+      progress =
+        rules.transition === 0
+          ? 1
+          : Math.min(1, progress + dt / (rules.transition ?? 0.75));
+      const t = progress * progress * (3 - 2 * progress);
+      weights = from.map(
+        /* Historical contract retained; October 14 reviewed explanation follows. @function device-hud.callback.6 — Returns v multiplied by 1 minus t plus i equals band selects t or 0. Inputs: v; i. Returns: v multiplied by 1 minus t plus i equals band selects t or 0. */
+  /* @function deviceHud.reviewedcallback_6 — Blends one Cerebral background weight. Inputs: prior v/index i with captured smoothstep t and target band. Returns v*(1-t)+targetWeight; no mutation, weights remain dimensionless. */ (
+          v,
+          i,
+        ) => v * (1 - t) + (i === band ? t : 0),
+      );
+      dirty = true;
+    }
+    if (dirty) {
+      ctx.clearRect(0, 0, 766, 681);
+      ctx.globalCompositeOperation = "lighter";
+      for (let i = 0; i < 4; i++) {
+        ctx.globalAlpha = weights[i];
+        if (images[i].complete && images[i].naturalWidth)
+          ctx.drawImage(images[i], 0, 0, 766, 681);
+      }
+      ctx.globalCompositeOperation = "source-over";
+      ctx.globalAlpha = 1;
+      for (const image of [images[4], images[5], images[6]])
+        if (image.complete && image.naturalWidth)
+          ctx.drawImage(image, 0, 0, 766, 681);
+      dirty = false;
+      face.dataset.cerebralBand = String(band);
+      face.dataset.blending = String(progress < 1);
+      face.dataset.state = "neutral";
+    }
+    const stats =
+      "Blood " +
+      p.hp +
+      " / 100; Cerebral " +
+      Math.round(p.cerebral ?? rules.max) +
+      " / " +
+      rules.max;
+    if (stats !== statsKey) {
+      document.getElementById("portraitStats").textContent = stats;
+      face.title = stats;
+      statsKey = stats;
+    }
+    const w = p.weapon,
+      key = [w?.name, w?.type, p.holstered, p.ammoLoaded, p.ammoReserve].join(
+        "|",
+      );
+    if (key !== weaponKey) {
+      weaponKey = key;
+      const screen = document.getElementById("equipmentScreen");
+      screen.replaceChildren();
+      const icon = document.createElement("div");
+      icon.className = "weaponIcon";
+      icon.innerHTML =
+        w?.type === "melee"
+          ? '<svg viewBox="0 0 100 60" aria-label="Melee weapon"><path d="M24 45L61 8L76 4L72 19L35 56M22 31L47 56" fill="none" stroke="#d46a3e" stroke-width="4"/></svg>'
+          : '<svg viewBox="0 0 100 55" aria-label="Pistol"><path d="M8 12H80L88 18V27H56L48 49H32L36 29H8Z" fill="#4a2019" stroke="#d46a3e" stroke-width="3"/></svg>';
+      const text = document.createElement("span");
+      text.textContent =
+        (p.holstered ? "HOLSTERED\n" : "") +
+        (w?.name || "UNARMED") +
+        (w?.type === "melee"
+          ? ""
+          : "\n" + p.ammoLoaded + " / " + p.ammoReserve);
+      screen.append(icon, text);
+    }
+  }
+  // Dragging is still available in HUD layout mode. Hit rectangles use percentages
+  // of the full artwork so resizing/fullscreen cannot misalign the remote buttons.
+  for (const [el, name] of [
+    [document.querySelector(".remoteDevice"), "Remote"],
+    [document.querySelector(".portraitDevice"), "Portrait"],
+    [document.querySelector(".combinedDevice"), "Weapon / immersion"],
+  ]) {
+    el.dataset.module = name;
+    if (name === "Weapon / immersion") {
+      document.getElementById("deviceHud").append(el);
+      el.classList.add("floatingTV");
+    }
+    const bar = document.createElement("div");
+    bar.className = "moduleHandle";
+    bar.textContent = name;
+    const min = document.createElement("button");
+    min.textContent = "−";
+    min.title = "Minimize / restore";
+    min.onclick =
+      /* Historical contract retained; October 14 reviewed explanation follows. @function device-hud.onclick.7 — Responds to a button or clickable control. Inputs: no explicit arguments; uses enclosing module state. Updates: min text content. Uses: el class list toggle; el class list contains. */
+  /* @function deviceHud.reviewedonclick_7 — Toggles one HUD device minimized presentation. Inputs: ignored click. Returns undefined; changes CSS class and +/-label only. Does not change inventory/combat/source, and this module does not persist layout/minimized preference. */ () => {
+        el.classList.toggle("minimized");
+        min.textContent = el.classList.contains("minimized") ? "+" : "−";
+      };
+    bar.append(min);
+    el.append(bar);
+    let drag;
+    bar.onpointerdown =
+      /* Historical contract retained; October 14 reviewed explanation follows. @function device-hud.onpointerdown.8 — Begins the pointer-driven interaction. Inputs: e. Updates: drag. Uses: document get element by id using "gameFrame" class list contains; document get element by id; e prevent default; el get bounding client rect. Returns: without a result. */
+  /* @function deviceHud.reviewedonpointerdown_8 — Begins device layout drag in HUD cursor mode. Inputs: DOM pointer e CSS pixels. Returns undefined; ignores minimize button/outside mode, prevents default, records pointer-to-device offset and captures pointer. Does not move device until motion; DOM errors propagate. */ (
+        e,
+      ) => {
+        if (
+          e.target === min ||
+          !document.getElementById("gameFrame").classList.contains("hudCursor")
+        )
+          return;
+        e.preventDefault();
+        const r = el.getBoundingClientRect();
+        drag = { dx: e.clientX - r.left, dy: e.clientY - r.top };
+        bar.setPointerCapture(e.pointerId);
+      };
+    bar.onpointermove =
+      /* Historical contract retained; October 14 reviewed explanation follows. @function device-hud.onpointermove.9 — Updates the active pointer-driven interaction. Inputs: e. Updates: el style left; el style top; el style right; el style bottom. Uses: document get element by id using "gameFrame" get bounding client rect; document get element by id. Returns: without a result. */
+  /* @function deviceHud.reviewedonpointermove_9 — Moves HUD device within game frame. Inputs: pointer e client pixels. Returns undefined; no-op absent drag, computes bounded position from frame/device rect and offset, stores percentage left/top and clears right/bottom anchoring. No authored/project mutation or persistence here; assumes nonzero frame size. */ (
+        e,
+      ) => {
+        if (!drag) return;
+        const f = document.getElementById("gameFrame").getBoundingClientRect();
+        el.style.left =
+          (Math.max(
+            0,
+            Math.min(f.width - el.offsetWidth, e.clientX - f.left - drag.dx),
+          ) /
+            f.width) *
+            100 +
+          "%";
+        el.style.top =
+          (Math.max(
+            0,
+            Math.min(f.height - el.offsetHeight, e.clientY - f.top - drag.dy),
+          ) /
+            f.height) *
+            100 +
+          "%";
+        el.style.right = el.style.bottom = "auto";
+      };
+    bar.onpointerup = bar.onpointercancel =
+      /* Historical contract retained; October 14 reviewed explanation follows. @function device-hud.onpointercancel.10 — Cancels the active pointer-driven interaction. Inputs: no explicit arguments; uses enclosing module state. Updates: drag. Returns: assignment. */
+  /* @function deviceHud.reviewedonpointercancel_10 — Ends HUD device drag on release/cancel. Inputs: ignored pointer event. Returns null assignment; clears drag, retains current layout position. No Undo rollback or saved preference update. */ () =>
+        (drag = null);
+  }
+  document.querySelector(".rightDevices").remove();
+  const oldSkin = document.querySelector("select#hudSkin");
+  if (oldSkin) oldSkin.closest("label").hidden = true;
+  root.FrontierDeviceHUD = {
+    update,
+    /* Historical contract retained; October 14 reviewed explanation follows. @function device-hud.skin.11 — Handles skin within device hud. Inputs: no explicit arguments; uses enclosing module state. */
+  /* @function deviceHud.reviewedskin_11 — Preserves compatibility skin API as no-op. Inputs: ignored legacy arguments. Returns undefined; authored combined chassis is fixed and old skin selector hidden. No artwork replacement or source mutation. */ skin() {
+      /* Combined authored chassis is fixed; legacy skin selector is disabled. */
+    },
+  };
+})(window);

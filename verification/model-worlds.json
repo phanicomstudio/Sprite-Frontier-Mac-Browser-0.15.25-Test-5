@@ -1,0 +1,86 @@
+[
+  {
+    "map": "outdoor-assets-test",
+    "models": [
+      {
+        "z": 0,
+        "expected": 0,
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          0.8
+        ]
+      },
+      {
+        "z": 0,
+        "expected": 0,
+        "rotation": [
+          0,
+          0,
+          30
+        ],
+        "scale": [
+          1.3,
+          1,
+          0.8
+        ]
+      }
+    ],
+    "render": {
+      "instances": 2,
+      "culled": 0,
+      "triangles": 3000,
+      "pixels": 5945,
+      "milliseconds": 8
+    },
+    "interior": false,
+    "textured": true
+  },
+  {
+    "map": "room-test",
+    "models": [
+      {
+        "z": 0,
+        "expected": 0,
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          0.8
+        ]
+      },
+      {
+        "z": 0,
+        "expected": 0,
+        "rotation": [
+          0,
+          0,
+          30
+        ],
+        "scale": [
+          1.3,
+          1,
+          0.8
+        ]
+      }
+    ],
+    "render": {
+      "instances": 2,
+      "culled": 0,
+      "triangles": 3000,
+      "pixels": 4306,
+      "milliseconds": 5.099999999860302
+    },
+    "interior": true,
+    "textured": false
+  }
+]

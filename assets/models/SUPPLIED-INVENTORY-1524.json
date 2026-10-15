@@ -1,0 +1,149 @@
+[
+  {
+    "id": "supplied-antique-box-bed-v3",
+    "file": "assets/models/supplied/Antique_Box_Bed_V3.glb",
+    "source": "banked-assets\\interior-placement-2026-10-12\\models\\runtime\\Antique_Box_Bed_V3.glb",
+    "bytes": 3717060,
+    "sha256": "0919dd6ba0954f3dc57836cbad2702110f6dc173ac09d3bdf9174393cd626635"
+  },
+  {
+    "id": "supplied-antique-round-table",
+    "file": "assets/models/supplied/Antique_Round_Table.glb",
+    "source": "banked-assets\\interior-placement-2026-10-12\\models\\runtime\\Antique_Round_Table.glb",
+    "bytes": 3252584,
+    "sha256": "560b9734176d0f536c489505b3c0072f94ef249cdb5f9208a4ad6f762720c29a"
+  },
+  {
+    "id": "supplied-painting-bosch",
+    "file": "assets/models/supplied/Painting_Bosch.glb",
+    "source": "banked-assets\\interior-placement-2026-10-12\\models\\runtime\\Painting_Bosch.glb",
+    "bytes": 148800,
+    "sha256": "5e97d5b90befee26b7b7b33a5a90eb1d5caa2881c4fd193047512b2bc08cb2d6"
+  },
+  {
+    "id": "supplied-painting-eight",
+    "file": "assets/models/supplied/Painting_eight.glb",
+    "source": "banked-assets\\interior-placement-2026-10-12\\models\\runtime\\Painting_eight.glb",
+    "bytes": 98232,
+    "sha256": "454b20ce59973c0a4818853f4e6056747d115f03c441dce6b590e77b41e960ac"
+  },
+  {
+    "id": "supplied-painting-five",
+    "file": "assets/models/supplied/Painting_five.glb",
+    "source": "banked-assets\\interior-placement-2026-10-12\\models\\runtime\\Painting_five.glb",
+    "bytes": 104360,
+    "sha256": "bf285c4ccf99607e467867eaf22ae89d0208351d23e59467e82f62a2565450d2"
+  },
+  {
+    "id": "supplied-painting-four",
+    "file": "assets/models/supplied/Painting_four.glb",
+    "source": "banked-assets\\interior-placement-2026-10-12\\models\\runtime\\Painting_four.glb",
+    "bytes": 92248,
+    "sha256": "4d028595f789326964758f6b506ec5419d3fab9489d8e11693c898df6432d4f3"
+  },
+  {
+    "id": "supplied-painting-nine",
+    "file": "assets/models/supplied/Painting_nine.glb",
+    "source": "banked-assets\\interior-placement-2026-10-12\\models\\runtime\\Painting_nine.glb",
+    "bytes": 97344,
+    "sha256": "25d175c76db79f25bd683e70c54030650ea1cae1f5bd39dcb50a6df4445ce7c8"
+  },
+  {
+    "id": "supplied-painting-one",
+    "file": "assets/models/supplied/Painting_one.glb",
+    "source": "banked-assets\\interior-placement-2026-10-12\\models\\runtime\\Painting_one.glb",
+    "bytes": 94376,
+    "sha256": "5d734c4654b7f5483e9475043ef6f6377f393398e70175cf7dab475042e1a6a0"
+  },
+  {
+    "id": "supplied-painting-seven",
+    "file": "assets/models/supplied/Painting_seven.glb",
+    "source": "banked-assets\\interior-placement-2026-10-12\\models\\runtime\\Painting_seven.glb",
+    "bytes": 97428,
+    "sha256": "5058973c20c1f1d097387c568299ee3b7668fd4f2aa906f80d5f8c320f4116f1"
+  },
+  {
+    "id": "supplied-painting-six",
+    "file": "assets/models/supplied/Painting_six.glb",
+    "source": "banked-assets\\interior-placement-2026-10-12\\models\\runtime\\Painting_six.glb",
+    "bytes": 99236,
+    "sha256": "58e77c4e51b24620946d62bfd92247264bec9d67d9424aa2aa010d27045f214f"
+  },
+  {
+    "id": "supplied-painting-ten",
+    "file": "assets/models/supplied/Painting_ten.glb",
+    "source": "banked-assets\\interior-placement-2026-10-12\\models\\runtime\\Painting_ten.glb",
+    "bytes": 103380,
+    "sha256": "31bc898afca6f049ec07ba17d96f52f7ecbd16afe96b2af6cdd76eeb9f5c0c24"
+  },
+  {
+    "id": "supplied-painting-three",
+    "file": "assets/models/supplied/Painting_three.glb",
+    "source": "banked-assets\\interior-placement-2026-10-12\\models\\runtime\\Painting_three.glb",
+    "bytes": 85960,
+    "sha256": "a9c0d30783ba1a780e8574c66bf7d201733818adf604e7bfbd3dfd6143cf109f"
+  },
+  {
+    "id": "supplied-painting-two",
+    "file": "assets/models/supplied/Painting_two.glb",
+    "source": "banked-assets\\interior-placement-2026-10-12\\models\\runtime\\Painting_two.glb",
+    "bytes": 91480,
+    "sha256": "5db89a2d6f10bee142e2cde4c4269216e993e4461644cdcf529cb17901794e00"
+  },
+  {
+    "id": "supplied-block-1m",
+    "file": "assets/models/supplied/Block_1m.glb",
+    "source": "outputs\\Blank-Building-Kit-2026-10-12\\models\\Block_1m.glb",
+    "bytes": 1980,
+    "sha256": "795d24e15b7f27c6f99ad4de8c6c1f42f63cfa9af0b2f216066f33f401c2ed36"
+  },
+  {
+    "id": "supplied-ceiling-2m",
+    "file": "assets/models/supplied/Ceiling_2m.glb",
+    "source": "outputs\\Blank-Building-Kit-2026-10-12\\models\\Ceiling_2m.glb",
+    "bytes": 1996,
+    "sha256": "369c3cdf4e4bef6e88d22f487cba0bb6851c662780e38e4c3cb93d2526bdbc7c"
+  },
+  {
+    "id": "supplied-doorway-2m-3m",
+    "file": "assets/models/supplied/Doorway_2m_3m.glb",
+    "source": "outputs\\Blank-Building-Kit-2026-10-12\\models\\Doorway_2m_3m.glb",
+    "bytes": 2888,
+    "sha256": "b9c8ca15d0e9069d31bd7f43c29e2a1c4ef2977eac68fcad047b27ef60765cb4"
+  },
+  {
+    "id": "supplied-floor-2m",
+    "file": "assets/models/supplied/Floor_2m.glb",
+    "source": "outputs\\Blank-Building-Kit-2026-10-12\\models\\Floor_2m.glb",
+    "bytes": 1988,
+    "sha256": "307eb0004effddf68c08a860200b4972445e3d19d25eb866a695236079ec1560"
+  },
+  {
+    "id": "supplied-ramp-2m-1m",
+    "file": "assets/models/supplied/Ramp_2m_1m.glb",
+    "source": "outputs\\Blank-Building-Kit-2026-10-12\\models\\Ramp_2m_1m.glb",
+    "bytes": 1760,
+    "sha256": "96a4e29600cb0dffb8fe8e0c525c5ddb102f817f98469d96b115bb0b6b8169e8"
+  },
+  {
+    "id": "supplied-wall-2m-3m",
+    "file": "assets/models/supplied/Wall_2m_3m.glb",
+    "source": "outputs\\Blank-Building-Kit-2026-10-12\\models\\Wall_2m_3m.glb",
+    "bytes": 2012,
+    "sha256": "ce74635b04a158fcbfdde455a0288068f62de9874b187699138153d7c79ee267"
+  },
+  {
+    "id": "supplied-wall-corner-2m-3m",
+    "file": "assets/models/supplied/Wall_Corner_2m_3m.glb",
+    "source": "outputs\\Blank-Building-Kit-2026-10-12\\models\\Wall_Corner_2m_3m.glb",
+    "bytes": 2468,
+    "sha256": "9191a2f08710601afe804765450b74d479883c805610cd6b0282799898143acc"
+  },
+  {
+    "id": "supplied-straight-stairs-template",
+    "file": "assets/models/supplied/Straight_Stairs_Template.glb",
+    "source": "outputs\\Stair-Template-Straight-2026-10-12\\Straight_Stairs_Template.glb",
+    "bytes": 8516,
+    "sha256": "610f585a719ce10bd3a76791bddd591c971540451b8a681134dd0331a4a86402"
+  }
+]

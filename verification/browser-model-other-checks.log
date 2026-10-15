@@ -1,0 +1,115 @@
+model-authoring.cjs
+PASS actual 3D model event pointer selection and image authoring; browser right-click create, defaults, cancellation, page creation/deletion, dedicated text dialog, Apply/Cancel semantics; no page errors.
+
+model-crossing.cjs
+PASS actual WASD movement enters/exits invisible box and runs two independent dialogue events
+
+model-editor.cjs
+PASS spatial editor real controls, independent boxes, event schema persistence and Cancel
+
+model-geometry.cjs
+PASS room polygons use per-pixel depth regardless of submission order; far prop mask hidden, near prop visible
+
+model-gizmo.cjs
+PASS pointer drags move, resize and rotate local volume; original event remains untouched until draft Apply
+
+model-mesh-movement.cjs
+PASS actual WASD doorway passage and wall blocking; no legacy footprint; collision debug and project roundtrip
+
+model-mesh-performance.cjs
+PASS shared BVH eight-instance collision and textured 1500-triangle benchmark {
+  collisionTriangles: 1500,
+  sharedCollision: true,
+  buildMs: 7.2999999998137355,
+  collisionInstances: 8,
+  collisionSamples: 100,
+  collisionMedianMs: 2.0999999998603016,
+  collisionP95Ms: 3.199999999953434,
+  testedTriangles: 41280,
+  visitedNodes: 24480,
+  glbTriangles: 1500,
+  glbTextureBytes: 262144,
+  culledBehind: true,
+  culledSide: true,
+  visibleCenter: true,
+  triangles: 1500,
+  vertices: 806,
+  textureBytes: 262144,
+  loadMilliseconds: 20.600000000093132,
+  medianMilliseconds: 2.2000000001862645,
+  p95Milliseconds: 3,
+  pixels: 2834,
+  samples: 30,
+  renderer: 'CPU rasterizer; 640x480 logical viewport, 2x2 raster samples'
+}
+
+model-overlap.cjs
+PASS overlap tie-break across reversed entity order and live renderer door-only picking, distance, model-wall occlusion and existing event interpreter
+
+model-performance.cjs
+PASS textured 1500-triangle benchmark {
+  glbTriangles: 1500,
+  glbTextureBytes: 262144,
+  culledBehind: true,
+  culledSide: true,
+  visibleCenter: true,
+  triangles: 1500,
+  vertices: 806,
+  textureBytes: 262144,
+  loadMilliseconds: 26.5,
+  medianMilliseconds: 2.3999999999068677,
+  p95Milliseconds: 3,
+  pixels: 2834,
+  samples: 30,
+  renderer: 'CPU rasterizer; 640x480 logical viewport, 2x2 raster samples'
+}
+
+model-render.cjs
+PASS live 3D triangle render with shared asset and depth grid {
+  instances: 1,
+  culled: 0,
+  triangles: 1,
+  pixels: 2160,
+  milliseconds: 1,
+  shared: true
+}
+
+model-room-occlusion.cjs
+PASS live room geometry blocks camera rays and player reach independently; removing wall restores targeting; model occlusion and dialogue preserved
+
+model-targeting.cjs
+PASS live renderer door-only picking, distance, model-wall occlusion and existing event interpreter
+
+model-worlds.cjs
+PASS shared textured models on forest terrain and fixed-camera interior [
+  {
+    map: 'outdoor-assets-test',
+    models: [ [Object], [Object] ],
+    render: {
+      instances: 2,
+      culled: 0,
+      triangles: 3000,
+      pixels: 5945,
+      milliseconds: 8
+    },
+    interior: false,
+    textured: true
+  },
+  {
+    map: 'room-test',
+    models: [ [Object], [Object] ],
+    render: {
+      instances: 2,
+      culled: 0,
+      triangles: 3000,
+      pixels: 4306,
+      milliseconds: 5.099999999860302
+    },
+    interior: true,
+    textured: false
+  }
+]
+
+event-interaction.cjs
+PASS actual NPC pointer selection and image authoring; browser right-click create, defaults, cancellation, page creation/deletion, dedicated text dialog, Apply/Cancel semantics; no page errors.
+

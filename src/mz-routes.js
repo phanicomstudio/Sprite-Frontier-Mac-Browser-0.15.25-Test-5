@@ -1,0 +1,297 @@
+/* Movement-route data and execution. Controllers own runtime overrides;
+ * authored page settings are never modified during playtesting. */
+/* Historical contract retained; October 14, 2026 reviewed explanation follows. @function mz-routes.callback.1 — Provides the callback for a callback. Inputs: root. Updates: root frontier mzroutes. */
+(/* @function mz-routes.installReviewed — Installs movement-route data validation and runtime execution controllers. Runtime overrides remain controller-owned and never rewrite authored event-page settings during playtesting. Inputs: browser/global namespace root. Returns nothing; publishes module API and initializes private ownership tables. Dependency/registration errors propagate. Exported operations own later authoring, simulation or rendering work; this does not create a second active game. */ function (
+  root,
+) {
+  "use strict";
+  const names = [
+    "End",
+    "Move Down",
+    "Move Left",
+    "Move Right",
+    "Move Up",
+    "Move Lower Left",
+    "Move Lower Right",
+    "Move Upper Left",
+    "Move Upper Right",
+    "Move at Random",
+    "Move toward Player",
+    "Move away from Player",
+    "1 Step Forward",
+    "1 Step Backward",
+    "Jump",
+    "Wait",
+    "Turn Down",
+    "Turn Left",
+    "Turn Right",
+    "Turn Up",
+    "Turn 90° Right",
+    "Turn 90° Left",
+    "Turn 180°",
+    "Turn 90° Right or Left",
+    "Turn at Random",
+    "Turn toward Player",
+    "Turn away from Player",
+    "Switch ON",
+    "Switch OFF",
+    "Change Speed",
+    "Change Frequency",
+    "Walking Animation ON",
+    "Walking Animation OFF",
+    "Stepping Animation ON",
+    "Stepping Animation OFF",
+    "Direction Fix ON",
+    "Direction Fix OFF",
+    "Through ON",
+    "Through OFF",
+    "Transparent ON",
+    "Transparent OFF",
+    "Change Image",
+    "Change Opacity",
+    "Change Blend Mode",
+    "Play SE",
+    "Script",
+  ];
+  const supported =
+    /* @function mz-routes.supported.2 — Returns code is at least 0 and code is at most 40 and code does not equal 14 or code equals 42 or code equals 44. Inputs: code. Returns: code is at least 0 and code is at most 40 and code does not equal 14 or code equals 42 or code equals 44. */ (
+      code,
+    ) => (code >= 0 && code <= 40 && code !== 14) || code === 42 || code === 44;
+  /* @function mz-routes.defaults.3 — Handles defaults within mz routes. Inputs: no explicit arguments; uses enclosing module state. Returns: a record containing repeat, skippable, wait, list. */ function defaults() {
+    return {
+      repeat: true,
+      skippable: false,
+      wait: false,
+      list: [{ code: 0, parameters: [] }],
+    };
+  }
+  /* @function mz-routes.validate.4 — Checks incoming values and constructs the supported data shape; rejects invalid data where the body throws. Inputs: value. Uses: root frontier event schema json; array is array; r list at; error. Returns: r. */ function validate(
+    value,
+  ) {
+    const r = root.FrontierEventSchema.json(value);
+    if (
+      !r ||
+      !Array.isArray(r.list) ||
+      !r.list.length ||
+      r.list.length > 10000 ||
+      r.list.at(-1).code !== 0
+    )
+      throw Error("Movement route must end with End.");
+    for (const key of ["repeat", "skippable", "wait"])
+      if (typeof r[key] !== "boolean")
+        throw Error("Invalid route option " + key);
+    for (const c of r.list) {
+      if (
+        !Number.isInteger(c.code) ||
+        c.code < 0 ||
+        c.code > 45 ||
+        !Array.isArray(c.parameters)
+      )
+        throw Error("Invalid route command.");
+      const p = c.parameters;
+      if ([15, 27, 28, 29, 30].includes(c.code)) {
+        const max =
+          c.code === 15 ? 999 : c.code === 29 ? 6 : c.code === 30 ? 5 : 5000;
+        if (p.length !== 1 || !Number.isInteger(p[0]) || p[0] < 1 || p[0] > max)
+          throw Error("Invalid " + names[c.code] + " parameter.");
+      } else if (c.code === 42) {
+        if (p.length !== 1 || !Number.isInteger(p[0]) || p[0] < 0 || p[0] > 255)
+          throw Error("Invalid opacity parameter.");
+      } else if (c.code === 44) {
+        const s = p[0];
+        if (
+          p.length !== 1 ||
+          !s ||
+          typeof s.name !== "string" ||
+          s.name.length > 200 ||
+          !Number.isInteger(s.volume) ||
+          s.volume < 0 ||
+          s.volume > 100 ||
+          !Number.isInteger(s.pitch) ||
+          s.pitch < 50 ||
+          s.pitch > 150 ||
+          !Number.isInteger(s.pan) ||
+          s.pan < -100 ||
+          s.pan > 100
+        )
+          throw Error("Invalid route Play SE parameters.");
+      } else if (supported(c.code) && p.length)
+        throw Error(names[c.code] + " takes no parameters.");
+    }
+    return r;
+  }
+  /* @function mz-routes.start.5 — Handles start within mz routes. Inputs: route; page; assignment pattern. Uses: validate; r list find; error; r list some. Returns: a record containing route, index, wait, done, settings, through. */ function start(
+    route,
+    page,
+    services = {},
+  ) {
+    const r = validate(route),
+      missing = r.list.find(
+        /* @function mz-routes.callback.6 — Returns the inverse of supported using c code. Inputs: c. Uses: supported. Returns: the inverse of supported using c code. */ (
+          c,
+        ) => !supported(c.code),
+      );
+    if (missing)
+      throw Error("Unsupported movement route: " + names[missing.code]);
+    if (
+      r.list.some(
+        /* @function mz-routes.callback.7 — Returns c code equals 44. Inputs: c. Returns: c code equals 44. */ (
+          c,
+        ) => c.code === 44,
+      ) &&
+      typeof services.playSE !== "function"
+    )
+      throw Error("Movement-route Play SE service unavailable.");
+    return {
+      route: r,
+      index: 0,
+      wait: 0,
+      done: false,
+      settings: { ...page.mz },
+      through: page.through,
+    };
+  }
+  const vectors = {
+    1: [0, -1],
+    2: [-1, 0],
+    3: [1, 0],
+    4: [0, 1],
+    5: [-1, -1],
+    6: [1, -1],
+    7: [-1, 1],
+    8: [1, 1],
+    16: [0, -1],
+    17: [-1, 0],
+    18: [1, 0],
+    19: [0, 1],
+  };
+  /* @function mz-routes.face.8 — Handles face within mz routes. Inputs: e; s; x; y. Updates: e facing x; e facing y. */ function face(
+    e,
+    s,
+    x,
+    y,
+  ) {
+    if (!s.directionFix) {
+      e.facingX = x;
+      e.facingY = y;
+    }
+  }
+  /* @function mz-routes.toward.9 — Handles toward within mz routes. Inputs: e; p. Returns: math abs using x is greater than math abs using y selects a list of math sign using x, 0 or a list of 0, math sign using y. */ function toward(
+    e,
+    p,
+  ) {
+    const x = p.x - e.x,
+      y = p.y - e.y;
+    return Math.abs(x) > Math.abs(y) ? [Math.sign(x), 0] : [0, Math.sign(y)];
+  }
+  /* @function mz-routes.step.10 — Proposes a raised stair destination only when both upward and forward body clearance pass. Inputs: control; e; player; services; dt. Updates: r wait; r index; r done; v; control target. Uses: toward; v map; face; services play se. Returns: without a result; without a result. */ function step(
+    control,
+    e,
+    player,
+    services,
+    dt,
+  ) {
+    const r = control.custom,
+      s = r.settings;
+    if (r.done) return;
+    if (r.wait > 0) {
+      r.wait = Math.max(0, r.wait - dt);
+      return;
+    }
+    const c = r.route.list[r.index],
+      code = c.code,
+      p = c.parameters;
+    let v;
+    if (code === 0) {
+      if (r.route.repeat) r.index = 0;
+      else r.done = true;
+      return;
+    }
+    if (code <= 13) {
+      v = vectors[code];
+      if (code === 9) v = vectors[1 + Math.floor(Math.random() * 4)];
+      if (code === 10 || code === 11) {
+        v = toward(e, player);
+        if (code === 11)
+          v = v.map(
+            /* @function mz-routes.callback.11 — Returns - x. Inputs: x. Returns: - x. */ (
+              x,
+            ) => -x,
+          );
+      }
+      if (code === 12 || code === 13) {
+        v = [e.facingX || 0, e.facingY ?? -1];
+        if (code === 13)
+          v = v.map(
+            /* @function mz-routes.callback.12 — Returns - x. Inputs: x. Returns: - x. */ (
+              x,
+            ) => -x,
+          );
+      }
+      control.target = { x: e.x + v[0], y: e.y + v[1] };
+      control.routeStep = true;
+      if (code !== 13) face(e, s, ...v);
+      return;
+    }
+    if (code === 39 || code === 40) e.transparent = code === 39;
+    else if (code === 42) e.opacity = p[0];
+    else if (code === 44) services.playSE(p[0]);
+    else if (code === 15) r.wait = p[0] / 60;
+    else if (code >= 16 && code <= 26) {
+      v = vectors[code];
+      const x = e.facingX || 0,
+        y = e.facingY ?? -1;
+      if (code === 20) v = [y, -x];
+      if (code === 21) v = [-y, x];
+      if (code === 22) v = [-x, -y];
+      if (code === 23) v = Math.random() < 0.5 ? [y, -x] : [-y, x];
+      if (code === 24) v = vectors[16 + Math.floor(Math.random() * 4)];
+      if (code === 25 || code === 26) {
+        v = toward(e, player);
+        if (code === 26)
+          v = v.map(
+            /* @function mz-routes.callback.13 — Returns - n. Inputs: n. Returns: - n. */ (
+              n,
+            ) => -n,
+          );
+      }
+      face(e, s, ...v);
+    } else if (code === 27 || code === 28) {
+      if (!services.routeSwitch)
+        throw Error("Movement-route switch service unavailable.");
+      services.routeSwitch(String(p[0]), code === 27);
+    } else if (code === 29) s.moveSpeed = p[0];
+    else if (code === 30) s.moveFrequency = p[0];
+    else {
+      const flag = {
+        31: "walkAnime",
+        32: "walkAnime",
+        33: "stepAnime",
+        34: "stepAnime",
+        35: "directionFix",
+        36: "directionFix",
+      }[code];
+      if (flag) s[flag] = code % 2 === 1;
+      else if (code === 37 || code === 38) r.through = code === 37;
+    }
+    r.index++;
+  }
+  /* @function mz-routes.arrived.14 — Handles arrived within mz routes. Inputs: control; success. Updates: control route step. Returns: without a result. */ function arrived(
+    control,
+    success,
+  ) {
+    if (!control.routeStep) return;
+    const r = control.custom;
+    if (success || r.route.skippable) r.index++;
+    control.routeStep = false;
+  }
+  root.FrontierMZRoutes = {
+    names,
+    supported,
+    defaults,
+    validate,
+    start,
+    step,
+    arrived,
+  };
+})(typeof window === "undefined" ? globalThis : window);
