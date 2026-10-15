@@ -117,3 +117,55 @@ body.engineAuthoring #workspaceAssets select,body.engineAuthoring #workspaceAsse
 #tileRoomWindow .tileRoomStage>label{flex-shrink:0;margin-top:0}
 #tileRoomWindow #layoutPlan{min-height:180px;flex:1 1 auto;height:0;max-height:600px;object-fit:fill}
 #tileRoomWindow .tileRoomStage>button,#tileRoomWindow #layoutStatus{flex-shrink:0;margin:0}
+
+/* October 15, 2026: campaign shell. Three panes while authoring:
+   campaign tree (left), game view (centre), inspector and palette (right).
+   Supersedes the October 14 two-column dock; #workspaceAssets is now the
+   right-hand pane. Playtest hides both side panes as before. */
+body.engineAuthoring.campaignShell main{grid-template-columns:clamp(220px,18vw,300px) minmax(0,1fr) clamp(300px,25vw,420px);gap:12px}
+body.engineAuthoring.campaignShell #campaignPane{grid-column:1;grid-row:1;height:100%;min-height:0;overflow:auto;position:relative;padding:0 10px 12px 0;border-right:1px solid #18385b;font-family:Arial,sans-serif;font-size:15px;line-height:1.4}
+body.engineAuthoring.campaignShell #viewport{grid-column:2}
+body.engineAuthoring.campaignShell #workspaceAssets{grid-column:3;padding:0 0 12px 12px;border-right:0;border-left:1px solid #18385b}
+body.enginePlaytest #campaignPane{display:none}
+#campaignPane *{font-family:Arial,sans-serif!important;letter-spacing:normal}
+#campaignPane button,#campaignPane input{font-size:14px;min-height:32px}
+#campaignPane .campaignHeader{display:flex;flex-direction:column;gap:2px;padding-top:4px}
+#campaignPane .campaignKicker{font-size:12px;text-transform:uppercase;letter-spacing:.08em!important;color:#588abd}
+#campaignTitle{text-align:left;font-size:18px!important;font-weight:bold;background:transparent;border:1px solid transparent;padding:2px 6px;overflow-wrap:anywhere}
+#campaignTitle:hover,#campaignTitle:focus-visible{border-color:#1b4a78}
+#campaignPane .campaignActions{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:8px 0}
+#campaignFilter{width:100%;margin-bottom:6px}
+#campaignTree{display:flex;flex-direction:column;gap:2px}
+.campaignArea{border:1px solid transparent;border-radius:4px}
+.campaignArea.campaignDropInto{border-color:#a6cfff;background:#0e2238}
+.campaignArea>summary{display:flex;align-items:center;gap:6px;padding:4px 2px 4px 4px;cursor:pointer;font-weight:bold;color:#cfe6ff;list-style-position:inside}
+.campaignArea>summary .campaignAreaName{flex:1;min-width:0;overflow-wrap:anywhere}
+.campaignCount{font-weight:normal;font-size:12px;color:#7fa7cf;border:1px solid #1b4a78;border-radius:9px;padding:0 6px}
+.campaignMaps{display:flex;flex-direction:column;gap:2px;padding:0 0 4px 14px;border-left:1px solid #18385b;margin-left:8px}
+.campaignMapRow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px;border-top:2px solid transparent}
+.campaignMapRow.campaignDropBefore{border-top-color:#a6cfff}
+.campaignMap{display:flex;flex-direction:column;align-items:flex-start;text-align:left;padding:4px 8px;background:transparent;border:1px solid transparent;cursor:pointer}
+.campaignMap:hover{border-color:#1b4a78}
+.campaignMap.campaignActive{background:#123456;border-color:#5f9fd9;color:#fff}
+.campaignMapName{overflow-wrap:anywhere}
+.campaignFolder{font-size:12px;color:#7fa7cf}
+.campaignMore{min-width:32px;padding:0 6px;background:transparent;border:1px solid transparent;font-size:18px!important;line-height:1}
+.campaignMore:hover,.campaignMore:focus-visible,.campaignMore[aria-expanded=true]{border-color:#1b4a78}
+.campaignEmpty{margin:4px 0;font-size:13px;color:#7fa7cf}
+.campaignRename{width:100%;min-width:0}
+#campaignStatus{min-height:1.4em;margin:6px 0;font-size:13px;color:#a6cfff}
+#campaignStatus.campaignError{color:#ffb4b4}
+#campaignSceneHeading{font-size:16px;margin:14px 0 4px;padding-top:10px;border-top:1px solid #18385b}
+#campaignPane #sceneHierarchy>h2{display:none}
+#campaignPane #sceneHierarchyList{max-height:none}
+.campaignMenu{position:absolute;z-index:20;min-width:180px;display:flex;flex-direction:column;padding:4px;background:#101927;border:1px solid #7196bb;box-shadow:0 8px 24px #000a}
+.campaignMenu button{text-align:left;background:transparent;border:0;padding:6px 10px}
+.campaignMenu button:hover,.campaignMenu button:focus-visible{background:#1b3554}
+.campaignMenu button:disabled{opacity:.45}
+.campaignDanger{color:#ffc4c4!important}
+.campaignDialog{background:#07111e;color:#b5d9ff;border:1px solid #5f9fd9;max-width:420px;font-family:Arial,sans-serif}
+.campaignDialog h2{font-size:18px;margin-top:0}
+.campaignDialog select{width:100%}
+.campaignDialogButtons{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
+@media(max-width:1100px){body.engineAuthoring.campaignShell main{grid-template-columns:clamp(200px,24vw,260px) minmax(0,1fr)}body.engineAuthoring.campaignShell #workspaceAssets{grid-column:1/-1;grid-row:2;height:auto;border-left:0;padding-left:0}}
+@media(max-width:700px){body.engineAuthoring.campaignShell main{grid-template-columns:1fr}body.engineAuthoring.campaignShell #campaignPane,body.engineAuthoring.campaignShell #viewport,body.engineAuthoring.campaignShell #workspaceAssets{grid-column:1;grid-row:auto;height:auto;border:0;padding:0}}

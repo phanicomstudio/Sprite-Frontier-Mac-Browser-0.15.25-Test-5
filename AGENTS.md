@@ -19,3 +19,7 @@ Keep 0.15.17 camera-facing sprite tilt, proportions and frame presentation. Do n
 ## October 14, 2026 — authorized documentation cleanup
 
 The user explicitly authorized deleting superseded documentation: old per-version iteration notes, older function references, test reports and generated test output. Git history keeps them (commit 7fca396). Guides now live in `docs/`. The rules above still apply to all current documentation and source comments; further removals need the same explicit authorization.
+
+## October 15, 2026 — authorized delivery change
+
+The user authorized delivering work as reviewed pull requests, building full Windows/Mac packages only at milestones the user requests. This supersedes "Deliver complete new iterations and full Windows/Mac browser packages" for routine changes. Every pull request still preserves history, documents new code and runs the comment-coverage and relevant behavior tests.

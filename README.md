@@ -27,10 +27,13 @@ Choose **Hub Test** or **Supplied Assets Forest Test** under Active map to try d
 
 ## Build
 
+The editor has three panes: the **campaign tree** (areas and maps) on the left, the game view in the middle, and the inspector and build tools on the right. See [docs/CAMPAIGN-EDITOR.md](docs/CAMPAIGN-EDITOR.md).
+
+- **Campaign tree:** click a map to open it; drag maps between areas; use **⋯** for rename, move, duplicate and delete. **+ Area** and **+ Map** add new ones.
 - **New map / New project:** new maps and blank projects never overwrite the bundled test maps.
 - **Events:** in the editor, right-click the ground and choose **Create event here**. Pages hold conditions, appearance, movement, triggers and ordered commands. Apply commits; Cancel discards.
 - **Rooms and structures:** **Build Structures** opens the Tile Room Editor with wall, floor and ceiling texture pickers.
-- **Scene list:** click to select, Shift-click for a range, Ctrl/Cmd-click to toggle. **Delete selected** removes them in one undoable step.
+- **In this map:** the placed-object list under the campaign tree. Click to select, Shift-click for a range, Ctrl/Cmd-click to toggle. **Delete selected** removes them in one undoable step.
 - **Save your work:** use **Save Project (JSON)** or **Export all maps**. Browser storage alone is not a backup.
 
 ## Project layout
@@ -66,7 +69,7 @@ The browser tests in `tests/browser/` need Playwright and Chromium; see [tests/b
 | Topic | Document |
 | --- | --- |
 | Current test build | [TEST-BUILD-0.15.25-TEST-5.md](docs/TEST-BUILD-0.15.25-TEST-5.md), [TEST-BUILD-0.15.25-TEST-2.md](docs/TEST-BUILD-0.15.25-TEST-2.md), [ITERATION-0.15.25.md](docs/ITERATION-0.15.25.md) |
-| Authoring | [AUTHORING-GUIDE-0.15.24.md](docs/AUTHORING-GUIDE-0.15.24.md), [EDITOR-CONTROLS-0.15.24.md](docs/EDITOR-CONTROLS-0.15.24.md), [EVENT-AUTHORING.md](docs/EVENT-AUTHORING.md), [BUILDING-AUTHORING-1524.md](docs/BUILDING-AUTHORING-1524.md), [MODEL-AUTHORING.md](docs/MODEL-AUTHORING.md), [HUB-DOOR-GUIDE.md](docs/HUB-DOOR-GUIDE.md) |
+| Authoring | [CAMPAIGN-EDITOR.md](docs/CAMPAIGN-EDITOR.md), [AUTHORING-GUIDE-0.15.24.md](docs/AUTHORING-GUIDE-0.15.24.md), [EDITOR-CONTROLS-0.15.24.md](docs/EDITOR-CONTROLS-0.15.24.md), [EVENT-AUTHORING.md](docs/EVENT-AUTHORING.md), [BUILDING-AUTHORING-1524.md](docs/BUILDING-AUTHORING-1524.md), [MODEL-AUTHORING.md](docs/MODEL-AUTHORING.md), [HUB-DOOR-GUIDE.md](docs/HUB-DOOR-GUIDE.md) |
 | Code | [ARCHITECTURE.md](docs/ARCHITECTURE.md), [CODE-GUIDE.md](docs/CODE-GUIDE.md), [COLLEAGUE-HANDOFF.md](docs/COLLEAGUE-HANDOFF.md), [FUNCTION-REFERENCE-0.15.24.md](docs/FUNCTION-REFERENCE-0.15.24.md) plus the Test 4 and Test 5 supplements |
 | Rendering and performance | [RENDERING-1522.md](docs/RENDERING-1522.md), [PERFORMANCE-REPORT-1523.md](docs/PERFORMANCE-REPORT-1523.md), [ASSET-OPTIMIZATION-GUIDE.md](docs/ASSET-OPTIMIZATION-GUIDE.md) |
 | Validation | [RELEASE-VALIDATION-0.15.24.md](docs/RELEASE-VALIDATION-0.15.24.md), [VALIDATION-1524.md](docs/VALIDATION-1524.md), [CONTROL-CHECKS-TEST-5.md](docs/CONTROL-CHECKS-TEST-5.md) |

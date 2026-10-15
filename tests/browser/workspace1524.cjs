@@ -42,7 +42,11 @@ const {chromium, launch} = require('./environment.cjs'), assert = require('node:
     // October 14, 2026: deletion is directly available beside each scene entry.
     const dockBounds = await page.locator('#workspaceAssets').boundingBox();
     const viewBounds = await page.locator('#viewport').boundingBox();
-    assert(dockBounds.x + dockBounds.width <= viewBounds.x, 'Tools stay left of the playable edit view');
+    // October 15, 2026: supersedes "tools stay left". The campaign shell puts the
+    // campaign tree left of the view and the inspector/tools pane to its right.
+    const treeBounds = await page.locator('#campaignPane').boundingBox();
+    assert(treeBounds.x + treeBounds.width <= viewBounds.x + 1, 'Campaign tree stays left of the playable edit view');
+    assert(viewBounds.x + viewBounds.width <= dockBounds.x + 1, 'Inspector and tools stay right of the playable edit view');
     await page.getByRole('button', {name: 'Delete Tower wall', exact: true}).click();
     assert.equal(await page.locator('#roomSelection option').count(), count + 2, 'Visible Delete removes selected wall');
     await page.locator('#undo').evaluate(/* @function workspaceTest.undoVisibleDelete — Inputs: original Undo control. Returns nothing; restores removed wall through production history. */ function(button){button.click();});
