@@ -1,6 +1,6 @@
 /* MAINTAINER GUIDE
  * MZ-inspired page conditions and a bounded command interpreter. Highest matching page wins; all conditions on it must pass. Each playtest clones authored events. Add commands to validation and execution together.
- * See CODE-GUIDE.md for load order, ownership and extension recipes.
+ * See docs/CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 /* Historical contract retained; October 14, 2026 reviewed explanation follows. @function events.callback.1 — Provides the callback for a callback. Inputs: root. Updates: root frontier events. Uses: object freeze. */
 (/* @function events.installReviewed — Installs MZ-inspired page matching and the bounded command interpreter. Highest matching page wins only when all conditions pass; each playtest owns cloned authored events and independent execution state. Inputs: browser/global namespace root. Returns nothing; exposes the module API and initializes its private registration/cache state. Dependency or registration errors propagate. Does not create a second active simulation; exported operations own later session/UI work. */ function (

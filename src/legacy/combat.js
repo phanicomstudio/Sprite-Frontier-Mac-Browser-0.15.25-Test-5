@@ -1,6 +1,6 @@
 /* MAINTAINER GUIDE
  * Original Frontier damage, reload, holster and loot rules. ActiveCombat replaces firing and wraps impact handling; other inherited rules still execute. Use adapter services instead of introducing renderer dependencies.
- * See CODE-GUIDE.md for load order, ownership and extension recipes.
+ * See docs/CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 /*
  * DIRECT CLASSIC-SCRIPT SOURCE // v0.20.2d

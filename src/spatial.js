@@ -1,6 +1,6 @@
 /* MAINTAINER GUIDE
  * Native height-aware projectile sweeps and ricochets. Replaces the legacy 2D projectile functions after they load. Segment/AABB hits and terrain intersections choose the earliest collision, independent of display pixels.
- * See CODE-GUIDE.md for load order, ownership and extension recipes.
+ * See docs/CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 /* Historical contract retained; October 14, 2026 reviewed explanation follows. @function spatial.callback.1 — Provides the callback for a callback. Inputs: mf. Updates: mf create projectile; mf update projectiles; mf resolve hitscan; mf frontier spatial. */
 (/* @function spatial.installReviewed — Installs native height-aware projectile sweeps, terrain intersections and ricochets, replacing legacy 2D projectile public entry points. Earliest segment collisions use world coordinates/elevation, independent of display pixels. Inputs: existing MF engine namespace MF. Returns nothing; publishes API/defaults and initializes private ownership tables. Dependency/registration errors propagate. Later exported operations own simulation/rendering/authoring work; this does not start a second active game. */ function (

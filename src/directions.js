@@ -1,6 +1,6 @@
 /* MAINTAINER GUIDE
  * Asset-independent directional animation. Row order comes from sheet metadata; four and eight direction sheets share this selector. Angles use atan2(X,Y), because +Y is forward at yaw zero.
- * See CODE-GUIDE.md for load order, ownership and extension recipes.
+ * See docs/CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 /* Historical contract retained; October 14, 2026 reviewed explanation follows. @function directions.callback.1 — Provides the callback for a callback. Inputs: root. Updates: root frontier directions. */
 (/* @function directions.installReviewed — Installs asset-independent directional animation selectors. Sheet metadata owns row ordering; four/eight direction sheets use atan2(X,Y), with +Y forward at zero yaw. Inputs: browser/global namespace root. Returns nothing; exposes the module API and initializes its private registration/cache state. Dependency or registration errors propagate. Does not create a second active simulation; exported operations own later session/UI work. */ function (

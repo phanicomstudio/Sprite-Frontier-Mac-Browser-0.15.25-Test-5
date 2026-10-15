@@ -1,6 +1,6 @@
 /* MAINTAINER GUIDE
  * Sprite profile resolution. Holstered Candy uses the four-direction unarmed sheet; armed Candy uses eight directions. NPCs resolve authored profile IDs. Image caches must support file:// as well as local HTTP.
- * See CODE-GUIDE.md for load order, ownership and extension recipes.
+ * See docs/CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 /* Historical contract retained; October 14, 2026 reviewed explanation follows. @function sprites.callback.1 — Provides the callback for a callback. Inputs: root. Updates: frontier candy id; frontier candy columns; frontier candy reference height; frontier candy unarmed columns; frontier candy unarmed reference height. */
 (/* @function sprites.installReviewed — Installs sprite-profile resolution and shared image caches. Holstered Candy uses four directions, armed Candy eight, and NPCs use authored profile IDs; file:// and local HTTP packages share the same cache contract. Inputs: browser/global namespace root. Returns nothing; publishes API/defaults and initializes private ownership tables. Dependency/registration errors propagate. Later exported operations own simulation/rendering/authoring work; this does not start a second active game. */ function (

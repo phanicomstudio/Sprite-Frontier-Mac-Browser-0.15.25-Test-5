@@ -1,6 +1,6 @@
 /* MAINTAINER GUIDE
  * In-level editor forms. The injected API owns mutation, validation, undo and restart. This module edits authored event data, never the active combat copy. Add a command in fields, addCommand, summary and events.js together.
- * See CODE-GUIDE.md for load order, ownership and extension recipes.
+ * See docs/CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 /* Historical contract retained; October 14, 2026 reviewed explanation follows. @function editor.callback.1 — Provides the callback for a callback. Inputs: root. Updates: root frontier editor. */
 (/* @function editor.installReviewed — Installs in-level authored-event forms. The injected owner API controls validation, Undo and playtest restart; this module is not the runtime combat-event owner. Inputs: browser/global namespace root. Returns nothing; exposes the module API and initializes its private registration/cache state. Dependency or registration errors propagate. Does not create a second active simulation; exported operations own later session/UI work. */ function (

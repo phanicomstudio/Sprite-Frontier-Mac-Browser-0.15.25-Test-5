@@ -1,6 +1,6 @@
 /* MAINTAINER GUIDE
  * Unarmed Candy image and one-time alpha-bounds extraction. Four-direction metadata can be replaced by an eight-direction profile later without changing movement logic. The embedded image is generated asset data.
- * See CODE-GUIDE.md for load order, ownership and extension recipes.
+ * See docs/CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 window.FrontierCandyUnarmed = {
   id: "candy-unarmed",

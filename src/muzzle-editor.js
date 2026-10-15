@@ -1,6 +1,6 @@
 /* MAINTAINER GUIDE
  * Standalone calibration UI embedded by the main game. Edits a local data copy until Apply posts it to the parent. Export preserves a project JSON copy; localStorage is convenience storage rather than a portable project format.
- * See CODE-GUIDE.md for load order, ownership and extension recipes.
+ * See docs/CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 /* Historical contract retained; October 14, 2026 reviewed explanation follows. @function muzzle-editor.callback.1 — Provides the callback for a callback. Inputs: no explicit arguments; uses enclosing module state. Updates: canvas onclick; $ using "aimMode" onchange; $ using "barrelDepth" onchange; $ using "clearBarrel" onclick; $ using "undoCalibration" onclick. Uses: $; canvas get context; structured clone; window add event listener. */
 (/* @function muzzle-editor.bootstrapReviewed — Boots the standalone calibration document once. Inputs: none; requires its own canvas/controls and FrontierMuzzle schema. Returns nothing; binds pointer/import/export/Undo and trusted-parent message handlers, then refreshes a private calibration copy. Apply posts validated data to the parent; local persistence is convenience only. Invalid imports display errors without replacing the draft. Full-sheet pixels and degree angle offsets remain independent of source sprite proportions. */ function () {

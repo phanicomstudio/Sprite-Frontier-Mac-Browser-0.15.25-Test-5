@@ -1,6 +1,6 @@
 /* MAINTAINER GUIDE
  * Pure playtest-save validation. Whitelists scalar player data and checks map entry arrays before the application replaces live state. Equip reconstructs weapon objects from saved IDs.
- * See CODE-GUIDE.md for load order, ownership and extension recipes.
+ * See docs/CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 /* Playtest file boundary. Keep validation pure so bad imports cannot partly
  * reset the world. Extend both this whitelist and app.js when adding saved state.

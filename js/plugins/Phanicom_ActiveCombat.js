@@ -1,6 +1,6 @@
 /* MAINTAINER GUIDE
- * Native Phanicom_ActiveCombat runtime integration. This host adapts supplied behavior into world XYZ; source-specific engine hooks are listed in PLUGIN-PORT.md.
- * See CODE-GUIDE.md for load order, ownership and extension recipes.
+ * Native Phanicom_ActiveCombat runtime integration. This host adapts supplied behavior into world XYZ; source-specific engine hooks are listed in docs/PLUGIN-PORT.md.
+ * See docs/CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 /* Native Frontier host for the supplied ActiveCombat parsers and mechanics. */
 (/* @function Phanicom_ActiveCombat.callback.1 — Provides the callback for a callback. Inputs: root. Updates: mf fire shot; mf resolve projectile impact; root phanicom abs. Uses: root phanicom plugin settings items find; core parse weapon item; weapons set. */ function(root){

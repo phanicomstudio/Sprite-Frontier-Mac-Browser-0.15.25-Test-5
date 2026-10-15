@@ -5,7 +5,7 @@ const fs = require("node:fs"),
   crypto = require("node:crypto");
 const root = path.resolve(process.argv[2] || path.join(__dirname, "..")),
   sharp = require(process.argv[3] || "sharp");
-(/* @function assetInventory.run — Inputs: source root and optional sharp module path from CLI. Returns a promise; scans supported artwork without altering originals, writes ASSET-INVENTORY.json and marks failed image decoding with nonzero status. Decoded RGBA byte counts are estimates, not GPU memory measurements. */ async () => {
+(/* @function assetInventory.run — Inputs: source root and optional sharp module path from CLI. Returns a promise; scans supported artwork without altering originals, writes docs/ASSET-INVENTORY.json and marks failed image decoding with nonzero status. Decoded RGBA byte counts are estimates, not GPU memory measurements. */ async () => {
   const entries = [],
     failures = [];
   /* @function assetInventory.inspect — Inputs: encoded image Buffer and relative location label. Returns a promise; reads metadata and SHA-256, appending occurrence dimensions/estimated RGBA bytes. Decode errors append explicit failures instead of hiding them. Does not edit image bytes. */ async function inspect(
@@ -96,7 +96,7 @@ const root = path.resolve(process.argv[2] || path.join(__dirname, "..")),
     entries,
   };
   fs.writeFileSync(
-    path.join(root, "ASSET-INVENTORY.json"),
+    path.join(root, "docs", "ASSET-INVENTORY.json"),
     JSON.stringify(report, null, 2) + "\n",
   );
   console.log(

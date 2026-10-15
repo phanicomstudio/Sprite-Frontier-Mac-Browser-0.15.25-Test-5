@@ -1,6 +1,6 @@
 /* MAINTAINER GUIDE
  * Deterministic local ask-about parser. Normalizes text and matches authored aliases; it never evaluates commands or calls AI. Exact matches beat whole-word phrases, and optional switches gate topics.
- * See CODE-GUIDE.md for load order, ownership and extension recipes.
+ * See docs/CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 /* Historical contract retained; October 14, 2026 reviewed explanation follows. @function parser.callback.1 — Provides the callback for a callback. Inputs: root. Updates: root frontier parser. */
 (/* @function parser.installReviewed — Installs deterministic local ask-about parsing. Text normalization/alias matching prioritize exact then whole-word phrases with optional switch gates; this is not command evaluation or an AI/network call. Inputs: browser/global namespace root. Returns nothing; publishes module API and initializes private ownership tables. Dependency/registration errors propagate. Exported operations own later authoring, simulation or rendering work; this does not create a second active game. */ function (

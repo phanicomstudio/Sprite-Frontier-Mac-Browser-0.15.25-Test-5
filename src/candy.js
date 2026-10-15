@@ -1,6 +1,6 @@
 /* MAINTAINER GUIDE
  * Armed Candy asset metadata and image loading. The local-file data URI avoids WebGL CORS restrictions; cropped frame bounds remove empty margins. Direction row metadata must match the artwork.
- * See CODE-GUIDE.md for load order, ownership and extension recipes.
+ * See docs/CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 window.FrontierCandy = {
   image: new Image(),
