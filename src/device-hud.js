@@ -1,108 +1,22 @@
-/* MAINTAINER GUIDE
- * Modular device HUD with portrait states, equipment/status screens, skins, dragging and minimization. Positions are percentages inside gameFrame. Portrait frames are a separate HUD sheet, not the world sprite.
- * See CODE-GUIDE.md for load order, ownership and extension recipes.
- */
-(function(root){
-  const face=document.getElementById('candyPortrait'),ctx=face.getContext('2d');
-  const portrait=root.FrontierPortraitData,portraitImage=new Image();
-  portraitImage.src=portrait.image;
-  let lastHP=null,damageUntil=0,lastFrame='';
-  const equipment=document.getElementById('equipmentScreen');
-  for(const el of document.querySelectorAll('.portraitDevice,.deviceTV')){
-    const backing=document.createElement('div');
-    backing.className='screenBacking';
-    el.prepend(backing);
-  }
-// Select health/damage/idle portrait frames and redraw only when the selected frame changes.
-  function portraitUpdate(game){
-    const hp=game.player.hp;
-    if(lastHP!==null&&hp<lastHP)damageUntil=game.elapsed+portrait.damage.seconds;
-    lastHP=hp;
-    const band=portrait.healthBands.find(b=>hp>=b.min)||portrait.healthBands.at(-1);
-    const idle=portrait.idle.frames[Math.floor(game.elapsed/portrait.idle.frameSeconds)%portrait.idle.frames.length];
-    const key=game.elapsed<damageUntil?portrait.damage.frame:(band.state==='healthy'?idle:band.frame);
-    face.dataset.state=game.elapsed<damageUntil?'damage':band.state;
-    const f=portrait.frames[key]||portrait.frames.neutral;
-    if(!portraitImage.complete||!portraitImage.naturalWidth||lastFrame===key)return;
-    ctx.fillStyle=portrait.background;
-    ctx.fillRect(0,0,200,200);
-    ctx.imageSmoothingEnabled=false;
-    const scale=Math.min(180/f.width,190/f.height),w=f.width*scale,h=f.height*scale;
-    ctx.drawImage(portraitImage,f.x,f.y,f.width,f.height,(200-w)/2,(200-h)/2,w,h);
-    lastFrame=key;
-  }
-  let weaponKey='',statusKey='';
-  function update(game){
-    const equipment=document.getElementById('equipmentScreen');
-    const key=[game.player.weapon?.name,game.player.holstered,game.player.ammoLoaded,game.player.ammoReserve].join('|');
-    if(key!==weaponKey){
-      weaponKey=key;
-      equipment.innerHTML='<svg viewBox="0 0 100 55" aria-label="9mm test weapon"><path d="M8 12H80L88 18V27H56L48 49H32L36 29H8Z M48 29H64V38H48" fill="#4a2019" stroke="#d46a3e" stroke-width="3"/></svg><span>'+(game.player.holstered?'HOLSTERED':game.player.weapon?.name||'UNARMED')+' · '+game.player.ammoLoaded+' / '+game.player.ammoReserve+'</span>';
-    }
-    if(statusKey!==game.player.hp){
-      statusKey=game.player.hp;
-      document.getElementById('statusScreen').textContent='VITALITY\n'+game.player.hp+' / 100';
-    }
-    portraitUpdate(game);
-  }
-// Swap device artwork while retaining the same functional modules and layout.
-  function skin(name){
-    for(const e of document.querySelectorAll('.floatingTV')){
-      e.classList.toggle('navigatorSkin',name==='navigator');
-      e.querySelector('img').src='img/pictures/'+(name==='navigator'?'Car Navigator 1.png':'Portrait TV C.png');
-    }
-  }
-  const modules=[document.querySelector('.remoteDevice'),document.querySelector('.portraitDevice'),...document.querySelectorAll('.deviceTV')];
-  for(const [i,el] of modules.entries()){
-    if(i>=2){
-      const right=document.querySelector('.rightDevices'),r=el.getBoundingClientRect();
-      el.classList.add('floatingTV');
-      el.style.right='3%';
-      el.style.bottom=(3+(4-i)*25)+'%';
-      el.style.width='21%';
-      document.getElementById('deviceHud').append(el);
-    }
-    el.dataset.module=['Remote','Candy','Weapon','Info','Status'][i];
-    const bar=document.createElement('div');
-    bar.className='moduleHandle';
-    bar.textContent=el.dataset.module;
-    const min=document.createElement('button');
-    min.textContent='−';
-    min.title='Minimize / restore';
-    min.onclick=()=>{
-      el.classList.toggle('minimized');
-      min.textContent=el.classList.contains('minimized')?'+':'−';
-    }
-    ;
-    bar.append(min);
-    el.append(bar);
-    let drag=null;
-    bar.onpointerdown=e=>{
-      if(e.target===min||!document.getElementById('gameFrame').classList.contains('hudCursor'))return;
-      e.preventDefault();
-      const r=el.getBoundingClientRect(),f=document.getElementById('gameFrame').getBoundingClientRect();
-      drag={
-        dx:e.clientX-r.left,dy:e.clientY-r.top,f
-      }
-      ;
-      bar.setPointerCapture(e.pointerId);
-    }
-    ;
-    bar.onpointermove=e=>{
-      if(!drag)return;
-      const f=drag.f;
-      el.style.left=Math.max(0,Math.min(f.width-el.offsetWidth,e.clientX-f.left-drag.dx))/f.width*100+'%';
-      el.style.top=Math.max(0,Math.min(f.height-el.offsetHeight,e.clientY-f.top-drag.dy))/f.height*100+'%';
-      el.style.right='auto';
-      el.style.bottom='auto';
-    }
-    ;
-    bar.onpointerup=bar.onpointercancel=()=>drag=null;
-  }
-  document.querySelector('.rightDevices').remove();
-  root.FrontierDeviceHUD={
-    update,skin
-  }
-  ;
-}
-)(window);
+/* Layered HUD. PNGs share a 766x681 canvas; never crop individual layers.
+ * Repaint the portrait only on image load or Cerebral-band changes. Blood damage
+ * deliberately retains Candy's single authored portrait until more art arrives. */
+(/* @function device-hud.callback.1 — Provides the callback for a callback. Inputs: root. Updates: el dataset module; bar class name; bar text content; min text content; min title. Uses: document get element by id; face get context; a list of 1, 2, 3 map; weights slice. */ function(root){'use strict';
+ const face=document.getElementById('candyPortrait'),ctx=face.getContext('2d');
+ const paths=['img/portraits/sanity/Portrait TV Background.png',...[1,2,3].map(/* @function device-hud.callback.2 — Returns "img/portraits/sanity/Sanity Level " plus n plus ".png". Inputs: n. Returns: "img/portraits/sanity/Sanity Level " plus n plus ".png". */ n=>'img/portraits/sanity/Sanity Level '+n+'.png'),'img/portraits/candy/Candy Portrait 1A.png','img/ui/portrait-tv/Portrait Chassis.png','img/ui/portrait-tv/Portrait TV Lense.png'];
+ let dirty=true,lastBand=-1,weaponKey='',statsKey='',weights=[1,0,0,0],from=weights.slice(),progress=1,lastTime=0,lastWorld=null;const images=paths.map(/* @function device-hud.callback.3 — Provides the callback for paths map. Inputs: path. Updates: image onload; image src. Returns: image. */ path=>{const image=new Image();image.onload=/* @function device-hud.onload.4 — Processes a resource after it finishes loading. Inputs: no explicit arguments; uses enclosing module state. Updates: dirty. Returns: assignment. */ ()=>dirty=true;image.src=path;return image;});
+ /* @function device-hud.update.5 — Advances this system using the current state and elapsed time. Inputs: game. Updates: last time; last world; weights; weights at band; progress. Uses: frontier cerebral band; performance now; weights slice; from map. */ function update(game){const rules=game.sourceWorld.cerebral||FrontierCerebral.defaults,p=game.player,band=FrontierCerebral.band(p.cerebral??rules.max,rules.max,rules.thresholds);const time=performance.now()/1000,dt=Math.min(.1,Math.max(0,time-lastTime));lastTime=time;
+ if(lastWorld!==game.sourceWorld){lastWorld=game.sourceWorld;weights=[0,0,0,0];weights[band]=1;progress=1;lastBand=band;dirty=true;}
+ if(band!==lastBand){from=weights.slice();progress=0;lastBand=band;dirty=true;}
+ if(progress<1){progress=rules.transition===0?1:Math.min(1,progress+dt/(rules.transition??.75));const t=progress*progress*(3-2*progress);weights=from.map(/* @function device-hud.callback.6 — Returns v multiplied by 1 minus t plus i equals band selects t or 0. Inputs: v; i. Returns: v multiplied by 1 minus t plus i equals band selects t or 0. */ (v,i)=>v*(1-t)+(i===band?t:0));dirty=true;}
+ if(dirty){ctx.clearRect(0,0,766,681);ctx.globalCompositeOperation='lighter';for(let i=0;i<4;i++){ctx.globalAlpha=weights[i];if(images[i].complete&&images[i].naturalWidth)ctx.drawImage(images[i],0,0,766,681);}ctx.globalCompositeOperation='source-over';ctx.globalAlpha=1;for(const image of [images[4],images[5],images[6]])if(image.complete&&image.naturalWidth)ctx.drawImage(image,0,0,766,681);dirty=false;face.dataset.cerebralBand=String(band);face.dataset.blending=String(progress<1);face.dataset.state='neutral';}
+ const stats='Blood '+p.hp+' / 100; Cerebral '+Math.round(p.cerebral??rules.max)+' / '+rules.max;if(stats!==statsKey){document.getElementById('portraitStats').textContent=stats;face.title=stats;statsKey=stats;}
+ const w=p.weapon,key=[w?.name,w?.type,p.holstered,p.ammoLoaded,p.ammoReserve].join('|');if(key!==weaponKey){weaponKey=key;const screen=document.getElementById('equipmentScreen');screen.replaceChildren();const icon=document.createElement('div');icon.className='weaponIcon';icon.innerHTML=w?.type==='melee'?'<svg viewBox="0 0 100 60" aria-label="Melee weapon"><path d="M24 45L61 8L76 4L72 19L35 56M22 31L47 56" fill="none" stroke="#d46a3e" stroke-width="4"/></svg>':'<svg viewBox="0 0 100 55" aria-label="Pistol"><path d="M8 12H80L88 18V27H56L48 49H32L36 29H8Z" fill="#4a2019" stroke="#d46a3e" stroke-width="3"/></svg>';const text=document.createElement('span');text.textContent=(p.holstered?'HOLSTERED\n':'')+(w?.name||'UNARMED')+(w?.type==='melee'?'':'\n'+p.ammoLoaded+' / '+p.ammoReserve);screen.append(icon,text);}
+ }
+ // Dragging is still available in HUD layout mode. Hit rectangles use percentages
+ // of the full artwork so resizing/fullscreen cannot misalign the remote buttons.
+ for(const [el,name]of [[document.querySelector('.remoteDevice'),'Remote'],[document.querySelector('.portraitDevice'),'Portrait'],[document.querySelector('.combinedDevice'),'Weapon / immersion']]){el.dataset.module=name;if(name==='Weapon / immersion'){document.getElementById('deviceHud').append(el);el.classList.add('floatingTV');}const bar=document.createElement('div');bar.className='moduleHandle';bar.textContent=name;const min=document.createElement('button');min.textContent='−';min.title='Minimize / restore';min.onclick=/* @function device-hud.onclick.7 — Responds to a button or clickable control. Inputs: no explicit arguments; uses enclosing module state. Updates: min text content. Uses: el class list toggle; el class list contains. */ ()=>{el.classList.toggle('minimized');min.textContent=el.classList.contains('minimized')?'+':'−';};bar.append(min);el.append(bar);let drag;bar.onpointerdown=/* @function device-hud.onpointerdown.8 — Begins the pointer-driven interaction. Inputs: e. Updates: drag. Uses: document get element by id using "gameFrame" class list contains; document get element by id; e prevent default; el get bounding client rect. Returns: without a result. */ e=>{if(e.target===min||!document.getElementById('gameFrame').classList.contains('hudCursor'))return;e.preventDefault();const r=el.getBoundingClientRect();drag={dx:e.clientX-r.left,dy:e.clientY-r.top};bar.setPointerCapture(e.pointerId);};bar.onpointermove=/* @function device-hud.onpointermove.9 — Updates the active pointer-driven interaction. Inputs: e. Updates: el style left; el style top; el style right; el style bottom. Uses: document get element by id using "gameFrame" get bounding client rect; document get element by id. Returns: without a result. */ e=>{if(!drag)return;const f=document.getElementById('gameFrame').getBoundingClientRect();el.style.left=Math.max(0,Math.min(f.width-el.offsetWidth,e.clientX-f.left-drag.dx))/f.width*100+'%';el.style.top=Math.max(0,Math.min(f.height-el.offsetHeight,e.clientY-f.top-drag.dy))/f.height*100+'%';el.style.right=el.style.bottom='auto';};bar.onpointerup=bar.onpointercancel=/* @function device-hud.onpointercancel.10 — Cancels the active pointer-driven interaction. Inputs: no explicit arguments; uses enclosing module state. Updates: drag. Returns: assignment. */ ()=>drag=null;}
+ document.querySelector('.rightDevices').remove();const oldSkin=document.querySelector('select#hudSkin');if(oldSkin)oldSkin.closest('label').hidden=true;
+ root.FrontierDeviceHUD={update,/* @function device-hud.skin.11 — Handles skin within device hud. Inputs: no explicit arguments; uses enclosing module state. */ skin(){/* Combined authored chassis is fixed; legacy skin selector is disabled. */}};
+})(window);
+

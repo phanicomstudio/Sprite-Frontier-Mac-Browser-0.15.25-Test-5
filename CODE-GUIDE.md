@@ -1,4 +1,6 @@
-# Engine maintenance guide — 0.6.0
+# Engine maintenance guide — 0.15.16
+
+Current release: see ITERATION-0.15.16.md for camera, landing and recovery behavior. FUNCTION-REFERENCE.md covers every owned runtime function, including the earlier engine. Older release sections below are retained as history.
 
 This project is becoming a reusable game builder, not a single finished game. The current demo exercises engine systems; its title, Candy, weapons, terrain seed and events are test content. Future games should supply their own project data instead of forking movement, renderer or editor code. Separately titled game export, multiple maps, expansion installation and mod loading are architectural direction, not completed shipping tools in 0.6.
 
@@ -104,3 +106,69 @@ Do not promise a fixed FPS from CPU submission benchmarks. Profile simulation, G
 Older browser-demo.cjs/browser-events.cjs tested historical controls/modal dialogue and are retained as history; they are not current release acceptance tests. Do not run them as background input tests. Current smoke uses browser06.cjs.
 
 Load order failures normally appear as undefined globals. Asset problems appear as missing naturalWidth/failed requests. File:// WebGL failures often require embedded image data, not a change to movement. Electron access-violation dialogs remain unverified desktop-host failures; do not relaunch Electron repeatedly while troubleshooting the engine.
+
+## 0.11 extension points
+
+world.js owns dimensions, limits, activity validation and generation. activity.js owns spatial cells and motion scheduling; never delete actors to make them sleep. events.js calls the motion service while keeping global command execution live. inspection.js is driven by the existing app frame, not a second timer. render.js limits grid work and caches terrain heights. Keep boundaries consistent in world/events/terrain/spatial/save/adapter/editor/app when changing the map schema.
+
+
+## 0.12 ownership
+- terrain.js validates/samples generated and edited heights; terrain-brush.js changes sparse vertices/cells.
+- water.js validates materials, indexes painted cells, loads reusable texture assets and builds projected surfaces.
+- pixi-renderer.js owns pooled water meshes, repeat textures and sprite/vector waterline masks; render.js chooses the projected cutoff.
+- flight.js is a reusable vertical movement API; app.js chooses player flight versus ground physics.
+- asset-style.js prepares cached raster silhouettes/phosphor variants; vector-display.js owns map appearance settings.
+- editor-tools.js groups forms by task and commits brush strokes through app.js validated undo transactions.
+- world.js validates every new persistent field; save.js also validates optional player altitude.
+
+## 0.13 ownership
+See ITERATION-0.13.md. cerebral.js validates Blood/Cerebral-related rules, schedules proximity drains and configures starter melee. device-hud.js composites full-canvas layers only when dirty. world.js retains validated source flags/rules; save.js retains Cerebral and magazine scalars. app.js coordinates editor bindings and runtime calls. music-catalog.js is generated from data/music-catalog.json for offline browser use.
+# 0.15 additions
+
+`src/map-library.js` owns authored map IDs/names, selection, local IndexedDB persistence and validated portable project backups. `app.js` supplies world replacement and map generation; runtime playtest state resets when switching. Terrain/water/events remain in each individual world. Automatic persistence follows authored restarts, with imported projects added to the library.
+
+`src/water.js` derives a bounded wet slope rim around painted floor cells, clips water polygons at the camera near plane and chooses pool height from surrounding banks. Terrain revision invalidates geometry and rim buckets. `src/render.js` preserves one-unit terrain bends in coarse grid lines and draws anomaly rocks with a distinct full-color stroke.
+
+
+## 0.15 interior and journey architecture
+interiors.js validates room/travel data and caches floor edges, collision bounds and static box faces. room-art.js owns the built-in room image once; maps reference its filename. room-editor.js uses shared validated mutation/undo and redraws only visible dirty previews. normal-workbench.js bounds buffers to 512 pixels per side and rebuilds on interaction. pixi-renderer.js caches normal textures/filters and applies optional directional lighting per image. render.js chooses fixed affine orthographic projection or existing perspective; painter ordering remains in use. muzzle.js inverts the orthographic floor axes for authored muzzle positions.
+map-library.js owns authored projects and default connections. app.js owns runtime journey snapshots, shared inventory/player state and journal, with entrance validation and enter-only gate triggers. events.js exposes the journal command. save.js validates the optional project/journey/journal extension before replacing runtime state; older single-map saves remain supported. Selector changes start fresh tests; gate travel restores local state.
+Tests: tests/interiors15.cjs checks validation, projection, collision and caches. Release browser acceptance covers authoring, travel, saves, normals, water and animation; performance reports live beside the Windows ZIP.
+
+### 0.15.1 fixed-room aim
+FrontierInterior.aim inverts the orthographic plane at weapon height or returns a picked actor center. Adapter.updateAim aligns facing; ActiveCombat uses that facing for its pattern; spatial.js shares the cursor target for projectile construction and keeps angular spread. app.js delivers logical canvas pointer coordinates and positions the existing reticle. Fixed rooms do not acquire pointer lock. Room scale edits heightScale through the same validated mutation and undo path; previews are event driven. Floor exit artwork projects the same radius used by travel checks.
+
+## 0.15.2 audit corrections
+Event command-menu options must match editor.fields/addCommand and FrontierEvents validation. Conditional markers are commands, not page conditions. Whole branch clipboard/deletion preserves matching markers; selection resets across event/page contexts. preview bounds the selected page; mutate restores runtime and undo/redo lists on rejection. Dialog validation feedback lives inside eventWorkbench.
+Exterior fixed-room exits open only a corridor overlapping an existing floor edge; normal inside movement avoids corridor checks. Travel requires crossing outside the floor when its exit center is exterior. Sprite aim is quantized before muzzle selection; spatial constructs a horizontal ray from that muzzle with existing spread/offsets. Multiplayer replication remains future. Tap release holds its last frame for 0.1 seconds without advancing walkTime.
+
+## Barrel guide authoring (0.15.3)
+Optional profile aimMode cursor/barrel and per-frame barrelX/barrelY/barrelDepth preserve phanicom-muzzles/1 backward compatibility. FrontierMuzzle.barrel returns the camera-relative unit direction including calibration corrections; spatial adds weapon spread and retains origin/swept collision. App reticle projects the same unspread ray. Fixed rooms and first person opt out. Calibration UI edits local data until Apply, with bounded undo. tests/barrel153.cjs checks validation and direction math. TOOLS-QUICKSTART.md documents the image-plane/depth ambiguity.
+
+Movement route modules (0.15.9 work in progress): src/mz-routes.js validates MZ numeric route records and owns command execution/controller overrides; src/event-motion.js performs continuous-coordinate swept movement; src/mz-route-dialog.js owns isolated route drafts and parameter controls. Command 205 registers independently in mz-commands.js/mz-dialogs.js, while events.js owns target resolution and route waits. Unknown extension fields in route records survive schema validation; unsupported route opcodes are rejected before execution. Route parity limitations are tracked in MZ-COMPATIBILITY.md.
+
+Parallel scheduling (0.15.9): createSession owns cloned runtime events and shared game state. events.js owns a main interpreter context plus contexts keyed by parallel event ID. Each context owns execution, waiting, route waiting and choice branches. loadContext/saveContext use the same command executor for all contexts. The message owner directs next/choose/cancelChoice to the context that opened the shared message. Movement, forced routes and timer update once in the root frame. Page changes replace only the affected parallel context. parallelDebug() exposes context progress; finite per-context/frame budgets are host adaptations. Runtime interpreter-progress serialization is not implemented.
+
+Transfer ownership: transfer-player.js resolves operands; scene-transition.js coordinates one commit/adoption; event-continuation.js carries only the executing page/cursor/origin map. app.js supplies map-scoped self-switch services. screen-fade.js owns event brightness separately; event-runtime.js requiresService preflight prevents service-dependent commands from silently failing. textPresentation avoids merging text window settings into following choices.
+
+Advanced condition presentation: FrontierConditionEditor.register(type,presenter,optionalFactory), after FrontierConditions.register(type,{validate,evaluate}). Presenter receives draft node and field helpers; factory makes a new JSON node. Shared condition validation bounds all accepted trees. No presenter/evaluator functions are serialized. Page editor stores extras as expressions beside the six baseline slots. Session entity resolver supplies live spatial subjects/targets without copying registry maps per frame.
+
+Event template foundation: FrontierEventTemplates.compile validates and freezes definitions once; instantiate shares immutable page data and owns identity/placement. snapshot returns a detached export. Runtime/editor integration is pending; callers must validate destination-map bounds before adoption. Do not mutate template pages during execution.
+
+Project templates are additive under templates; older project schema/1 files default to an empty template bank. Imports merge banks with ID mapping instead of overwriting; consumers of template references must use the returned mapping. Imported direct MZ map destinations in definitions are remapped with map numeric identities.
+
+Runtime replacement boundary: session.replaceEvent validates definition/version/placement before cancellation. It retains target identity/coordinates, cancels old owned execution/motion/message, and supports reset/preserve self switches. Definitions share frozen page data; references and debug traces are detached. replacementRevision must participate in scene rebuilding when app integration lands. This API is presently internal and is not an enabled authoring command.
+
+Template history: entry-only transactions,8MiB/32-record combined undo/redo cap. Failures preserve pending transaction. Project restoration resets session history. Removing a referenced definition is rejected; bank IDs/versions remain stable. Bank cache recompiles only when project.templates identity changes. Runtime Replace Event is registered outside native MZ commands; engine dialogs preserve baseline command tab organization.
+
+
+## October 9, 2026 — 0.15.17 extension
+
+See HUB-DOOR-GUIDE.md for the complete current authoring contract. New independent
+modules are model-visibility, hub-state, hub-workbench, hub-fixtures, door-audio,
+door-transition and offline item/door asset manifests. Existing templates and
+undo boundaries own authored changes. Playtest hub records own stock/drop state;
+map resources remain shared. Scene-transition owns transfer commit/resume and
+cancels previews. Every new callback/function has its own source contract; the
+current dated reference is FUNCTION-REFERENCE-0.15.17.md. Earlier explanations
+above remain historical where behavior differs.

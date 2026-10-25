@@ -1,3 +1,78 @@
+# 0.15.3
+
+Restored continuous room cursor shots; retained exterior exit and outdoor startup. Added optional third-person per-sheet/per-frame muzzle/barrel guides, forward depth, real-ray reticle, undo and JSON workflow. Audited room/map/dialogue/normal tools; improved template feedback/IDs and expanded-only debugger sampling. See ITERATION-0.15.3.md.
+
+## 0.15.2 — 2026-10-06
+- Audited UI event authoring: dialogue, choices, branches, journal, rewards and conditioned pages.
+- Fixed command menu, page deletion preview, rejected-edit rollback and modal error feedback.
+- Reset insertion selection, added Append at end, and preserve complete branches on copy/paste/delete.
+- Included an authored dialogue-room example and instructions.
+- Exterior room exit corridors, eight-direction room fire, aiming cursor hiding and single-frame taps.
+
+## 0.15.1 — 2026-10-06
+- Correct Room Test proportions and provide a visible room character-scale ruler/slider with undo.
+- Cursor aiming, sprite facing and horizontal weapon-height trajectories in fixed rooms.
+- Immediate firing without camera capture; P interaction remains separate.
+- Broad floor-projected exit patch and safer arrival placement.
+- Migrate original test calibration while preserving customized settings.
+
+## 0.15 — 2026-10-05
+- Fixed orthographic Room Test and free-camera primitive Geometry Ruin.
+- Room floor/collision, furniture, spawn and map-connection authoring.
+- Connected hub travel, persistent visited maps, relic quest and journal.
+- In-house height/normal-map workbench and cached directional normal lighting.
+- Brief-input animation, shared underwater visibility/effect classification and Cerebral crossfades.
+- Cached geometry/collision and deduplicated room artwork; measured outdoor and room stress checks.
+
+## 0.14.1 — 2026-10-05
+- Map picker, named independent maps, local library saving and project backup/import.
+- Fixed missing Cerebral update in normal play; identifiable anomaly and inspection details.
+- Lower bank-relative pools, adjoining wet slope coverage, accurate grid bends and near-plane clipping.
+- Contained weapon icon/ammo/text and scrolling immersion viewport.
+
+## 0.14.0 — 2026-10-05
+- Terrain-clipped level water shorelines with cached geometry and viewport culling.
+- Camera-height dependent sprite occlusion; underwater bodies visible without tint.
+- Editable world-only underwater distortion with independent strength, speed and frequency.
+
+## 0.13.0 — 2026-10-05
+- Layered authored portrait, Cerebral backgrounds and single Candy damage fallback; removed Vitality TV.
+- Combined weapon/immersion chassis and invisible aligned remote Inventory/Power buttons.
+- Editable Cerebral proximity sources, thresholds and starter melee; persistent Cerebral and per-weapon magazines.
+- Banked exploration/combat tracks and static audio catalog included and preselected.
+- Retained prior cursor, fog, Vectrex, water, terrain and event/editor fixes.
+
+## 0.12.2
+- Fixed distance fog extinguishing mountain/cloud vector beams.
+- Fixed stale sprite glow transforms and made artwork controls apply immediately.
+- Added an editable shallow pool near demo spawn.
+
+## 0.12.1
+Vectrex appearance controls now have a dedicated editor tab rather than being buried under Map settings.
+
+## 0.12.0
+
+Added focused editor tabs, sparse terrain brushes with stroke undo/redo, seeded undulation, opaque painted water and reusable texture materials, waterline clipping, player hover/free flight, full-color vector and cached raster treatments, reusable named types and separate map event list. Water textures can be embedded for portable map export. Existing gameplay and cursor fixes remain.
+
+## 0.11.2
+Per-map UVMC2-inspired vector beam preset: cyan-white core, pooled soft glow, configurable line gaps and original-color option. HUD and sprites retain their appearance. Existing maps default to the original renderer.
+
+## 0.11.1
+
+Hand cursor remains inside the fullscreen viewport; the native inspection scrollbar is hidden while wheel/auto scrolling remains available. Object names omit distance and wrap inside the shared inspection scroll area.
+
+## 0.11.0
+
+Weapon-independent P-mode actions; uncluttered hover names; contained automatic/manual CRT scrolling; rectangular map authoring and backward migration; spatial scenery queries; bounded terrain rendering; distance-scheduled ambient event motion with persistent state and always-active quest policy. See ITERATION-0.11.md.
+
+# Version 0.10 — 2026-10-05
+
+P-mode actions on press with pointer capture; editable success sound/volume; per-map depth fog with runtime overrides; clearer desktop launch instructions. Lighting is reserved for a future iteration.
+
+# Version 0.9 — 2026-10-05
+
+Live P-mode hover/pickup/inspection, three paired hand cursors, crosshair visibility options, armed directional movement with firing alignment, and combat-to-exploration fades. See ITERATION-0.9.md for controls and maintainer details.
+
 # Changelog
 
 Earlier entries summarize existing iteration reports and request logs. Newest entry records implementation, not future promises.
@@ -73,3 +148,13 @@ Still incomplete: full specialized source weapon-family/cover/equip/AI/command/d
 - Passive drip audio is audible within 3 world units by default, editable in global parameters.
 - Separate audio/bgm/exploration and audio/bgm/combat folders; demo playlists use these paths. Empty playlists stay silent; transitions start new randomized tracks at zero.
 
+
+0.11.1 also suppresses native middle-button autoscroll in the viewport and clears stale held movement/drag input on middle press.
+
+
+## October 9, 2026 — 0.15.17
+
+Current hub/door/item/model visibility changes are documented in HUB-DOOR-GUIDE.md
+and ITERATION-0.15.17.md. 74 source checks and 18 browser acceptance commands pass;
+3,824 function comments are indexed. Native Electron automation could not launch;
+Mac is a complete browser edition. See TEST-REPORT-0.15.17.md for scope/limits.

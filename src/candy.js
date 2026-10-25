@@ -83,3 +83,4 @@ FrontierCandy.direction={
   rows:[3,6,2,5,0,4,1,7],walkSequence:[1,2,1,0],frameSeconds:.14,idleColumn:1
 }
 ;
+

@@ -4,7 +4,7 @@ const root=__dirname,types={
   '.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json'
 }
 ;
-http.createServer((req,res)=>{
+http.createServer(/* @function serve.callback.1 — Provides the callback for http create server. Inputs: req; res. Uses: path resolve; decode uricomponent; req url split; p starts with. Returns: without a result. */ (req,res)=>{
   try{
     const p=path.resolve(root,'.'+decodeURIComponent(req.url.split('?')[0]==='/'?'/index.html':req.url.split('?')[0]));
     if(!p.startsWith(root+path.sep)){
@@ -12,7 +12,7 @@ http.createServer((req,res)=>{
       res.end();
       return;
     }
-    fs.readFile(p,(e,data)=>{
+    fs.readFile(p,/* @function serve.callback.2 — Provides the callback for fs read file. Inputs: e; data. Uses: res write head; res end; res set header; path extname. Returns: without a result. */ (e,data)=>{
       if(e){
         res.writeHead(404);
         res.end('Not found');
@@ -28,4 +28,4 @@ http.createServer((req,res)=>{
     res.end('Bad request');
   }
 }
-).listen(8765,'127.0.0.1',()=>console.log('Sprite Frontier: http://127.0.0.1:8765'));
+).listen(8765,'127.0.0.1',/* @function serve.callback.3 — Returns console log using "Sprite Frontier: http://127.0.0.1:8765". Inputs: no explicit arguments; uses enclosing module state. Returns: console log using "Sprite Frontier: http://127.0.0.1:8765". */ ()=>console.log('Sprite Frontier: http://127.0.0.1:8765'));

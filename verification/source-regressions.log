@@ -1,0 +1,221 @@
+node tests/barrel153.cjs
+PASS optional barrel guides: camera-relative unit trajectories, fixed/first-person/holster opt-out, invalid data and legacy compatibility.
+
+node tests/interiors15.cjs
+PASS room projection inversion, collision margin/cache, invalid outlines/assets, primitive clipping, journal command and transition validation.
+
+node tests/run.cjs
+PASS: seeded generation, input validation, damage, obstruction, kill events, reload and holster.
+PASS: project data mirror, walk/sprint/diagonal speed, blocked animation, camera-relative sprite directions.
+PASS: original synth plugin walk/sprint sweeps, output boost, blocked-movement silence and lifecycle.
+PASS: event prefab offline mirror and initial event definitions.
+
+node tests/events.cjs
+PASS: event page precedence, one-time ammo, isolated playtests, touch entry, waits/transfers, validation and JSON round-trip.
+
+node tests/input-terrain.cjs
+PASS: continuous mouse state, controller deadzones/edges/disconnect, analog speed, terrain/sky round-trip, grounded jump, height-aware shots and terrain obstruction.
+PASS: full-body framing below crosshair across zoom, pitch, height and terrain.
+PASS: automatic small steps, jumping/landing on rocks, tall-object blocking.
+PASS: stabilized projection and fixed-crosshair aim alignment.
+PASS: rear scenery cannot redirect aim; randomized scenery bounce exits surface, preserves unit direction, respects chance and bounce limit.
+
+node tests/event-foundation.cjs
+PASS: combined page conditions, variable set/add, validation and export round-trip.
+
+node tests/port06.cjs
+PASS: muzzle layout bounds, parser phrases/switches, atomic save validation, source blood equations, all supplied audio manifest files.
+PASS: editable rules bounds/round-trip/jump apex conversion; shuffled soundtrack bags, map override, combat/exploration transitions and stop.
+PASS: all armed muzzle rows/frames stay at authored projected pixels across wider aim limits and zoom.
+
+node tests/editor08.cjs
+PASS: conversational choices, branch/else, self-switch page transition, isolated state, branch validation, signed elevation, live parallel execution.
+
+node tests/fog10.cjs
+PASS: fog validation, bounded falloff, color normalization and isolated runtime overrides.
+
+node tests/large11.cjs
+PASS: legacy maps, rectangular generation/bounds/transfers, rejected shrink, full/reduced/dormant wake, persistent state, always-active quest pages.
+
+node tests/event158.cjs
+PASS event height, flying mode, invalid data, map transfer execution and JSON round-trip
+
+node tests/fixed-diagonals159.cjs
+PASS all fixed-room cardinal/diagonal screen movement, eight animation rows, fire-to-walk and idle transitions; outdoor selection unchanged
+
+node tests/mz-foundation159.cjs
+PASS explicit migrations, unknown extension round-trip, nested extensible conditions, MZ records/text continuation, branches/ranges/waits and unsupported-command atomic stop
+
+node tests/event-motion159.cjs
+PASS MZ motion cadence, speed, direction fix, stepping, through and swept obstacle protection.
+
+node tests/mz-variables159.cjs
+PASS six variable operations, execution-time variable operands, MZ integer rounding, inclusive random ranges and validation.
+
+node tests/mz-branch-editing159.cjs
+PASS Else creation/removal, nested section preservation, extension retention, structural validation and both runtime paths.
+
+node tests/mz-flow159.cjs
+PASS loops, branch-controlled break, label jumps, exit processing and bounded per-frame execution.
+
+node tests/mz-state159.cjs
+PASS party-conditioned page precedence, party/quest persistence, isolated restoration, legacy defaults and invalid-state rejection.
+
+node tests/mz-groups159.cjs
+PASS structural section selection, block closure, body selection, paste rebasing, extension retention and nesting limits.
+
+node tests/party-target159.cjs
+PASS enemy targeting of living companions, allied exclusion, passive awareness and defeated actor filtering.
+
+node tests/event-touch159.cjs
+PASS Event Touch validation, contact entry, sustained-contact debounce, re-entry and airborne exclusion.
+PASS approaching event initiates touch against a stationary player without altering authored positions.
+
+node tests/event-capacity159.cjs
+PASS long authored sequence, bounded per-frame execution, exact completion and host import bounds.
+
+node tests/mz-erase159.cjs
+PASS map-session erasure, continued command execution, interaction suppression and authored/new-session preservation.
+
+node tests/mz-timer159.cjs
+PASS timer start/countdown/zero bound, fractional comparisons and stopped timer conditions.
+PASS timer persistence, fractional value retention, isolated restoration and malformed-save rejection.
+
+node tests/mz-routes159.cjs
+PASS custom routes movement, waits, switching, turning, blocked retry/skip, completion and authored-state isolation; unsupported routes reject before execution.
+
+node tests/mz-forced-routes159.cjs
+PASS forced event/player routes, blocking/nonblocking completion, missing target, repeating wait and atomic unsupported rejection.
+
+node tests/mz-choices159.cjs
+PASS nested choices, selected/cancel/disallowed branches, text+choices combination, branch body preservation and grouped editing.
+
+node tests/mz-parallel159.cjs
+PASS independent parallel waits during main events, page reset, serialized message ownership, routed choice/cancel, single shared timer update and bounded fair scheduling.
+
+node tests/mz-number159.cjs
+PASS number input digit wrap/clamp, 1–8 digits, no cancellation, variable assignment, interpreter wait, text combination and parallel ownership.
+
+node tests/mz-gold159.cjs
+PASS gold arithmetic/clamps, variable operands, state round trip and extensible runtime registration/waits.
+
+node tests/mz-items159.cjs
+PASS Change Items quantity clamp, removal, signed variable operand, item branch integration and isolated inventory.
+
+node tests/map-identities159.cjs
+PASS stable numeric map identities, reorder/save retention, collision validation and internal direct-transfer remapping without source mutation.
+
+node tests/page-cache159.cjs
+PASS 100 unchanged queries avoid rescans; mutation/replacement/restore/gold invalidate; timer/custom conditions stay live.
+
+node tests/transfer-player159.cjs
+PASS transfer direct/variable operands, stable map IDs, continuous coordinates, facing/fade data, invalid destinations and missing-service atomic rejection.
+
+node tests/event-continuation159.cjs
+PASS versioned continuation JSON round trip, resumed cursor/wait without replay, atomic invalid/busy rejection and active message guard.
+
+node tests/scene-transition159.cjs
+PASS fade duration, single commit/resume, no-fade transfer, bounded trace and failed commit cleanup.
+PASS melt capture ordering, one commit/resume, simulation ownership and failure cleanup.
+
+node tests/live-transfer159.cjs
+PASS chained scene transfers, retained source despite destination ID collision, cursor/shared state and parallel rejection before effects.
+PASS transferred self-switch/branch origin and off-map event-character guard.
+
+node tests/screen-fade159.cjs
+PASS bounded screen brightness tween, interrupted fade, scalar state validation, 24-frame interpreter wait and missing-service preflight.
+
+node tests/transparency159.cjs
+PASS route visibility/opacity, retained scalar changes, authored isolation, invalid-opacity rejection and player transparency execution.
+
+node tests/spatial-conditions159.cjs
+PASS spatial page/branch conditions use live player positions and actual event subject, dynamic cache avoids stale selection.
+
+node tests/event-templates159.cjs
+PASS reusable template validation, frozen shared pages, source/export isolation, extension retention and version rejection.
+
+node tests/event-replacement159.cjs
+PASS replacement cancels wait/dialogue/parallel ownership, preserves placement/identity, explicit self-switch policy, atomic missing/version rejection and bounded diagnostics.
+
+node tests/template-history159.cjs
+PASS bounded entry-only template history, failed-action retention, detached callbacks, redo invalidation and oversize pruning.
+
+node tests/screen-flash159.cjs
+PASS screen flash scalar lifecycle/save isolation, duration/wait, replacement, invalid data and service preflight.
+
+node tests/screen-shake159.cjs
+PASS shake waveform, rate independence, weaker replacement settling, scalar restoration, duration/wait and required-service preflight.
+
+node tests/screen-tone159.cjs
+PASS tone tween, interruption, zero-frame application, detached scalar save, validation and interpreter wait/service guards.
+
+node tests/mz-se159.cjs
+PASS SE stereo/volume/pitch, same-frame suppression, None semantics, preview isolation, bounded pool reuse, command lowering and required services.
+
+node tests/mz-route-se159.cjs
+PASS movement-route SE validation/dialog data, custom/forced execution, missing-service atomic preflight and failed sound releases route wait.
+
+node tests/gameplay-state159.cjs
+PASS bounded skill/reputation/faction state, stable checks, isolated save/restore and selective page-cache invalidation.
+
+node tests/gameplay-commands159.cjs
+PASS gameplay command validation, real interpreter skill branch/quest/inventory effects, bounded mutation, extensions and state round trip.
+
+node tests/gameplay-defaults159.cjs
+PASS versioned starting defaults, independent sessions, extension retention and invalid-state rejection.
+
+node tests/quest-lifecycle159.cjs
+PASS declined/failed skill checks, accepted quest, gated one-time container, JSON reload, consumed letter, one-time reward/reputation and inventory bounds.
+
+node tests/quest-maps159.cjs
+PASS independent courier maps, preserved source, no enemies, reciprocal stable travel IDs and complete project validation.
+
+node tests/actor-behavior159.cjs
+PASS patrol/chase/return, stationary sentinel, bounded wander/trace, swept collision, invalid profiles, extensions and isolated event-session integration.
+PASS map-specific patrol bounds reject unreachable waypoints before adoption.
+PASS behavior JSON snapshot retains original home/pursuit, return resumes and malformed state rejects atomically.
+PASS pure controller/event binding preflight before state adoption.
+PASS behavior-owned enemy combat acquisition, return suppression, death and stopped-actor movement guard.
+PASS non-aggressive actor stun/attack recovery and invalid time guard.
+
+node tests/screen-melt159.cjs
+PASS bounded melt strips, odd-width coverage, frame-rate independent timing, termination and invalid inputs.
+
+node tests/screen-melt-overlay159.cjs
+PASS melt capture, strip drawing, bounded storage and cleanup on completion/failure.
+
+node tests/sprite-lighting159.cjs
+PASS normal lighting direction, artwork alpha, source isolation, dimension bounds and invalid settings.
+
+node tests/normal-bindings159.cjs
+PASS sparse normal bank, extension isolation, PNG header/dimension checks and duplicate/profile/light rejection.
+PASS normal extension finite JSON, structural limits and rejection of values that cannot round trip.
+
+node tests/normal-cache159.cjs
+PASS normal source replacement cancellation, reservation reclamation, stale result rejection and prepared-image release.
+
+node tests/model-container1511.cjs
+PASS GLB/glTF container bounds, triangle statistics, portable paths and malformed import rejection
+
+node tests/model-debug1511.cjs
+PASS volume overlay has 12 edges per box; hidden during normal play; explicit debug toggle
+
+node tests/model-events1511.cjs
+PASS independent model/collision/zone data, local transforms, door-only ray targeting and JSON roundtrip
+
+node tests/model-library1511.cjs
+PASS shared decode cache, external glTF buffer, bounds checking and portable model bundle roundtrip
+
+node tests/model-scene1511.cjs
+PASS nested model transforms, coordinate conversion, shared geometry, triangle occlusion and hierarchy rejection
+
+node tests/model-transform1511.cjs
+PASS model transforms, attached door boxes, world-distance ray tests, containment and invalid dimensions
+
+node tests/model-volumes1511.cjs
+PASS queued enter/exit transitions, single activation, rotated independent collision and jumping above boxes
+
+node tests/model-mesh-collision1513.cjs
+PASS exact mesh doorway, thin-wall sweep, jump clearance, rotated/nonuniform instances, shared BVH and standing contact
+PASS independent NPC body query and visibility-independent physical collision
+

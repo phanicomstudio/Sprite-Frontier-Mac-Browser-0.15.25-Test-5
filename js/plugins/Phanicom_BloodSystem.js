@@ -3,13 +3,13 @@
  * See CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 /* 3D world host for Phanicom_BloodSystem 1.0.1; particle equations in Core. */
-(function(root){
+(/* @function Phanicom_BloodSystem.callback.1 — Provides the callback for a callback. Inputs: root. Updates: root phanicom blood. Uses: number. */ function(root){
 'use strict'  ;
   const cfg=root.PhanicomBloodCore.cfg,settings=root.PhanicomPluginSettings.blood,combat=root.PhanicomPluginSettings.combat;
   const maxParticles=512,maxDecals=Math.min(500,Number(combat.MaxBloodDecals||80)),maxFragments=Math.min(200,Number(combat.MaxGibFragments||48));
   let current;
 // Attach the blood API to a runtime and initialize transient particles/decals/fragments and timers.
-  function attach(game){
+  /* @function Phanicom_BloodSystem.attach.2 — Attach the blood API to a runtime and initialize transient particles/decals/fragments and timers. Inputs: game. Updates: current; game blood state; game blood fx; game blood decals; game gib fragments. */ function attach(game){
     current=game;
     game.bloodState??={
       actors:{
@@ -25,16 +25,16 @@
     game.passiveDrips=[];
   }
 // Resolve actor override, authored blood identity or default; normalize cream/synth and hex colors.
-  function identity(subject){
+  /* @function Phanicom_BloodSystem.identity.3 — Resolve actor override, authored blood identity or default; normalize cream/synth and hex colors. Inputs: subject. Uses: /<CreamBleed>/i test; a list of "regular", "cream", "none" includes; /^#[\da-f]{3}([\da-f]{3})?$/i test; a list of spread element map using a callback join. Returns: "cream"; "regular". */ function identity(subject){
     const type=typeof subject==='object'?(current?.bloodState.actors[subject.id]||subject.blood||(/<CreamBleed>/i.test(subject.note||'')?'cream':'regular')):subject||'regular';
     if(type==='synth')return 'cream';
     if(type==='default')return 'regular';
     if(['regular','cream','none'].includes(type))return type;
-    if(/^#[\da-f]{3}([\da-f]{3})?$/i.test(type))return type.length===4?'#'+[...type.slice(1)].map(c=>c+c).join(''):type;
+    if(/^#[\da-f]{3}([\da-f]{3})?$/i.test(type))return type.length===4?'#'+[...type.slice(1)].map(/* @function Phanicom_BloodSystem.callback.4 — Returns c plus c. Inputs: c. Returns: c plus c. */ c=>c+c).join(''):type;
     throw Error('Invalid blood identity.');
   }
 // Translate a blood identity into particle color, count, duration and enabled/profile flags.
-  function resolve(subject){
+  /* @function Phanicom_BloodSystem.resolve.5 — Translate a blood identity into particle color, count, duration and enabled/profile flags. Inputs: subject. Uses: identity; type starts with; number. Returns: a record containing type, enabled, profile, color, dripColor, particleCount, duration. */ function resolve(subject){
     const type=identity(subject),cream=type==='cream';
     return {
       type,enabled:type!=='none',profile:cream?'cream':'regular',color:cream?cfg.creamColor:type.startsWith('#')?type:cfg.regularColor,dripColor:cream?cfg.creamColor:type.startsWith('#')?type:settings.dripColor||'#FF0000',particleCount:Number(cream?settings.creamCount:settings.regularCount),duration:cream?cfg.creamDuration:cfg.regularDuration
@@ -42,7 +42,7 @@
     ;
   }
 // Emit bounded original-equation particles at world coordinates, freezing a local billboard basis for their motion.
-  function sprayAt(x,y,options={
+  /* @function Phanicom_BloodSystem.sprayAt.6 — Emit bounded original-equation particles at world coordinates, freezing a local billboard basis for their motion. Inputs: x; y; assignment pattern. Updates: p origin; p right; p depth; p layer. Uses: resolve; number; frontier terrain height; game blood fx push. Returns: 0; 0. */ function sprayAt(x,y,options={
   }
   ){
     const game=options.game||current;
@@ -70,7 +70,7 @@
     return count;
   }
 // Use actual impact position and victim identity to trigger a configured blood burst.
-  function damage(game,actor,shot){
+  /* @function Phanicom_BloodSystem.damage.7 — Use actual impact position and victim identity to trigger a configured blood burst. Inputs: game; actor; shot. Updates: current. Uses: resolve; spray at; number. Returns: without a result. */ function damage(game,actor,shot){
     current=game;
     if(settings.autoSpray==='false')return;
     const blood=resolve(actor);
@@ -80,7 +80,7 @@
     );
   }
 // Split the active sprite frame into bounded gib pieces with independent world motion.
-  function fragments(game,actor){
+  /* @function Phanicom_BloodSystem.fragments.8 — Split the active sprite frame into bounded gib pieces with independent world motion. Inputs: game; actor. Uses: frontier sprites sheet; frontier directions select; game gib fragments push. Returns: 0; count. */ function fragments(game,actor){
     const sheet=FrontierSprites.sheet(actor),selected=sheet&&FrontierDirections.select(actor,game.camera.yaw,sheet.direction);
     if(!selected||!sheet.image.complete)return 0;
     const f=sheet.frames[selected.row*sheet.columns+selected.column],right={
@@ -103,7 +103,7 @@
     return count;
   }
 // Apply configured gib threshold/death mode, blood burst, persistent stain and player death delay.
-  function death(game,actor,shot,before){
+  /* @function Phanicom_BloodSystem.death.9 — Apply configured gib threshold/death mode, blood burst, persistent stain and player death delay. Inputs: game; actor; shot; before. Updates: current; actor gibbed; game death until; actor death mode. Uses: resolve; number; fragments; spray at. */ function death(game,actor,shot,before){
     current=game;
     const blood=resolve(actor),mode=game.deathMode||combat.PlayerDeathMode||'damage';
     const metric=combat.PlayerGibMetric==='overkill'?Math.max(0,shot.damage-before):shot.damage;
@@ -129,7 +129,7 @@
   }
   let dripAudio;
   // Fixed-rate particle integration preserves source equations; transient arrays compact in place instead of allocating filters.
- function update(game,dt){
+ /* @function Phanicom_BloodSystem.update.10 — Fixed-rate particle integration preserves source equations; transient arrays compact in place instead of allocating filters. Inputs: game; dt. Updates: current; game blood accumulator; game blood fx at update; game blood fx length; game passive drips length. Uses: p update; p is dead; /<NoBleedEffect>/i test; root frontier world activity settings. */ function update(game,dt){
     current=game;
     game.bloodAccumulator+=Math.min(.05,dt);
     while(game.bloodAccumulator>=1/60){
@@ -144,8 +144,9 @@
 // three 4px squares every 5..24 frames, falling 4px/frame for 60 frames.
 // They follow their actor; sprays remain independent of passive visibility.
       const passiveAllowed=!game.bloodState.hidden&&!/<NoBleedEffect>/i.test(game.sourceWorld.note||'');
-      const actors=[game.player,...game.maps.frontier.entities,...(game.sceneEvents||[])];
-      const eligible=new Map(actors.filter(a=>!a.dead&&a.hp>0&&a.hp<=Number(settings.hpThreshold||10)&&resolve(a).enabled).map(a=>[a.id,a]));
+      const reach=root.FrontierWorld?.activitySettings(game.sourceWorld.activity).activeDistance||24;
+      const actors=[game.player,...(root.FrontierActivity?root.FrontierActivity.query(game,game.player.x-reach,game.player.y-reach,game.player.x+reach,game.player.y+reach):[...game.maps.frontier.entities,...(game.sceneEvents||[])])];
+      const eligible=new Map(actors.filter(/* @function Phanicom_BloodSystem.callback.11 — Returns the inverse of a dead and a hp is greater than 0 and a hp is at most number using settings hp threshold or 10 and resolve using a enabled. Inputs: a. Uses: number; resolve. Returns: the inverse of a dead and a hp is greater than 0 and a hp is at most number using settings hp threshold or 10 and resolve using a enabled. */ a=>!a.dead&&a.hp>0&&a.hp<=Number(settings.hpThreshold||10)&&resolve(a).enabled).map(/* @function Phanicom_BloodSystem.callback.12 — Returns a list of a id, a. Inputs: a. Returns: a list of a id, a. */ a=>[a.id,a]));
       if(!passiveAllowed)game.passiveDrips.length=0;
       else for(const actor of eligible.values()){
         const blood=resolve(actor),key=actor.id+':'+blood.type;
@@ -192,7 +193,7 @@
     game.gibFragments.length=n;
   }
   // Project world effects into the active renderer. Passive drops follow their actor; sprays keep their spawn basis. Restore alpha afterward.
- function draw(ctx,game,cam,project){
+ /* @function Phanicom_BloodSystem.draw.13 — Project world effects into the active renderer. Passive drops follow their actor; sprays keep their spawn basis. Restore alpha afterward. Inputs: ctx; game; cam; project. Updates: ctx fill style; ctx global alpha. Uses: project; ctx fill rect; game runtime entities get; ctx save. */ function draw(ctx,game,cam,project){
     for(const d of game.bloodDecals||[]){
       const q=project(cam,d.x,d.y,d.z);
       if(q){
@@ -239,45 +240,45 @@
   }
   // Public host API. Identity persistence is distinct from transient sprays/drips; callers use IDs in the runtime registry.
  const API=root.PhanicomBlood={
-    attach,resolve,sprayAt,damage,death,update,draw,setActorType(id,type){
+    attach,resolve,sprayAt,damage,death,update,draw,/* @function Phanicom_BloodSystem.setActorType.14 — Handles set actor type within phanicom blood system. Inputs: id; type. Updates: current blood state actors at id. Uses: identity. */ setActorType(id,type){
       const normalized=identity(type);
       if(type==='default')delete current.bloodState.actors[id];
       else current.bloodState.actors[id]=normalized;
     }
-    ,setPlayerType(type){
+    ,/* @function Phanicom_BloodSystem.setPlayerType.15 — Handles set player type within phanicom blood system. Inputs: type. Uses: api set actor type. */ setPlayerType(type){
       API.setActorType(current.player.id,type);
     }
-    ,setFollowerType(index,type){
+    ,/* @function Phanicom_BloodSystem.setFollowerType.16 — Handles set follower type within phanicom blood system. Inputs: index; type. Uses: api set actor type. Returns: false; true. */ setFollowerType(index,type){
       const id=current.followers?.[index-1]?.id;
       if(!id)return false;
       API.setActorType(id,type);
       return true;
     }
-    ,getActorType(id){
+    ,/* @function Phanicom_BloodSystem.getActorType.17 — Handles get actor type within phanicom blood system. Inputs: id. Uses: current runtime entities get; identity. Returns: actor selects identity using actor or null. */ getActorType(id){
       const actor=current.runtime.entities.get(id);
       return actor?identity(actor):null;
     }
-    ,resetBloodTypes(){
+    ,/* @function Phanicom_BloodSystem.resetBloodTypes.18 — Handles reset blood types within phanicom blood system. Inputs: no explicit arguments; uses enclosing module state. Updates: current blood state actors; current passive drips length. Uses: current drip timers clear. */ resetBloodTypes(){
       current.bloodState.actors={
       }
       ;
       current.passiveDrips.length=0;
       current.dripTimers.clear();
     }
-    ,hideBleeding(){
+    ,/* @function Phanicom_BloodSystem.hideBleeding.19 — Handles hide bleeding within phanicom blood system. Inputs: no explicit arguments; uses enclosing module state. Updates: current blood state hidden; current passive drips length. */ hideBleeding(){
       current.bloodState.hidden=true;
       current.passiveDrips.length=0;
     }
-    ,showBleeding(){
+    ,/* @function Phanicom_BloodSystem.showBleeding.20 — Handles show bleeding within phanicom blood system. Inputs: no explicit arguments; uses enclosing module state. Updates: current blood state hidden. */ showBleeding(){
       current.bloodState.hidden=false;
     }
-    ,isBleedingVisible(){
+    ,/* @function Phanicom_BloodSystem.isBleedingVisible.21 — Handles is bleeding visible within phanicom blood system. Inputs: no explicit arguments; uses enclosing module state. Returns: the inverse of current blood state hidden. */ isBleedingVisible(){
       return !current.bloodState.hidden;
     }
-    ,clearSprays(){
+    ,/* @function Phanicom_BloodSystem.clearSprays.22 — Handles clear sprays within phanicom blood system. Inputs: no explicit arguments; uses enclosing module state. Updates: current blood fx length. */ clearSprays(){
       current.bloodFX.length=0;
     }
-    ,sprayActor(id,options={
+    ,/* @function Phanicom_BloodSystem.sprayActor.23 — Handles spray actor within phanicom blood system. Inputs: id; assignment pattern. Uses: api spray event. Returns: api spray event using id, options. */ sprayActor(id,options={
     }
     ){
       return API.sprayEvent(id,options);
@@ -285,7 +286,7 @@
     ,
 // Pixel helper is explicitly billboard-local, because a perspective world has
 // no unique MZ screen-pixel-to-world mapping. Actor-relative spray is preferred.
-    sprayPixels(x,y,options={
+    /* @function Phanicom_BloodSystem.sprayPixels.24 — Handles spray pixels within phanicom blood system. Inputs: x; y; assignment pattern. Uses: spray at. Returns: spray at using current player x plus x divided by 190, current player y, a record containing z, copied fields. */ sprayPixels(x,y,options={
     }
     ){
       return sprayAt(current.player.x+x/190,current.player.y,{
@@ -293,7 +294,7 @@
       }
       );
     }
-    ,sprayCharacter(actor,options={
+    ,/* @function Phanicom_BloodSystem.sprayCharacter.25 — Handles spray character within phanicom blood system. Inputs: actor; assignment pattern. Uses: spray at. Returns: spray at using actor x, actor y, a record containing blood, z, copied fields. */ sprayCharacter(actor,options={
     }
     ){
       return sprayAt(actor.x,actor.y,{
@@ -301,16 +302,16 @@
       }
       );
     }
-    ,sprayEvent(id,options={
+    ,/* @function Phanicom_BloodSystem.sprayEvent.26 — Handles spray event within phanicom blood system. Inputs: id; assignment pattern. Uses: current runtime entities get; api spray character. Returns: actor selects api spray character using actor, options or 0. */ sprayEvent(id,options={
     }
     ){
       const actor=current.runtime.entities.get(id);
       return actor?API.sprayCharacter(actor,options):0;
     }
-    ,exportState(){
+    ,/* @function Phanicom_BloodSystem.exportState.27 — Handles export state within phanicom blood system. Inputs: no explicit arguments; uses enclosing module state. Uses: structured clone. Returns: structured clone using current blood state. */ exportState(){
       return structuredClone(current.bloodState);
     }
-    ,restoreState(state){
+    ,/* @function Phanicom_BloodSystem.restoreState.28 — Handles restore state within phanicom blood system. Inputs: state. Updates: current blood state; current passive drips length. Uses: error; object values; identity; structured clone. */ restoreState(state){
       if(!state||typeof state.hidden!=='boolean'||typeof state.actors!=='object')throw Error('Invalid blood save.');
       for(const type of Object.values(state.actors))identity(type);
       current.bloodState=structuredClone(state);

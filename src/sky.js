@@ -2,7 +2,7 @@
  * Independent horizon/parallax layers. Distance and parallax control perceived depth; cloud speed is driven by elapsed simulation time. Replace vector drawing with images while retaining layer metadata.
  * See CODE-GUIDE.md for load order, ownership and extension recipes.
  */
-(function(root){
+(/* @function sky.callback.1 — Provides the callback for a callback. Inputs: root. Updates: root frontier sky. */ function(root){
 'use strict'  ;
   const defaults={
     enabled:true,layers:[
@@ -25,12 +25,12 @@
   }
   ;
 // Validate imported/authored data and return a sanitized clone. Extend schema and matching tests when adding fields.
-  function validate(value){
+  /* @function sky.validate.2 — Validate imported/authored data and return a sanitized clone. Extend schema and matching tests when adding fields. Inputs: value. Uses: structured clone; array is array; error; value layers map. Returns: structured clone using defaults; a record containing enabled, layers. */ function validate(value){
     if(value===undefined)return structuredClone(defaults);
     if(!value||typeof value.enabled!=='boolean'||!Array.isArray(value.layers)||value.layers.length>12)throw Error('Invalid sky layers.');
     const ids=new Set();
     return{
-      enabled:value.enabled,layers:value.layers.map(l=>{
+      enabled:value.enabled,layers:value.layers.map(/* @function sky.callback.3 — Provides the callback for value layers map. Inputs: l. Uses: ids has; a list of "ridge", "cloud" includes; /^#[0-9a-f]{6}$/i test; number is finite. Returns: a record containing id, kind, color, distance, height, parallax, speed. */ l=>{
         if(!l||typeof l.id!=='string'||l.id.length>80||ids.has(l.id)||!['ridge','cloud'].includes(l.kind)||!/^#[0-9a-f]{6}$/i.test(l.color)||!Number.isFinite(l.distance)||l.distance<60||l.distance>500||!Number.isFinite(l.height)||l.height<1||l.height>150||!Number.isFinite(l.parallax)||l.parallax<0||l.parallax>1||!Number.isFinite(l.speed)||Math.abs(l.speed)>.1)throw Error('Invalid sky layer.');
         ids.add(l.id);
         return{
@@ -42,9 +42,11 @@
     }
     ;
   }
-  function draw(ctx,game,cam,project){
+  /* @function sky.draw.4 — Draws this system’s current state into the supplied rendering context. Inputs: ctx; game; cam; project. Updates: ctx fog depth; ctx stroke style; ctx line width; previous. Uses: ctx save; project; ctx begin path; ctx move to. Returns: without a result. */ function draw(ctx,game,cam,project){
     const sky=game.sourceWorld.sky;
     if(!sky?.enabled)return;
+    // Sky distances position parallax artwork, not fog occluders. Preserve terrain fog depth.
+    ctx.save();ctx.fogDepth=0;
     const time=game.elapsed;
     for(const layer of sky.layers){
       ctx.strokeStyle=layer.color;
@@ -57,6 +59,7 @@
         i++){
           const angle=i*Math.PI*2/180,x=cx+Math.sin(angle)*layer.distance,y=cy+Math.cos(angle)*layer.distance,z=layer.height*(.6+.25*Math.sin(angle*7)+.15*Math.cos(angle*13)),p=project(cam,x,y,z);
           if(p&&previous&&Math.abs(p.x-previous.x)<1500){
+            ctx.fogDepth=0;
             ctx.beginPath();
             ctx.moveTo(previous.x,previous.y);
             ctx.lineTo(p.x,p.y);
@@ -70,7 +73,7 @@
         i<18;
         i++){
           const angle=i*Math.PI*2/18+time*layer.speed,x=cx+Math.sin(angle)*layer.distance,y=cy+Math.cos(angle)*layer.distance,z=layer.height+Math.sin(i*1.8)*8,p=project(cam,x,y,z);
-          if(!p||p.x< -150||p.x>790||p.y< -90||p.y>350)continue;
+          if(!p||p.x< -150||p.x>(game.viewWidth||640)+150||p.y< -90||p.y>350)continue;
           const w=Math.min(180,p.scale*(15+6*Math.sin(i+2))),h=w*.2;
           ctx.beginPath();
           ctx.moveTo(p.x-w/2,p.y);
@@ -82,6 +85,7 @@
         }
       }
     }
+    ctx.restore();
   }
   root.FrontierSky={
     defaults,validate,draw
@@ -89,3 +93,4 @@
   ;
 }
 )(typeof window==='undefined'?globalThis:window);
+

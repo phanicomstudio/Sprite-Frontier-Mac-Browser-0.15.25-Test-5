@@ -169,3 +169,5 @@ SF-035 — Vanilla MZ 1.8.0 project inspection completed. One empty 17×13 map, 
 Delivered this iteration: native profile/blood adaptation, armed/unarmed sheet switching, muzzle tool, topic parser, SE layout, editable global rules and soundtrack playlists. See CHANGELOG.md and PLUGIN-PORT.md for exact fidelity and remaining work.
 
 Confirmed direction: reusable builder powering separately titled games, maps/events, expansions and mods. Future project manifest/export and mod compatibility remain planned, with engine/content separation required. Global parameter authoring is now a starting surface; broader event overrides and comprehensive property forms remain planned.
+
+0.11: banked P-mode/inspection/map-scale changes implemented. Lighting remains future scope. See ITERATION-0.11.md.

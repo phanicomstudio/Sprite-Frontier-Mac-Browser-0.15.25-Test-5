@@ -1,51 +1,48 @@
-> Historical snapshot. Current controls/features/limits: README.md, CODE-GUIDE.md and TEST-REPORT-06.md.
+# 0.15.17 validation — October 9, 2026
 
-# Foundation validation — October 4, 2026
+- 74 source regression commands passed, including previous event/collision/save
+  coverage and new hub persistence, model visibility and door timeline tests.
+- Function-comment coverage passed: 3,824 maintained functions/callbacks. The
+  current dated function index uses exact source contracts; vendor code remains
+  separate. Meaningfulness is reviewed separately from label coverage.
+- 17 existing browser model/event commands passed (all except the historical
+  model-library download-finalization test). The new hub acceptance also passes:
+  actual pointer-click doorway travel, textured antique model preview, paired
+  sliding author controls, Apply/Cancel, purchase/sale, static drop/pickup,
+  protected-cell cleanup, pawn recovery, Escape skip and actual exported
+  playtest Blob reload preserving item properties and authored project doors.
+- Eight-instance shared BVH / textured 1,500-triangle fixture: collision median
+  1.8 ms, p95 2.9 ms; raster median 2.0 ms, p95 2.8 ms at 640x480 logical viewport.
+  These are local synthetic measurements, not a promise for all hardware/models.
+- Five converted OGG door sounds were decoded completely. Browser model pixels
+  and sound selection roles are tested; no subjective listening test is claimed.
+- Native Electron automation could not launch its process in this environment.
+  Browser acceptance uses actual Chrome on Windows. macOS hardware was not
+  available; the Mac delivery is a browser package, not a native app.
 
-## Prototype 0.3 — mouse/controller and landscape
+Archive manifests are checked after full package assembly. The release-adjacent
+RELEASE-0.15.17.md records final archive verification. Keep prior releases intact.
 
-Passed dependency-free tests for mouse delta state, controller drift deadzones/press edges/disconnect, analog movement scaling, terrain height reproducibility, landscape serialization/validation, grounded jumping/landing, height-aware prop sweeps, hill obstruction, original damage through the spatial adapter, and all prior movement/event/audio regressions.
+## Historical reports below (superseded where different)
 
-Passed Chrome browser checks with pointer capture deliberately rejected: mouse motion looks without dragging or targeting; the first capture click consumes no ammunition; subsequent clicks fire; Escape suspends mouse look; click resumes. Simulated standard gamepad checks covered movement, looking, firing once per press, jumping and disconnect. Editor hover does not rotate its camera; right-drag still does. Terrain amplitude and sky toggles update authored data.
+# Release verification — 0.15.16
 
-A separate real Chrome pointer-lock check passed capture, motion, firing and Escape release. Event editor regressions passed after updating interaction targeting to the centered crosshair: selection/placement, page and command editing, dragging, export, one-time ammunition collection and fresh-playtest isolation. Default scene preview shows labelled ammo boxes, raised terrain and cloud outlines.
+Complete new Windows and Mac browser packages include runtime assets, source, function reference, authoring guides and tests. Earlier releases are preserved.
 
-**Not tested on physical controller hardware.** No claim of broad browser/controller compatibility. Renderer remains Canvas wireframe/billboards with no depth-buffered occlusion or collision-safe camera. PNG/sprite sky assets remain future work.
+- 71 source regression commands passed.
+- 17 model/event browser commands passed after all code/comment changes.
+- Actual building: stairs at four scale combinations, roofs, ledges, angled jump landings.
+- Camera: 60 real-building orbit poses, with 9 obstructed positions retracted; none crossed the tested solid walls.
+- Escape pause, Get Unstuck, velocity reset and Resume passed through the real UI.
+- Every maintained function has a source explanation: 3,624 in source/Windows including tests, 3,605 in browser package including tests (native-only files excluded).
+- Documentation insertion preserved parsed syntax trees.
+- Shared 1,500-triangle benchmark: eight continuous body queries median 2.2ms, p95 3.3ms in this environment; model rasterization median 2.5ms. These are scoped microbenchmarks, not a whole-game FPS guarantee.
+- Full ZIP manifests independently hash-checked; extracted-package camera/recovery/landing/comment coverage tests passed. Exact Export-button Blob bytes imported into a clean project through its file picker.
 
-## Prototype 0.2 — in-level event editor
+## Platform limits
 
-Passed simulation checks for page precedence, self switches, one-time ammo pickup, isolated fresh playtests, touch-entry activation, wait timing, safe local transfers, invalid-command rejection, event JSON round-trip, and event-data mirror equality. Existing movement, projectile, damage, ammo/reload and synth-footstep checks still pass.
+User confirmed native Windows 0.15.15 launch and successful stair walking. New 0.15.16 source is browser-tested; native Windows 0.15.16 and actual macOS execution need user platform checks. No macOS host is available here. Automated disk download finalization is canceled by this environment even for a minimal unrelated Blob; generated project content and import/reload are verified without claiming that download-path test passed.
 
-Passed Chrome browser checks: direct scene event selection and ammo-box placement; empty-page preview; page and command editing; coordinate movement and Shift-drag movement; event export; holstered right-click granting 24 reserve rounds once; empty-page interaction; returning to the authored full-box design; fresh-playtest state reset; no uncaught page errors. Preview images were visually inspected.
+## Remaining scope
 
-Reproducible browser test: `tests/browser-events.cjs` requires Playwright, a running local server, and an available browser. `PLAYWRIGHT_MODULE`, `CHROME_PATH` and `FRONTIER_URL` can override those locations. Dependency-free checks use `npm test`.
-
-Remaining limits: full MZ command/trigger coverage, terrain and sky layers, broader props, and depth-buffered rendering are not implemented. Pointer-lock interaction is implemented but the automated interaction regression uses the released mouse; subjective control feel still requires user review.
-
-## Prototype 0.1 — initial foundation
-
-Passed dependency-free tests:
-
-- Identical seeds produce identical authored worlds; different seeds differ.
-- Invalid coordinates, duplicate IDs, unknown object types, invalid bounds and blocked spawn are rejected.
-- JSON project settings and offline mirror match.
-- Walk speed 3.2, sprint speed 6.4, equal diagonal speed, opposing-key cancellation, and zero walk animation when blocked.
-- Candy camera-relative direction mapping.
-- Original projectile contact applies damage and consumes ammunition.
-- A nearer rock blocks a projectile before a target, even with a long timestep.
-- Target death emits original kill events and effects.
-- Reload reserve accounting and holstered-fire prevention.
-- Original synth plugin schedules 100→30 Hz walking and 120→40 Hz sprinting, with 0.6 effective local gain; no sound hook on blocked movement; ownership released on stop.
-
-Passed browser smoke checks in installed desktop Chrome, headless mode:
-
-- Load and render with no uncaught page errors.
-- Open editor; import test JSON; select and move a tree; export and inspect resulting JSON.
-- Delete and undo restore expected object lists.
-- Adjust camera height; return to play; walk and schedule actual WebAudio oscillator nodes.
-- Fire, reload, holster and toggle camera without errors.
-- Captured and visually inspected preview: black world, blue vector grid/props, red targets, Candy back pose, HUD and overview map.
-
-Byte comparisons confirmed unchanged copied source: combat.js, projectiles.js, geometry.js and phanicom-synth-footsteps.js. Candy PNG is copied without image alteration; framing uses metadata.
-
-Not verified: subjective sound playback/loudness, exact Daggerfall Online control feel, all Candy animation poses, pointer-lock behavior across browsers, browser compatibility beyond Chrome, full 3D occlusion, vertical projectiles, network play, and imported Phaneroscape content. The screenshot is a development preview, not evidence of those capabilities.
+No automatic interior creation, animated/deforming mesh collision, moving-platform physics or cell-streaming implementation is claimed. Interior dressing is authored separately. Get Unstuck is temporary insurance while real-model contact cases continue to be tested. See ITERATION-0.15.16.md and MODEL-AUTHORING.md.

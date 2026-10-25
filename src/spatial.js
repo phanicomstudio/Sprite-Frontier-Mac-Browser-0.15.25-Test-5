@@ -2,12 +2,12 @@
  * Native height-aware projectile sweeps and ricochets. Replaces the legacy 2D projectile functions after they load. Segment/AABB hits and terrain intersections choose the earliest collision, independent of display pixels.
  * See CODE-GUIDE.md for load order, ownership and extension recipes.
  */
-(function(MF){
+(/* @function spatial.callback.1 — Provides the callback for a callback. Inputs: mf. Updates: mf create projectile; mf update projectiles; mf resolve hitscan; mf frontier spatial. */ function(MF){
   const root=window;
 'use strict'  ;
   const originalCreate=MF.createProjectile;
 // Intersect a swept segment with an expanded AABB using slab intervals. Return earliest normalized time or null.
-  function boxHit(a,b,box,radius){
+  /* @function spatial.boxHit.2 — Intersect a swept segment with an expanded AABB using slab intervals. Return earliest normalized time or null. Inputs: a; b; box; radius. Updates: array pattern; enter; leave. Returns: null; null. */ function boxHit(a,b,box,radius){
     let enter=0,leave=1;
     for(const axis of ['x','y','z']){
       const min=box.min[axis]-radius,max=box.max[axis]+radius,d=b[axis]-a[axis];
@@ -24,21 +24,21 @@
     }
     return enter;
   }
-  const between=(a,b,t)=>({
+  const between=/* @function spatial.between.3 — Returns a record containing x, y, z. Inputs: a; b; t. Returns: a record containing x, y, z. */ (a,b,t)=>({
     x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t,z:a.z+(b.z-a.z)*t
   }
   );
 // Choose the nearest body/scenery/terrain collision; ignore the shooter and already penetrated entities.
-  function sweep(game,a,b,radius,ownerId,ignoreIds){
+  /* @function spatial.sweep.4 — Choose the nearest body/scenery/terrain collision; ignore the shooter and already penetrated entities. Inputs: game; a; b; radius; owner id; ignore ids. Updates: lo; hi. Uses: root frontier activity query using game, math min using a x, b x minus radius minus 2, math min using a y, b y minus radius minus 2 filter; root frontier activity query; game scene events or a list of filter; entities push. Returns: result. */ function sweep(game,a,b,radius,ownerId,ignoreIds){
     let result=null;
-    const take=(t,id,kind)=>{
+    const take=/* @function spatial.take.5 — Handles take within spatial. Inputs: t; id; kind. Updates: result. */ (t,id,kind)=>{
       if(t!==null&&t>=0&&t<=1&&(!result||t<result.t))result={
         t,id,kind
       }
       ;
     }
     ;
-    const entities=[...game.maps.frontier.entities,...(game.sceneEvents||[]).filter(e=>e.solid)];
+    const entities=root.FrontierActivity?root.FrontierActivity.query(game,Math.min(a.x,b.x)-radius-2,Math.min(a.y,b.y)-radius-2,Math.max(a.x,b.x)+radius+2,Math.max(a.y,b.y)+radius+2,false).filter(/* @function spatial.callback.6 — Returns the inverse of e event id or e solid or e combat. Inputs: e. Returns: the inverse of e event id or e solid or e combat. */ e=>!e.eventId||e.solid||e.combat):[...game.maps.frontier.entities,...(game.sceneEvents||[]).filter(/* @function spatial.callback.7 — Returns e solid or e combat. Inputs: e. Returns: e solid or e combat. */ e=>e.solid||e.combat)];
     if(ownerId!==game.player.id)entities.push({
       ...game.player,radius:MF.CONFIG.playerCollisionRadius,height:1.65
     }
@@ -60,7 +60,7 @@
       ,radius),e.id,'body');
     }
     const distance=Math.hypot(b.x-a.x,b.y-a.y,b.z-a.z),steps=Math.max(1,Math.ceil(distance/.08));
-    const floor=t=>{
+    const floor=/* @function spatial.floor.8 — Handles floor within spatial. Inputs: t. Uses: between; frontier terrain height. Returns: p z minus frontier terrain height using game source world, p x, p y minus radius. */ t=>{
       const p=between(a,b,t);
       return p.z-FrontierTerrain.height(game.sourceWorld,p.x,p.y)-radius;
     }
@@ -89,14 +89,15 @@
       }
     }
     for(const axis of ['x','y']){
+      const limit=axis==='x'?(game.sourceWorld.width??game.sourceWorld.size):(game.sourceWorld.height??game.sourceWorld.size);
       const delta=b[axis]-a[axis];
-      if(a[axis]<radius||a[axis]>48-radius)take(0,null,'boundary');
-      if(delta>0&&b[axis]>48-radius)take((48-radius-a[axis])/delta,null,'boundary');
+      if(a[axis]<radius||a[axis]>limit-radius)take(0,null,'boundary');
+      if(delta>0&&b[axis]>limit-radius)take((limit-radius-a[axis])/delta,null,'boundary');
       if(delta<0&&b[axis]<radius)take((radius-a[axis])/delta,null,'boundary');
     }
     return result;
   }
-  MF.createProjectile=function(game,owner,weapon,direction){
+  MF.createProjectile=/* @function spatial.createProjectile.9 — Handles create projectile within spatial. Inputs: game; owner; weapon; direction. Updates: target x; target y; target z; shot direction; shot position. Uses: original create; frontier render camera; root frontier muzzle point; between. Returns: shot. */ function(game,owner,weapon,direction){
     const shot=originalCreate(game,owner,weapon,direction),cam=FrontierRender.camera(game),pitch=cam.pitch+Math.atan(((cam.cy??96)-96)/360),muzzle=root.FrontierMuzzle?.point(owner,game)||{
       x:owner.x,y:owner.y,z:(owner.z||0)+.95
     }
@@ -105,6 +106,7 @@
       x:cam.x+Math.sin(game.camera.yaw)*Math.cos(pitch)*60,y:cam.y+Math.cos(game.camera.yaw)*Math.cos(pitch)*60,z:cam.z+Math.sin(pitch)*60
     }
     ,aimStart=between(cam,far,Math.max(0,Math.min(.99,(((muzzle.x-cam.x)*Math.sin(game.camera.yaw)+(muzzle.y-cam.y)*Math.cos(game.camera.yaw))+.75)/(60*Math.cos(pitch))))),hit=sweep(game,aimStart,far,0,owner.id),target=between(aimStart,far,hit?.t??1);
+    if(cam.orthographic&&owner.id===game.player.id){const point=game.pointer||game.roomAimPoint,aim=point&&FrontierInterior.aim(game,point.x,point.y);if(aim)Object.assign(target,aim);else Object.assign(target,{x:muzzle.x+direction.x*60,y:muzzle.y+direction.y*60,z:muzzle.z});}
     if(owner.id!==game.player.id){
       target.x=muzzle.x+direction.x*60;
       target.y=muzzle.y+direction.y*60;
@@ -112,11 +114,13 @@
     }
     const length=Math.hypot(target.x-muzzle.x,target.y-muzzle.y,target.z-muzzle.z)||1,horizontal=Math.hypot(target.x-muzzle.x,target.y-muzzle.y)/length;
 // Preserve the original continuous angular spread; artwork never quantizes shots.
-    const baseYaw=Math.atan2(target.x-muzzle.x,target.y-muzzle.y),spread=owner.id===game.player.id?Math.atan2(direction.x,direction.y)-game.camera.yaw:0,angle=baseYaw+spread+(muzzle.yawOffset||0),elevation=Math.asin((target.z-muzzle.z)/length)+(muzzle.pitchOffset||0);
+    const baseYaw=Math.atan2(target.x-muzzle.x,target.y-muzzle.y),spread=owner.id===game.player.id?Math.atan2(direction.x,direction.y)-(cam.orthographic?Math.atan2(target.x-owner.x,target.y-owner.y):game.camera.yaw):0,angle=baseYaw+spread+(muzzle.yawOffset||0),elevation=Math.asin((target.z-muzzle.z)/length)+(muzzle.pitchOffset||0);
     shot.direction={
       x:Math.sin(angle)*Math.cos(elevation),y:Math.cos(angle)*Math.cos(elevation),z:Math.sin(elevation)
     }
     ;
+    const guide=root.FrontierMuzzle?.barrel(owner,game);
+    if(guide){const spreadAngle=owner.id===game.player.id?Math.atan2(direction.x,direction.y)-game.camera.yaw:0,a=Math.atan2(guide.x,guide.y)+spreadAngle,e=Math.asin(Math.max(-1,Math.min(1,guide.z)));shot.direction={x:Math.sin(a)*Math.cos(e),y:Math.cos(a)*Math.cos(e),z:Math.sin(e)};}
     shot.position={
       ...muzzle
     }
@@ -133,9 +137,9 @@
   }
   ;
 // Reflect against the impacted scenery face, add bounded random variation, and move outside the surface before continuing.
-  function bounce(game,p,hit){
+  /* @function spatial.bounce.10 — Reflect against the impacted scenery face, add bounded random variation, and move outside the surface before continuing. Inputs: game; p; hit. Updates: v x; v y; v z; p direction; p velocity. Uses: a list of spread element, spread element find; a list of "monster", "npc", "player" includes; root frontier parameters get; faces sort. Returns: false; false. */ function bounce(game,p,hit){
     if(hit.kind!=='body'||(p.ricochets||0)>=1)return false;
-    const e=[...game.maps.frontier.entities,...(game.sceneEvents||[])].find(e=>e.id===hit.id);
+    const e=[...game.maps.frontier.entities,...(game.sceneEvents||[])].find(/* @function spatial.callback.11 — Returns e id equals hit id. Inputs: e. Returns: e id equals hit id. */ e=>e.id===hit.id);
     if(!e||['monster','npc','player'].includes(e.kind)||Math.random()> (e.ricochetChance??root.FrontierParameters?.get(game.sourceWorld,'ricochetChance')??.2))return false;
     const pos=p.position,r=p.radius,z=e.z||0;
     const faces=[{
@@ -169,7 +173,7 @@
       }
     }
     ];
-    const n=faces.sort((a,b)=>a.d-b.d)[0].n,d=p.direction,dot=d.x*n.x+d.y*n.y+(d.z||0)*n.z;
+    const n=faces.sort(/* @function spatial.callback.12 — Returns a d minus b d. Inputs: a; b. Returns: a d minus b d. */ (a,b)=>a.d-b.d)[0].n,d=p.direction,dot=d.x*n.x+d.y*n.y+(d.z||0)*n.z;
     let v={
       x:d.x-2*dot*n.x+(Math.random()-.5)*.8,y:d.y-2*dot*n.y+(Math.random()-.5)*.8,z:(d.z||0)-2*dot*n.z+(Math.random()-.5)*.8
     }
@@ -201,7 +205,7 @@
     return true;
   }
 // Move a projectile within remaining range/lifetime, resolve its first hit, and handle penetration or one scenery ricochet.
-  function advance(game,p,dt,ui,instant=false){
+  /* @function spatial.advance.13 — Move a projectile within remaining range/lifetime, resolve its first hit, and handle penetration or one scenery ricochet. Inputs: game; p; dt; ui; assignment pattern. Updates: p previous position; p position; p distance travelled; p age; p hit ids. Uses: sweep; between; game shot effects push; game shot effects shift. Returns: true; true. */ function advance(game,p,dt,ui,instant=false){
     const remaining=Math.max(0,p.maxRange-p.distanceTravelled),distance=instant?remaining:Math.min(remaining,p.speed*Math.min(dt,Math.max(0,p.lifetime-p.age))),a={
       ...p.position
     }
@@ -256,11 +260,11 @@
     }
     return true;
   }
-  MF.updateProjectiles=(game,dt,ui)=>{
-    game.projectiles=game.projectiles.filter(p=>p.map===game.currentMapId&&advance(game,p,dt,ui));
+  MF.updateProjectiles=/* @function spatial.updateProjectiles.14 — Handles update projectiles within spatial. Inputs: game; dt; ui. Updates: game projectiles. Uses: game projectiles filter. */ (game,dt,ui)=>{
+    game.projectiles=game.projectiles.filter(/* @function spatial.callback.15 — Returns p map equals game current map id and advance using game, p, dt. Inputs: p. Uses: advance. Returns: p map equals game current map id and advance using game, p, dt. */ p=>p.map===game.currentMapId&&advance(game,p,dt,ui));
   }
   ;
-  MF.resolveHitscan=(game,p,ui)=>{
+  MF.resolveHitscan=/* @function spatial.resolveHitscan.16 — Handles resolve hitscan within spatial. Inputs: game; p; ui. Uses: advance. */ (game,p,ui)=>{
     for(let i=0;
     i<16&&advance(game,p,0,ui,true);
     i++);
@@ -272,3 +276,4 @@
   ;
 }
 )(window.MF);
+

@@ -3,7 +3,7 @@
  * See CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 /* Original regular and synth particle equations from BloodSystem 1.0.1. */
-(function(root){
+(/* @function Phanicom_BloodSystem.Core.callback.1 — Provides the callback for a callback. Inputs: root. Updates: root phanicom blood core. Uses: number; a callback. */ function(root){
   const p=root.PhanicomPluginSettings.blood;
   const cfg={
     regularColor:p.regularColor||"#CC0000",creamColor:p.creamColor||"#F5F5DC",regularDuration:Number(p.regularDuration||30),creamDuration:Number(p.creamDuration||35),regularFade:Number(p.regularFade||.05),creamFade:Number(p.creamFade||.05),spraySize:Number(p.spraySize||1),particleSize:Number(p.particleSize||1),viscosity:Number(p.viscosity||.98),glow:p.glow!=="false"
@@ -11,7 +11,7 @@
   ;
   const bloodColor=cfg.regularColor,defaultDuration=cfg.regularDuration,fadeOutSpeed=cfg.regularFade;
   class BloodParticle {
-    constructor(x, y, color = bloodColor, duration = defaultDuration) {
+    /* @function Phanicom_BloodSystem.Core.constructor.2 — function Object() { [native code] } Inputs: x; y; assignment pattern; assignment pattern. Updates: this start x; this start y; this x; this y; this velocity x. */ constructor(x, y, color = bloodColor, duration = defaultDuration) {
       this.startX = x;
       this.startY = y;
       this.x = x;
@@ -26,7 +26,7 @@
       this.color = color;
       this.fadeSpeed = fadeOutSpeed + Math.random() * 0.02;
     }
-    update() {
+    /* @function Phanicom_BloodSystem.Core.update.3 — Advances this system using the current state and elapsed time. Inputs: no explicit arguments; uses enclosing module state. Updates: this x; this y; this velocity y; this velocity x; this opacity. */ update() {
       this.x += this.velocityX;
       this.y += this.velocityY;
       this.velocityY += this.gravity;
@@ -40,10 +40,10 @@
         this.size *= 0.95;
       }
     }
-    isDead() {
+    /* @function Phanicom_BloodSystem.Core.isDead.4 — Handles is dead within phanicom blood system.core. Inputs: no explicit arguments; uses enclosing module state. Returns: this life is at least this max life or this opacity is at most 0. */ isDead() {
       return this.life >= this.maxLife || this.opacity <= 0;
     }
-    draw(sprite) {
+    /* @function Phanicom_BloodSystem.Core.draw.5 — Draws this system’s current state into the supplied rendering context. Inputs: sprite. Uses: $game map display x; $game map tile width; $game map display y; $game map tile height. Returns: without a result. */ draw(sprite) {
       if (this.opacity <= 0) return;
       const bitmap = sprite.bitmap;
 // Convert world coordinates to screen coordinates
@@ -59,10 +59,10 @@
     }
   }
   const synthBloodColor=cfg.creamColor,spraySize=cfg.spraySize,particleSize=cfg.particleSize,viscosity=cfg.viscosity,glowEffect=cfg.glow;
-  const SynthBloodParticle=(()=>{
+  const SynthBloodParticle=(/* @function Phanicom_BloodSystem.Core.callback.6 — Provides the callback for a callback. Inputs: no explicit arguments; uses enclosing module state. Returns: synth blood particle. */ ()=>{
     const defaultDuration=cfg.creamDuration,fadeOutSpeed=cfg.creamFade;
     class SynthBloodParticle {
-      constructor(x, y, color = synthBloodColor, customSpraySize = spraySize, duration = defaultDuration) {
+      /* @function Phanicom_BloodSystem.Core.constructor.7 — function Object() { [native code] } Inputs: x; y; assignment pattern; assignment pattern; assignment pattern. Updates: this start x; this start y; this x; this y; this velocity x. */ constructor(x, y, color = synthBloodColor, customSpraySize = spraySize, duration = defaultDuration) {
         this.startX = x;
         this.startY = y;
         this.x = x;
@@ -88,7 +88,7 @@
         this.pulsePhase = Math.random() * Math.PI * 2;
         this.sprayMultiplier = customSpraySize;
       }
-      update() {
+      /* @function Phanicom_BloodSystem.Core.update.8 — Advances this system using the current state and elapsed time. Inputs: no explicit arguments; uses enclosing module state. Updates: this x; this y; this velocity y; this velocity x; this pulse phase. */ update() {
         this.x += this.velocityX;
         this.y += this.velocityY;
         this.velocityY += this.gravity;
@@ -107,10 +107,10 @@
           this.size *= 0.95;
         }
       }
-      isDead() {
+      /* @function Phanicom_BloodSystem.Core.isDead.9 — Handles is dead within phanicom blood system.core. Inputs: no explicit arguments; uses enclosing module state. Returns: this life is at least this max life or this opacity is at most 0. */ isDead() {
         return this.life >= this.maxLife || this.opacity <= 0;
       }
-      draw(sprite) {
+      /* @function Phanicom_BloodSystem.Core.draw.10 — Draws this system’s current state into the supplied rendering context. Inputs: sprite. Uses: $game map display x; $game map tile width; $game map display y; $game map tile height. Returns: without a result. */ draw(sprite) {
         if (this.opacity <= 0) return;
         const bitmap = sprite.bitmap;
         const screenX = this.x - $gameMap.displayX() * $gameMap.tileWidth();
@@ -158,7 +158,7 @@
   }
   )();
   class ABSArcadeAudio {
-    constructor() {
+    /* @function Phanicom_BloodSystem.Core.constructor.11 — function Object() { [native code] } Inputs: no explicit arguments; uses enclosing module state. Updates: this ctx. */ constructor() {
       try {
         this.ctx = root.PhanicomSE?.context || new (window.AudioContext || window.webkitAudioContext)();
       }
@@ -167,7 +167,7 @@
         this.ctx = null;
       }
     }
-    createArcadeSound(type, duration, freqStart, freqEnd = 0, volume = 0.3) {
+    /* @function Phanicom_BloodSystem.Core.createArcadeSound.12 — Handles create arcade sound within phanicom blood system.core. Inputs: type; duration; freq start; assignment pattern; assignment pattern. Updates: curve at i; wave shaper curve; oscillator type; oscillator frequency value; gain gain value. Uses: this ctx create oscillator; this ctx create gain; this ctx create wave shaper; oscillator frequency linear ramp to value at time. Returns: without a result. */ createArcadeSound(type, duration, freqStart, freqEnd = 0, volume = 0.3) {
       if (!this.ctx) return;
       const oscillator = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
@@ -193,7 +193,7 @@
       oscillator.stop(this.ctx.currentTime + duration);
     }
 // Softer, wetter squelchy blood drip sound
-    playSquelchyDrip() {
+    /* @function Phanicom_BloodSystem.Core.playSquelchyDrip.13 — Handles play squelchy drip within phanicom blood system.core. Inputs: no explicit arguments; uses enclosing module state. Updates: drip osc type; noise data at i; noise buffer; noise filter type. Uses: this ctx create oscillator; drip osc frequency set value at time; drip osc frequency linear ramp to value at time; this ctx create gain. Returns: without a result. */ playSquelchyDrip() {
       if (!this.ctx) return;
 // Softer base drip sound (triangle wave with gentle pitch drop)
       const dripOsc = this.ctx.createOscillator();

@@ -4,18 +4,18 @@ const root=path.join(__dirname,'..'),c=vm.createContext({Math,structuredClone,co
 for(const file of ['project-data.js','events.js','terrain.js','sky.js','world.js','input.js','movement.js','legacy/geometry.js','adapter.js','legacy/projectiles.js','legacy/combat.js','render.js','spatial.js'])vm.runInContext(fs.readFileSync(path.join(root,'src',file),'utf8'),c,{filename:file});
 const I=c.FrontierInput,T=c.FrontierTerrain,MF=c.MF;
 assert.equal(I.stick(.05,.05).x,0);assert(Math.abs(I.stick(1,1).x-Math.SQRT1_2)<1e-10);
-const buttons=Array.from({length:16},()=>({pressed:false,value:0})),pad={id:'test',index:0,connected:true,mapping:'standard',axes:[0,-1,1,0],buttons};
+const buttons=Array.from({length:16},/* @function input-terrain.callback.1 — Returns a record containing pressed, value. Inputs: no explicit arguments; uses enclosing module state. Returns: a record containing pressed, value. */ ()=>({pressed:false,value:0})),pad={id:'test',index:0,connected:true,mapping:'standard',axes:[0,-1,1,0],buttons};
 const reader=I.gamepadReader();buttons[7].pressed=true;let frame=reader.poll([pad]);assert.equal(frame.move.forward,1);assert.equal(frame.look.x,1);assert(frame.actions.includes('fire'));assert.equal(reader.poll([pad]).actions.length,0);reader.poll([pad],false);assert.equal(reader.poll([pad],true).actions.length,0);buttons[7].pressed=false;reader.poll([pad]);buttons[7].pressed=true;assert(reader.poll([pad]).actions.includes('fire'));assert(!reader.poll([]).connected);assert.equal(reader.poll([]).move.forward,0);
 const mouse=I.mouseLook();assert.equal(mouse.motion({clientX:10,clientY:10},false,true).x,0);assert.equal(mouse.motion({clientX:20,clientY:30},false,true).x,10);assert.equal(mouse.motion({clientX:100,clientY:100},false,false).x,0);assert.equal(mouse.motion({clientX:120,clientY:120},false,true).x,0);assert.equal(mouse.motion({movementX:7,movementY:-3},true,true).y,-3);
 const world={schemaVersion:'sprite-frontier/1',seed:'terrain',size:48,spawn:{x:24,y:24},objects:[],events:[],terrain:{mode:'hills',amplitude:2.8,frequency:.12},sky:structuredClone(c.FrontierSky.defaults)};
 assert.equal(T.height(world,24,24),0);assert(T.height(world,33,32)>2);assert.equal(T.height(world,33,32),T.height(structuredClone(world),33,32));assert.equal(JSON.stringify(c.FrontierWorld.validate(JSON.parse(JSON.stringify(world)))),JSON.stringify(c.FrontierWorld.validate(world)));
-assert.throws(()=>c.FrontierWorld.validate({...world,terrain:{mode:'hills',amplitude:100,frequency:.12}}));assert.throws(()=>c.FrontierSky.validate({enabled:true,layers:[{...c.FrontierSky.defaults.layers[0],speed:Infinity}]}));
+assert.throws(/* @function input-terrain.callback.2 — Returns c frontier world validate using a record containing copied fields, terrain. Inputs: no explicit arguments; uses enclosing module state. Uses: c frontier world validate. Returns: c frontier world validate using a record containing copied fields, terrain. */ ()=>c.FrontierWorld.validate({...world,terrain:{mode:'hills',amplitude:100,frequency:.12}}));assert.throws(/* @function input-terrain.callback.3 — Returns c frontier sky validate using a record containing enabled, layers. Inputs: no explicit arguments; uses enclosing module state. Uses: c frontier sky validate. Returns: c frontier sky validate using a record containing enabled, layers. */ ()=>c.FrontierSky.validate({enabled:true,layers:[{...c.FrontierSky.defaults.layers[0],speed:Infinity}]}));
 const player={x:24,y:24,hp:100};T.ground(player,world,0);assert(T.jump(player));assert(!T.jump(player));let high=0;for(let i=0;i<90;i++){T.ground(player,world,1/60);high=Math.max(high,player.z);}assert(high>.7);assert.equal(player.z,0);assert(player.grounded);player.x=33;player.y=32;T.ground(player,world,.01);assert.equal(player.z,T.height(world,33,32));
-const game=MF.makeFrontierGame(world,()=>{});MF.frontierMovement.movePlayer(game,new Set(),1,()=>false,{forward:.5,strafe:0});assert(Math.abs(game.player.y-24-1.6)<1e-8);
-const blocker=c.FrontierWorld.entity('rock',24,26,'rock');const flat={...world,terrain:{mode:'flat',amplitude:0,frequency:.12},objects:[blocker]},g=MF.makeFrontierGame(flat,()=>{});
+const game=MF.makeFrontierGame(world,/* @function input-terrain.callback.4 — Provides the callback for mf make frontier game. Inputs: no explicit arguments; uses enclosing module state. */ ()=>{});MF.frontierMovement.movePlayer(game,new Set(),1,/* @function input-terrain.callback.5 — Returns false. Inputs: no explicit arguments; uses enclosing module state. Returns: false. */ ()=>false,{forward:.5,strafe:0});assert(Math.abs(game.player.y-24-1.6)<1e-8);
+const blocker=c.FrontierWorld.entity('rock',24,26,'rock');const flat={...world,terrain:{mode:'flat',amplitude:0,frequency:.12},objects:[blocker]},g=MF.makeFrontierGame(flat,/* @function input-terrain.callback.6 — Provides the callback for mf make frontier game. Inputs: no explicit arguments; uses enclosing module state. */ ()=>{});
 assert.equal(MF.frontierSpatial.sweep(g,{x:24,y:24,z:3},{x:24,y:28,z:3},.01,'player'),null,'shots above a low rock pass over it');assert.equal(MF.frontierSpatial.sweep(g,{x:24,y:24,z:.5},{x:24,y:28,z:.5},.01,'player').id,'rock');
 const hillHit=MF.frontierSpatial.sweep(game,{x:24,y:24,z:1},{x:33,y:32,z:1},.01,'player');assert.equal(hillHit.kind,'terrain');assert(hillHit.t<1);
-const enemy=c.FrontierWorld.entity('monster',24,28,'enemy'),combat=MF.makeFrontierGame({...flat,objects:[enemy]},()=>{});combat.camera.pitch=-.12;combat.player.weapon.spreadRadians=0;MF.fireShot(combat,320,200,combat.ui);assert(Number.isFinite(combat.projectiles[0].position.z));MF.updateProjectiles(combat,1,combat.ui);assert.equal(combat.runtime.entities.get('enemy').hp,16);
+const enemy=c.FrontierWorld.entity('monster',24,28,'enemy'),combat=MF.makeFrontierGame({...flat,objects:[enemy]},/* @function input-terrain.callback.7 — Provides the callback for mf make frontier game. Inputs: no explicit arguments; uses enclosing module state. */ ()=>{});combat.camera.pitch=-.12;combat.player.weapon.spreadRadians=0;MF.fireShot(combat,320,200,combat.ui);assert(Number.isFinite(combat.projectiles[0].position.z));MF.updateProjectiles(combat,1,combat.ui);assert.equal(combat.runtime.entities.get('enemy').hp,16);
 console.log('PASS: continuous mouse state, controller deadzones/edges/disconnect, analog speed, terrain/sky round-trip, grounded jump, height-aware shots and terrain obstruction.');
 
 for(const distance of [1.6,2,2.8,3.8,7])for(const pitch of [-.7,-.12,.6])for(const height of [0,.6,2])for(const yaw of [0,1.8])for(const z of [0,3]){
@@ -33,13 +33,13 @@ console.log('PASS: full-body framing below crosshair across zoom, pitch, height 
 
 
 
-function obstacleRun(height,jumping){
+/* @function input-terrain.obstacleRun.8 — Handles obstacle run within input terrain. Inputs: height; jumping. Updates: stood. Uses: mf make frontier game; t ground; t jump; mf frontier movement move player. Returns: a record containing g, stood. */ function obstacleRun(height,jumping){
  const rock={id:'step-rock',kind:'rock',x:24,y:25,radius:.3,height,z:0};
- const scene={...flat,objects:[rock]},g=MF.makeFrontierGame(scene,()=>{});T.ground(g.player,scene,0);
+ const scene={...flat,objects:[rock]},g=MF.makeFrontierGame(scene,/* @function input-terrain.callback.9 — Provides the callback for mf make frontier game. Inputs: no explicit arguments; uses enclosing module state. */ ()=>{});T.ground(g.player,scene,0);
  if(jumping)T.jump(g.player);
  let stood=false;
  for(let i=0;i<100;i++){
-  MF.frontierMovement.movePlayer(g,new Set(['w']),1/120,(x,y,r)=>T.blocked(g,x,y,r));
+  MF.frontierMovement.movePlayer(g,new Set(['w']),1/120,/* @function input-terrain.callback.10 — Returns t blocked using g, x, y. Inputs: x; y; r. Uses: t blocked. Returns: t blocked using g, x, y. */ (x,y,r)=>T.blocked(g,x,y,r));
   T.ground(g.player,scene,1/120,g.maps.frontier.entities);
   if(g.player.grounded&&Math.abs(g.player.z-height)<.001)stood=true;
  }
@@ -61,7 +61,7 @@ for(const pitch of [-.7,0,.6]){
 console.log('PASS: stabilized projection and fixed-crosshair aim alignment.');
 
 const rearTree=c.FrontierWorld.entity('tree',24,23,'rear-tree');
-function aim(objects){const g=MF.makeFrontierGame({...flat,objects},()=>{});g.camera.pitch=-.12;g.camera.distance=3.8;g.player.weapon.spreadRadians=0;MF.fireShot(g,320,96,g.ui);return g.projectiles[0].direction;}
+/* @function input-terrain.aim.11 — Handles aim within input terrain. Inputs: objects. Updates: g camera pitch; g camera distance; g player weapon spread radians. Uses: mf make frontier game; mf fire shot. Returns: g projectiles at 0 direction. */ function aim(objects){const g=MF.makeFrontierGame({...flat,objects},/* @function input-terrain.callback.12 — Provides the callback for mf make frontier game. Inputs: no explicit arguments; uses enclosing module state. */ ()=>{});g.camera.pitch=-.12;g.camera.distance=3.8;g.player.weapon.spreadRadians=0;MF.fireShot(g,320,96,g.ui);return g.projectiles[0].direction;}
 const clearAim=aim([]),blockedCameraAim=aim([rearTree]);
 assert(Math.abs(clearAim.z-blockedCameraAim.z)<1e-10,'tree behind shooter cannot redirect aiming');
 assert(Math.abs(clearAim.y-blockedCameraAim.y)<1e-10);

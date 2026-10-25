@@ -1,0 +1,453 @@
+{
+  "schema": "sprite-frontier-assets/1",
+  "assets": [
+    {
+      "id": "bank-blood-flower-a",
+      "name": "Blood Flower A",
+      "category": "plants",
+      "image": "img/materials/plants/Blood Flower A.png",
+      "width": 170,
+      "height": 336,
+      "hasAlpha": true,
+      "sha256": "abc4f5b83200e0338102de1cd452d5cbc9608aab1d292a9588d07642a19cb6eb"
+    },
+    {
+      "id": "bank-blood-flower-b",
+      "name": "Blood Flower B",
+      "category": "plants",
+      "image": "img/materials/plants/Blood Flower B.png",
+      "width": 177,
+      "height": 279,
+      "hasAlpha": true,
+      "sha256": "00cf403eecd2debb5b3e32af7f5e8e630146a0bfb39cdeede52428abea9ab6a0"
+    },
+    {
+      "id": "bank-creosote-1-copy-2",
+      "name": "Creosote 1 copy 2",
+      "category": "shrubs",
+      "image": "img/materials/shrubs/$$Creosote 1 copy 2.png",
+      "width": 754,
+      "height": 512,
+      "hasAlpha": true,
+      "sha256": "db31d97404e0f2d67a034396af0f3e14926df5c95266a18c22880a0972d791d5"
+    },
+    {
+      "id": "bank-furniture-1",
+      "name": "Furniture 1",
+      "category": "rugs",
+      "image": "img/materials/rugs/$$Furniture 1.png",
+      "width": 508,
+      "height": 725,
+      "hasAlpha": true,
+      "sha256": "a7acfc1b7fb28a9d2fb34ae4bf89464691d9fd5f39a71ed4a6b04ef869dc4875"
+    },
+    {
+      "id": "bank-furniture-2",
+      "name": "Furniture 2",
+      "category": "furniture",
+      "image": "img/materials/furniture/$$Furniture 2.png",
+      "width": 448,
+      "height": 690,
+      "hasAlpha": true,
+      "sha256": "56d553cac7d5b251a595aee51e6420416f8de8bdbbc8e9b77664209eb01ddf9b"
+    },
+    {
+      "id": "bank-palegranite",
+      "name": "Palegranite",
+      "category": "plants",
+      "image": "img/materials/plants/$$Palegranite.png",
+      "width": 281,
+      "height": 280,
+      "hasAlpha": true,
+      "sha256": "75620b812310c7a78845b34221bc4658c88b02c62fce662e34be61f47dd5afcd"
+    },
+    {
+      "id": "bank-palegranite-2",
+      "name": "Palegranite 2",
+      "category": "plants",
+      "image": "img/materials/plants/$$Palegranite 2.png",
+      "width": 128,
+      "height": 230,
+      "hasAlpha": true,
+      "sha256": "15660d114623c15da980e0520439b04afdeced54dd48bd64ffa737b8da22d19c"
+    },
+    {
+      "id": "bank-para-plant-8-sodom-apple",
+      "name": "Para Plant 8 Sodom Apple",
+      "category": "plants",
+      "image": "img/materials/plants/$$Para Plant 8 Sodom Apple.png",
+      "width": 294,
+      "height": 269,
+      "hasAlpha": true,
+      "sha256": "c5a23535adaff42aa4ba8dfeab917333889fb17750cff063536e37fd0ce1c2f5"
+    },
+    {
+      "id": "bank-poppie-1",
+      "name": "Poppie 1",
+      "category": "plants",
+      "image": "img/materials/plants/$$Poppie 1.png",
+      "width": 230,
+      "height": 274,
+      "hasAlpha": true,
+      "sha256": "3824241ddca0aa909c900276f7cf9bb411b99b6395e853c0d388ae0648a267cd"
+    },
+    {
+      "id": "bank-poppie-2",
+      "name": "Poppie 2",
+      "category": "plants",
+      "image": "img/materials/plants/$$Poppie 2.png",
+      "width": 205,
+      "height": 284,
+      "hasAlpha": true,
+      "sha256": "42ca954a36b2f9cadae53beb0eaaa6cde0ca2a006a8d6d547af7614a0fa3124f"
+    },
+    {
+      "id": "bank-poppie-3",
+      "name": "Poppie 3",
+      "category": "plants",
+      "image": "img/materials/plants/$$Poppie 3.png",
+      "width": 162,
+      "height": 167,
+      "hasAlpha": true,
+      "sha256": "4076d3ae4d0f6dc6a0a7545fe7f222b8ca54b065e1daa7cf37258ed04a7eaf06"
+    },
+    {
+      "id": "bank-puff-star",
+      "name": "Puff Star",
+      "category": "plants",
+      "image": "img/materials/plants/$$Puff Star.png",
+      "width": 340,
+      "height": 278,
+      "hasAlpha": true,
+      "sha256": "a2d740f3c7d6bb1a28487dd8b8e93e5910a2cd481d8b06360e1ec8c585a36fcb"
+    },
+    {
+      "id": "bank-red-cage-1",
+      "name": "Red Cage 1",
+      "category": "plants",
+      "image": "img/materials/plants/$$Red Cage 1.png",
+      "width": 266,
+      "height": 388,
+      "hasAlpha": true,
+      "sha256": "11a1f6ef2be53dfe40e44bbe404c962a18e03ddc8409b86bcdeb177992fc6391"
+    },
+    {
+      "id": "bank-para-plant-2",
+      "name": "Para Plant 2",
+      "category": "trees",
+      "image": "img/materials/trees/$$Para Plant 2.png",
+      "width": 1351,
+      "height": 2696,
+      "hasAlpha": true,
+      "sha256": "587294fcac0f75c6fd7136bccdd7093ee4d57eb3989e38ff595aacf4135c4829"
+    },
+    {
+      "id": "bank-thorny-bush",
+      "name": "Thorny Bush",
+      "category": "shrubs",
+      "image": "img/materials/shrubs/$$Thorny Bush.png",
+      "width": 1957,
+      "height": 2517,
+      "hasAlpha": true,
+      "sha256": "046f82fb993d10cea9276fe6f0d7d6720fe0cbe57ff557a19ec4b3619f91ec3d"
+    },
+    {
+      "id": "bank-thorny-bush-double",
+      "name": "Thorny Bush Double",
+      "category": "shrubs",
+      "image": "img/materials/shrubs/$$Thorny Bush Double.png",
+      "width": 1278,
+      "height": 1643,
+      "hasAlpha": true,
+      "sha256": "7c02806604a260514b69303a10623e2cc677ed5452e3817e9692f0c7bdd153c4"
+    },
+    {
+      "id": "bank-joshua-tree-1",
+      "name": "Joshua Tree 1",
+      "category": "trees",
+      "image": "img/materials/trees/$$Joshua Tree 1.png",
+      "width": 1055,
+      "height": 1752,
+      "hasAlpha": true,
+      "sha256": "b27ce2da80d477bc9b7b9e13cba894d3c7d2a3bb3c531d8b244001dcf868b902"
+    },
+    {
+      "id": "bank-joshua-tree-2",
+      "name": "Joshua Tree 2",
+      "category": "trees",
+      "image": "img/materials/trees/$$Joshua Tree 2.png",
+      "width": 1039,
+      "height": 1782,
+      "hasAlpha": true,
+      "sha256": "b4a985f116777734d7757a1855bdd76ce6e090f239e7083c27a381eca718bd4b"
+    },
+    {
+      "id": "bank-joshua-tree-3",
+      "name": "Joshua Tree 3",
+      "category": "trees",
+      "image": "img/materials/trees/$$Joshua Tree 3.png",
+      "width": 849,
+      "height": 1405,
+      "hasAlpha": true,
+      "sha256": "0913b98e7e34300019582ca483c48ea7f83eab48a9c77b2e9148826c8dfa1ebe"
+    },
+    {
+      "id": "bank-joshua-tree-4",
+      "name": "Joshua Tree 4",
+      "category": "trees",
+      "image": "img/materials/trees/$$Joshua Tree 4.png",
+      "width": 1291,
+      "height": 1844,
+      "hasAlpha": true,
+      "sha256": "826ddb0c89003d9f808bd9437a7e13b9af3c68b517e2b091de76d4671b043f9e"
+    },
+    {
+      "id": "bank-joshua-tree-5",
+      "name": "Joshua Tree 5",
+      "category": "trees",
+      "image": "img/materials/trees/$$Joshua Tree 5.png",
+      "width": 1441,
+      "height": 1709,
+      "hasAlpha": true,
+      "sha256": "e9c7d15e88f25861bb1f27575e156515aaf00856140ce25c6b530a4378ffcc51"
+    },
+    {
+      "id": "bank-joshua-tree-6",
+      "name": "Joshua Tree 6",
+      "category": "trees",
+      "image": "img/materials/trees/$$Joshua Tree 6.png",
+      "width": 1309,
+      "height": 1519,
+      "hasAlpha": true,
+      "sha256": "5272ef0330664e20cfbc9c9d11b1b66eeb91097c3f15c520dc3af4a7a86f2808"
+    },
+    {
+      "id": "bank-joshua-tree-7",
+      "name": "Joshua Tree 7",
+      "category": "trees",
+      "image": "img/materials/trees/$$Joshua Tree 7.png",
+      "width": 1210,
+      "height": 1895,
+      "hasAlpha": true,
+      "sha256": "98a151982290946acb24f1b11305bc1a76218e581e3257a5a2207123fafe407c"
+    },
+    {
+      "id": "bank-joshua-tree-8",
+      "name": "Joshua Tree 8",
+      "category": "trees",
+      "image": "img/materials/trees/$$Joshua Tree 8.png",
+      "width": 1358,
+      "height": 1497,
+      "hasAlpha": true,
+      "sha256": "43c2b836206464c41d9c547a060c776798e80b03dccb19c5011f7c6b97b72081"
+    },
+    {
+      "id": "bank-morel-tree-1",
+      "name": "Morel Tree 1",
+      "category": "trees",
+      "image": "img/materials/trees/$$Morel Tree 1.png",
+      "width": 1463,
+      "height": 2109,
+      "hasAlpha": true,
+      "sha256": "ba381883dc25851333125dd0793886491f866a2a70eb1afe8f7071bc9e1cc382"
+    },
+    {
+      "id": "bank-morel-tree-2",
+      "name": "Morel Tree 2",
+      "category": "trees",
+      "image": "img/materials/trees/$$Morel Tree 2.png",
+      "width": 1464,
+      "height": 1953,
+      "hasAlpha": true,
+      "sha256": "bc0799ef46ebc03ca0c118cf4c9f5974757666232211e6da648b878fb7dc745c"
+    },
+    {
+      "id": "bank-morel-tree-3",
+      "name": "Morel Tree 3",
+      "category": "trees",
+      "image": "img/materials/trees/$$Morel Tree 3.png",
+      "width": 1795,
+      "height": 1766,
+      "hasAlpha": true,
+      "sha256": "82bdbfb9bfdeab5405e94c9e763e7bf0880d2af0abfd3ee98065573a5c51cf53"
+    },
+    {
+      "id": "bank-morel-tree-4",
+      "name": "Morel Tree 4",
+      "category": "trees",
+      "image": "img/materials/trees/$$Morel Tree 4.png",
+      "width": 1892,
+      "height": 1848,
+      "hasAlpha": true,
+      "sha256": "12a60fd86967b5103494beb8962b4e5f40f1a6310b5132b53251734699ef07fd"
+    },
+    {
+      "id": "bank-morel-tree-5",
+      "name": "Morel Tree 5",
+      "category": "trees",
+      "image": "img/materials/trees/$$Morel Tree 5.png",
+      "width": 1862,
+      "height": 1796,
+      "hasAlpha": true,
+      "sha256": "f4c351ac430fa77685f9b1b78d011001a68574f2ece6c55ee1483db0a758cd6e"
+    },
+    {
+      "id": "bank-thorny-tree-a",
+      "name": "Thorny Tree A",
+      "category": "trees",
+      "image": "img/materials/trees/$$Thorny Tree A.png",
+      "width": 925,
+      "height": 1259,
+      "hasAlpha": true,
+      "sha256": "cab1797094eb3d5e2c398e7c8a797805211b11f53d7a36e9e4898137eff992f3"
+    },
+    {
+      "id": "bank-thorny-tree-b",
+      "name": "Thorny Tree B",
+      "category": "trees",
+      "image": "img/materials/trees/$$Thorny Tree B.png",
+      "width": 971,
+      "height": 1257,
+      "hasAlpha": true,
+      "sha256": "7dc6250b3cdfce9b443fcc1bbfb7d96ef5ef26b5642c8029c6bb5b7d714d031c"
+    },
+    {
+      "id": "bank-thorny-tree-c",
+      "name": "Thorny Tree C",
+      "category": "trees",
+      "image": "img/materials/trees/$$Thorny Tree C.png",
+      "width": 998,
+      "height": 1297,
+      "hasAlpha": true,
+      "sha256": "8793570c15c9633cb096ce06a50431c55563b0a57ffacfec25243a4115848795"
+    },
+    {
+      "id": "bank-thorny-tree-d",
+      "name": "Thorny Tree D",
+      "category": "trees",
+      "image": "img/materials/trees/$$Thorny Tree D.png",
+      "width": 1231,
+      "height": 1264,
+      "hasAlpha": true,
+      "sha256": "c728b917d28214b4399bec5d779a3ebffc60a3d5ca46f42200523fb23fa16f10"
+    },
+    {
+      "id": "bank-thorny-tree-double",
+      "name": "Thorny Tree Double",
+      "category": "trees",
+      "image": "img/materials/trees/$$Thorny Tree Double.png",
+      "width": 984,
+      "height": 1273,
+      "hasAlpha": true,
+      "sha256": "ff1f9cca583c6b80d8da19f927a0ee19db08212eabd7047b76a40b23ebe0ec40"
+    },
+    {
+      "id": "bank-thorny-tree-a-double",
+      "name": "Thorny Tree A Double",
+      "category": "trees",
+      "image": "img/materials/trees/$$Thorny Tree A Double.png",
+      "width": 1010,
+      "height": 1376,
+      "hasAlpha": true,
+      "sha256": "5e849fdd567f5e6b1cf9e1ee60ccd6c167adc3eafa2ba22a245dc2d661f6265d"
+    },
+    {
+      "id": "bank-twisted-tree-a",
+      "name": "Twisted Tree A",
+      "category": "trees",
+      "image": "img/materials/trees/$$Twisted Tree A.png",
+      "width": 1449,
+      "height": 2087,
+      "hasAlpha": true,
+      "sha256": "508ae3797ffd4db34a5e941e5bc926a1bc93b14c34065e171c27858901c93c54"
+    },
+    {
+      "id": "bank-twisted-tree-c",
+      "name": "Twisted Tree C",
+      "category": "trees",
+      "image": "img/materials/trees/$$Twisted Tree C.png",
+      "width": 1958,
+      "height": 2569,
+      "hasAlpha": true,
+      "sha256": "d9608ad23636e97d8462082c555f7cb6e242b2573bc15c75e581d550505c4645"
+    },
+    {
+      "id": "bank-twisted-tree-d",
+      "name": "Twisted Tree D",
+      "category": "trees",
+      "image": "img/materials/trees/$$Twisted Tree D.png",
+      "width": 2125,
+      "height": 2795,
+      "hasAlpha": true,
+      "sha256": "c824003b7539f11d80ffc7f7e82e9a5d2c45c8d3e3cd0976ab68cf672aa85959"
+    },
+    {
+      "id": "ground-moss",
+      "name": "Seamless moss",
+      "category": "ground",
+      "image": "img/materials/ground/seamless-moss.png",
+      "width": 1254,
+      "height": 1254,
+      "hasAlpha": false,
+      "sourceRect": {
+        "left": 0,
+        "top": 0,
+        "width": 384,
+        "height": 384
+      },
+      "decalImage": "img/materials/ground/mythos-moss.png",
+      "generated": true
+    },
+    {
+      "id": "ground-forest-litter",
+      "name": "Seamless forest-litter",
+      "category": "ground",
+      "image": "img/materials/ground/seamless-forest-litter.png",
+      "width": 1254,
+      "height": 1254,
+      "hasAlpha": false,
+      "sourceRect": {
+        "left": 384,
+        "top": 0,
+        "width": 384,
+        "height": 384
+      },
+      "decalImage": "img/materials/ground/mythos-forest-litter.png",
+      "generated": true
+    },
+    {
+      "id": "ground-mossy-stone",
+      "name": "Seamless mossy-stone",
+      "category": "ground",
+      "image": "img/materials/ground/seamless-mossy-stone.png",
+      "width": 1254,
+      "height": 1254,
+      "hasAlpha": false,
+      "sourceRect": {
+        "left": 0,
+        "top": 384,
+        "width": 384,
+        "height": 384
+      },
+      "decalImage": "img/materials/ground/mythos-mossy-stone.png",
+      "generated": true
+    },
+    {
+      "id": "ground-earth",
+      "name": "Seamless earth",
+      "category": "ground",
+      "image": "img/materials/ground/seamless-earth.png",
+      "width": 1254,
+      "height": 1254,
+      "hasAlpha": false,
+      "sourceRect": {
+        "left": 384,
+        "top": 384,
+        "width": 384,
+        "height": 384
+      },
+      "decalImage": "img/materials/ground/mythos-earth.png",
+      "generated": true
+    }
+  ]
+}

@@ -3,12 +3,12 @@
  * See CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 /* Native Frontier host for the supplied ActiveCombat parsers and mechanics. */
-(function(root){
+(/* @function Phanicom_ActiveCombat.callback.1 — Provides the callback for a callback. Inputs: root. Updates: mf fire shot; mf resolve projectile impact; root phanicom abs. Uses: root phanicom plugin settings items find; core parse weapon item; weapons set. */ function(root){
 'use strict'  ;
   const MF=root.MF,core=root.PhanicomCombatCore,params=root.PhanicomPluginSettings.combat;
   const weapons=new Map();
   for(const profile of core.profiles){
-    const item=root.PhanicomPluginSettings.items.find(i=>i.name===profile.displayName)||{
+    const item=root.PhanicomPluginSettings.items.find(/* @function Phanicom_ActiveCombat.callback.2 — Returns i name equals profile display name. Inputs: i. Returns: i name equals profile display name. */ i=>i.name===profile.displayName)||{
       id:0,name:profile.displayName,note:'<PhanicomABSWeapon: equipSwitch=1 profile='+profile.id+'>'
     }
     ;
@@ -25,20 +25,22 @@
     );
   }
 // Clone a parsed weapon profile into player state; clamp loaded rounds and cancel queued bursts.
-  function equip(game,id){
+  /* @function Phanicom_ActiveCombat.equip.3 — Clone a parsed weapon profile into player state; clamp loaded rounds and cancel queued bursts. Inputs: game; id. Updates: game player weapon; game player magazines; game player magazines at game player previous weapon; game player ammo loaded; game player previous weapon. Uses: weapons get; error; structured clone. Returns: weapon. */ function equip(game,id){
     const weapon=weapons.get(id);
     if(!weapon)throw Error('Unknown weapon profile.');
     game.player.weapon=structuredClone(weapon);
-    game.player.ammoLoaded=Math.min(game.player.ammoLoaded,weapon.magazineSize);
+    // Preserve each weapon magazine while switching pistol/melee profiles.
+    game.player.magazines||={};if(game.player.previousWeapon)game.player.magazines[game.player.previousWeapon]=game.player.ammoLoaded;
+    game.player.ammoLoaded=game.player.magazines[id]??Math.min(game.player.ammoLoaded,weapon.magazineSize);game.player.previousWeapon=id;
     game.combatCooldown=0;
     game.burst=null;
     return weapon;
   }
 // Emit melee, shotgun or single-projectile patterns from calibrated origins, with bounded projectile/flash counts.
-  function pattern(game,owner,weapon,base,ui){
+  /* @function Phanicom_ActiveCombat.pattern.4 — Emit melee, shotgun or single-projectile patterns from calibrated origins, with bounded projectile/flash counts. Inputs: game; owner; weapon; base; ui. Updates: p penetration; p hit ids; p profile id; first. Uses: root frontier activity query; mf resolve projectile impact; root frontier weapon tuning radians; core shotgun directions. Returns: without a result. */ function pattern(game,owner,weapon,base,ui){
     if(weapon.type==='melee'){
       let count=0;
-      for(const e of owner.id===game.player.id?[...game.maps.frontier.entities,...(game.sceneEvents||[])]:[game.player]){
+      for(const e of owner.id===game.player.id?root.FrontierActivity.query(game,owner.x-weapon.range,owner.y-weapon.range,owner.x+weapon.range,owner.y+weapon.range,true):[game.player]){
         if(e.id===owner.id||e.dead||e.hp<=0||owner.id===game.player.id&&e.type!=='monster')continue;
         const dx=e.x-owner.x,dy=e.y-owner.y,dist=Math.hypot(dx,dy);
         if(dist<=weapon.range&&(dx*base.x+dy*base.y)/Math.max(.001,dist)>=Math.cos(weapon.arcRadians/2)){
@@ -56,7 +58,8 @@
       }
       return;
     }
-    const directions=weapon.type==='shotgun'?core.shotgunDirections(base,Math.min(64,weapon.pellets),weapon.spreadRadians):[core.applySpread(base,weapon.spreadRadians)];
+    const spread=root.FrontierWeaponTuning.radians(game.sourceWorld,weapon);
+    const directions=weapon.type==='shotgun'?core.shotgunDirections(base,Math.min(64,weapon.pellets),spread):[core.applySpread(base,spread)];
     let first;
     for(const direction of directions){
       if(game.projectiles.length>=256)break;
@@ -78,7 +81,7 @@
     }
   }
 // Prefer an available explicit SE; otherwise use the original procedural weapon sound profile.
-  function sound(game,weapon,owner){
+  /* @function Phanicom_ActiveCombat.sound.5 — Prefer an available explicit SE; otherwise use the original procedural weapon sound profile. Inputs: game; weapon; owner. Uses: root phanicom se has; root phanicom se play; core play golden eye profile. */ function sound(game,weapon,owner){
 // The source project refers to Laser1/2 but did not supply those stock MZ
 // files. Use explicit supplied beam sounds instead of silently dropping audio.
     const aliases={
@@ -89,7 +92,7 @@
     else core.playGoldenEyeProfile(weapon.audioProfile,weapon.audioVolume);
   }
 // Enforce holster/alive/cooldown/ammunition rules, emit one attack and set its firing cadence.
-  function shot(game,ui,burst=false){
+  /* @function Phanicom_ActiveCombat.shot.6 — Enforce holster/alive/cooldown/ammunition rules, emit one attack and set its firing cadence. Inputs: game; ui; assignment pattern. Updates: game combat cooldown; game burst; p firing until; p ammo loaded. Uses: root phanicom se play; number; ui log; mf update aim. Returns: false; false. */ function shot(game,ui,burst=false){
     const p=game.player,w=p.weapon;
     if(!w||p.holstered||p.hp<=0||(!burst&&(game.combatCooldown||0)>0))return false;
     const cost=w.ammoCost??1;
@@ -100,16 +103,18 @@
       ui.log('Empty magazine — reload.');
       return false;
     }
+    // Align before muzzle calibration is read, including auto and burst shots.
+    MF.updateAim(game);p.firingUntil=(game.elapsed||0)+.12;
     if(!game.debug?.infiniteAmmo)p.ammoLoaded-=cost;
     pattern(game,p,w,{
-      x:Math.sin(game.camera.yaw),y:Math.cos(game.camera.yaw)
+      x:p.facingX,y:p.facingY
     }
     ,ui);
     sound(game,w,p);
     game.combatCooldown=(w.fireMode==='auto'?w.fireRate:w.cooldown)/60;
     return true;
   }
-  MF.fireShot=(game,x,y,ui)=>{
+  MF.fireShot=/* @function Phanicom_ActiveCombat.fireShot.7 — Handles fire shot within phanicom active combat. Inputs: game; x; y; ui. Updates: game burst. Uses: shot. Returns: false; ok. */ (game,x,y,ui)=>{
     if(game.burst)return false;
     const ok=shot(game,ui);
     if(ok&&game.player.weapon.fireMode==='burst'){
@@ -123,7 +128,7 @@
   }
   ;
   // Countdown cooldown/burst in seconds; automatic fire reads held input while semi fire is edge-triggered by app.js.
- function update(game,dt,held){
+ /* @function Phanicom_ActiveCombat.update.8 — Countdown cooldown/burst in seconds; automatic fire reads held input while semi fire is edge-triggered by app.js. Inputs: game; dt; held. Updates: game combat cooldown; game burst; b timer. Uses: shot. Returns: without a result. */ function update(game,dt,held){
     game.combatCooldown=Math.max(0,(game.combatCooldown||0)-dt);
     const b=game.burst;
     if(b){
@@ -141,8 +146,11 @@
   }
   const originalImpact=MF.resolveProjectileImpact;
   // Preserve inherited damage handling, then replace only its blood visuals and apply native death/self-switch/kill-feed side effects.
- MF.resolveProjectileImpact=(game,p,hit,ui)=>{
+ MF.resolveProjectileImpact=/* @function Phanicom_ActiveCombat.resolveProjectileImpact.9 — Handles resolve projectile impact within phanicom active combat. Inputs: game; p; hit; ui. Updates: game particles length; messages. Uses: game runtime entities get; root frontier party combat can damage; game runtime events emit; original impact. Returns: without a result. */ (game,p,hit,ui)=>{
     const target=game.runtime.entities.get(hit.id),before=target?.hp;
+    if(root.FrontierPartyCombat&&!root.FrontierPartyCombat.canDamage(game,game.runtime.entities.get(p.ownerId),target)){
+      game.runtime.events.emit('projectile.impact',{projectileId:p.id,ownerId:p.ownerId,targetId:hit.id,kind:hit.kind,position:{...p.position},damageSuppressed:'party'});return;
+    }
     const particles=game.particles.length;
     originalImpact(game,p,hit,ui);
     if(target&&before>target.hp){
@@ -166,12 +174,12 @@
   ;
   root.PhanicomABS={
     weapons,equip,update,pattern,parseWeapon:core.parseWeaponItem,parseEvent:core.parseCombatEvent,
-    setPlayerDeathMode(game,mode){
+    /* @function Phanicom_ActiveCombat.setPlayerDeathMode.10 — Handles set player death mode within phanicom active combat. Inputs: game; mode. Updates: game death mode. Uses: a list of "normal", "sprite", "gib", "damage" includes; error. */ setPlayerDeathMode(game,mode){
       if(!['normal','sprite','gib','damage'].includes(mode))throw Error('Invalid death mode.');
       game.deathMode=mode;
     }
     ,
-    exportState(game){
+    /* @function Phanicom_ActiveCombat.exportState.11 — Handles export state within phanicom active combat. Inputs: game. Returns: a record containing weapon, ammoLoaded, ammoReserve, hp, deathMode. */ exportState(game){
       return {
         weapon:game.player.weapon.id,ammoLoaded:game.player.ammoLoaded,ammoReserve:game.player.ammoReserve,hp:game.player.hp,deathMode:game.deathMode||params.PlayerDeathMode
       }

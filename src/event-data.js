@@ -233,3 +233,4 @@ window.FrontierEventData={
     }
   ]
 };
+

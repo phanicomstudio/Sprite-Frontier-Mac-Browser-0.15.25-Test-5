@@ -1,7 +1,7 @@
 /* Editable project rules. World JSON stores a validated full snapshot; older
  * worlds inherit defaults. Keep this schema, editor fields and consuming modules
  * synchronized. Units are world units, seconds and radians unless labeled. */
-(function(root){
+(/* @function parameters.callback.1 — Provides the callback for a callback. Inputs: root. Updates: root frontier parameters. Uses: object from entries; object entries using fields map; object entries. */ function(root){
   'use strict';
   const fields={
     dripSoundRange:{label:'Bleeding sound reach (world units; 3 tile-equivalents default)',value:3,min:0,max:30,step:.5},
@@ -12,7 +12,7 @@
     sprintMultiplier:{label:'Sprint multiplier',value:2,min:1,max:5,step:.1},
     jumpHeight:{label:'Jump apex height (units)',value:.96,min:.05,max:8,step:.05},
     gravity:{label:'Gravity (units/second²)',value:12,min:1,max:40,step:.5},
-    stepHeight:{label:'Automatic step height (units)',value:.3,min:0,max:1.5,step:.05},
+    stepHeight:{label:'Automatic step height (units)',value:.6,min:0,max:1.5,step:.05},
     aimMin:{label:'Aim down limit (degrees)',value:-.7*180/Math.PI,min:-60,max:0,step:1},
     aimMax:{label:'Aim up limit (degrees)',value:.6*180/Math.PI,min:0,max:60,step:1},
     mouseYaw:{label:'Mouse yaw sensitivity',value:.004,min:.0005,max:.02,step:.0005},
@@ -22,9 +22,9 @@
     interactionFeet:{label:'Default interaction reach (feet)',value:6,min:1,max:30,step:.5},
     ricochetChance:{label:'Scenery ricochet probability (0–1)',value:.2,min:0,max:1,step:.05}
   };
-  const defaults=Object.fromEntries(Object.entries(fields).map(([key,f])=>[key,f.value]));
+  const defaults=Object.fromEntries(Object.entries(fields).map(/* @function parameters.callback.2 — Returns a list of key, f value. Inputs: array pattern. Returns: a list of key, f value. */ ([key,f])=>[key,f.value]));
   // Sanitize the complete parameter snapshot before any rule changes become live.
-  function validate(value={}){
+  /* @function parameters.validate.3 — Sanitize the complete parameter snapshot before any rule changes become live. Inputs: assignment pattern. Updates: result at key. Uses: array is array; error; object entries; number is finite. Returns: result. */ function validate(value={}){
     if(!value||typeof value!=='object'||Array.isArray(value))throw Error('Invalid global parameters.');
     const result={};for(const [key,f]of Object.entries(fields)){const v=value[key]??f.value;if(!Number.isFinite(v)||v<f.min||v>f.max)throw Error('Invalid '+f.label+'.');result[key]=v;}
     if(result.zoomMin>=result.zoomMax)throw Error('Closest zoom must be less than farthest zoom.');
@@ -32,6 +32,8 @@
     return result;
   }
   // Return an authored setting without allocating a merged object per frame.
-  function get(world,key){return world?.parameters?.[key]??defaults[key];}
+  /* @function parameters.get.4 — Return an authored setting without allocating a merged object per frame. Inputs: world; key. Returns: chain or the fallback defaults at key. */ function get(world,key){return world?.parameters?.[key]??defaults[key];}
   root.FrontierParameters={fields,defaults,validate,get};
 })(typeof window==='undefined'?globalThis:window);
+
+

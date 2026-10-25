@@ -3,7 +3,7 @@
  * See CODE-GUIDE.md for load order, ownership and extension recipes.
  */
 /* Pure parsers, weapon spread and procedural audio carried from Phanicom_ActiveCombat v0.9.0. Native host adapter supplies world, input and rendering. */
-(function(root){
+(/* @function Phanicom_ActiveCombat.Core.callback.1 — Provides the callback for a callback. Inputs: root. Updates: root phanicom combat core. Uses: number; parse struct array using params weapon profiles map using compile weapon profile filter; parse struct array using params weapon profiles map; parse struct array. */ function(root){
 "use strict"  ;
   const params=root.PhanicomPluginSettings.combat,EPS=1e-8,DEG=Math.PI/180;
   const CFG={
@@ -14,22 +14,22 @@
     ctx:null
   }
   ;
-  const log=()=>{
+  const log=/* @function Phanicom_ActiveCombat.Core.log.2 — Records a human-readable runtime message. Inputs: no explicit arguments; uses enclosing module state. */ ()=>{
   }
   ;
   const $gameParty={
-    leader:()=>({
-      actorId:()=>1
+    leader:/* @function Phanicom_ActiveCombat.Core.leader.3 — Returns a record containing actorId. Inputs: no explicit arguments; uses enclosing module state. Returns: a record containing actorId. */ ()=>({
+      actorId:/* @function Phanicom_ActiveCombat.Core.actorId.4 — Returns 1. Inputs: no explicit arguments; uses enclosing module state. Returns: 1. */ ()=>1
     }
     )
   }
   ;
-  const currentActorMuzzleProfile=()=>null,actorWeaponCalibration=()=>null,playerFiringCalibration=()=>null,enemyFiringCalibration=()=>null;
-  function clamp(v, lo, hi) {
+  const currentActorMuzzleProfile=/* @function Phanicom_ActiveCombat.Core.currentActorMuzzleProfile.5 — Returns null. Inputs: no explicit arguments; uses enclosing module state. Returns: null. */ ()=>null,actorWeaponCalibration=/* @function Phanicom_ActiveCombat.Core.actorWeaponCalibration.6 — Returns null. Inputs: no explicit arguments; uses enclosing module state. Returns: null. */ ()=>null,playerFiringCalibration=/* @function Phanicom_ActiveCombat.Core.playerFiringCalibration.7 — Returns null. Inputs: no explicit arguments; uses enclosing module state. Returns: null. */ ()=>null,enemyFiringCalibration=/* @function Phanicom_ActiveCombat.Core.enemyFiringCalibration.8 — Returns null. Inputs: no explicit arguments; uses enclosing module state. Returns: null. */ ()=>null;
+  /* @function Phanicom_ActiveCombat.Core.clamp.9 — Handles clamp within phanicom active combat.core. Inputs: v; lo; hi. Returns: math max using lo, math min using hi, v. */ function clamp(v, lo, hi) {
     return Math.max(lo, Math.min(hi, v));
   }
 // Read key/value text without evaluating it; quotes permit names containing spaces.
-  function parseAttributePairs(text) {
+  /* @function Phanicom_ActiveCombat.Core.parseAttributePairs.10 — Read key/value text without evaluating it; quotes permit names containing spaces. Inputs: text. Updates: m; out at m at 1. Uses: re exec; string; m at 2 replace. Returns: out. */ function parseAttributePairs(text) {
     const out = {
     }
     ;
@@ -41,7 +41,7 @@
     return out;
   }
 // Read old multiline note tags so existing weapon authoring remains compatible.
-  function parseLegacyKeyValueBlock(text, tagName) {
+  /* @function Phanicom_ActiveCombat.Core.parseLegacyKeyValueBlock.11 — Read old multiline note tags so existing weapon authoring remains compatible. Inputs: text; tag name. Updates: out at line slice using 0, eq trim using . Uses: string using text or "" match; string; m at 1 split; raw trim. Returns: null; out. */ function parseLegacyKeyValueBlock(text, tagName) {
     const re = new RegExp(`<${tagName}\\s*>([\\s\\S]*?)<\\/${tagName}\\s*>`, "i");
     const m = String(text || "").match(re);
     if (!m) return null;
@@ -58,7 +58,7 @@
     return out;
   }
 // Read modern note-tag options and fall back to legacy block syntax.
-  function parseTagOptions(note, tagName) {
+  /* @function Phanicom_ActiveCombat.Core.parseTagOptions.12 — Read modern note-tag options and fall back to legacy block syntax. Inputs: note; tag name. Updates: m; found. Uses: string; re exec; object assign; parse attribute pairs. Returns: found selects merged or null. */ function parseTagOptions(note, tagName) {
 /*
          * v0.4.7: Merge EVERY matching inline tag on the object/event.
          *
@@ -86,7 +86,7 @@
     return found ? merged : null;
   }
 // Extract weapon tag options from the supplied MZ note format.
-  function parseWeaponNote(text) {
+  /* @function Phanicom_ActiveCombat.Core.parseWeaponNote.13 — Extract weapon tag options from the supplied MZ note format. Inputs: text. Uses: string; note match; parse attribute pairs; object keys. Returns: attrs; parse legacy key value block using note, "PhanicomABSWeapon". */ function parseWeaponNote(text) {
     const note = String(text || "");
     const single = note.match(/<PhanicomABSWeapon\s*:?\s+([^>]+)>/i);
     if (single) {
@@ -96,21 +96,21 @@
     return parseLegacyKeyValueBlock(note, "PhanicomABSWeapon");
   }
 // Read a finite numeric option or use its configured fallback.
-  function num(obj, key, fallback) {
+  /* @function Phanicom_ActiveCombat.Core.num.14 — Read a finite numeric option or use its configured fallback. Inputs: obj; key; fallback. Uses: number; number is finite. Returns: number is finite using n selects n or fallback. */ function num(obj, key, fallback) {
     const n = Number(obj?.[key]);
     return Number.isFinite(n) ? n : fallback;
   }
 // Read a numeric option and truncate to an integer.
-  function int(obj, key, fallback) {
+  /* @function Phanicom_ActiveCombat.Core.int.15 — Read a numeric option and truncate to an integer. Inputs: obj; key; fallback. Uses: num. Returns: math trunc using num using obj, key, fallback. */ function int(obj, key, fallback) {
     return Math.trunc(num(obj, key, fallback));
   }
 // Read a textual option or default.
-  function str(obj, key, fallback) {
+  /* @function Phanicom_ActiveCombat.Core.str.16 — Read a textual option or default. Inputs: obj; key; fallback. Uses: string. Returns: value equals undefined or value equals null or value equals "" selects fallback or string using value. */ function str(obj, key, fallback) {
     const value = obj?.[key];
     return value === undefined || value === null || value === "" ? fallback : String(value);
   }
 // Parse a muzzle pixel offset pair from authored note text.
-  function parseOffsetPair(text) {
+  /* @function Phanicom_ActiveCombat.Core.parseOffsetPair.17 — Parse a muzzle pixel offset pair from authored note text. Inputs: text. Uses: string using text or "" trim using match; string using text or "" trim; string; number. Returns: m selects a record containing x, y or null. */ function parseOffsetPair(text) {
     const m = String(text || "").trim().match(/^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/);
     return m ? {
       x: Number(m[1]), y: Number(m[2])
@@ -118,7 +118,7 @@
     : null;
   }
 // Parse per-direction muzzle offsets using original MZ direction IDs.
-  function parseMuzzleSpec(text) {
+  /* @function Phanicom_ActiveCombat.Core.parseMuzzleSpec.18 — Parse per-direction muzzle offsets using original MZ direction IDs. Inputs: text. Updates: by direction at number using m at 1. Uses: string using text or "" trim; string; parse offset pair; raw split. Returns: a record containing shared, byDirection; object keys using by direction length selects a record containing shared, byDirection or a record containing shared, byDirection. */ function parseMuzzleSpec(text) {
     const raw = String(text || "").trim();
     const shared = parseOffsetPair(raw);
     if (shared) return {
@@ -150,7 +150,7 @@
     ;
   }
 // Look up a directional muzzle entry with the original fallback rules.
-  function muzzleForDirection(spec, dir) {
+  /* @function Phanicom_ActiveCombat.Core.muzzleForDirection.19 — Look up a directional muzzle entry with the original fallback rules. Inputs: spec; dir. Uses: number. Returns: a record containing x, y; chain or spec shared or a record containing x, y. */ function muzzleForDirection(spec, dir) {
     if (!spec) return {
       x: 0, y: 0
     }
@@ -161,12 +161,12 @@
     ;
   }
 // Decode MZ plugin struct arrays, whose entries may themselves be JSON strings.
-  function parseStructArray(raw) {
+  /* @function Phanicom_ActiveCombat.Core.parseStructArray.20 — Decode MZ plugin struct arrays, whose entries may themselves be JSON strings. Inputs: raw. Uses: json parse; array is array; outer map using a callback filter; outer map. Returns: a list of ; a list of . */ function parseStructArray(raw) {
     if (!raw) return [];
     try {
       const outer = JSON.parse(raw);
       if (!Array.isArray(outer)) return [];
-      return outer.map(entry => {
+      return outer.map(/* @function Phanicom_ActiveCombat.Core.callback.21 — Provides the callback for outer map. Inputs: entry. Uses: json parse; string. Returns: entry; json parse using string using entry or "{}". */ entry => {
         if (entry && typeof entry === "object") return entry;
         try {
           return JSON.parse(String(entry || "{}"));
@@ -182,11 +182,11 @@
     }
   }
 // Canonicalize profile names for ID/display-name lookup.
-  function profileKey(value) {
+  /* @function Phanicom_ActiveCombat.Core.profileKey.22 — Canonicalize profile names for ID/display-name lookup. Inputs: value. Uses: string using value or "" trim using to lower case using replace using /[^a-z0-9]+/g, "_" replace; string using value or "" trim using to lower case using replace; string using value or "" trim using to lower case; string using value or "" trim. Returns: string using value or "" trim using to lower case using replace using /[^a-z0-9]+/g, "_" replace using /^_+|_+$/g, "". */ function profileKey(value) {
     return String(value || "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
   }
 // Build directional muzzle metadata from a weapon profile.
-  function profileMuzzleSpec(raw) {
+  /* @function Phanicom_ActiveCombat.Core.profileMuzzleSpec.23 — Build directional muzzle metadata from a weapon profile. Inputs: raw. Updates: by direction at dir. Uses: number; number is finite. Returns: a record containing shared, byDirection. */ function profileMuzzleSpec(raw) {
     const byDirection = {
     }
     ;
@@ -208,7 +208,7 @@
     ;
   }
 // Build per-direction aim vectors from profile fields.
-  function profileAimSpec(raw) {
+  /* @function Phanicom_ActiveCombat.Core.profileAimSpec.24 — Build per-direction aim vectors from profile fields. Inputs: raw. Updates: by direction at dir. Uses: number; number is finite; normalize. Returns: a record containing byDirection. */ function profileAimSpec(raw) {
     const byDirection = {
     }
     ;
@@ -225,17 +225,17 @@
     ;
   }
 // Resolve the profile aim vector for an MZ direction.
-  function aimVectorForDirection(aimSpec, dir) {
+  /* @function Phanicom_ActiveCombat.Core.aimVectorForDirection.25 — Resolve the profile aim vector for an MZ direction. Inputs: aim spec; dir. Uses: number; normalize; direction vector. Returns: v and math hypot using v x, v y is greater than eps selects normalize using v x, v y or direction vector using dir. */ function aimVectorForDirection(aimSpec, dir) {
     const v = aimSpec?.byDirection?.[Number(dir)];
     return v && Math.hypot(v.x, v.y) > EPS ? normalize(v.x, v.y) : directionVector(dir);
   }
 // Convert authored barrel angle degrees into a normalized source 2D direction.
-  function angleDegreesToVector(degrees) {
+  /* @function Phanicom_ActiveCombat.Core.angleDegreesToVector.26 — Convert authored barrel angle degrees into a normalized source 2D direction. Inputs: degrees. Uses: number; normalize. Returns: normalize using math cos using rad, math sin using rad. */ function angleDegreesToVector(degrees) {
     const rad = Number(degrees || 0) * DEG;
     return normalize(Math.cos(rad), Math.sin(rad));
   }
 // Convert directional angle fields into vectors for legacy compatibility.
-  function profileAngleAimSpec(raw) {
+  /* @function Phanicom_ActiveCombat.Core.profileAngleAimSpec.27 — Convert directional angle fields into vectors for legacy compatibility. Inputs: raw. Updates: by direction at dir. Uses: number; number is finite; angle degrees to vector. Returns: a record containing byDirection. */ function profileAngleAimSpec(raw) {
     const byDirection = {
     }
     ;
@@ -250,7 +250,7 @@
     ;
   }
 // Convert supplied plugin profile fields into runtime weapon defaults.
-  function compileWeaponProfile(raw) {
+  /* @function Phanicom_ActiveCombat.Core.compileWeaponProfile.28 — Convert supplied plugin profile fields into runtime weapon defaults. Inputs: raw. Uses: profile key; string; string using chain or "projectile" trim using to lower case; string using chain or "projectile" trim. Returns: null; a record containing id, displayName, family, runtimeType, fireMode, audioProfile, sound, tracerColor. */ function compileWeaponProfile(raw) {
     const id = profileKey(raw?.ProfileId || raw?.DisplayName);
     if (!id) return null;
     return {
@@ -268,7 +268,7 @@
     ;
   }
 // Convert authored enemy profile fields into validated runtime combat options.
-  function compileEnemyCombatProfile(raw) {
+  /* @function Phanicom_ActiveCombat.Core.compileEnemyCombatProfile.29 — Convert authored enemy profile fields into validated runtime combat options. Inputs: raw. Uses: profile key; string using chain or "none" trim using to lower case; string using chain or "none" trim; string. Returns: null; a record containing id, displayName, characterSheet, calibrationId, maxHp, attack, damage, range. */ function compileEnemyCombatProfile(raw) {
     const id = profileKey(raw?.ProfileId || raw?.DisplayName);
     if (!id) return null;
     const attack = String(raw?.Attack || "none").trim().toLowerCase();
@@ -301,7 +301,7 @@
     ;
   }
 // Normalize a 2D vector safely; coordinate conventions remain those of the supplied plugin.
-  function normalize(x, y) {
+  /* @function Phanicom_ActiveCombat.Core.normalize.30 — Normalize a 2D vector safely; coordinate conventions remain those of the supplied plugin. Inputs: x; y. Uses: hypot. Returns: a record containing x, y. */ function normalize(x, y) {
     const len = hypot(x, y);
     return {
       x: x / len, y: y / len
@@ -309,7 +309,7 @@
     ;
   }
 // Translate MZ keypad direction IDs into unit world vectors.
-  function directionVector(dir) {
+  /* @function Phanicom_ActiveCombat.Core.directionVector.31 — Translate MZ keypad direction IDs into unit world vectors. Inputs: dir. Uses: number; normalize. Returns: normalize using - 1, 1; a record containing x, y. */ function directionVector(dir) {
     switch (Number(dir)) {
       case 1: return normalize(-1, 1);
       case 2: return {
@@ -338,14 +338,14 @@
     }
   }
 // Generate Gaussian random deviation for the original weapon spread model.
-  function gaussian() {
+  /* @function Phanicom_ActiveCombat.Core.gaussian.32 — Generate Gaussian random deviation for the original weapon spread model. Inputs: no explicit arguments; uses enclosing module state. Updates: u; v. Returns: math sqrt using - 2 multiplied by math log using u multiplied by math cos using 2 multiplied by math pi multiplied by v. */ function gaussian() {
     let u = 0, v = 0;
     while (!u) u = Math.random();
     while (!v) v = Math.random();
     return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
   }
 // Rotate an aim vector by sampled angular spread; preserve the source distribution.
-  function applySpread(direction, spreadRadians) {
+  /* @function Phanicom_ActiveCombat.Core.applySpread.33 — Rotate an aim vector by sampled angular spread; preserve the source distribution. Inputs: direction; spread radians. Uses: gaussian. Returns: a record containing copied fields; a record containing x, y. */ function applySpread(direction, spreadRadians) {
     if (!(spreadRadians > 0)) return {
       ...direction
     }
@@ -357,7 +357,7 @@
     ;
   }
 // Create the original cone of pellet directions. Native host limits count to protect frame budgets.
-  function shotgunDirections(baseDirection, pellets, coneRadians) {
+  /* @function Phanicom_ActiveCombat.Core.shotgunDirections.34 — Create the original cone of pellet directions. Native host limits count to protect frame budgets. Inputs: base direction; pellets; cone radians. Uses: clamp; result push. Returns: a list of a record containing copied fields; result. */ function shotgunDirections(baseDirection, pellets, coneRadians) {
     const count = Math.max(1, Math.trunc(pellets || 1));
     const base = Math.atan2(baseDirection.y, baseDirection.x);
     const half = Math.max(0, coneRadians || 0) * 0.5;
@@ -382,7 +382,7 @@
     return result;
   }
 // Resolve explicit profile ID, name or source item association.
-  function weaponProfileFor(raw, item = null) {
+  /* @function Phanicom_ActiveCombat.Core.weaponProfileFor.35 — Resolve explicit profile ID, name or source item association. Inputs: raw; assignment pattern. Uses: str; weapon profiles get; profile key. Returns: weapon profiles get using profile key using requested or null; weapon profiles get using profile key using item name or null. */ function weaponProfileFor(raw, item = null) {
 // v0.6.3: an explicit profile= always wins. If it is omitted, try the
 // RPG Maker Item name so the seeded profile library works immediately
 // with existing Items named "Handgun", "Shotgun", etc. This keeps the
@@ -394,7 +394,7 @@
     return null;
   }
 // Merge authored weapon note options with the original profile/default rules. Tune supplied item notes before changing parser defaults.
-  function parseWeaponItem(item) {
+  /* @function Phanicom_ActiveCombat.Core.parseWeaponItem.36 — Merge authored weapon note options with the original profile/default rules. Tune supplied item notes before changing parser defaults. Inputs: item. Uses: parse weapon note; weapon profile for; str using raw, "type", chain or "projectile" to lower case; str. Returns: null; null. */ function parseWeaponItem(item) {
     if (!item || !item.note) return null;
     const raw = parseWeaponNote(item.note);
     if (!raw) return null;
@@ -476,7 +476,7 @@
     ;
   }
 // Parse event combat note tags into enemy attack, timing, hitbox and death options.
-  function parseCombatEvent(eventData) {
+  /* @function Phanicom_ActiveCombat.Core.parseCombatEvent.37 — Parse event combat note tags into enemy attack, timing, hitbox and death options. Inputs: event data. Updates: local aim spec by direction at dir; has local aim angle. Uses: parse tag options; str; enemy combat profiles get; profile key. Returns: null; a record containing profileId, profileName, calibrationId, aimSpec, maxHp, hitRadius, alpha, deathSwitch. */ function parseCombatEvent(eventData) {
     const opts = parseTagOptions(eventData?.note || "", "PhanicomABS");
     if (opts === null) return null;
     const requestedProfile = str(opts, "profile", "");
@@ -555,7 +555,7 @@
     ;
   }
 // Get or create the procedural weapon audio context; the native host supplies its shared context.
-  function goldenEyeContext() {
+  /* @function Phanicom_ActiveCombat.Core.goldenEyeContext.38 — Get or create the procedural weapon audio context; the native host supplies its shared context. Inputs: no explicit arguments; uses enclosing module state. Updates: golden eye audio ctx. Uses: log. Returns: golden eye audio ctx; null. */ function goldenEyeContext() {
     if (GoldenEyeAudio.ctx) return GoldenEyeAudio.ctx;
     try {
       const AC = window.AudioContext || window.webkitAudioContext;
@@ -569,15 +569,15 @@
     }
   }
 // Resume suspended procedural audio after a permitted user gesture.
-  function goldenEyeResume(ctx) {
+  /* @function Phanicom_ActiveCombat.Core.goldenEyeResume.39 — Resume suspended procedural audio after a permitted user gesture. Inputs: ctx. Uses: ctx resume using catch; ctx resume. */ function goldenEyeResume(ctx) {
     if (ctx && ctx.state === "suspended" && typeof ctx.resume === "function") {
-      ctx.resume().catch(() => {
+      ctx.resume().catch(/* @function Phanicom_ActiveCombat.Core.callback.40 — Provides the callback for ctx resume using catch. Inputs: no explicit arguments; uses enclosing module state. */ () => {
       }
       );
     }
   }
 // Build the source waveshaper curve used by procedural weapon sounds.
-  function goldenEyeDistortionCurve(amount) {
+  /* @function Phanicom_ActiveCombat.Core.goldenEyeDistortionCurve.41 — Build the source waveshaper curve used by procedural weapon sounds. Inputs: amount. Updates: curve at i. Uses: number. Returns: curve. */ function goldenEyeDistortionCurve(amount) {
     const samples = 256;
     const curve = new Float32Array(samples);
     const k = Math.max(0, Number(amount) || 0);
@@ -594,7 +594,7 @@
   // Sources cannot restart. Compressors retain attack/release history, so they
   // also remain per voice; gains/filter/shaper alone are reusable.
   const idleSoundGraphs=new WeakMap();
-  function acquireSoundGraph(ctx){
+  /* @function Phanicom_ActiveCombat.Core.acquireSoundGraph.42 — Handles acquire sound graph within phanicom active combat.core. Inputs: ctx. Updates: idle. Uses: idle sound graphs get; idle sound graphs set; idle pop; ctx create gain. Returns: a record containing graph, idle. */ function acquireSoundGraph(ctx){
     let idle=idleSoundGraphs.get(ctx);
     if(!idle){idle=[];idleSoundGraphs.set(ctx,idle);}
     const graph=idle.pop()||{
@@ -604,7 +604,7 @@
     return {graph,idle};
   }
 // Generate the supplied oscillator/noise/filter weapon envelope; preserve its timing when adjusting gain.
-  function playGoldenEyeWomp(options = {
+  /* @function Phanicom_ActiveCombat.Core.playGoldenEyeWomp.43 — Generate the supplied oscillator/noise/filter weapon envelope; preserve its timing when adjusting gain. Inputs: assignment pattern. Updates: osc type; sub type; filter type; shaper curve; shaper oversample. Uses: golden eye context; golden eye resume; clamp; ctx create oscillator. Returns: without a result; without a result. */ function playGoldenEyeWomp(options = {
   }
   ) {
     if (!CFG.goldenEyeAudio) return;
@@ -668,9 +668,9 @@
     // bounded schedule. Wait for both sources and a generous compressor tail;
     // none of the original frequencies, gains or envelope times change.
     let endedSources=0;
-    const releaseGraph=()=>{
+    const releaseGraph=/* @function Phanicom_ActiveCombat.Core.releaseGraph.44 — Handles release graph within phanicom active combat.core. Inputs: no explicit arguments; uses enclosing module state. Uses: set timeout. Returns: without a result. */ ()=>{
       if(++endedSources!==2)return;
-      setTimeout(()=>{
+      setTimeout(/* @function Phanicom_ActiveCombat.Core.callback.45 — Provides the callback for set timeout. Inputs: no explicit arguments; uses enclosing module state. Updates: osc onended; sub onended. Uses: node disconnect; idle push. */ ()=>{
         for(const node of [osc,sub,gain,subGain,outputGain,filter,compressor,shaper])node.disconnect();
         osc.onended=sub.onended=null;
         if(ctx.state!=='closed'&&idle.length<32)idle.push(graph);
@@ -683,7 +683,7 @@
     sub.stop(now + duration + 0.03);
   }
 // Select the supplied procedural sound recipe by profile name.
-  function playGoldenEyeProfile(profile, volumeScale = 1.0) {
+  /* @function Phanicom_ActiveCombat.Core.playGoldenEyeProfile.46 — Select the supplied procedural sound recipe by profile name. Inputs: profile; assignment pattern. Uses: string using profile or "standard" to lower case; string; play golden eye womp; set timeout. Returns: without a result; without a result. */ function playGoldenEyeProfile(profile, volumeScale = 1.0) {
     const p = String(profile || "standard").toLowerCase();
     if (!CFG.goldenEyeAudio || p === "none" || p === "off") return;
     if (p === "shotgun") {
@@ -691,7 +691,7 @@
         duration: 0.20, startFreq: 155, endFreq: 48, filterStart: 680, filterEnd: 160, volume: 0.46, volumeScale, wave: "triangle", drive: 0.55, subMix: 0.42
       }
       );
-      setTimeout(() => playGoldenEyeWomp({
+      setTimeout(/* @function Phanicom_ActiveCombat.Core.callback.47 — Returns play golden eye womp using a record containing duration, startFreq, endFreq, filterStart, filterEnd, volume, volumeScale, wave. Inputs: no explicit arguments; uses enclosing module state. Uses: play golden eye womp. Returns: play golden eye womp using a record containing duration, startFreq, endFreq, filterStart, filterEnd, volume, volumeScale, wave. */ () => playGoldenEyeWomp({
         duration: 0.12, startFreq: 120, endFreq: 44, filterStart: 520, filterEnd: 140, volume: 0.30, volumeScale, wave: "sine", drive: 0.35, subMix: 0.30
       }
       ), 28);
@@ -738,10 +738,10 @@
   }
   for(const p of parseStructArray(params.EnemyCombatProfiles).map(compileEnemyCombatProfile).filter(Boolean))ENEMY_COMBAT_PROFILES.set(p.id,p);
   root.PhanicomCombatCore={
-    profiles,CFG,parseWeaponItem,parseCombatEvent,parseWeaponNote,parseStructArray,shotgunDirections,applySpread,playGoldenEyeProfile,setAudioContext(ctx){
+    profiles,CFG,parseWeaponItem,parseCombatEvent,parseWeaponNote,parseStructArray,shotgunDirections,applySpread,playGoldenEyeProfile,/* @function Phanicom_ActiveCombat.Core.setAudioContext.48 — Handles set audio context within phanicom active combat.core. Inputs: ctx. Updates: golden eye audio ctx. */ setAudioContext(ctx){
       GoldenEyeAudio.ctx=ctx;
     }
-    ,setVolume(value){
+    ,/* @function Phanicom_ActiveCombat.Core.setVolume.49 — Handles set volume within phanicom active combat.core. Inputs: value. Updates: cfg golden eye output gain. Uses: number. */ setVolume(value){
       CFG.goldenEyeOutputGain=Number(params.GoldenEyeOutputGain||6)*value;
     }
   }

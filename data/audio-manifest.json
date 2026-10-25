@@ -494,5 +494,25 @@
   {
     "name": "Weapon Equip",
     "file": "Weapon Equip.ogg"
+  },
+  {
+    "file": "Door Open 01.ogg",
+    "name": "Door Open 01"
+  },
+  {
+    "file": "Door Open 02.ogg",
+    "name": "Door Open 02"
+  },
+  {
+    "file": "Door Close 01.ogg",
+    "name": "Door Close 01"
+  },
+  {
+    "file": "Door Close 02.ogg",
+    "name": "Door Close 02"
+  },
+  {
+    "file": "Door Creak 01.ogg",
+    "name": "Door Creak 01"
   }
 ]
