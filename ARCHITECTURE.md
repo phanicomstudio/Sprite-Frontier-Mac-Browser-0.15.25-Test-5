@@ -1,4 +1,8 @@
+> Historical snapshot. Current controls/features/limits: README.md, CODE-GUIDE.md and TEST-REPORT-06.md.
+
 # Phanicom Sprite Frontier — foundation assessment
+
+**Historical assessment of prototype 0.1.** See EVENT-EDITOR.md for 0.2 and DEMO-03.md for the current 0.3 terrain, input, sky and spatial-combat implementation.
 
 Working title: Sprite Frontier, prototype 0.1. This is a new standalone project, not a modified Metropolis Frontier release. The source ZIP and desktop files remain unchanged.
 

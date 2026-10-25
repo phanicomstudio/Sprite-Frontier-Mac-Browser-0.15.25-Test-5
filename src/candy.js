@@ -1,3 +1,85 @@
-window.FrontierCandy={image:new Image(),frames:[{"x":134,"y":293,"w":146,"h":307,"anchorX":66},{"x":534,"y":295,"w":146,"h":305,"anchorX":66},{"x":934,"y":295,"w":146,"h":305,"anchorX":66},{"x":31,"y":885,"w":266,"h":310,"anchorX":169},{"x":431,"y":885,"w":248,"h":315,"anchorX":169},{"x":831,"y":885,"w":242,"h":315,"anchorX":169},{"x":105,"y":1486,"w":208,"h":309,"anchorX":95},{"x":520,"y":1486,"w":193,"h":314,"anchorX":80},{"x":935,"y":1486,"w":178,"h":314,"anchorX":65},{"x":122,"y":2092,"w":147,"h":307,"anchorX":78},{"x":522,"y":2090,"w":147,"h":308,"anchorX":78},{"x":922,"y":2090,"w":147,"h":306,"anchorX":78},{"x":88,"y":2692,"w":198,"h":302,"anchorX":112},{"x":488,"y":2692,"w":190,"h":308,"anchorX":112},{"x":888,"y":2692,"w":189,"h":308,"anchorX":112},{"x":114,"y":3291,"w":163,"h":303,"anchorX":86},{"x":522,"y":3291,"w":155,"h":309,"anchorX":78},{"x":931,"y":3291,"w":146,"h":309,"anchorX":69},{"x":124,"y":3888,"w":218,"h":302,"anchorX":76},{"x":536,"y":3888,"w":206,"h":312,"anchorX":64},{"x":938,"y":3888,"w":204,"h":311,"anchorX":62},{"x":106,"y":4489,"w":166,"h":301,"anchorX":94},{"x":506,"y":4489,"w":154,"h":311,"anchorX":94},{"x":906,"y":4491,"w":142,"h":309,"anchorX":94}]};
-FrontierCandy.image.src="assets/candy-armed.png";
-FrontierCandy.direction={rows:[3,6,2,5,0,4,1,7],walkSequence:[1,2,1,0],frameSeconds:.14,idleColumn:1};
+/* MAINTAINER GUIDE
+ * Armed Candy asset metadata and image loading. The local-file data URI avoids WebGL CORS restrictions; cropped frame bounds remove empty margins. Direction row metadata must match the artwork.
+ * See CODE-GUIDE.md for load order, ownership and extension recipes.
+ */
+window.FrontierCandy={
+  image:new Image(),frames:[{
+    "x":134,"y":293,"w":146,"h":307,"anchorX":66
+  }
+  ,{
+    "x":534,"y":295,"w":146,"h":305,"anchorX":66
+  }
+  ,{
+    "x":934,"y":295,"w":146,"h":305,"anchorX":66
+  }
+  ,{
+    "x":31,"y":885,"w":266,"h":310,"anchorX":169
+  }
+  ,{
+    "x":431,"y":885,"w":248,"h":315,"anchorX":169
+  }
+  ,{
+    "x":831,"y":885,"w":242,"h":315,"anchorX":169
+  }
+  ,{
+    "x":105,"y":1486,"w":208,"h":309,"anchorX":95
+  }
+  ,{
+    "x":520,"y":1486,"w":193,"h":314,"anchorX":80
+  }
+  ,{
+    "x":935,"y":1486,"w":178,"h":314,"anchorX":65
+  }
+  ,{
+    "x":122,"y":2092,"w":147,"h":307,"anchorX":78
+  }
+  ,{
+    "x":522,"y":2090,"w":147,"h":308,"anchorX":78
+  }
+  ,{
+    "x":922,"y":2090,"w":147,"h":306,"anchorX":78
+  }
+  ,{
+    "x":88,"y":2692,"w":198,"h":302,"anchorX":112
+  }
+  ,{
+    "x":488,"y":2692,"w":190,"h":308,"anchorX":112
+  }
+  ,{
+    "x":888,"y":2692,"w":189,"h":308,"anchorX":112
+  }
+  ,{
+    "x":114,"y":3291,"w":163,"h":303,"anchorX":86
+  }
+  ,{
+    "x":522,"y":3291,"w":155,"h":309,"anchorX":78
+  }
+  ,{
+    "x":931,"y":3291,"w":146,"h":309,"anchorX":69
+  }
+  ,{
+    "x":124,"y":3888,"w":218,"h":302,"anchorX":76
+  }
+  ,{
+    "x":536,"y":3888,"w":206,"h":312,"anchorX":64
+  }
+  ,{
+    "x":938,"y":3888,"w":204,"h":311,"anchorX":62
+  }
+  ,{
+    "x":106,"y":4489,"w":166,"h":301,"anchorX":94
+  }
+  ,{
+    "x":506,"y":4489,"w":154,"h":311,"anchorX":94
+  }
+  ,{
+    "x":906,"y":4491,"w":142,"h":309,"anchorX":94
+  }
+  ]
+}
+;
+FrontierCandy.image.src=location.protocol==="file:"?window.FrontierCandyImageData:"img/characters/Candy_Armed_8R_3C.png";
+FrontierCandy.direction={
+  rows:[3,6,2,5,0,4,1,7],walkSequence:[1,2,1,0],frameSeconds:.14,idleColumn:1
+}
+;

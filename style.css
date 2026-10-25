@@ -1,3 +1,105 @@
+/* Layout uses a logical 4:3/16:9 viewport fitted to available height.
+ * Device screens/backings must stay opaque and inside their artwork apertures.
+ * Percentage positions keep draggable HUD modules proportional at fullscreen.
+ * Checkbook is the shared visible font; portrait pixels use nearest-neighbor. */
 :root{color-scheme:dark;font-family:Georgia,serif;background:#111b18;color:#dfd8bd}*{box-sizing:border-box}body{margin:0;padding:24px;max-width:1500px;margin-inline:auto}header{display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:1px solid #465344;padding-bottom:18px}small{font:11px monospace;letter-spacing:2px;color:#9ea889}h1{font-size:32px;margin:7px 0 0;font-weight:normal}h2{font-size:25px;font-weight:normal}.tools{display:flex;align-items:end;gap:8px;flex-wrap:wrap}label{display:block;font:12px monospace;color:#abb6a3}input,select,button,.file{font:12px monospace;border:1px solid #53604e;background:#202e26;color:#e2ddc8;border-radius:3px;padding:10px}input,select{display:block;margin-top:6px;width:160px}button,.file{cursor:pointer}button:hover,.file:hover{background:#344637}main{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:22px;margin-top:24px}#viewport{position:relative;background:#0a100d;border:1px solid #53604e;align-self:start;overflow:hidden}#view{display:block;width:100%;aspect-ratio:1.6;image-rendering:pixelated;touch-action:none}#badge{position:absolute;top:18px;left:20px;font:11px monospace;letter-spacing:2px;text-shadow:0 2px 2px #000}#badge span{display:block;letter-spacing:0;margin-top:7px;color:#c4c7ad}#crosshair{position:absolute;left:50%;top:50%;font:20px monospace;opacity:.5;pointer-events:none}#hud{position:absolute;bottom:54px;left:20px;font:12px monospace;white-space:pre-line;line-height:1.7;text-shadow:0 1px 3px #000}#message{position:absolute;bottom:0;padding:12px 20px;background:#101b19dc;width:100%;font:12px monospace;min-height:38px}aside p{font-size:14px;line-height:1.55;color:#b2baa5}#map{width:240px;max-width:100%;image-rendering:pixelated;border:1px solid #53604e;margin-top:10px}dl{display:grid;grid-template-columns:116px 1fr;gap:10px;font:11px monospace}dt{color:#e6cb87}dd{margin:0;color:#a4b09e}.note{border-top:1px solid #465344;padding-top:14px;font-size:12px}#editor button{margin:6px 0}.file{display:block}#import{width:100%;padding:5px;font-size:10px}footer{border-top:1px solid #465344;margin-top:20px;padding-top:14px;font:10px monospace;letter-spacing:1px;color:#83947d}footer span{float:right;letter-spacing:0}@media(max-width:900px){body{padding:12px}header{align-items:start;flex-direction:column}main{grid-template-columns:1fr}aside{display:grid;grid-template-columns:1fr 1fr;gap:12px}aside h2,aside>small{grid-column:1/-1}footer span{float:none;display:block;margin-top:10px}}
 
 :root{background:#03060b;color:#b5d9ff}header,footer,.note{border-color:#18385b}small{color:#588abd}button,input,select,.file{background:#07111e;border-color:#1b4a78;color:#9fceff}button:hover{background:#0e2340}#viewport,#map{border-color:#184976}#message{background:#040b16ed;color:#a6cfff}dt{color:#ff6073}aside p{color:#799abc}#badge span{color:#83b5e8}
+
+[hidden]{display:none!important}#badge,#hud,#crosshair{pointer-events:none}aside{max-height:calc(100vh - 145px);overflow-y:auto;padding-right:8px}#eventInspector{border-top:1px solid #1b4a78;margin-top:16px;padding-top:8px}#eventInspector h3{font-size:18px;font-weight:normal}#eventInspector input,#eventInspector select,#commandFields textarea{width:100%;margin-bottom:9px}#eventInspector input[type=checkbox]{width:auto;display:inline}#commandFields textarea{height:95px;background:#07111e;border:1px solid #1b4a78;color:#a6cfff;font:12px monospace;padding:8px}#commandList{padding-left:22px;font:12px monospace}#commandList li{margin:10px 0;overflow-wrap:anywhere}#commandList span{display:block}#commandList button{font-size:10px;padding:5px;margin:4px 3px 0 0}#dialogue{position:absolute;left:10%;right:10%;bottom:75px;border:1px solid #288cff;background:#07111ef5;padding:16px;z-index:3}#dialogue h3{margin:0 0 9px;font-weight:normal}#dialogue p{white-space:pre-wrap;line-height:1.5}#message{pointer-events:none}@media(max-width:900px){aside{max-height:none;display:block}}
+
+main{grid-template-columns:minmax(0,1fr) 350px}@media(max-width:900px){main{grid-template-columns:1fr}}
+
+#crosshair{transform:translate(-50%,-50%)}fieldset{border:1px solid #1b4a78;margin:15px 0;padding:10px}fieldset input[type=checkbox]{display:inline;width:auto}fieldset legend{font:12px monospace;color:#8fbdff}
+
+#view{aspect-ratio:4/3}
+#viewport:fullscreen{width:min(100vw,133.333333vh);height:min(100vh,75vw);margin:auto;border:0;background:#000}
+#viewport:fullscreen::backdrop{background:#000}
+#viewport:fullscreen #view{width:100%;height:100%}
+
+/* Keep core overlays inside a television overscan safe area. */
+#badge{top:5%;left:5%}#hud{left:5%;bottom:14%}#message{left:5%;bottom:5%;width:90%;min-height:0;padding:8px 12px}
+
+#viewport:fullscreen{width:min(100vw,133.333333vh)!important;height:min(100vh,75vw)!important}
+
+
+#gameFrame{position:relative}
+#viewport:fullscreen{background:#000}
+#viewport:fullscreen #gameFrame{position:absolute;width:min(100vw,133.333333vh);height:min(100vh,75vw);left:50%;top:50%;transform:translate(-50%,-50%)}
+
+/* Fit the 4:3 view beneath the toolbar without vertical page cropping. */
+main{grid-template-columns:minmax(0,1fr) 350px}
+#viewport{width:100%;max-width:calc((100dvh - 190px)*4/3);justify-self:center}
+#view{height:auto}
+@media(max-width:900px){#viewport{max-width:calc((100dvh - 230px)*4/3)}}
+
+:root{--display-ratio:1.3333333333}
+#view{aspect-ratio:var(--display-ratio)}
+#viewport{max-width:calc((100dvh - 210px)*var(--display-ratio))}
+#viewport:fullscreen{width:100vw!important;height:100vh!important;max-width:none}
+#viewport:fullscreen #gameFrame{width:min(100vw,calc(100vh*var(--display-ratio)));height:min(100vh,calc(100vw/var(--display-ratio)))}
+@media(max-width:900px){#viewport{max-width:calc((100dvh - 270px)*var(--display-ratio))}}
+
+#crosshair{top:20%}#fullscreenView{position:absolute;right:5%;top:5%;z-index:5;padding:8px 12px}
+
+#targetLabel{position:absolute;top:24%;left:50%;transform:translateX(-50%);max-width:85%;text-align:center;font:12px monospace;color:#b5d9ff;background:#040b16cc;pointer-events:none}#targetLabel:empty{display:none}#inspectionText{width:100%;height:90px;background:#07111e;color:#a6cfff;border:1px solid #1b4a78}
+
+#inventoryButton{position:absolute;top:5%;right:5%;z-index:4}#inventoryPanel{position:absolute;left:12%;right:12%;top:25%;max-height:60%;overflow:auto;padding:20px;border:1px solid #288cff;background:#07111ef5;z-index:6;font:14px monospace}#inventoryPanel h3{margin-top:0}#inventoryItems{padding-left:20px;line-height:1.8}
+
+#deviceHud{position:absolute;inset:0;pointer-events:none;z-index:2}
+#deviceHud img{display:block;width:100%;height:auto;pointer-events:none}
+.remoteDevice{position:absolute;left:3%;bottom:3%;width:19%}
+.remoteDevice button{position:absolute;padding:0;font-size:clamp(6px,1vw,12px);width:20%;height:5%;color:#ddd6bc;background:#352e20;border:1px solid #95826a;pointer-events:auto}
+#remoteInventory{left:32%;top:42%}#remoteResume{left:55%;top:42%}
+.portraitDevice{position:absolute;left:41%;bottom:3%;width:18%}
+.portraitDevice canvas{position:absolute;left:13%;top:19%;width:61%;height:61%;border-radius:22%;background:#141b14}
+.portraitDevice img{position:relative}
+.rightDevices{position:absolute;right:3%;bottom:3%;width:21%}
+.deviceTV{position:relative;margin-top:2%}
+.deviceScreen{position:absolute;left:13%;top:20%;width:61%;height:60%;border-radius:22%;background:#172019;color:#dc6a36;display:flex;flex-direction:column;justify-content:center;padding:5%;overflow:hidden;text-align:center;white-space:pre-line;font:bold clamp(7px,1vw,13px) monospace;line-height:1.3}
+.deviceTV img{position:relative}
+#deviceHud #targetLabel{position:static;transform:none;max-width:none;background:none;font:inherit;color:#efad60;margin-bottom:4px}
+#descriptionScreen{font-size:.85em}
+#hud,#message,#inventoryButton{display:none}
+#gameFrame:has(#editor:not([hidden])) #deviceHud{display:none}
+
+.floatingTV{position:absolute;margin:0}.navigatorSkin .deviceScreen{left:26%;top:16%;width:48%;height:52%}
+.moduleHandle{display:none;position:absolute;left:0;right:0;top:-18px;height:18px;background:#171a16dd;color:#c9b78f;font:11px monospace;cursor:move;pointer-events:auto;z-index:5}
+.moduleHandle button{float:right;width:22px;height:18px;padding:0;position:static;pointer-events:auto}
+.hudCursor .moduleHandle{display:block}.hudCursor #deviceHud{pointer-events:auto}.hudCursor #view{cursor:default}
+.minimized>*:not(.moduleHandle){visibility:hidden}.minimized{height:0!important}.minimized .moduleHandle{display:block}
+
+.screenBacking{position:absolute;left:10%;top:10%;width:72%;height:72%;background:#141b14;pointer-events:none}
+.deviceScreen{left:14%;top:17%;width:60%;height:57%;border-radius:18%;background:#141b14;z-index:1}
+.portraitDevice canvas{left:14%;top:17%;width:60%;height:57%;border-radius:18%;z-index:1}
+.deviceTV>img,.portraitDevice>img{z-index:2}
+.navigatorSkin .screenBacking{left:24%;top:14%;width:52%;height:57%}
+.navigatorSkin .deviceScreen{left:27%;top:18%;width:46%;height:48%}
+
+#descriptionScreen{overflow:auto;max-height:100%;text-align:left;white-space:pre-wrap;overflow-wrap:anywhere}.hudCursor #descriptionScreen{pointer-events:auto}#descriptionScreen::-webkit-scrollbar{width:4px}#descriptionScreen::-webkit-scrollbar-thumb{background:#967542}
+
+@font-face{font-family:PhanicomCheckbook;src:url('fonts/CHECKBK0.TTF') format('truetype');font-weight:normal;font-style:normal;font-display:swap}
+.deviceScreen,#deviceHud #targetLabel,#descriptionScreen,#inventoryPanel{font-family:PhanicomCheckbook,monospace;font-weight:normal}
+
+body,button,input,select,textarea,h1,h2,h3,small,dt,dd,#badge,#hud,#message{font-family:PhanicomCheckbook,monospace!important;font-weight:normal}
+
+#askPanel,#muzzlePanel{position:absolute;z-index:30;left:10%;right:10%;bottom:8%;padding:16px;background:#0a111c;border:1px solid #80b1ff}#askInput{width:80%}#muzzlePanel{top:5%;bottom:5%;}#muzzleFrame{width:100%;height:90%;border:0}#remoteAsk{position:absolute;left:20%;top:54%;font-size:10px;padding:2px}#askPanel[hidden],#muzzlePanel[hidden]{display:none}
+
+/* Live cursor mode hides the aiming reticle; picking uses cursor coordinates. */
+.hudCursor #crosshair{display:none}
+/* The event workbench fits the window and scrolls its own columns. */
+#eventWorkbench{width:min(1100px,94vw);height:min(820px,90vh);max-width:94vw;max-height:90vh;background:#101722;color:#b4cbed;border:1px solid #547aaa;padding:16px;overflow:auto}
+#eventWorkbench::backdrop{background:rgba(0,0,0,.65)}
+#eventWorkbench header{display:flex;justify-content:space-between;align-items:center;margin:0;padding:0 0 10px}
+#eventTabs,.eventToolbar{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+#eventTabs button[aria-pressed=true]{background:#35547b}
+.eventColumns{display:grid;grid-template-columns:minmax(260px, .8fr) minmax(320px,1.2fr);gap:20px}
+.eventColumns input,.eventColumns select,.eventColumns textarea{max-width:100%;box-sizing:border-box}
+.eventColumns label{display:block;margin:8px 0}.eventColumns textarea{display:block;width:100%;background:#0a111c;color:#b4cbed;border:1px solid #35547b;padding:8px}.playlistPicker .playlist{display:block;width:100%;margin:6px 0}.assetWarning{color:#e6b47d}
+#eventCommands #commandList{max-height:330px;overflow:auto;padding:8px 8px 8px 28px;border:1px solid #35547b}
+#commandList li{padding:6px;border-bottom:1px solid #253952}
+#commandList .commandSelected{background:#294464}
+#eventDebugger{white-space:pre-wrap;max-height:180px;overflow:auto}
+#returnEventTest{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:100}
+#dialogueChoices{display:flex;flex-wrap:wrap;gap:10px}
+@media(max-width:760px){.eventColumns{grid-template-columns:1fr}}

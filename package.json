@@ -1,1 +1,19 @@
-{"name":"phanicom-sprite-frontier","version":"0.1.0","private":true,"description":"Offline vector billboard exploration prototype","scripts":{"test":"node tests/run.cjs","start":"node serve.cjs"}}
+{
+  "name": "phanicom-sprite-frontier",
+  "version": "0.8.0",
+  "private": true,
+  "description": "Offline vector billboard exploration prototype",
+  "scripts": {
+    "test": "node tests/run.cjs && node tests/events.cjs && node tests/input-terrain.cjs && node tests/event-foundation.cjs && node tests/port06.cjs && node tests/editor08.cjs",
+    "start": "node serve.cjs",
+    "desktop": "electron ."
+  },
+  "dependencies": {
+    "pixi.js": "8.22.0"
+  },
+  "main": "desktop.cjs",
+  "devDependencies": {
+    "electron": "44.5.1"
+  }
+}
+

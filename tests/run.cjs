@@ -1,6 +1,7 @@
+// Regression/history harness: assertions document expected behavior. Older browser harnesses use historical controls; browser06.cjs is current acceptance.
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict'),path=require('node:path');
 const root=path.join(__dirname,'..'),context=vm.createContext({console,Math,structuredClone,setTimeout});context.window=context;context.globalThis=context;context.MF={CONFIG:{playerCollisionRadius:.26}};
-for(const file of ['project-data.js','movement.js','directions.js','world.js','legacy/geometry.js','adapter.js','legacy/projectiles.js','legacy/combat.js'])vm.runInContext(fs.readFileSync(path.join(root,'src',file),'utf8'),context,{filename:file});
+for(const file of ['project-data.js','event-data.js','movement.js','directions.js','events.js','terrain.js','sky.js','world.js','legacy/geometry.js','adapter.js','legacy/projectiles.js','legacy/combat.js'])vm.runInContext(fs.readFileSync(path.join(root,'src',file),'utf8'),context,{filename:file});
 const {FrontierWorld:W,MF}=context;
 assert.equal(JSON.stringify(W.generate('test')),JSON.stringify(W.generate('test')));assert.notEqual(JSON.stringify(W.generate('test')),JSON.stringify(W.generate('other')));W.validate(W.generate('test'));
 for(const change of [w=>w.objects.push({...w.objects[0]}),w=>w.spawn.x=NaN,w=>w.objects[0].kind='script',w=>w.objects[0].x=100,w=>w.objects[0].x=w.spawn.x,w=>w.size=100000]){const w=W.generate('test');change(w);if(w.objects[0].x===w.spawn.x)w.objects[0].y=w.spawn.y;assert.throws(()=>W.validate(w));}
@@ -26,3 +27,5 @@ pg.player.vx=.43;pg.player.vy=0;plugin.hooks.update(pc,.1);assert.equal(sweeps[0
 clock+=200;pg.input.keys.add('ShiftLeft');plugin.hooks.update(pc,.1);assert.equal(sweeps[1].startFrequency,120);assert.equal(sweeps[1].endFrequency,40);
 clock+=200;pg.player.vx=0;plugin.hooks.update(pc,.1);assert.equal(sweeps.length,2);plugin.hooks.stop(pc);assert.equal(pc.state.ownsFootsteps,false);
 console.log('PASS: original synth plugin walk/sprint sweeps, output boost, blocked-movement silence and lifecycle.');
+
+assert.equal(JSON.stringify(context.FrontierEventData),JSON.stringify(JSON.parse(fs.readFileSync(path.join(root,'project/events.json')))));context.FrontierEvents.validate(context.FrontierEventData.initialEvents);console.log('PASS: event prefab offline mirror and initial event definitions.');

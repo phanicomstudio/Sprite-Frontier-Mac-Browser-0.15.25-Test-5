@@ -1,0 +1,153 @@
+{
+  "combat": {
+    "AttackKey": "F",
+    "AttackKeyCode": "70",
+    "AttackGamepadButton": "5",
+    "DefaultEmptySound": "Out of ammo",
+    "DryFireCooldown": "10",
+    "WeaponProfiles": "[\"{\\\"ProfileId\\\":\\\"oozi_biotech\\\",\\\"DisplayName\\\":\\\"Oozi-BioTech DNA Scrambler\\\",\\\"Family\\\":\\\"beam\\\",\\\"RuntimeType\\\":\\\"projectile\\\",\\\"FireMode\\\":\\\"semi\\\",\\\"AudioProfile\\\":\\\"none\\\",\\\"DefaultSE\\\":\\\"Laser1\\\",\\\"TracerColor\\\":\\\"#00ff00\\\",\\\"MuzzleForward\\\":\\\"0.20\\\",\\\"Muzzle2X\\\":\\\"0\\\",\\\"Muzzle2Y\\\":\\\"-165\\\",\\\"Muzzle4X\\\":\\\"-95\\\",\\\"Muzzle4Y\\\":\\\"-160\\\",\\\"Muzzle6X\\\":\\\"95\\\",\\\"Muzzle6Y\\\":\\\"-160\\\",\\\"Muzzle8X\\\":\\\"0\\\",\\\"Muzzle8Y\\\":\\\"-180\\\",\\\"Muzzle1X\\\":\\\"-70\\\",\\\"Muzzle1Y\\\":\\\"-160\\\",\\\"Muzzle3X\\\":\\\"70\\\",\\\"Muzzle3Y\\\":\\\"-160\\\",\\\"Muzzle9X\\\":\\\"70\\\",\\\"Muzzle9Y\\\":\\\"-175\\\",\\\"Muzzle7X\\\":\\\"-70\\\",\\\"Muzzle7Y\\\":\\\"-175\\\"}\",\"{\\\"ProfileId\\\":\\\"needle_gun\\\",\\\"DisplayName\\\":\\\"Needle Gun\\\",\\\"Family\\\":\\\"projectile\\\",\\\"RuntimeType\\\":\\\"projectile\\\",\\\"FireMode\\\":\\\"semi\\\",\\\"AudioProfile\\\":\\\"standard\\\",\\\"DefaultSE\\\":\\\"\\\",\\\"TracerColor\\\":\\\"#ffcf70\\\",\\\"MuzzleForward\\\":\\\"0.20\\\",\\\"Muzzle2X\\\":\\\"0\\\",\\\"Muzzle2Y\\\":\\\"-165\\\",\\\"Muzzle4X\\\":\\\"-95\\\",\\\"Muzzle4Y\\\":\\\"-160\\\",\\\"Muzzle6X\\\":\\\"95\\\",\\\"Muzzle6Y\\\":\\\"-160\\\",\\\"Muzzle8X\\\":\\\"0\\\",\\\"Muzzle8Y\\\":\\\"-180\\\",\\\"Muzzle1X\\\":\\\"-70\\\",\\\"Muzzle1Y\\\":\\\"-160\\\",\\\"Muzzle3X\\\":\\\"70\\\",\\\"Muzzle3Y\\\":\\\"-160\\\",\\\"Muzzle9X\\\":\\\"70\\\",\\\"Muzzle9Y\\\":\\\"-175\\\",\\\"Muzzle7X\\\":\\\"-70\\\",\\\"Muzzle7Y\\\":\\\"-175\\\"}\",\"{\\\"ProfileId\\\":\\\"plasma_gun\\\",\\\"DisplayName\\\":\\\"Plasma Gun\\\",\\\"Family\\\":\\\"plasma\\\",\\\"RuntimeType\\\":\\\"projectile\\\",\\\"FireMode\\\":\\\"semi\\\",\\\"AudioProfile\\\":\\\"plasma\\\",\\\"DefaultSE\\\":\\\"\\\",\\\"TracerColor\\\":\\\"#75e6ff\\\",\\\"MuzzleForward\\\":\\\"0.20\\\",\\\"Muzzle2X\\\":\\\"0\\\",\\\"Muzzle2Y\\\":\\\"-165\\\",\\\"Muzzle4X\\\":\\\"-95\\\",\\\"Muzzle4Y\\\":\\\"-160\\\",\\\"Muzzle6X\\\":\\\"95\\\",\\\"Muzzle6Y\\\":\\\"-160\\\",\\\"Muzzle8X\\\":\\\"0\\\",\\\"Muzzle8Y\\\":\\\"-180\\\",\\\"Muzzle1X\\\":\\\"-70\\\",\\\"Muzzle1Y\\\":\\\"-160\\\",\\\"Muzzle3X\\\":\\\"70\\\",\\\"Muzzle3Y\\\":\\\"-160\\\",\\\"Muzzle9X\\\":\\\"70\\\",\\\"Muzzle9Y\\\":\\\"-175\\\",\\\"Muzzle7X\\\":\\\"-70\\\",\\\"Muzzle7Y\\\":\\\"-175\\\"}\",\"{\\\"ProfileId\\\":\\\"burst_machine_gun\\\",\\\"DisplayName\\\":\\\"Burst Machine Gun\\\",\\\"Family\\\":\\\"firearm\\\",\\\"RuntimeType\\\":\\\"projectile\\\",\\\"FireMode\\\":\\\"burst\\\",\\\"AudioProfile\\\":\\\"standard\\\",\\\"DefaultSE\\\":\\\"\\\",\\\"TracerColor\\\":\\\"#ffcf70\\\",\\\"MuzzleForward\\\":\\\"0.20\\\",\\\"Muzzle2X\\\":\\\"0\\\",\\\"Muzzle2Y\\\":\\\"-165\\\",\\\"Muzzle4X\\\":\\\"-95\\\",\\\"Muzzle4Y\\\":\\\"-160\\\",\\\"Muzzle6X\\\":\\\"95\\\",\\\"Muzzle6Y\\\":\\\"-160\\\",\\\"Muzzle8X\\\":\\\"0\\\",\\\"Muzzle8Y\\\":\\\"-180\\\",\\\"Muzzle1X\\\":\\\"-70\\\",\\\"Muzzle1Y\\\":\\\"-160\\\",\\\"Muzzle3X\\\":\\\"70\\\",\\\"Muzzle3Y\\\":\\\"-160\\\",\\\"Muzzle9X\\\":\\\"70\\\",\\\"Muzzle9Y\\\":\\\"-175\\\",\\\"Muzzle7X\\\":\\\"-70\\\",\\\"Muzzle7Y\\\":\\\"-175\\\"}\",\"{\\\"ProfileId\\\":\\\"heavy_machine_gun\\\",\\\"DisplayName\\\":\\\"Heavy Machine Gun\\\",\\\"Family\\\":\\\"firearm\\\",\\\"RuntimeType\\\":\\\"projectile\\\",\\\"FireMode\\\":\\\"auto\\\",\\\"AudioProfile\\\":\\\"large\\\",\\\"DefaultSE\\\":\\\"\\\",\\\"TracerColor\\\":\\\"#ffcf70\\\",\\\"MuzzleForward\\\":\\\"0.20\\\",\\\"Muzzle2X\\\":\\\"0\\\",\\\"Muzzle2Y\\\":\\\"-165\\\",\\\"Muzzle4X\\\":\\\"-95\\\",\\\"Muzzle4Y\\\":\\\"-160\\\",\\\"Muzzle6X\\\":\\\"95\\\",\\\"Muzzle6Y\\\":\\\"-160\\\",\\\"Muzzle8X\\\":\\\"0\\\",\\\"Muzzle8Y\\\":\\\"-180\\\",\\\"Muzzle1X\\\":\\\"-70\\\",\\\"Muzzle1Y\\\":\\\"-160\\\",\\\"Muzzle3X\\\":\\\"70\\\",\\\"Muzzle3Y\\\":\\\"-160\\\",\\\"Muzzle9X\\\":\\\"70\\\",\\\"Muzzle9Y\\\":\\\"-175\\\",\\\"Muzzle7X\\\":\\\"-70\\\",\\\"Muzzle7Y\\\":\\\"-175\\\"}\",\"{\\\"DisplayName\\\":\\\"Handgun\\\",\\\"ProfileId\\\":\\\"handgun\\\",\\\"Family\\\":\\\"firearm\\\",\\\"RuntimeType\\\":\\\"projectile\\\",\\\"FireMode\\\":\\\"semi\\\",\\\"AudioProfile\\\":\\\"standard\\\",\\\"DefaultSE\\\":\\\"\\\",\\\"TracerColor\\\":\\\"#ffcf70\\\",\\\"MuzzleForward\\\":\\\"0.20\\\",\\\"Muzzle2X\\\":\\\"-54\\\",\\\"Muzzle2Y\\\":\\\"-204\\\",\\\"Muzzle4X\\\":\\\"-169\\\",\\\"Muzzle4Y\\\":\\\"-252\\\",\\\"Muzzle6X\\\":\\\"109\\\",\\\"Muzzle6Y\\\":\\\"-226\\\",\\\"Muzzle8X\\\":\\\"55\\\",\\\"Muzzle8Y\\\":\\\"-298\\\",\\\"Muzzle1X\\\":\\\"-106\\\",\\\"Muzzle1Y\\\":\\\"-222\\\",\\\"Muzzle3X\\\":\\\"5\\\",\\\"Muzzle3Y\\\":\\\"-208\\\",\\\"Muzzle9X\\\":\\\"139\\\",\\\"Muzzle9Y\\\":\\\"-282\\\",\\\"Muzzle7X\\\":\\\"-61\\\",\\\"Muzzle7Y\\\":\\\"-296\\\"}\",\"{\\\"ProfileId\\\":\\\"rocket_launcher\\\",\\\"DisplayName\\\":\\\"Rocket Launcher\\\",\\\"Family\\\":\\\"rocket\\\",\\\"RuntimeType\\\":\\\"projectile\\\",\\\"FireMode\\\":\\\"semi\\\",\\\"AudioProfile\\\":\\\"large\\\",\\\"DefaultSE\\\":\\\"\\\",\\\"TracerColor\\\":\\\"#ff9b66\\\",\\\"MuzzleForward\\\":\\\"0.20\\\",\\\"Muzzle2X\\\":\\\"0\\\",\\\"Muzzle2Y\\\":\\\"-165\\\",\\\"Muzzle4X\\\":\\\"-95\\\",\\\"Muzzle4Y\\\":\\\"-160\\\",\\\"Muzzle6X\\\":\\\"95\\\",\\\"Muzzle6Y\\\":\\\"-160\\\",\\\"Muzzle8X\\\":\\\"0\\\",\\\"Muzzle8Y\\\":\\\"-180\\\",\\\"Muzzle1X\\\":\\\"-70\\\",\\\"Muzzle1Y\\\":\\\"-160\\\",\\\"Muzzle3X\\\":\\\"70\\\",\\\"Muzzle3Y\\\":\\\"-160\\\",\\\"Muzzle9X\\\":\\\"70\\\",\\\"Muzzle9Y\\\":\\\"-175\\\",\\\"Muzzle7X\\\":\\\"-70\\\",\\\"Muzzle7Y\\\":\\\"-175\\\"}\",\"{\\\"ProfileId\\\":\\\"grenade\\\",\\\"DisplayName\\\":\\\"Grenade\\\",\\\"Family\\\":\\\"thrown\\\",\\\"RuntimeType\\\":\\\"projectile\\\",\\\"FireMode\\\":\\\"semi\\\",\\\"AudioProfile\\\":\\\"none\\\",\\\"DefaultSE\\\":\\\"\\\",\\\"TracerColor\\\":\\\"#ffcf70\\\",\\\"MuzzleForward\\\":\\\"0.20\\\",\\\"Muzzle2X\\\":\\\"0\\\",\\\"Muzzle2Y\\\":\\\"-145\\\",\\\"Muzzle4X\\\":\\\"-55\\\",\\\"Muzzle4Y\\\":\\\"-150\\\",\\\"Muzzle6X\\\":\\\"55\\\",\\\"Muzzle6Y\\\":\\\"-150\\\",\\\"Muzzle8X\\\":\\\"0\\\",\\\"Muzzle8Y\\\":\\\"-165\\\",\\\"Muzzle1X\\\":\\\"-45\\\",\\\"Muzzle1Y\\\":\\\"-145\\\",\\\"Muzzle3X\\\":\\\"45\\\",\\\"Muzzle3Y\\\":\\\"-145\\\",\\\"Muzzle9X\\\":\\\"45\\\",\\\"Muzzle9Y\\\":\\\"-160\\\",\\\"Muzzle7X\\\":\\\"-45\\\",\\\"Muzzle7Y\\\":\\\"-160\\\"}\",\"{\\\"ProfileId\\\":\\\"beam_weapon\\\",\\\"DisplayName\\\":\\\"Beam Weapon\\\",\\\"Family\\\":\\\"beam\\\",\\\"RuntimeType\\\":\\\"projectile\\\",\\\"FireMode\\\":\\\"semi\\\",\\\"AudioProfile\\\":\\\"none\\\",\\\"DefaultSE\\\":\\\"Laser2\\\",\\\"TracerColor\\\":\\\"#ff00ff\\\",\\\"MuzzleForward\\\":\\\"0.20\\\",\\\"Muzzle2X\\\":\\\"0\\\",\\\"Muzzle2Y\\\":\\\"-165\\\",\\\"Muzzle4X\\\":\\\"-95\\\",\\\"Muzzle4Y\\\":\\\"-160\\\",\\\"Muzzle6X\\\":\\\"95\\\",\\\"Muzzle6Y\\\":\\\"-160\\\",\\\"Muzzle8X\\\":\\\"0\\\",\\\"Muzzle8Y\\\":\\\"-180\\\",\\\"Muzzle1X\\\":\\\"-70\\\",\\\"Muzzle1Y\\\":\\\"-160\\\",\\\"Muzzle3X\\\":\\\"70\\\",\\\"Muzzle3Y\\\":\\\"-160\\\",\\\"Muzzle9X\\\":\\\"70\\\",\\\"Muzzle9Y\\\":\\\"-175\\\",\\\"Muzzle7X\\\":\\\"-70\\\",\\\"Muzzle7Y\\\":\\\"-175\\\"}\",\"{\\\"ProfileId\\\":\\\"gyro_jet_weapon\\\",\\\"DisplayName\\\":\\\"Gyro Jet Weapon\\\",\\\"Family\\\":\\\"gyro\\\",\\\"RuntimeType\\\":\\\"projectile\\\",\\\"FireMode\\\":\\\"semi\\\",\\\"AudioProfile\\\":\\\"grape\\\",\\\"DefaultSE\\\":\\\"\\\",\\\"TracerColor\\\":\\\"#ffd28a\\\",\\\"MuzzleForward\\\":\\\"0.20\\\",\\\"Muzzle2X\\\":\\\"0\\\",\\\"Muzzle2Y\\\":\\\"-165\\\",\\\"Muzzle4X\\\":\\\"-95\\\",\\\"Muzzle4Y\\\":\\\"-160\\\",\\\"Muzzle6X\\\":\\\"95\\\",\\\"Muzzle6Y\\\":\\\"-160\\\",\\\"Muzzle8X\\\":\\\"0\\\",\\\"Muzzle8Y\\\":\\\"-180\\\",\\\"Muzzle1X\\\":\\\"-70\\\",\\\"Muzzle1Y\\\":\\\"-160\\\",\\\"Muzzle3X\\\":\\\"70\\\",\\\"Muzzle3Y\\\":\\\"-160\\\",\\\"Muzzle9X\\\":\\\"70\\\",\\\"Muzzle9Y\\\":\\\"-175\\\",\\\"Muzzle7X\\\":\\\"-70\\\",\\\"Muzzle7Y\\\":\\\"-175\\\"}\",\"{\\\"ProfileId\\\":\\\"shotgun\\\",\\\"DisplayName\\\":\\\"Shotgun\\\",\\\"Family\\\":\\\"firearm\\\",\\\"RuntimeType\\\":\\\"shotgun\\\",\\\"FireMode\\\":\\\"semi\\\",\\\"AudioProfile\\\":\\\"shotgun\\\",\\\"DefaultSE\\\":\\\"\\\",\\\"TracerColor\\\":\\\"#ffd28a\\\",\\\"MuzzleForward\\\":\\\"0.20\\\",\\\"Muzzle2X\\\":\\\"0\\\",\\\"Muzzle2Y\\\":\\\"-165\\\",\\\"Muzzle4X\\\":\\\"-95\\\",\\\"Muzzle4Y\\\":\\\"-160\\\",\\\"Muzzle6X\\\":\\\"95\\\",\\\"Muzzle6Y\\\":\\\"-160\\\",\\\"Muzzle8X\\\":\\\"0\\\",\\\"Muzzle8Y\\\":\\\"-180\\\",\\\"Muzzle1X\\\":\\\"-70\\\",\\\"Muzzle1Y\\\":\\\"-160\\\",\\\"Muzzle3X\\\":\\\"70\\\",\\\"Muzzle3Y\\\":\\\"-160\\\",\\\"Muzzle9X\\\":\\\"70\\\",\\\"Muzzle9Y\\\":\\\"-175\\\",\\\"Muzzle7X\\\":\\\"-70\\\",\\\"Muzzle7Y\\\":\\\"-175\\\"}\",\"{\\\"ProfileId\\\":\\\"satchel_charge\\\",\\\"DisplayName\\\":\\\"Satchel Charge\\\",\\\"Family\\\":\\\"thrown\\\",\\\"RuntimeType\\\":\\\"projectile\\\",\\\"FireMode\\\":\\\"semi\\\",\\\"AudioProfile\\\":\\\"none\\\",\\\"DefaultSE\\\":\\\"\\\",\\\"TracerColor\\\":\\\"#ffcf70\\\",\\\"MuzzleForward\\\":\\\"0.20\\\",\\\"Muzzle2X\\\":\\\"0\\\",\\\"Muzzle2Y\\\":\\\"-145\\\",\\\"Muzzle4X\\\":\\\"-55\\\",\\\"Muzzle4Y\\\":\\\"-150\\\",\\\"Muzzle6X\\\":\\\"55\\\",\\\"Muzzle6Y\\\":\\\"-150\\\",\\\"Muzzle8X\\\":\\\"0\\\",\\\"Muzzle8Y\\\":\\\"-165\\\",\\\"Muzzle1X\\\":\\\"-45\\\",\\\"Muzzle1Y\\\":\\\"-145\\\",\\\"Muzzle3X\\\":\\\"45\\\",\\\"Muzzle3Y\\\":\\\"-145\\\",\\\"Muzzle9X\\\":\\\"45\\\",\\\"Muzzle9Y\\\":\\\"-160\\\",\\\"Muzzle7X\\\":\\\"-45\\\",\\\"Muzzle7Y\\\":\\\"-160\\\"}\",\"{\\\"ProfileId\\\":\\\"cluster_bomb\\\",\\\"DisplayName\\\":\\\"Cluster Bomb\\\",\\\"Family\\\":\\\"thrown\\\",\\\"RuntimeType\\\":\\\"projectile\\\",\\\"FireMode\\\":\\\"semi\\\",\\\"AudioProfile\\\":\\\"none\\\",\\\"DefaultSE\\\":\\\"\\\",\\\"TracerColor\\\":\\\"#ffcf70\\\",\\\"MuzzleForward\\\":\\\"0.20\\\",\\\"Muzzle2X\\\":\\\"0\\\",\\\"Muzzle2Y\\\":\\\"-145\\\",\\\"Muzzle4X\\\":\\\"-55\\\",\\\"Muzzle4Y\\\":\\\"-150\\\",\\\"Muzzle6X\\\":\\\"55\\\",\\\"Muzzle6Y\\\":\\\"-150\\\",\\\"Muzzle8X\\\":\\\"0\\\",\\\"Muzzle8Y\\\":\\\"-165\\\",\\\"Muzzle1X\\\":\\\"-45\\\",\\\"Muzzle1Y\\\":\\\"-145\\\",\\\"Muzzle3X\\\":\\\"45\\\",\\\"Muzzle3Y\\\":\\\"-145\\\",\\\"Muzzle9X\\\":\\\"45\\\",\\\"Muzzle9Y\\\":\\\"-160\\\",\\\"Muzzle7X\\\":\\\"-45\\\",\\\"Muzzle7Y\\\":\\\"-160\\\"}\",\"{\\\"ProfileId\\\":\\\"sniper_rifle\\\",\\\"DisplayName\\\":\\\"Sniper Rifle\\\",\\\"Family\\\":\\\"firearm\\\",\\\"RuntimeType\\\":\\\"projectile\\\",\\\"FireMode\\\":\\\"semi\\\",\\\"AudioProfile\\\":\\\"large\\\",\\\"DefaultSE\\\":\\\"\\\",\\\"TracerColor\\\":\\\"#ffcf70\\\",\\\"MuzzleForward\\\":\\\"0.20\\\",\\\"Muzzle2X\\\":\\\"0\\\",\\\"Muzzle2Y\\\":\\\"-165\\\",\\\"Muzzle4X\\\":\\\"-95\\\",\\\"Muzzle4Y\\\":\\\"-160\\\",\\\"Muzzle6X\\\":\\\"95\\\",\\\"Muzzle6Y\\\":\\\"-160\\\",\\\"Muzzle8X\\\":\\\"0\\\",\\\"Muzzle8Y\\\":\\\"-180\\\",\\\"Muzzle1X\\\":\\\"-70\\\",\\\"Muzzle1Y\\\":\\\"-160\\\",\\\"Muzzle3X\\\":\\\"70\\\",\\\"Muzzle3Y\\\":\\\"-160\\\",\\\"Muzzle9X\\\":\\\"70\\\",\\\"Muzzle9Y\\\":\\\"-175\\\",\\\"Muzzle7X\\\":\\\"-70\\\",\\\"Muzzle7Y\\\":\\\"-175\\\"}\",\"{\\\"ProfileId\\\":\\\"cryo_auged_armament\\\",\\\"DisplayName\\\":\\\"Cryo Auged Armament\\\",\\\"Family\\\":\\\"cryo\\\",\\\"RuntimeType\\\":\\\"projectile\\\",\\\"FireMode\\\":\\\"semi\\\",\\\"AudioProfile\\\":\\\"cryo\\\",\\\"DefaultSE\\\":\\\"\\\",\\\"TracerColor\\\":\\\"#bdefff\\\",\\\"MuzzleForward\\\":\\\"0.20\\\",\\\"Muzzle2X\\\":\\\"0\\\",\\\"Muzzle2Y\\\":\\\"-165\\\",\\\"Muzzle4X\\\":\\\"-95\\\",\\\"Muzzle4Y\\\":\\\"-160\\\",\\\"Muzzle6X\\\":\\\"95\\\",\\\"Muzzle6Y\\\":\\\"-160\\\",\\\"Muzzle8X\\\":\\\"0\\\",\\\"Muzzle8Y\\\":\\\"-180\\\",\\\"Muzzle1X\\\":\\\"-70\\\",\\\"Muzzle1Y\\\":\\\"-160\\\",\\\"Muzzle3X\\\":\\\"70\\\",\\\"Muzzle3Y\\\":\\\"-160\\\",\\\"Muzzle9X\\\":\\\"70\\\",\\\"Muzzle9Y\\\":\\\"-175\\\",\\\"Muzzle7X\\\":\\\"-70\\\",\\\"Muzzle7Y\\\":\\\"-175\\\"}\"]",
+    "EnemyCombatProfiles": "[]",
+    "ActorWeaponCalibrationProfiles": "[]",
+    "DefaultEnemyHP": "30",
+    "DefaultHitRadius": "0.34",
+    "CombatantAlphaThreshold": "32",
+    "PlayerHitRadius": "0.30",
+    "DefaultDeathSelfSwitch": "A",
+    "CoverAlphaThreshold": "32",
+    "BloodEffects": "true",
+    "DefaultBloodColor": "#7d0b0c",
+    "DefaultBloodDroplets": "8",
+    "PersistentBlood": "true",
+    "MaxBloodDecals": "80",
+    "GibEffects": "true",
+    "DefaultGibThreshold": "25",
+    "MaxGibFragments": "48",
+    "GibBloodBurst": "18",
+    "GibBleedChance": "0.35",
+    "GibBleedFrames": "12",
+    "GoldenEyeAudio": "true",
+    "GoldenEyeStandardVolume": "8.00",
+    "GoldenEyeOutputGain": "6.00",
+    "ShowDebugOverlay": "true",
+    "ShowDebug": "true",
+    "PlayerDeathEnabled": "true",
+    "PlayerDeathMode": "damage",
+    "PlayerDeathDelay": "3",
+    "PlayerGibMetric": "hit",
+    "PlayerGibThreshold": "25",
+    "PlayerDeathImage": "",
+    "PlayerDeathImageScale": "1",
+    "PlayerDeathBloodCount": "18",
+    "KillFeedEnabled": "true",
+    "KillFeedSeconds": "6",
+    "KillFeedLines": "5",
+    "KillFeedWidth": "600",
+    "KillFeedMessages": "[\"{killer} fragged {victim}\",\"{victim} was taken out by {killer}\",\"{killer} finished {victim} with {weapon}\"]",
+    "KillFeedWeaponRules": "[\"{\\\"WeaponKey\\\":\\\"oozi_biotech\\\",\\\"Messages\\\":\\\"[\\\\\\\"{killer} scrambled {victim}\\\\\\\",\\\\\\\"{victim} fell to {killer}'s {weapon}\\\\\\\",\\\\\\\"{killer} finished {victim} with {weapon}\\\\\\\"]\\\"}\",\"{\\\"WeaponKey\\\":\\\"needle_gun\\\",\\\"Messages\\\":\\\"[\\\\\\\"{killer} perforated {victim}\\\\\\\",\\\\\\\"{victim} fell to {killer}'s {weapon}\\\\\\\",\\\\\\\"{killer} finished {victim} with {weapon}\\\\\\\"]\\\"}\",\"{\\\"WeaponKey\\\":\\\"plasma_gun\\\",\\\"Messages\\\":\\\"[\\\\\\\"{killer} vaporized {victim}\\\\\\\",\\\\\\\"{victim} fell to {killer}'s {weapon}\\\\\\\",\\\\\\\"{killer} finished {victim} with {weapon}\\\\\\\"]\\\"}\",\"{\\\"WeaponKey\\\":\\\"burst_machine_gun\\\",\\\"Messages\\\":\\\"[\\\\\\\"{killer} fragged {victim}\\\\\\\",\\\\\\\"{victim} fell to {killer}'s {weapon}\\\\\\\",\\\\\\\"{killer} finished {victim} with {weapon}\\\\\\\"]\\\"}\",\"{\\\"WeaponKey\\\":\\\"heavy_machine_gun\\\",\\\"Messages\\\":\\\"[\\\\\\\"{killer} fragged {victim}\\\\\\\",\\\\\\\"{victim} fell to {killer}'s {weapon}\\\\\\\",\\\\\\\"{killer} finished {victim} with {weapon}\\\\\\\"]\\\"}\",\"{\\\"WeaponKey\\\":\\\"handgun\\\",\\\"Messages\\\":\\\"[\\\\\\\"{killer} fragged {victim}\\\\\\\",\\\\\\\"{victim} fell to {killer}'s {weapon}\\\\\\\",\\\\\\\"{killer} finished {victim} with {weapon}\\\\\\\"]\\\"}\",\"{\\\"WeaponKey\\\":\\\"rocket_launcher\\\",\\\"Messages\\\":\\\"[\\\\\\\"{killer} rocketed {victim}\\\\\\\",\\\\\\\"{victim} fell to {killer}'s {weapon}\\\\\\\",\\\\\\\"{killer} finished {victim} with {weapon}\\\\\\\"]\\\"}\",\"{\\\"WeaponKey\\\":\\\"grenade\\\",\\\"Messages\\\":\\\"[\\\\\\\"{killer} blew up {victim}\\\\\\\",\\\\\\\"{victim} fell to {killer}'s {weapon}\\\\\\\",\\\\\\\"{killer} finished {victim} with {weapon}\\\\\\\"]\\\"}\",\"{\\\"WeaponKey\\\":\\\"beam_weapon\\\",\\\"Messages\\\":\\\"[\\\\\\\"{killer} zapped {victim}\\\\\\\",\\\\\\\"{victim} fell to {killer}'s {weapon}\\\\\\\",\\\\\\\"{killer} finished {victim} with {weapon}\\\\\\\"]\\\"}\",\"{\\\"WeaponKey\\\":\\\"gyro_jet_weapon\\\",\\\"Messages\\\":\\\"[\\\\\\\"{killer} fragged {victim}\\\\\\\",\\\\\\\"{victim} fell to {killer}'s {weapon}\\\\\\\",\\\\\\\"{killer} finished {victim} with {weapon}\\\\\\\"]\\\"}\",\"{\\\"WeaponKey\\\":\\\"shotgun\\\",\\\"Messages\\\":\\\"[\\\\\\\"{killer} buckshot-blasted {victim}\\\\\\\",\\\\\\\"{victim} fell to {killer}'s {weapon}\\\\\\\",\\\\\\\"{killer} finished {victim} with {weapon}\\\\\\\"]\\\"}\",\"{\\\"WeaponKey\\\":\\\"satchel_charge\\\",\\\"Messages\\\":\\\"[\\\\\\\"{killer} fragged {victim}\\\\\\\",\\\\\\\"{victim} fell to {killer}'s {weapon}\\\\\\\",\\\\\\\"{killer} finished {victim} with {weapon}\\\\\\\"]\\\"}\",\"{\\\"WeaponKey\\\":\\\"cluster_bomb\\\",\\\"Messages\\\":\\\"[\\\\\\\"{killer} fragged {victim}\\\\\\\",\\\\\\\"{victim} fell to {killer}'s {weapon}\\\\\\\",\\\\\\\"{killer} finished {victim} with {weapon}\\\\\\\"]\\\"}\",\"{\\\"WeaponKey\\\":\\\"sniper_rifle\\\",\\\"Messages\\\":\\\"[\\\\\\\"{killer} picked off {victim}\\\\\\\",\\\\\\\"{victim} fell to {killer}'s {weapon}\\\\\\\",\\\\\\\"{killer} finished {victim} with {weapon}\\\\\\\"]\\\"}\",\"{\\\"WeaponKey\\\":\\\"cryo_auged_armament\\\",\\\"Messages\\\":\\\"[\\\\\\\"{killer} froze {victim}\\\\\\\",\\\\\\\"{victim} fell to {killer}'s {weapon}\\\\\\\",\\\\\\\"{killer} finished {victim} with {weapon}\\\\\\\"]\\\"}\",\"{\\\"WeaponKey\\\":\\\"melee\\\",\\\"Messages\\\":\\\"[\\\\\\\"{killer} cut down {victim}\\\\\\\",\\\\\\\"{victim} fell to {killer}'s {weapon}\\\\\\\",\\\\\\\"{killer} finished {victim} with {weapon}\\\\\\\"]\\\"}\"]"
+  },
+  "blood": {
+    "regularColor": "#CC0000",
+    "creamColor": "#F5F5DC",
+    "dripColor": "#FF0000",
+    "regularCount": "12",
+    "creamCount": "18",
+    "regularDuration": "30",
+    "creamDuration": "35",
+    "regularFade": "0.05",
+    "creamFade": "0.05",
+    "regularOffset": "0",
+    "creamOffset": "-200",
+    "damageOffset": "-200",
+    "creamBoost": "-20",
+    "autoSpray": "true",
+    "damageCount": "8",
+    "creamDamageCount": "8",
+    "spraySize": "1.0",
+    "particleSize": "1.0",
+    "viscosity": "0.98",
+    "glow": "true",
+    "hpThreshold": "10",
+    "dripSound": "true",
+    "creamDripSound": "false"
+  },
+  "items": [
+    {
+      "id": 425,
+      "animationId": 0,
+      "consumable": false,
+      "damage": {
+        "critical": true,
+        "elementId": 9,
+        "formula": "a.atk * 4 - b.def * 2",
+        "type": 1,
+        "variance": 20
+      },
+      "description": "",
+      "effects": [
+        {
+          "code": 21,
+          "dataId": 0,
+          "value1": 1,
+          "value2": 0
+        },
+        {
+          "code": 44,
+          "dataId": 232,
+          "value1": 1,
+          "value2": 0
+        }
+      ],
+      "hitType": 0,
+      "iconIndex": 0,
+      "itypeId": 1,
+      "name": "Heavy Machine Gun",
+      "note": "RequiresItem:0404\n<PhanicomABSWeapon: equipSwitch=666 type=projectile fireMode=auto fireRate=5 damage=6 speed=48 range=40 spread=2 ammoItem=404 ammoPerShot=1>",
+      "occasion": 2,
+      "price": 0,
+      "repeats": 1,
+      "scope": 1,
+      "speed": 0,
+      "successRate": 100,
+      "tpGain": 0
+    },
+    {
+      "id": 426,
+      "animationId": 0,
+      "consumable": false,
+      "damage": {
+        "critical": true,
+        "elementId": 9,
+        "formula": "a.atk * 4 - b.def * 2",
+        "type": 1,
+        "variance": 20
+      },
+      "description": "",
+      "effects": [
+        {
+          "code": 21,
+          "dataId": 0,
+          "value1": 1,
+          "value2": 0
+        },
+        {
+          "code": 44,
+          "dataId": 228,
+          "value1": 1,
+          "value2": 0
+        }
+      ],
+      "hitType": 0,
+      "iconIndex": 0,
+      "itypeId": 1,
+      "name": "Handgun",
+      "note": "RequiresItem:0402\n<PhanicomABSWeapon: equipSwitch=662 type=projectile fireMode=semi damage=10 speed=45 range=35 cooldown=12 ammoItem=402 ammoPerShot=1>",
+      "occasion": 2,
+      "price": 0,
+      "repeats": 1,
+      "scope": 1,
+      "speed": 0,
+      "successRate": 100,
+      "tpGain": 0
+    }
+  ]
+}
