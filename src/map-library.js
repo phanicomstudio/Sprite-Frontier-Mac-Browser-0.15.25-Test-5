@@ -1,3 +1,4 @@
+/* October 24, 2026 — 0.16.2 current behavior and units are described in ITERATION-0.16.2.md; earlier contracts below remain history. New camera/tactics helpers preserve existing owners and transactional validation. */
 /* October 13, 2026: supersedes the former 32-map project cap. Map count is not a rendering budget: inactive worlds remain authored/state records, while the active cell supplies the scene. Validation still enforces each world, identity, and referenced asset; numeric compatibility IDs retain their documented range. Large projects remain subject to storage and import byte limits. */
 /* Authored maps are independent from their temporary playtests. IndexedDB keeps
 
@@ -457,6 +458,10 @@
 
     if (root.FrontierHubFixtures)
       project.maps.push(...root.FrontierHubFixtures.create());
+    const wilderness = project.maps.find(/* @function mapLibrary.wilderness162 — Inputs: bundled map. Returns textured wilderness identity match; no mutation. */ function(m){return m.id === "outdoor-assets-test";});
+    if(wilderness){const iso=structuredClone(wilderness);iso.id="isometric-wilderness";iso.name="Isometric Textured Wilderness";iso.world.presentation=FrontierIsometric.validate({mode:"isometric"});
+      const pistol=FrontierEnemies.preset("handgun");pistol.hostile=false;pistol.coverChance=100;pistol.patrol=[[30,30],[34,30]];iso.world.events.push(FrontierEnemies.event("iso-pistol-test","Pistol patrol � retaliates when attacked",30,30,pistol,"enemy-chiban"));
+      const cover=FrontierEvents.create("iso-cover",32,29);cover.x=32;cover.y=29;cover.name="Static cover event";cover.height=2;cover.pages[0].graphic="chest";cover.pages[0].solid=true;iso.world.events.push(cover);project.maps.push(iso);}
 
     const label = document.createElement("label");
     label.textContent = "Active map";
@@ -467,7 +472,7 @@
 
     const box = document.createElement("fieldset");
     box.innerHTML =
-      '<legend>Map library</legend><label>Map name<input id="mapName" maxlength="80" value="Vector demo"></label><button id="renameMap">Rename current map</button><label>New map template<select id="mapTemplate"><option value="interior">Blank 3D interior</option><option value="flat">Blank flat map</option><option value="hills">Blank hills map</option><option value="demo">Vector demo</option></select></label><button id="newMap">Create new map</button><button id="exportProject">Export all maps</button><label>Import map project<input id="importProject" type="file" accept="application/json,.json"></label><p>Choose the active map above to play or edit it. Changes are saved locally; switching starts a fresh playtest. Export all maps for a portable backup.</p><p id="mapSaveStatus" role="status"></p>';
+      '<legend>Map library</legend><label>Map name<input id="mapName" maxlength="80" value="Vector demo"></label><button id="renameMap">Rename current map</button><label>New map template<select id="mapTemplate"><option value="isometric">Isometric / orthographic — Fallout style</option><option value="interior">Blank 3D interior</option><option value="flat">Blank flat map</option><option value="hills">Blank hills map</option><option value="demo">Vector demo</option></select></label><button id="newMap">Create new map</button><button id="exportProject">Export all maps</button><label>Import map project<input id="importProject" type="file" accept="application/json,.json"></label><p>Choose the active map above to play or edit it. Changes are saved locally; switching starts a fresh playtest. Export all maps for a portable backup.</p><p id="mapSaveStatus" role="status"></p>';
     document.getElementById("editor").prepend(box);
 
     const folderLabel = document.createElement("label");
@@ -755,7 +760,7 @@
     ) {
       if (typeof name !== "string" || !name.trim() || name.trim().length > 80)
         throw Error("Enter a map name of 1–80 characters.");
-      if (!["flat", "hills", "demo", "interior"].includes(template))
+      if (!["flat", "hills", "demo", "interior", "isometric"].includes(template))
         throw Error("Unknown map template.");
       const world = api.generate();
       if (template !== "demo") {
@@ -763,14 +768,15 @@
         world.objects = [];
         world.events = [];
         world.terrain = {
-          mode: template === "interior" ? "flat" : template,
-          amplitude: template === "flat" || template === "interior" ? 0 : 2.8,
+          mode: ["interior","isometric"].includes(template) ? "flat" : template,
+          amplitude: ["flat","interior","isometric"].includes(template) ? 0 : 2.8,
           frequency: 0.12,
           edits: {},
           revision: 0,
         };
         world.water = FrontierWater.validate();
       } // October 12, 2026: a blank interior is an empty geometry cell, not a room shell.
+      if (template === "isometric") world.presentation = FrontierIsometric.validate({mode:"isometric"});
       if (template === "interior") {
         const width = world.width ?? world.size,
           height = world.height ?? world.size;
@@ -1076,7 +1082,7 @@
     const dialog = document.createElement("dialog");
     dialog.id = "newMapDialog";
     dialog.innerHTML =
-      '<form method="dialog"><h2>Create a separate map</h2><p>Your current map and test maps are kept. Width, height and seed use the toolbar values.</p><label>Name<input id="newMapName" maxlength="80" value="New map" required></label><label>Template<select id="newMapTemplate"><option value="interior">Blank 3D interior</option><option value="flat">Blank flat map — no events or enemies</option><option value="hills">Blank hills map — no events or enemies</option><option value="demo">Generated vector map</option></select></label><p id="newMapError" role="status"></p><button value="cancel">Cancel</button><button id="confirmNewMap" value="create">Create map</button></form>';
+      '<form method="dialog"><h2>Create a separate map</h2><p>Your current map and test maps are kept. Width, height and seed use the toolbar values.</p><label>Name<input id="newMapName" maxlength="80" value="New map" required></label><label>Template<select id="newMapTemplate"><option value="isometric">Isometric / orthographic — Fallout style</option><option value="interior">Blank 3D interior</option><option value="flat">Blank flat map — no events or enemies</option><option value="hills">Blank hills map — no events or enemies</option><option value="demo">Generated vector map</option></select></label><p id="newMapError" role="status"></p><button value="cancel">Cancel</button><button id="confirmNewMap" value="create">Create map</button></form>';
     document.body.append(dialog);
 
     /* @function map-library.openNewMap.43 — Handles open new map within map library. Inputs: assignment pattern. Updates: $ using "newMapName" value; $ using "newMapTemplate" value; $ using "newMapError" text content. Uses: $; dialog show modal; $ using "newMapName" focus; $ using "newMapName" select. */ function openNewMap(

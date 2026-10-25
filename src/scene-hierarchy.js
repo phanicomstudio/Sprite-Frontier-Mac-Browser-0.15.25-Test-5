@@ -9,6 +9,29 @@
   panel.id = "sceneHierarchy";
   const title = document.createElement("h2");
   title.textContent = "Scene";
+  // October 23, 2026: expand the same live inventory; never clone selection
+  // controls or detach owner handlers. This is editor layout state, not map data.
+  const expand = document.createElement("button");
+  expand.id = "sceneHierarchyExpand";
+  expand.type = "button";
+  expand.textContent = "Expand scene list";
+  expand.setAttribute("aria-expanded", "false");
+  /* @function sceneHierarchy.expandView — Inputs: desired expanded boolean. Returns nothing; changes only panel CSS and accessible button state. Existing rows, search, selection and scroll position remain owned by this panel. Closing returns focus without scrolling; no map mutation or history entry. */
+  function expandView(open) {
+    panel.classList.toggle("sceneExpanded", open);
+    expand.setAttribute("aria-expanded", String(open));
+    expand.textContent = open ? "Close expanded list" : "Expand scene list";
+    if (!open) expand.focus({preventScroll:true});
+  }
+  expand.addEventListener("click", /* @function sceneHierarchy.toggleExpanded — Inputs: native click. Returns nothing; toggles the existing inventory between dock and large view without resetting the filter or selection. */ function () {
+    expandView(!panel.classList.contains("sceneExpanded"));
+  });
+  document.addEventListener("keydown", /* @function sceneHierarchy.closeExpanded — Inputs: keyboard event. Returns nothing; Escape closes only an expanded editor inventory and stops editor cancellation beneath it. Gameplay input remains untouched. */ function (event) {
+    if (event.key === "Escape" && document.body.classList.contains("engineAuthoring") && panel.classList.contains("sceneExpanded")) {
+      event.preventDefault(); event.stopImmediatePropagation(); expandView(false);
+    }
+  }, true);
+
   const label = document.createElement("label");
   label.textContent = "Find a placed object";
   const search = document.createElement("input");
@@ -21,7 +44,7 @@
   const status = document.createElement("p");
   status.id = "sceneHierarchyStatus";
   status.setAttribute("role", "status");
-  panel.append(title, label, list, status);
+  panel.append(title, expand, label, list, status);
   host.prepend(panel);
   // October 14 Test 5: selection stays in the list; editing properties is an
   // explicit action. This supersedes automatic scrolling on a row highlight.

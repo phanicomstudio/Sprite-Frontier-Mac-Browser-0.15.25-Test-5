@@ -22284,3 +22284,17 @@ may describe previous iterations. New source comments are maintained as authored
 FUNCTION-REFERENCE-0.16.0.md and .json index current source locations and exact
 contracts. Historical explanations above are retained; line references there
 may describe previous iterations. New source comments are maintained as authored.
+
+
+## October 23, 2026 — current index
+
+FUNCTION-REFERENCE-0.16.1.md and .json index current source locations and exact
+contracts. Historical explanations above are retained; line references there
+may describe previous iterations. New source comments are maintained as authored.
+
+
+## October 24, 2026 — current index
+
+FUNCTION-REFERENCE-0.16.2.md and .json index current source locations and exact
+contracts. Historical explanations above are retained; line references there
+may describe previous iterations. New source comments are maintained as authored.

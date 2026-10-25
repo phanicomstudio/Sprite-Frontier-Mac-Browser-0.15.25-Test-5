@@ -167,3 +167,13 @@ Build Structures now opens a large, separate modal Tile Room Editor. The dock la
 The modal keeps settings and the grid in separate panes. It retains unsaved draft when closed normally; Apply/Discard are explicit. World movement is paused while this authoring window owns input; F2 closes it before switching mode. Existing mode-reset behavior for uncommitted drafts remains applicable. Original grid dimensional controls remain under Grid dimensions and room height.
 
 Delete current map still prevents deleting the last map or a map with incoming references. Rejections now explain the reason beside the buttons, including how to create a replacement map; no silent action or removed user files. Successful map deletion, map Undo/Redo and retained subsequent edits were exercised through the real controls. Optional authored encounter/courier examples remain under Optional examples and test maps. No prior controls/options were removed. See CONTROL-CHECKS-TEST-5.md for scope/evidence; this is not a certification of every possible engine workflow.
+
+
+## October 24, 2026 — 0.16.2
+
+See ITERATION-0.16.2.md for isometric map creation and the textured wilderness test cell, shared calibrated combat aiming, enemy patrol/pursuit/burst/cover controls, and decorated wall-height mapping. Earlier release notes above remain historical.
+
+
+## GitHub history (October 24, 2026)
+
+Current main is 0.16.2. See [rollback and release storage](docs/GITHUB-HISTORY.md).

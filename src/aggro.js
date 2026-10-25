@@ -40,6 +40,8 @@
         e.aggroTimer = 0;
         continue;
       }
+      // October 24: returning tactical enemies cannot reacquire until home.
+      if(e.enemyConfig && e.tactics?.returning){e.aggro=false;e.aggroTimer=0;continue;}
       // Authored behavior owns acquisition/leash/return as well as locomotion.
       // Combat still owns attacks, but cannot independently restart a return.
       if (e.behaviorOwned) {

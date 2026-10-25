@@ -1,3 +1,4 @@
+/* October 24, 2026 â€” 0.16.2 current behavior and units are described in ITERATION-0.16.2.md; earlier contracts below remain history. New camera/tactics helpers preserve existing owners and transactional validation. */
 /* October 22, 2026: first migration slice of the UI Audit Setup design.
  * Actual legacy controls/handlers are portalled, never cloned. Full parity
  * access remains in Advanced tools; later structural milestones are documented
@@ -36,7 +37,7 @@
     Build:[["Select / inspect","select"],["Draw room","layout"],["Wall / floor / stairs","buildingTools"],["Background / collision plan","roomPlan"],["Paint material","material"],["Focus room / spawn","buildingEnterView"],["Terrain","terrainTools"]],
     Objects:[["Models & props","propTools"],["Model library","openModelLibrary"],["Place item","item"],["Local lights","localLightTools"]],
     Events:[["Enemy events","enemy"],["Event pages","openEventEditor"],["Place door / transfer","door"]],
-    Environment:[["Sky & distant scenery","skyTools"],["Lighting","localLightTools"],["Sprite normals","openNormals"],["Camera / presentation","roomCameraFields"],["Soundtrack","musicExploration"]],
+    Environment:[["Sky & distant scenery","skyTools"],["Map lighting","localLightTools"],["Sprite normals","openNormals"],["Camera / presentation","cellCamera"],["Fixed artwork alignment","roomCameraFields"],["Soundtrack","musicExploration"]],
   };
   /* @function authoringWorkspace.restoreTool â€” Inputs: none. Returns nothing; restores portalled original controls to their exact placeholders and returns the plan canvas before switching tool. Drafts and listeners are retained, not implicitly applied/discarded. */
   function restoreTool() {
@@ -62,6 +63,7 @@
   }
   /* @function authoringWorkspace.activate â€” Inputs: tool ID. Returns nothing; opens a supported existing authoring tool or shows a specific unavailable message. Large room/layout plans share the live authored world and existing transaction callbacks. Does not fabricate Buildings/Storeys or integrated cut-out support ahead of their milestone. */
   function activate(id) {
+    if(id==="cellCamera") {restoreTool();tool=id;const form=document.createElement("form");form.innerHTML='<h3>Gameplay camera / presentation</h3><label>Cell camera<select name="mode"><option value="perspective">3D perspective</option><option value="isometric">Isometric / orthographic — Fallout style</option></select></label><label>View scale (pixels/metre)<input name="scale" type="number" min="12" max="100"></label><label>Camera angle (degrees)<input name="yaw" type="number"></label><label>Light cursor magnetism (0–0.35)<input name="magnetism" type="number" min="0" max="0.35" step="0.05"></label><p>Isometric combat snaps aim to world cardinal directions with gentle attraction to nearby visible enemies. Movement follows the fixed view. Fixed-artwork alignment remains available below.</p><button>Apply gameplay camera</button><p role="status"></p>';const p=scene.presentation();for(const k of ["mode","scale","magnetism"])form.elements[k].value=p[k];form.elements.yaw.value=p.yaw*180/Math.PI;form.onsubmit=/* @function authoringWorkspace.commitCamera162 — Inputs: form submit. Returns nothing; validates projection draft and commits one undoable cell edit. Errors retain draft and display a readable message; fixed artwork data is untouched. */function(event){event.preventDefault();try{const ok=scene.presentation({mode:form.elements.mode.value,scale:Number(form.elements.scale.value),yaw:Number(form.elements.yaw.value)*Math.PI/180,magnetism:Number(form.elements.magnetism.value)});form.querySelector('[role="status"]').textContent=ok?'Gameplay camera saved.':'Camera change rejected.';}catch(error){form.querySelector('[role="status"]').textContent=error.message;}};context.append(form);return;}
     restoreTool();const status=document.getElementById("authoringViewStatus");status.textContent="Edit mode Â· world distances in metres";
     if(id==="cell-settings") {for(const button of document.querySelectorAll("button")) if(button.textContent==="Cell settings / arrivals") {button.click();return;} status.textContent="Cell settings are unavailable.";return;}
     if(id==="select") {

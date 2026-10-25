@@ -305,7 +305,7 @@
       // remain unchanged. Existing weapon spread is applied after assistance;
       // collision, hitscan, lifetime and projectile-light ownership stay shared.
       if (cam.orthographic && owner.id === game.player.id && root.FrontierFixedLaunch && root.FrontierMuzzle?.frame(owner, game)) {
-        const launch = root.FrontierFixedLaunch.calculate(root, owner, game, target, { speed: shot.speed });
+        const launch = root.FrontierFixedLaunch.calculate(root, owner, game, target, { speed: shot.speed, ...(cam.outdoorIsometric ? {blend:game.sourceWorld.presentation.magnetism} : {}) });
         const yaw = Math.atan2(launch.direction.x, launch.direction.y) + spread;
         const pitch = Math.asin(Math.max(-1, Math.min(1, launch.direction.z)));
         shot.direction = { x: Math.sin(yaw) * Math.cos(pitch), y: Math.cos(yaw) * Math.cos(pitch), z: Math.sin(pitch) };

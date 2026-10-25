@@ -460,6 +460,8 @@
     // October 12, 2026: radius lighting remains independent cell data and survives portable project validation.
     if (root.FrontierLocalLighting)
       result.lighting = root.FrontierLocalLighting.validate(w.lighting);
+    // October 24: presentation is cell data, independent of room geometry.
+    if (w.presentation !== undefined) result.presentation = root.FrontierIsometric.validate(w.presentation);
     return result;
   }
   root.FrontierWorld = {

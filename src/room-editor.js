@@ -20,7 +20,7 @@
     // October 12, 2026: material controls change mapping, not wall dimensions.
     const materialControls = document.createElement("div");
     materialControls.innerHTML =
-      '<label>Mapping<select id="roomTextureMapping"><option value="repeat">Repeat seamless texture</option><option value="fit">Fit one image per face</option></select></label><label><input id="roomTextureAspect" type="checkbox">Preserve image proportions when repeating</label><label>Texture rotation (degrees)<input id="roomTextureRotation" type="number" value="0" step="15"></label><label>Horizontal offset (repeats)<input id="roomTextureOffsetU" type="number" value="0" step="0.1"></label><label>Vertical offset (repeats)<input id="roomTextureOffsetV" type="number" value="0" step="0.1"></label>';
+      '<label>Mapping<select id="roomTextureMapping"><option value="auto">Automatic material mapping</option><option value="repeat">Repeat seamless texture</option><option value="fit">Fit one image per face</option><option value="wallHeight">Fit floor to ceiling; repeat horizontally</option></select></label><label><input id="roomTextureAspect" type="checkbox">Preserve image proportions when repeating</label><label>Texture rotation (degrees)<input id="roomTextureRotation" type="number" value="0" step="15"></label><label>Horizontal offset (repeats)<input id="roomTextureOffsetU" type="number" value="0" step="0.1"></label><label>Vertical offset (repeats)<input id="roomTextureOffsetV" type="number" value="0" step="0.1"></label>';
     surfaces.append(materialControls);
     // October 13: visual material selection supplements the existing saved
     // surface selector. Selecting a thumbnail only changes the authoring draft;
@@ -261,7 +261,7 @@
         ensureSurfaceOption(v.e.texture);
         $("roomSurface").value = v.e.texture || "";
         $("roomTileSize").value = v.e.tileSize || 2;
-        $("roomTextureMapping").value = v.e.textureMapping || "repeat";
+        $("roomTextureMapping").value = v.e.textureMapping || "auto";
         $("roomTextureAspect").checked = !!v.e.preserveAspect;
         $("roomTextureRotation").value = v.e.textureRotation || 0;
         $("roomTextureOffsetU").value = v.e.textureOffsetU || 0;

@@ -282,7 +282,8 @@ function angleDelta(target, base) {
 }
 /* @function fixedLaunch.calculate — Inputs: engine services, actor, game, world-space cursor hit, options and precomputed ordinary third-person launch. Returns that exact existing launch for non-fixed maps; fixed maps return a detached Z-up launch descriptor. Reads the currently displayed frame and calibrated muzzle, never rotates actor or changes sprite presentation. Throws invalid configuration, missing calibration or singular camera before spawning anything. No collision, damage, projectile ownership, persistence or network side effects; integration must pass descriptor through existing projectile collision/lifetime pipeline. */
 function fixedCameraLaunch(engine, actor, game, target, options = {}, ordinaryLaunch) {
-  if (game.sourceWorld?.interior?.mode !== 'fixed') return ordinaryLaunch;
+  // October 24: outdoor isometric cells share the calibrated affine launch path.
+  if (game.sourceWorld?.interior?.mode !== 'fixed' && game.sourceWorld?.presentation?.mode !== 'isometric') return ordinaryLaunch;
   const speed = options.speed ?? 25;
   const blend = options.blend ?? 0.15;
   const maxDegrees = options.maxDegrees ?? 5;

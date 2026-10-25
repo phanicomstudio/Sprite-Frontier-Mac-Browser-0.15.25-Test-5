@@ -1,3 +1,4 @@
+/* October 24, 2026 — 0.16.2 current behavior and units are described in ITERATION-0.16.2.md; earlier contracts below remain history. New camera/tactics helpers preserve existing owners and transactional validation. */
 /* MAINTAINER GUIDE
  * Application coordinator: creates playtests, routes input, drives simulation and binds editor/HUD controls. Change gameplay rules in their modules; keep this file responsible for orchestration. Authored world and runtime game are separate objects: editor mutations restart a temporary playtest.
  * See CODE-GUIDE.md for load order, ownership and extension recipes.
@@ -3079,13 +3080,15 @@
     MF.updateProjectiles(game, dt, game.ui);
     PhanicomBlood.update(game, dt);
     for (const e of FrontierActivity.actors(game)) {
-      if (world.cell?.safe || e.kind !== "monster" || e.dead || !e.aggro) continue;
+      if (world.cell?.safe || e.kind !== "monster" || e.dead) continue;
+      const tacticsOwned = e.enemyConfig && FrontierEnemyTactics.tick(game,e,FrontierPartyCombat.target(game,e)||game.player,dt,move);
+      if (!e.aggro && !tacticsOwned) continue;
       const target = FrontierPartyCombat.target(game, e);
       if (!target) continue;
       const dx = target.x - e.x,
         dy = target.y - e.y,
         distance = Math.hypot(dx, dy);
-      if (!e.behaviorOwned && distance > 0.85 && !e.stunTime) {
+      if (!tacticsOwned && !e.behaviorOwned && distance > 0.85 && !e.stunTime) {
         e.facingX=dx/distance;e.facingY=dy/distance;
         move(
           e,
@@ -3111,6 +3114,7 @@
           FrontierTerrain.height(world, e.x, e.y) + (e.elevation || 0) * 0.3;
       if (
         e.combat &&
+        (!e.enemyConfig || e.tacticsCanFire) &&
         distance < e.combat.range &&
         (!e.enemyConfig || FrontierEnemies.state(game, e).ammo !== 0) &&
         !e.attackTime &&
@@ -3149,7 +3153,7 @@
           cfg.audioProfile,
           cfg.audioVolume,
         );
-        e.attackTime = cfg.fireRate / 60;
+        e.attackTime = FrontierEnemyTactics.afterShot(e);
       }
       if (!e.combat && distance < 1.05 && !e.attackTime && !e.stunTime) {
         MF.resolveProjectileImpact(
@@ -3321,7 +3325,7 @@
     $("badge").lastElementChild.textContent =
       (world.interior?.mode === "fixed" ? "Fixed interior · " : "") +
       (game.camera.firstPerson ? "First person" : "Third person") +
-      " · prototype 0.16.0";
+      " · prototype 0.16.2";
     if (world.interior)
       $("intro").textContent =
         world.interior.mode === "fixed"

@@ -124,7 +124,9 @@
     }
     /* @function authoringScene.history — Inputs: none. Returns current scene history lengths for UI availability. Does not expose snapshots, create history or combine map/template/default histories. */
     function history() { return api.history ? {...api.history()} : {undo:0,redo:0}; }
-    return {selection,select,snapshot,update,remove,subscribe,refresh,list,detach,restoreGenerated,generatedEdits,history};
+    /* @function authoringScene.presentation — Inputs: optional validated cell-camera draft. Returns copied current settings when reading, or transaction success when writing. Rejects playtest writes; changing projection preserves room geometry and event state and participates in normal Undo. */
+    function presentation(value){if(value===undefined)return root.FrontierIsometric.validate(api.world().presentation);if(!api.editing())return false;const checked=root.FrontierIsometric.validate(value);return api.mutate(/* @function authoringScene.commitCamera — Inputs: none. Stores copied cell presentation inside existing validation/history boundary; rollback retains old camera on failure. */function(){api.world().presentation=checked;});}
+    return {selection,select,snapshot,update,remove,subscribe,refresh,list,detach,restoreGenerated,generatedEdits,history,presentation};
   }
   root.FrontierAuthoringScene = {entries,resolve,create};
 })(typeof window === "undefined" ? globalThis : window);

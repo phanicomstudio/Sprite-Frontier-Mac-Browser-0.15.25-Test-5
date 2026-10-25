@@ -340,6 +340,8 @@
   ) {
     // October 14: retain calibrated PNG projection in authoring; bypassing
     // this camera hid the artwork and misaligned the selection overlays.
+    const iso = root.FrontierIsometric?.camera(game);
+    if (iso) return iso;
     const fixed = root.FrontierInterior?.camera(game);
     if (fixed) return fixed;
     const p = game.player,
@@ -490,7 +492,7 @@
     // Vector study: clear the textured placeholder and draw a world-space grid.
     ctx.fillStyle = ctx.fog?.enabled ? ctx.fog.color : "#000";
     ctx.fillRect(0, 0, game.viewWidth, 480);
-    if (cam.orthographic) FrontierInterior.background(ctx, game, cam);
+    if (cam.orthographic && !cam.outdoorIsometric) FrontierInterior.background(ctx, game, cam);
     else if ((!game.sourceWorld.interior || game.sourceWorld.interior.outdoor) || game.sourceWorld.sky?.panorama)
       FrontierSky.draw(ctx, game, cam, project);
     /* October 10, 2026: interior geometry owns its floor depth. Outdoor terrain would hide coplanar room floors and must stay outside cells. */
@@ -744,11 +746,11 @@
       );
     for (const { e, p } of queue) {
       if (p.x < -250 || p.x > (game.viewWidth || 640) + 250) continue;
-      ctx.fogDepth = p.depth;
+      ctx.fogDepth = cam.outdoorIsometric ? Math.max(0,p.depth-depth(cam,game.player.x,game.player.y,game.player.z||0)) : p.depth;
       const h = Math.min(1800, (e.height || 1.65) * p.scale),
         w = h * 0.6;
       ctx.globalAlpha =
-        ((e.kind === "player" ? 1 : Math.max(0.18, 1 - p.depth / 55)) *
+        ((e.kind === "player" ? 1 : Math.max(0.18, 1 - (cam.outdoorIsometric ? Math.hypot(e.x-game.player.x,e.y-game.player.y) : p.depth) / 55)) *
           (e.opacity ?? 255)) /
         255;
       ctx.save();
@@ -873,7 +875,7 @@
       for (const e of game.sceneEvents || []) {
         const p = project(cam, e.x, e.y, e.z || 0);
         if (e.isAmmo && p && p.depth < 14) {
-          ctx.fogDepth = p.depth;
+          ctx.fogDepth = cam.outdoorIsometric ? Math.max(0,p.depth-depth(cam,game.player.x,game.player.y,game.player.z||0)) : p.depth;
           ctx.fillStyle = "#8fbdff";
           ctx.font = "11px " + (root.FrontierFonts?.family() || "monospace");
           ctx.fillText(
@@ -895,7 +897,7 @@
           FrontierTerrain.height(game.sourceWorld, e.x, e.y),
         );
         if (p) {
-          ctx.fogDepth = p.depth;
+          ctx.fogDepth = cam.outdoorIsometric ? Math.max(0,p.depth-depth(cam,game.player.x,game.player.y,game.player.z||0)) : p.depth;
           if (cam.orthographic) {
             const outside = !FrontierInterior.inside(
                 game.sourceWorld.interior.floor,
@@ -1064,7 +1066,7 @@
         s.z / 40 + FrontierTerrain.height(game.sourceWorld, s.x, s.y),
       );
       if (p) {
-        ctx.fogDepth = p.depth;
+        ctx.fogDepth = cam.outdoorIsometric ? Math.max(0,p.depth-depth(cam,game.player.x,game.player.y,game.player.z||0)) : p.depth;
         ctx.fillStyle = s.color;
         const size = Math.max(1, Math.min(7, (s.size * p.scale) / 80));
         ctx.fillRect(p.x, p.y, size, size);
@@ -1073,7 +1075,7 @@
     for (const flash of game.muzzleFlashes) {
       const p = project(cam, flash.x, flash.y, flash.z);
       if (p) {
-        ctx.fogDepth = p.depth;
+        ctx.fogDepth = cam.outdoorIsometric ? Math.max(0,p.depth-depth(cam,game.player.x,game.player.y,game.player.z||0)) : p.depth;
         ctx.fillStyle = flash.color || "#ffe5a1";
         const s = Math.max(2, p.scale * 0.045);
         ctx.fillRect(p.x - s / 2, p.y - s / 2, s, s);

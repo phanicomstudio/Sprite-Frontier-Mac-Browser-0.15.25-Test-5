@@ -46,7 +46,7 @@
               ? rules.get(game.sourceWorld, "sprintMultiplier")
               : tuning.sprintMultiplier
             : 1),
-        yaw = game.camera.yaw;
+        yaw = game.sourceWorld.presentation?.mode === "isometric" && !game.editorFlight ? game.sourceWorld.presentation.yaw : game.camera.yaw;
       let dx = (Math.sin(yaw) * f + Math.cos(yaw) * s) * speed * dt,
         dy = (Math.cos(yaw) * f - Math.sin(yaw) * s) * speed * dt;
       const room = game.sourceWorld?.interior;

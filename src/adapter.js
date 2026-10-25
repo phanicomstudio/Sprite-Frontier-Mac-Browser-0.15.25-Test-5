@@ -30,7 +30,7 @@
   /* @function adapter.reviewedupdateAim_4 — Sets player facing from current aim. Inputs: game. Returns undefined; fixed room pointer uses normalized world displacement if length>0.01 metre, preserving old facing for nearzero; otherwise sin/cos camera yaw. No sprite tilt or shot execution; missing camera/interior services throw. */ (
       game,
     ) => {
-      if (game.sourceWorld.interior?.mode === "fixed" && game.pointer) {
+      if ((game.sourceWorld.interior?.mode === "fixed" || game.sourceWorld.presentation?.mode === "isometric") && game.pointer) {
         const a = FrontierInterior.aim(game, game.pointer.x, game.pointer.y),
           dx = a.x - game.player.x,
           dy = a.y - game.player.y,

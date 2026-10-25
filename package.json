@@ -1,6 +1,6 @@
 {
   "name": "phanicom-sprite-frontier",
-  "version": "0.16.0",
+  "version": "0.16.2",
   "private": true,
   "description": "Offline vector billboard exploration prototype",
   "scripts": {

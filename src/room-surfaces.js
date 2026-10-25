@@ -1,3 +1,4 @@
+/* October 24, 2026 — 0.16.2 current behavior and units are described in ITERATION-0.16.2.md; earlier contracts below remain history. New camera/tactics helpers preserve existing owners and transactional validation. */
 /* October 10, 2026: shared room material pixels. Texture coordinates are world
  * units divided by repeat size. Reading images occurs once, not every frame. */
 (/* @function room-surfaces.install — Inputs: browser namespace. Installs an independent bounded material cache. Returns nothing; images load only when requested. */ function (
@@ -104,6 +105,9 @@
       }
       u = (u - minU) / (maxU - minU || 1);
       v = (v - minV) / (maxV - minV || 1);
+    } else if (face.textureMapping === "wallHeight" || ((!face.textureMapping || face.textureMapping === "auto") && /(?:wood.*wall|wall.*wood|panel|prop_wood[0-9])/i.test(face.texture||""))) {
+      const bottom=Math.min(...face.points.map(/* @function roomSurfaces.bottom162 — Inputs: XYZ corner metres. Returns elevation for full wall-height normalization; no mutation. */function(p){return p[2];})),top=Math.max(...face.points.map(/* @function roomSurfaces.top162 — Inputs: XYZ corner metres. Returns elevation for full wall-height normalization; no mutation. */function(p){return p[2];}));
+      if(top>bottom) v=1-(point[2]-bottom)/(top-bottom);
     } else if (face.preserveAspect) {
       const pixels = cache.get(face.texture);
       if (pixels) v *= pixels.width / pixels.height;

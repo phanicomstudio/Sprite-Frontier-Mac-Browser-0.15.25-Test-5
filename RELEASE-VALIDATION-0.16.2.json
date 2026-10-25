@@ -1,0 +1,21 @@
+{
+  "iteration": "0.16.2",
+  "date": "2026-10-24",
+  "functionComments": 6199,
+  "passed": [
+    "browser/iteration162: isometric fixture with 141 preserved props, two added events, constant projection scale, actual finite projectile launch, camera form save/Undo, enemy controls, no page errors",
+    "browser/behavior162: four cardinal aims, movement aim, bounded magnetism and occlusion, actual solid-event cover sweep, patrol/pursuit, six default pistol shots per five simulated seconds, full-height wall UVs",
+    "browser/authoring160: existing selection/deletion/geometry/history and WASM",
+    "browser/ballistics1526: thin walls, rotated walls, ceilings, starting overlaps, model ordering, terminal swept contact, grenade gravity",
+    "browser/enemies1527: event migration, placement, presets, muzzle, ammo, lethal damage, saves, respawns and travel",
+    "fixed-diagonals159: fixed camera movement and eight sprite rows",
+    "browser/runtime-start1524: exported game startup/save/load/inventory/travel/F2 guards",
+    "Map lighting actual form commit/Undo and lighting1524 ambient, wall/ceiling occlusion, cache, source budgets and persistence"
+  ],
+  "visualEvidence": "test-artifacts/isometric162.png inspected",
+  "limits": [
+    "Local cover routing uses direct or one-corner clearance, abandoning stuck travel after two seconds; no general navigation mesh",
+    "Existing explicit UV Repeat overrides remain respected; use Automatic/full-height mapping to repair those walls",
+    "Mac package is browser-based; no native macOS certification"
+  ]
+}

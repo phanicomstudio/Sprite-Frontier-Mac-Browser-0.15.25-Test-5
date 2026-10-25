@@ -1,3 +1,4 @@
+/* October 24, 2026 — 0.16.2 current behavior and units are described in ITERATION-0.16.2.md; earlier contracts below remain history. New camera/tactics helpers preserve existing owners and transactional validation. */
 /* Room data is independent of artwork and interaction mode. Static face and
  * collision caches rebuild only after a validated edit, never every frame. */
 /* Historical contract retained; October 14, 2026 reviewed explanation follows. @function interiors.callback.1 — Provides the callback for a callback. Inputs: root. Updates: root frontier interior. */
@@ -236,7 +237,7 @@
             if (key === "primitives") {
               if (
                 e.textureMapping !== undefined &&
-                !["repeat", "fit"].includes(e.textureMapping)
+                !["auto", "repeat", "fit", "wallHeight"].includes(e.textureMapping)
               )
                 throw Error("Unknown texture mapping mode.");
               if (
@@ -553,6 +554,8 @@
   /* @function interiors.camera.26 — Calculates the camera view or constrains its position against this module’s solid geometry. Inputs: game. Returns: null; a record containing orthographic, x, y, z, yaw, pitch, cx, cy. */ function camera(
     game,
   ) {
+    const iso = root.FrontierIsometric?.camera(game);
+    if (iso) return iso;
     const r = game.sourceWorld.interior;
     if (r?.mode !== "fixed") return null;
     const baseFit = Math.min(
@@ -598,7 +601,7 @@
         (c.screenY + dx * c.axisXY + dy * c.axisYY - z * c.heightScale) *
           cam.fit,
       scale: c.heightScale * cam.fit,
-      depth: 24 + ((x - 9) * Math.sin(cam.yaw) + (y - 9) * Math.cos(cam.yaw)),
+      depth: cam.outdoorIsometric ? ((x-cam.x)*Math.sin(cam.yaw)+(y-cam.y)*Math.cos(cam.yaw))*Math.cos(cam.pitch)+(z-cam.z)*Math.sin(cam.pitch) : 24 + ((x - 9) * Math.sin(cam.yaw) + (y - 9) * Math.cos(cam.yaw)),
     };
   }
   /* @function interiors.groundPoint.28 — Handles ground point within interior rooms and their camera. Inputs: cam; sx; sy. Returns: a record containing x, y. */ function groundPoint(
@@ -622,6 +625,8 @@
     sx,
     sy,
   ) {
+    const iso = root.FrontierIsometric?.aim(game, sx, sy);
+    if (iso) return iso;
     const cam = camera(game);
     if (!cam) return null;
     const hit = root.FrontierRender?.pick(game, sx, sy),
