@@ -1,9 +1,0 @@
-# Optional screen melt
-
-In the editor's Map tab, choose **Leaving this map: transition → Screen melt**. The setting belongs to that authored map and survives world validation/project export. Fade is the default. Exits and Transfer Player commands use the departure map setting; explicit No Fade commands remain immediate. Reduced-motion preference uses the existing fade.
-
-The independently written strip model uses correlated delays and a fixed 35 Hz simulation clock. It does not copy Doom source. A transfer captures the old rendered game canvas once, commits the destination once, and slides the old strips down to reveal the destination. Input/simulation remain gated until completion, then the event continuation resumes. DOM interface controls are not captured.
-
-Two logical-size canvases are allocated only during the effect and reset to 1×1 on completion or failure. The model rejects dimensions above 4096 on either axis. Capture refreshes the Pixi framebuffer immediately before copying; ordinary frames do not enable preserved drawing buffers.
-
-Verification: model and overlay source fixtures pass timing, bounds, odd-width coverage, single ownership and failure cleanup. A headless Chrome browser test selected the authored setting, checked world validation, confirmed nonblank GPU pixels during a real same-map transfer, verified the resulting position and overlay removal, and reported no page errors. A screenshot at capture start was inspected. A second live test transferred from the vector demo to Room Test with melt enabled, checked arrival and exactly one post-transfer skill command, and inspected a mid-animation screenshot showing strips revealing the destination. Reduced-motion browser emulation verified fade fallback and resumed continuation. The complete cached source suite passed after integration. macOS testing and broader release acceptance remain pending.

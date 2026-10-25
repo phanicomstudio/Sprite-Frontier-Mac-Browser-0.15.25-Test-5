@@ -1,1 +1,0 @@
-Material texture assets belong here. Water supports PNG/JPG/WebP filenames; use the editor texture selector.

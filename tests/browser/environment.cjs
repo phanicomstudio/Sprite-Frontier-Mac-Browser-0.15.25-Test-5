@@ -1,2 +1,0 @@
-/* Tests run against this iteration, independently of the original workstation. */
-const path=require('node:path'),fs=require('node:fs');const root=path.resolve(__dirname,'../..');process.chdir(root);fs.mkdirSync('test-artifacts',{recursive:true});module.exports={chromium:require(process.env.FRONTIER_PLAYWRIGHT||'playwright').chromium,launch:{headless:true,...(process.env.FRONTIER_CHROME?{executablePath:process.env.FRONTIER_CHROME}:{})}};

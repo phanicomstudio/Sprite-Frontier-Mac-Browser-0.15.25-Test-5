@@ -56,7 +56,7 @@
  *   src/runtime/runtime.js
  */
 
-(/* @function phanicom-synth-footsteps.callback.1 — Provides the callback for a callback. Inputs: mf. Uses: mf plugins register. */ function (MF) {
+(function (MF) {
   'use strict';
 
   const PLUGIN_ID = 'phanicom.synth-footsteps';
@@ -67,7 +67,7 @@
    * The normal location is ctx.game.audio. The runtime location is retained
    * as a compatibility fallback in case engine service ownership changes.
    */
-  /* @function phanicom-synth-footsteps.getAudioSystem.2 — Locate the engine AudioSystem exposed to the active plugin session. The normal location is ctx.game.audio. The runtime location is retained as a compatibility fallback in case engine service ownership changes. Inputs: ctx. Returns: ctx game audio; ctx runtime audio. */ function getAudioSystem(ctx) {
+  function getAudioSystem(ctx) {
     if (
       ctx &&
       ctx.game &&
@@ -94,7 +94,7 @@
    * This preserves the intended walk/sprint sound distinction even when
    * collision or another system alters actual displacement.
    */
-  /* @function phanicom-synth-footsteps.isPlayerSprinting.3 — Determine whether the player is currently using the engine sprint input. Sprinting is read from input state rather than inferred from velocity. This preserves the intended walk/sprint sound distinction even when collision or another system alters actual displacement. Inputs: game. Uses: keys has. Returns: false; keys has using "ShiftLeft". */ function isPlayerSprinting(game) {
+  function isPlayerSprinting(game) {
     const keys =
       game &&
       game.input &&
@@ -116,7 +116,7 @@
    * player.vx/player.vy are written after movement/collision resolution, so
    * attempting to walk into a solid obstacle does not produce false steps.
    */
-  /* @function phanicom-synth-footsteps.movementDistance.4 — Return actual successful player displacement during this update. player.vx/player.vy are written after movement/collision resolution, so attempting to walk into a solid obstacle does not produce false steps. Inputs: game. Uses: number. Returns: 0; math hypot using vx, vy. */ function movementDistance(game) {
+  function movementDistance(game) {
     if (
       !game ||
       !game.player
@@ -136,7 +136,7 @@
   /**
    * Convert a configuration value to a finite number with a fallback.
    */
-  /* @function phanicom-synth-footsteps.finiteNumber.5 — Convert a configuration value to a finite number with a fallback. Inputs: value; fallback. Uses: number; number is finite. Returns: number is finite using number selects number or fallback. */ function finiteNumber(value, fallback) {
+  function finiteNumber(value, fallback) {
     const number = Number(value);
 
     return Number.isFinite(number)
@@ -334,7 +334,7 @@
        * engine. The core AudioSystem continues updating listener position but
        * suppresses its normal sample-based footsteps.
        */
-      /* @function phanicom-synth-footsteps.start.6 — Handles start within phanicom synth footsteps. Inputs: ctx. Updates: ctx state distance; ctx state last sound time; ctx state audio; ctx state owns footsteps; ctx state warned missing audio. Uses: get audio system; ctx log; audio claim footsteps. Returns: without a result. */ start(ctx) {
+      start(ctx) {
         const audio =
           getAudioSystem(ctx);
 
@@ -388,7 +388,7 @@
        * Runs after core movement resolution, allowing player.vx/player.vy to
        * describe successful movement rather than requested input.
        */
-      /* @function phanicom-synth-footsteps.update.7 — Advances this system using the current state and elapsed time. Inputs: ctx; dt. Updates: ctx state audio; ctx state warned missing audio; ctx state owns footsteps; ctx state distance; ctx state last sound time. Uses: get audio system; ctx log; audio claim footsteps; movement distance. Returns: without a result; without a result. */ update(ctx, dt) {
+      update(ctx, dt) {
         const game =
           ctx.game;
 
@@ -649,7 +649,7 @@
        * Release ownership so the engine's normal footsteps automatically
        * return when this plugin is disabled.
        */
-      /* @function phanicom-synth-footsteps.stop.8 — Handles stop within phanicom synth footsteps. Inputs: ctx. Updates: ctx state distance; ctx state last sound time; ctx state audio; ctx state owns footsteps. Uses: get audio system; audio release footsteps. */ stop(ctx) {
+      stop(ctx) {
         const audio =
           ctx.state.audio ||
           getAudioSystem(ctx);

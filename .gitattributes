@@ -1,2 +1,2 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# October 24, 2026: preserve source/archive bytes without newline conversion.
+* -text

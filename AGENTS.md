@@ -23,3 +23,8 @@ The user explicitly authorized deleting superseded documentation: old per-versio
 ## October 15, 2026 — authorized delivery change
 
 The user authorized delivering work as reviewed pull requests, building full Windows/Mac packages only at milestones the user requests. This supersedes "Deliver complete new iterations and full Windows/Mac browser packages" for routine changes. Every pull request still preserves history, documents new code and runs the comment-coverage and relevant behavior tests.
+
+
+## October 24, 2026 - historical migration
+
+The user requested five rollback milestones from the earliest saved output through 0.16.2, with 0.16.2 as main. Prior GitHub main is retained as an annotated archive tag and ancestor. Historical snapshots retain their original source; routine future changes still follow the reviewed-PR delivery rule above. Do not delete local releases until uploaded backups are verified and cleanup is authorized.

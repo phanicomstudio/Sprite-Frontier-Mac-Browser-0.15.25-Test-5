@@ -16,3 +16,19 @@ preview*.png
 .idea/
 *.swp
 Thumbs.db
+
+# October 24, 2026: release output and authentication are never source history.
+outputs/
+work/
+release-packages/
+*.zip
+*.7z
+*.exe
+*.dmg
+*.app/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.gh/

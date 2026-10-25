@@ -1,7 +1,3 @@
-/* MAINTAINER GUIDE
- * Original Frontier damage, reload, holster and loot rules. ActiveCombat replaces firing and wraps impact handling; other inherited rules still execute. Use adapter services instead of introducing renderer dependencies.
- * See docs/CODE-GUIDE.md for load order, ownership and extension recipes.
- */
 /*
  * DIRECT CLASSIC-SCRIPT SOURCE // v0.20.2d
  * -------------------------------------
@@ -9,34 +5,28 @@
  * build step. Public names are attached to window.MF; private helpers stay
  * inside this IIFE so different files cannot accidentally collide.
  */
-/* Historical contract retained; October 14, 2026 reviewed explanation follows. @function combat.callback.1 — Provides the callback for a callback. Inputs: mf. Updates: mf resolve projectile impact; mf toggle holster; mf reload; mf fire shot. */
-(/* @function combat.installReviewed — Installs preserved Frontier combat/reload/holster/loot entry points. ActiveCombat later replaces firing/impact integration while inherited remaining rules still execute through adapter services; this initializer does not perform attacks. Inputs: existing MF engine namespace MF. Returns nothing; publishes API and initializes private tables/cache ownership. Dependency/registration errors propagate. Calls to exported operations own later simulation, rendering or authoring work. */ function (
-  MF,
-) {
+(function (MF) {
   "use strict";
+
   // Dependencies supplied by earlier <script> tags.
   const screenToIso = MF.screenToIso;
   const hitTest = MF.hitTest;
+
   /* Combat owns ammunition, feedback and impact consequences. Projectile motion
    * and physical contact belong to projectiles.js. Both firing models call the
    * same impact policy; item JSON supplies damage, spread and ballistic tuning.
    * Breakable targets retain prototype debris/loot and protected NPC behavior.
    */
+
   /** SPACE key: toggle equipped pistol between holstered and drawn. */
-  /* @function combat.toggleHolster.2 — SPACE key: toggle equipped pistol between holstered and drawn. Inputs: game; ui. Updates: game player holstered; game player facing x; game player facing y. Uses: ui log; mf update aim; game audio play at; ui update weapon hud. Returns: without a result. */ function toggleHolster(
-    game,
-    ui,
-  ) {
+  function toggleHolster(game, ui) {
     if (!game.player.weapon) {
       ui.log("You are unarmed.");
       return;
     }
     game.player.holstered = !game.player.holstered;
     if (game.player.holstered) {
-      const f = game.player.movementFacing || {
-        x: 1,
-        y: 0,
-      };
+      const f = game.player.movementFacing || { x: 1, y: 0 };
       game.player.facingX = f.x;
       game.player.facingY = f.y;
     } else MF.updateAim(game);
@@ -51,11 +41,9 @@
     );
     ui.updateHover();
   }
+
   /** R key: move reserve rounds into the current magazine up to magazineSize. */
-  /* @function combat.reload.3 — R key: move reserve rounds into the current magazine up to magazineSize. Inputs: game; ui. Updates: p ammo loaded; p ammo reserve. Uses: ui log; game audio play at; set timeout; ui update weapon hud. Returns: without a result; without a result. */ function reload(
-    game,
-    ui,
-  ) {
+  function reload(game, ui) {
     const p = game.player;
     if (!p.weapon) {
       ui.log("Nothing to reload.");
@@ -77,6 +65,7 @@
     const take = Math.min(magSize - p.ammoLoaded, p.ammoReserve);
     p.ammoLoaded += take;
     p.ammoReserve -= take;
+
     // Prototype reload Foley: two project-local mechanical samples layered with a tiny
     // delay. The audio system supplies procedural fallbacks if they are offline.
     game.audio?.playAt("reloadMetal", p.x, p.y, {
@@ -84,46 +73,41 @@
       maxDistance: 4,
     });
     setTimeout(
-      /* @function combat.callback.4 — Returns chain. Inputs: no explicit arguments; uses enclosing module state. Uses: game audio play at. Returns: chain. */ () =>
+      () =>
         game.audio?.playAt("reloadClick", p.x, p.y, {
           volume: 0.95,
           maxDistance: 4,
         }),
       115,
     );
+
     ui.updateWeaponHUD();
     ui.log(
       `Reloaded ${take} round${take === 1 ? "" : "s"}. ${p.ammoLoaded}/${magSize} loaded.`,
     );
   }
+
   /** Gaussian random number used for natural-looking shot scatter. */
-  /* @function combat.randomNormal.5 — Gaussian random number used for natural-looking shot scatter. Inputs: no explicit arguments; uses enclosing module state. Updates: u; v. Returns: math sqrt using - 2 multiplied by math log using u multiplied by math cos using 2 multiplied by math pi multiplied by v. */ function randomNormal() {
+  function randomNormal() {
     let u = 0,
       v = 0;
     while (!u) u = Math.random();
     while (!v) v = Math.random();
     return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
   }
+
   /** Persist a small ground impact mark, capped so the array cannot grow forever. */
-  /* @function combat.addGroundHole.6 — Persist a small ground impact mark, capped so the array cannot grow forever. Inputs: game; x; y. Uses: game bullet holes push; game bullet holes shift. */ function addGroundHole(
-    game,
-    x,
-    y,
-  ) {
-    game.bulletHoles.push({
-      map: game.currentMapId,
-      surface: "ground",
-      x,
-      y,
-    });
+  function addGroundHole(game, x, y) {
+    game.bulletHoles.push({ map: game.currentMapId, surface: "ground", x, y });
     if (game.bulletHoles.length > 160) game.bulletHoles.shift();
   }
+
   /**
    * Emit directional blood particles. `forceX/forceY` is normally the bullet
    * direction from shooter -> target, so the spray reads as impact rather than a
    * symmetric fireworks burst.
    */
-  /* @function combat.spawnBloodBurst.7 — Emit directional blood particles. `forceX/forceY` is normally the bullet direction from shooter -> target, so the spray reads as impact rather than a symmetric fireworks burst. Inputs: game; e; force x; force y; assignment pattern; assignment pattern. Uses: game particles push. */ function spawnBloodBurst(
+  function spawnBloodBurst(
     game,
     e,
     forceX,
@@ -158,13 +142,9 @@
       });
     }
   }
+
   /** Put a larger pooled stain under a killed target immediately. */
-  /* @function combat.addDeathPool.8 — Put a larger pooled stain under a killed target immediately. Inputs: game; e; dir x; dir y. Uses: game blood stains push; game blood stains shift. */ function addDeathPool(
-    game,
-    e,
-    dirX,
-    dirY,
-  ) {
+  function addDeathPool(game, e, dirX, dirY) {
     game.bloodStains.push({
       map: game.currentMapId,
       x: e.x + dirX * 0.1,
@@ -177,16 +157,13 @@
     });
     if (game.bloodStains.length > 180) game.bloodStains.shift();
   }
+
   /**
    * Attacking one faction member flips the lightweight world faction record.
    * This is intentionally not a full reputation system yet; it is enough to
    * prove shared hostility without hard-coding specific actor ids into AI.
    */
-  /* @function combat.provokeFaction.9 — Attacking one faction member flips the lightweight world faction record. This is intentionally not a full reputation system yet; it is enough to prove shared hostility without hard-coding specific actor ids into AI. Inputs: game; e; ui. Updates: game world factions; game world factions at e faction; f reputation; f status; f hostile. Uses: game runtime events emit; ui log. Returns: without a result; without a result. */ function provokeFaction(
-    game,
-    e,
-    ui,
-  ) {
+  function provokeFaction(game, e, ui) {
     if (!e?.faction) return;
     game.world.factions ||= {};
     const f = (game.world.factions[e.faction] ||= {
@@ -205,11 +182,9 @@
     });
     ui.log(`${e.faction} reputation: HOSTILE.`);
   }
+
   /** Record authored kill-groups so content can react after a whole local group dies. */
-  /* @function combat.updateKillGroup.10 — Record authored kill-groups so content can react after a whole local group dies. Inputs: game; e. Updates: game world kill groups; game world kill groups at group; state killed at e id; state cleared; game world flags. Uses: object values; object keys; game runtime events emit. Returns: without a result; without a result. */ function updateKillGroup(
-    game,
-    e,
-  ) {
+  function updateKillGroup(game, e) {
     const group = e.killGroup;
     if (!group) return;
     game.world.killGroups ||= {};
@@ -235,26 +210,17 @@
           value: true,
         });
       }
-      game.runtime?.events.emit("actor.killGroupCleared", {
-        group,
-        total,
-      });
+      game.runtime?.events.emit("actor.killGroupCleared", { group, total });
     }
   }
+
   /** Apply one 9mm hit and begin knock-down physics at 0 HP. */
-  /* @function combat.hitMonster.11 — Apply one 9mm hit and begin knock-down physics at 0 HP. Inputs: game; e; ui; damage; shot. Updates: e hp; e hit vx; e hit vy; e stun time; e dead. Uses: game runtime entities get; number; game runtime events emit; spawn blood burst. Returns: without a result. */ function hitMonster(
-    game,
-    e,
-    ui,
-    damage,
-    shot,
-  ) {
-    const owner = game.runtime?.entities.get(shot?.ownerId) || game.player;
-    const dx = e.x - owner.x,
-      dy = e.y - owner.y,
+  function hitMonster(game, e, ui, damage, shot) {
+    const dx = e.x - game.player.x,
+      dy = e.y - game.player.y,
       d = Math.hypot(dx, dy) || 1;
-    const dirX = shot?.direction?.x ?? dx / d,
-      dirY = shot?.direction?.y ?? dy / d;
+    const dirX = shot?.direction.x ?? dx / d,
+      dirY = shot?.direction.y ?? dy / d;
     const dealt = Math.max(1, Number(damage) || 1);
     e.hp = Math.max(0, (e.hp ?? 1) - dealt);
     game.runtime?.events.emit("actor.damaged", {
@@ -268,6 +234,7 @@
     e.hitVx = (e.hitVx || 0) + dirX * 1.15 + (Math.random() - 0.5) * 0.22;
     e.hitVy = (e.hitVy || 0) + dirY * 1.15 + (Math.random() - 0.5) * 0.22;
     e.stunTime = 0.16;
+
     if (e.hp > 0) {
       spawnBloodBurst(game, e, dirX, dirY, 24, false);
       game.audio?.playAt("monsterHit", e.x, e.y, {
@@ -280,6 +247,7 @@
       );
       return;
     }
+
     e.dead = true;
     e.fallTime = 0;
     e.walkTime = 0;
@@ -308,12 +276,9 @@
     });
     ui.log(`${e.name} folds into the dust.`);
   }
+
   /** Destroy a bottle and emit pixel-glass debris. */
-  /* @function combat.breakBottle.12 — Destroy a bottle and emit pixel-glass debris. Inputs: game; e; ui. Updates: e alive. Uses: game runtime events emit; game particles push; ui log. */ function breakBottle(
-    game,
-    e,
-    ui,
-  ) {
+  function breakBottle(game, e, ui) {
     e.alive = false;
     game.runtime?.events.emit("prop.destroyed", {
       propId: e.id,
@@ -335,14 +300,12 @@
     }
     ui.log(`${e.name} shatters into pixel glass.`);
   }
+
   /**
    * === EDIT HERE: CRATE LOOT TABLE ===
    * Current probabilities: 42% ammo / 34% scrip / 24% junk.
    */
-  /* @function combat.dropRandomLoot.13 — === EDIT HERE: CRATE LOOT TABLE === Current probabilities: 42% ammo / 34% scrip / 24% junk. Inputs: game; e. Updates: item id; amount; name; color. Uses: game runtime add entity. */ function dropRandomLoot(
-    game,
-    e,
-  ) {
+  function dropRandomLoot(game, e) {
     const roll = Math.random();
     let itemId, amount, name, color;
     if (roll < 0.42) {
@@ -361,6 +324,7 @@
       name = "Machine junk";
       color = "#8a8173";
     }
+
     const angle = Math.random() * Math.PI * 2;
     const radius = 0.18 + Math.random() * 0.22;
     const lx = e.x + Math.cos(angle) * radius;
@@ -380,20 +344,12 @@
       color,
       tags: ["pickup", "runtime"],
       state: {},
-      position: {
-        map: game.currentMapId,
-        x: lx,
-        y: ly,
-        z: 0,
-      },
+      position: { map: game.currentMapId, x: lx, y: ly, z: 0 },
     });
   }
+
   /** Destroy a pushable box, emit material-colored debris, then spawn one loot drop. */
-  /* @function combat.breakPhysicsBox.14 — Destroy a pushable box, emit material-colored debris, then spawn one loot drop. Inputs: game; e; ui. Updates: e alive. Uses: game runtime events emit; game particles push; drop random loot; game audio play at. */ function breakPhysicsBox(
-    game,
-    e,
-    ui,
-  ) {
+  function breakPhysicsBox(game, e, ui) {
     e.alive = false;
     game.runtime?.events.emit("prop.destroyed", {
       propId: e.id,
@@ -425,16 +381,12 @@
     });
     ui.log(`${e.name} bursts apart. Something tumbles into the dust.`);
   }
+
   /** Shared impact policy for every firing model. Ownership and direction come
    * from the shot, not the player's current position/weapon. NPCs retain the
    * prototype's protected status but still physically stop a projectile.
    */
-  /* @function combat.resolveProjectileImpact.15 — Shared impact policy for every firing model. Ownership and direction come from the shot, not the player's current position/weapon. NPCs retain the prototype's protected status but still physically stop a projectile. Inputs: game; shot; hit; ui. Updates: target hp. Uses: game runtime entities get; provoke faction; hit monster; break bottle. */ function resolveProjectileImpact(
-    game,
-    shot,
-    hit,
-    ui,
-  ) {
+  function resolveProjectileImpact(game, shot, hit, ui) {
     const target = game.runtime.entities.get(hit.id);
     if (target?.type === "monster" && !target.dead) {
       provokeFaction(game, target, ui);
@@ -460,21 +412,14 @@
       weaponId: shot.weaponId,
       targetId: hit.id,
       kind: hit.kind,
-      position: {
-        ...shot.position,
-      },
+      position: { ...shot.position },
     });
   }
   /** Mouse picking supplies a body's ground center when pointing at its sprite.
    * Otherwise invert the isometric projection. Random angular spread changes the
    * physical trajectory; damage always waits for a swept contact. No hit roll.
    */
-  /* @function combat.fireShot.16 — Mouse picking supplies a body's ground center when pointing at its sprite. Otherwise invert the isometric projection. Random angular spread changes the physical trajectory; damage always waits for a swept contact. No hit roll. Inputs: game; mx; my; ui. Updates: dx; dy; p facing x; p facing y. Uses: game audio play at; ui log; hit test; screen to iso. Returns: false; true. */ function fireShot(
-    game,
-    mx,
-    my,
-    ui,
-  ) {
+  function fireShot(game, mx, my, ui) {
     const p = game.player;
     if (!p.weapon || p.holstered) return false;
     if (!game.debug?.infiniteAmmo && p.ammoLoaded <= 0) {
@@ -487,10 +432,7 @@
     }
     const target = hitTest(game, mx, my);
     const aimed = target
-      ? {
-          x: target.x,
-          y: target.y,
-        }
+      ? { x: target.x, y: target.y }
       : screenToIso(game, mx, my);
     let dx = aimed.x - p.x,
       dy = aimed.y - p.y;
@@ -500,17 +442,11 @@
     }
     const angle =
       Math.atan2(dy, dx) + randomNormal() * (p.weapon.spreadRadians ?? 0.012);
-    const direction = {
-      x: Math.cos(angle),
-      y: Math.sin(angle),
-    };
+    const direction = { x: Math.cos(angle), y: Math.sin(angle) };
     p.facingX = direction.x;
     p.facingY = direction.y;
     if (!game.debug?.infiniteAmmo) p.ammoLoaded--;
-    game.audio?.playAt("pistolShot", p.x, p.y, {
-      volume: 1,
-      maxDistance: 10,
-    });
+    game.audio?.playAt("pistolShot", p.x, p.y, { volume: 1, maxDistance: 10 });
     ui.updateWeaponHUD();
     if (target?.type === "monster") provokeFaction(game, target, ui);
     const shot = MF.createProjectile(game, p, p.weapon, direction);
