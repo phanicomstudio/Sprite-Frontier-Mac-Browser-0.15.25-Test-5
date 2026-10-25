@@ -106,9 +106,14 @@
   /* @function Phanicom_BloodSystem.death.9 — Apply configured gib threshold/death mode, blood burst, persistent stain and player death delay. Inputs: game; actor; shot; before. Updates: current; actor gibbed; game death until; actor death mode. Uses: resolve; number; fragments; spray at. */ function death(game,actor,shot,before){
     current=game;
     const blood=resolve(actor),mode=game.deathMode||combat.PlayerDeathMode||'damage';
-    const metric=combat.PlayerGibMetric==='overkill'?Math.max(0,shot.damage-before):shot.damage;
-    const wants=actor.id===game.player.id?(mode==='gib'||mode==='damage'&&metric>=Number(combat.PlayerGibThreshold||25)):actor.combat?.gib===true;
-    if(wants)actor.gibbed=fragments(game,actor)>0;
+    // October 22, 2026: NPC deaths now share overdamage gibbing (strictly above 40 HP).
+    // Preserve player-authored death settings; every blood burst remains victim-owned.
+    const overdamage=Math.max(0,Number(shot.damage)-Math.max(0,Number(before)));
+    const metric=combat.PlayerGibMetric==='overkill'?overdamage:shot.damage;
+    const wants=actor.id===game.player.id?(mode==='gib'||mode==='damage'&&metric>=Number(combat.PlayerGibThreshold||25)):actor.combat?.gib===true||overdamage>40;
+    // Strong nonlethal hits must never dismember a living actor.
+    if(actor.hp>0)return;
+    if(wants&&!actor.gibbed)actor.gibbed=fragments(game,actor)>0;
     if(blood.enabled){
       sprayAt(actor.x,actor.y,{
         game,blood:actor,count:Number(combat.GibBloodBurst||18),z:(actor.z||0)+.8

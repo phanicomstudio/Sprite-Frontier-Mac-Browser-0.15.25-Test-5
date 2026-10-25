@@ -1,3 +1,15 @@
+## 0.16.0 — October 22, 2026
+
+UI Audit Setup foundation: five workspaces, typed contextual selection, integrated plans, persistent generated-part intent and explicit detach/restore. Exact pinned Sprite Fusion WASM replaces automatic silhouette generation, preserving native pixels and sheet cells. Read EDITOR-REDESIGN-0.16.0.md for scope and remaining milestones; SPRITEFUSION-0.16.0.md for license/build details. Earlier release notes remain unchanged below.
+
+## October 22, 2026 — current iteration 0.15.27
+
+See ENEMY-EVENTS-AND-FONTS-0.15.27.md for enemy events, arsenal archetypes, supplied sprites, muzzles, respawn/save ownership and readable editor/selectable gameplay fonts. This dated record supersedes conflicting behavior below; earlier explanations remain history.
+
+## October 22, 2026 — current iteration 0.15.26
+
+See PROJECTILE-ARSENAL-0.15.26.md for active finite projectile collision, weapon/ammo authoring, overdamage gibbing, cream/synth alias behavior, provenance and verification limits. src/ballistics.js owns shared swept movement and terminal impacts; src/arsenal.js owns presets and inventory ammo accounting; Phanicom_BloodSystem retains victim-owned blood identity. Earlier behavior descriptions below are preserved history and are superseded where this dated record explicitly differs.
+
 # 0.15.3
 
 Restored continuous room cursor shots; retained exterior exit and outdoor startup. Added optional third-person per-sheet/per-frame muzzle/barrel guides, forward depth, real-ray reticle, undo and JSON workflow. Audited room/map/dialogue/normal tools; improved template feedback/IDs and expanded-only debugger sampling. See ITERATION-0.15.3.md.

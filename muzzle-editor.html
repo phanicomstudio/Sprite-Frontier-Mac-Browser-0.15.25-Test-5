@@ -1,5 +1,6 @@
 <!doctype html><html><head><meta charset="utf-8"><title>Phanicom muzzle calibration</title><style>
-@font-face{font-family:Checkbook;src:url('fonts/CHECKBK0.TTF')}body{background:#080c12;color:#abcfff;font:16px Checkbook,monospace;margin:12px}button,input,select{font:inherit;background:#101827;color:#abcfff;border:1px solid #4d6485;padding:5px;margin:3px}canvas{background:#000;max-width:100%;image-rendering:pixelated;cursor:crosshair;border:1px solid #557}label{display:inline-block}p{margin:8px}#result{color:#ffd28a}textarea{width:95%;height:55px}
+/* October 22, 2026: readable authoring face supersedes decorative Checkbook controls; gameplay font remains independently selectable. */
+@font-face{font-family:Checkbook;src:url('fonts/CHECKBK0.TTF')}body{background:#080c12;color:#abcfff;font:16px system-ui,Arial,sans-serif;margin:12px}button,input,select{font:inherit;background:#101827;color:#abcfff;border:1px solid #4d6485;padding:5px;margin:3px}canvas{background:#000;max-width:100%;image-rendering:pixelated;cursor:crosshair;border:1px solid #557}label{display:inline-block}p{margin:8px}#result{color:#ffd28a}textarea{width:95%;height:55px}
 </style></head><body><h3>Muzzle, barrel and flash calibration</h3>
 <label>Profile<select id="profile"></select></label><label>New sprite sheet<input id="sheet" type="file" accept="image/png"></label><br>
 <label>Rows<input id="rows" type="number" min="1" max="16" value="8" size="2"></label><label>Columns<input id="columns" type="number" min="1" max="12" value="3"></label><button id="newProfile">Create profile</button><br>

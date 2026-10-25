@@ -1,0 +1,34 @@
+{
+  "iteration": "0.15.27",
+  "date": "2026-10-22",
+  "functionComments": 6021,
+  "passed": [
+    "tests/function-comments1516.cjs",
+    "tests/sprite-projection1518.cjs",
+    "tests/gib-blood1526.cjs",
+    "tests/events.cjs",
+    "tests/event-foundation.cjs",
+    "tests/weapon-definitions1524.cjs",
+    "tests/weapon-tuning1524.cjs",
+    "tests/item-definitions1524.cjs",
+    "tests/browser/enemies1527.cjs",
+    "tests/browser/fonts1527.cjs",
+    "tests/browser/party-travel.cjs",
+    "tests/browser/item-flow1525.cjs",
+    "tests/browser/arsenal1526.cjs",
+    "tests/browser/ballistics1526.cjs"
+  ],
+  "originalSprites": [
+    {
+      "file": "$Chiban VK 2.png",
+      "sha256": "0242553a508ddbc1cbe32474e57399de68063fde1fb22996f0148d0fb5adab76",
+      "identical": true
+    },
+    {
+      "file": "$DF Grapeshot Mechanical Turk.png",
+      "sha256": "10d87e5fe2f892e650262e4bcced96645e832b85fe3176920405c93d07a3d3e0",
+      "identical": true
+    }
+  ],
+  "limits": "Browser integration and focused behavior checks; no macOS host acceptance or high/smooth performance certification."
+}

@@ -1,3 +1,21 @@
+## October 22, 2026 — current iteration 0.16.0
+
+See EDITOR-REDESIGN-0.16.0.md for the implemented foundation, migration limits and remaining milestones, and SPRITEFUSION-0.16.0.md for local native-resolution generation, licensing and build provenance. Earlier explanations below remain historical; this dated entry supersedes conflicting UI, generation and normal-budget descriptions.
+
+## October 22, 2026 — current iteration 0.15.27
+
+See ENEMY-EVENTS-AND-FONTS-0.15.27.md for enemy events, arsenal archetypes, supplied sprites, muzzles, respawn/save ownership and readable editor/selectable gameplay fonts. This dated record supersedes conflicting behavior below; earlier explanations remain history.
+
+## October 22, 2026 — current iteration 0.15.26
+
+See PROJECTILE-ARSENAL-0.15.26.md for active finite projectile collision, weapon/ammo authoring, overdamage gibbing, cream/synth alias behavior, provenance and verification limits. src/ballistics.js owns shared swept movement and terminal impacts; src/arsenal.js owns presets and inventory ammo accounting; Phanicom_BloodSystem retains victim-owned blood identity. Earlier behavior descriptions below are preserved history and are superseded where this dated record explicitly differs.
+
+<!-- October 9, 2026: current 0.15.19 behavior is documented in ITERATION-0.15.19.md. Prior upright sprite and Arial pause notes below are superseded, retained as history. -->
+
+## Current update — 0.15.18, October 9, 2026
+
+Read ITERATION-0.15.18.md and CAMERA-SPRITE-PAUSE-GUIDE.md for current camera, sprite, door collision and pause behavior. Older version-specific statements below are retained history and superseded where the current guide differs.
+
 # Architecture and extension boundaries — 0.15.9
 
 The browser and Electron hosts share the same engine. Hosts own windows/serving only. app.js connects input, authoring, simulation and presentation; keep new gameplay rules in services instead of extending that connection layer indefinitely.

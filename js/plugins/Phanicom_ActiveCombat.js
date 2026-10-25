@@ -38,6 +38,9 @@
   }
 // Emit melee, shotgun or single-projectile patterns from calibrated origins, with bounded projectile/flash counts.
   /* @function Phanicom_ActiveCombat.pattern.4 — Emit melee, shotgun or single-projectile patterns from calibrated origins, with bounded projectile/flash counts. Inputs: game; owner; weapon; base; ui. Updates: p penetration; p hit ids; p profile id; first. Uses: root frontier activity query; mf resolve projectile impact; root frontier weapon tuning radians; core shotgun directions. Returns: without a result. */ function pattern(game,owner,weapon,base,ui){
+    // October 22: NPC-authored profiles inherit projectile motion/impact
+    // policies without replacing their explicitly authored damage/cadence.
+    if(owner.id!==game.player.id){const preset=root.PhanicomABS?.weapons.get(weapon.profileId);if(preset)weapon={...weapon,gravity:weapon.gravity??preset.gravity,launchLift:weapon.launchLift??preset.launchLift,blastRadius:weapon.blastRadius??preset.blastRadius,blastDamage:weapon.blastDamage??weapon.damage};}
     if(weapon.type==='melee'){
       let count=0;
       for(const e of owner.id===game.player.id?root.FrontierActivity.query(game,owner.x-weapon.range,owner.y-weapon.range,owner.x+weapon.range,owner.y+weapon.range,true):[game.player]){
@@ -58,6 +61,9 @@
       }
       return;
     }
+    // October 22: event enemies own finite ammunition and share the actual arsenal.
+    if(owner.enemyConfig){weapon=root.FrontierEnemies.fire(game,owner,weapon);if(!weapon)return;}
+    if(owner.id===game.player.id)weapon=root.FrontierArsenal?.dischargeWeapon(game,weapon)||weapon;
     const spread=root.FrontierWeaponTuning.radians(game.sourceWorld,weapon);
     const directions=weapon.type==='shotgun'?core.shotgunDirections(base,Math.min(64,weapon.pellets),spread):[core.applySpread(base,spread)];
     let first;
@@ -68,8 +74,9 @@
       p.hitIds=new Set();
       p.profileId=weapon.profileId;
       first??=p;
-      if(weapon.firingModel==='hitscan')MF.resolveHitscan(game,p,ui);
-      else game.projectiles.push(p);
+      // October 22, 2026: every discharge has finite travel; old hitscan and
+      // penetration settings are historical and cannot bypass physical impact.
+      p.penetration=0; game.projectiles.push(p);
     }
     if(first){
       const point=FrontierMuzzle.point(owner,game,true)||first.position;
@@ -95,7 +102,8 @@
   /* @function Phanicom_ActiveCombat.shot.6 — Enforce holster/alive/cooldown/ammunition rules, emit one attack and set its firing cadence. Inputs: game; ui; assignment pattern. Updates: game combat cooldown; game burst; p firing until; p ammo loaded. Uses: root phanicom se play; number; ui log; mf update aim. Returns: false; false. */ function shot(game,ui,burst=false){
     const p=game.player,w=p.weapon;
     if(!w||p.holstered||p.hp<=0||(!burst&&(game.combatCooldown||0)>0))return false;
-    const cost=w.ammoCost??1;
+    root.FrontierArsenal?.prepare(game);
+    const cost=root.FrontierArsenal?.cost(game,w)??w.ammoCost??1;
     if(!game.debug?.infiniteAmmo&&p.ammoLoaded<cost){
       root.PhanicomSE.play(w.emptySound||'Out of ammo');
       game.combatCooldown=Number(params.DryFireCooldown||10)/60;
@@ -106,6 +114,7 @@
     // Align before muzzle calibration is read, including auto and burst shots.
     MF.updateAim(game);p.firingUntil=(game.elapsed||0)+.12;
     if(!game.debug?.infiniteAmmo)p.ammoLoaded-=cost;
+    root.FrontierArsenal?.commitAmmo(game);
     pattern(game,p,w,{
       x:p.facingX,y:p.facingY
     }
@@ -148,9 +157,10 @@
   // Preserve inherited damage handling, then replace only its blood visuals and apply native death/self-switch/kill-feed side effects.
  MF.resolveProjectileImpact=/* @function Phanicom_ActiveCombat.resolveProjectileImpact.9 — Handles resolve projectile impact within phanicom active combat. Inputs: game; p; hit; ui. Updates: game particles length; messages. Uses: game runtime entities get; root frontier party combat can damage; game runtime events emit; original impact. Returns: without a result. */ (game,p,hit,ui)=>{
     const target=game.runtime.entities.get(hit.id),before=target?.hp;
-    if(root.FrontierPartyCombat&&!root.FrontierPartyCombat.canDamage(game,game.runtime.entities.get(p.ownerId),target)){
+    if(!p.allowSelfDamage&&root.FrontierPartyCombat&&!root.FrontierPartyCombat.canDamage(game,game.runtime.entities.get(p.ownerId),target)){
       game.runtime.events.emit('projectile.impact',{projectileId:p.id,ownerId:p.ownerId,targetId:hit.id,kind:hit.kind,position:{...p.position},damageSuppressed:'party'});return;
     }
+    const enemySwitches=target?.enemyConfig?root.FrontierEnemies.beforeImpact(game,target):null;
     const particles=game.particles.length;
     originalImpact(game,p,hit,ui);
     if(target&&before>target.hp){
@@ -168,6 +178,7 @@
         const line=String(messages[Math.floor(Math.random()*messages.length)]||'{killer} defeated {victim}').replaceAll('{killer}',p.ownerId===game.player.id?'Candy':'Sentinel').replaceAll('{victim}',target.name||target.id).replaceAll('{weapon}',weapons.get(p.profileId)?.name||p.weaponId);
         if(params.KillFeedEnabled!=='false')ui.log(line);
         if(target.eventId)game.eventSession?.state.selfSwitches.set(target.eventId+':'+(target.gibbed?'B':'A'),true);
+        if(target.enemyConfig)root.FrontierEnemies.defeated(game,target,enemySwitches);
       }
     }
   }

@@ -1,0 +1,21 @@
+const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict'),scope={console};scope.globalThis=scope;
+for(const name of ['building-kit','room-layout','room-physics'])vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../src/'+name+'.js'),'utf8'),scope);
+const layout=scope.FrontierRoomLayout,physics=scope.FrontierRoomPhysics,bounds={width:24,height:24};
+const rectangle=layout.validate({cells:[[0,0],[1,0],[0,1],[1,1]]},bounds),compiled=layout.compile(rectangle),room={...compiled,layout:rectangle},world={interior:room};
+assert.equal(compiled.primitives.length,8,'2x2 room merges walls and floor rows');
+assert(physics.walkable(world,4,4),'Adjacent floor-row seams remain walkable');
+assert(physics.blocked(world,6,4,0),'Generated wall blocks the actual outer edge');
+const lShape=layout.validate({cells:[[0,0],[1,0],[0,1]]},bounds),lRoom=layout.compile(lShape),lWorld={interior:{...lRoom,layout:lShape}};
+assert(physics.walkable(lWorld,3,4),'L corridor joins remain walkable');assert(!physics.walkable(lWorld,5,5),'Erased corner is not invisible walkable terrain');
+const walls=lRoom.primitives.filter(/* @function layoutTest.wall — Inputs: primitive. Returns: whether it is a generated perimeter wall. */ function(e){return e.moduleType==='wall';});
+for(let i=0;i<walls.length;i++)for(let j=i+1;j<walls.length;j++){const a=walls[i],b=walls[j],ox=Math.min(a.x+a.w/2,b.x+b.w/2)-Math.max(a.x-a.w/2,b.x-b.w/2),oy=Math.min(a.y+a.d/2,b.y+b.d/2)-Math.max(a.y-a.d/2,b.y-b.d/2);assert(!(ox>1e-6&&oy>1e-6),'Perimeter runs do not overlap wall volumes at joins');}
+const doorway=layout.validate({...rectangle,doors:[{x:0,y:0,side:'south'}]},bounds),doorRoom=layout.compile(doorway);
+assert.equal(physics.blocked({interior:doorRoom},3,1.9,0,.13,1.65),false,'Door opening remains physically clear');
+assert.equal(physics.blocked({interior:doorRoom},3,1.9,1,.13,1.65),true,'Door lintel blocks raised body/head');
+const wall=compiled.primitives.find(/* @function layoutTest.editableWall — Inputs: primitive. Returns: first wall marker. */ function(e){return e.moduleType==='wall';});wall.z+=.25;wall.texture='img/materials/walls/Tex_Castle_2.png';
+const regenerated=layout.compile(rectangle,{wall:{texture:'img/materials/walls/Tex_Castle_1.png'}},compiled.primitives),retained=regenerated.primitives.find(/* @function layoutTest.retainedWall — Inputs: primitive. Returns: stable ID match for manually edited wall. */ function(e){return e.id===wall.id;});
+assert.equal(retained.z,.25);assert.equal(retained.texture,wall.texture,'Individual override survives layout recompilation');
+const fresh=layout.compile(rectangle,{wall:{texture:'img/materials/walls/Tex_Castle_1.png'}}),changed=layout.compile(rectangle,{wall:{texture:'img/materials/walls/Tex_Castle_2.png'}},fresh.primitives);assert(changed.primitives.filter(/* @function layoutTest.changedWalls — Inputs: primitive. Returns: generated wall role. */ function(e){return e.moduleType==='wall';}).every(/* @function layoutTest.materialChanged — Inputs: wall. Returns: requested new shared material match. */ function(e){return e.texture==='img/materials/walls/Tex_Castle_2.png';}),'Changing layout material updates unmodified walls');
+assert.equal(layout.validate(JSON.parse(JSON.stringify(rectangle)),bounds).cells.length,4);
+assert.throws(/* @function layoutTest.outside — Inputs: none. Returns: validator result or throws for an out-of-map tile. */ function(){return layout.validate({cells:[[50,50]]},bounds);});
+console.log('PASS merged grid room, L-corridor/erased-floor walkability, nonoverlapping corner joins, open doorway/headroom, overrides/material updates and persistence');

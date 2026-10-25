@@ -361,7 +361,9 @@
     const count = Math.max(1, Math.trunc(pellets || 1));
     const base = Math.atan2(baseDirection.y, baseDirection.x);
     const half = Math.max(0, coneRadians || 0) * 0.5;
-    if (count === 1 || half <= EPS) return [{
+    // October 22, 2026: zero spread makes every pellet parallel; it must not
+    // collapse a six/fourteen-projectile discharge into one projectile.
+    if (count === 1) return [{
       ...baseDirection
     }
     ];

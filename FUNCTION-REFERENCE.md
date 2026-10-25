@@ -22209,3 +22209,78 @@ may describe previous iterations. New source comments are maintained as authored
 FUNCTION-REFERENCE-0.15.17.md and .json index current source locations and exact
 contracts. Historical explanations above are retained; line references there
 may describe previous iterations. New source comments are maintained as authored.
+
+
+## October 9, 2026 — current index
+
+FUNCTION-REFERENCE-0.15.18.md and .json index current source locations and exact
+contracts. Historical explanations above are retained; line references there
+may describe previous iterations. New source comments are maintained as authored.
+
+
+## October 9, 2026 — current index
+
+FUNCTION-REFERENCE-0.15.19.md and .json index current source locations and exact
+contracts. Historical explanations above are retained; line references there
+may describe previous iterations. New source comments are maintained as authored.
+
+
+## October 10, 2026 — current index
+
+FUNCTION-REFERENCE-0.15.20.md and .json index current source locations and exact
+contracts. Historical explanations above are retained; line references there
+may describe previous iterations. New source comments are maintained as authored.
+
+
+## October 10, 2026 — current index
+
+FUNCTION-REFERENCE-0.15.21.md and .json index current source locations and exact
+contracts. Historical explanations above are retained; line references there
+may describe previous iterations. New source comments are maintained as authored.
+
+
+## October 10, 2026 — current index
+
+FUNCTION-REFERENCE-0.15.22.md and .json index current source locations and exact
+contracts. Historical explanations above are retained; line references there
+may describe previous iterations. New source comments are maintained as authored.
+
+
+## October 12, 2026 — current index
+
+FUNCTION-REFERENCE-0.15.23.md and .json index current source locations and exact
+contracts. Historical explanations above are retained; line references there
+may describe previous iterations. New source comments are maintained as authored.
+
+
+## October 13, 2026 — current index
+
+FUNCTION-REFERENCE-0.15.24.md and .json index current source locations and exact
+contracts. Historical explanations above are retained; line references there
+may describe previous iterations. New source comments are maintained as authored.
+
+
+## October 14, 2026 — Test 2 authoring update
+
+See TEST-BUILD-0.15.25-TEST-2.md for the current workflows, validation and remaining limitations. Earlier release descriptions above are retained history. New native item sprites use FrontierSprites single-frame metadata; item placement uses normal event pages/self-switches, compact carried/drop state, the shared prop surface query, and active-cell light budgeting. Map folder metadata is authoring-only. Blank projects suppress example-map recovery migrations. No change to the locked 0.15.17 player sprite presentation.
+
+
+## October 22, 2026 — current index
+
+FUNCTION-REFERENCE-0.15.26.md and .json index current source locations and exact
+contracts. Historical explanations above are retained; line references there
+may describe previous iterations. New source comments are maintained as authored.
+
+
+## October 22, 2026 — current index
+
+FUNCTION-REFERENCE-0.15.27.md and .json index current source locations and exact
+contracts. Historical explanations above are retained; line references there
+may describe previous iterations. New source comments are maintained as authored.
+
+
+## October 22, 2026 — current index
+
+FUNCTION-REFERENCE-0.16.0.md and .json index current source locations and exact
+contracts. Historical explanations above are retained; line references there
+may describe previous iterations. New source comments are maintained as authored.

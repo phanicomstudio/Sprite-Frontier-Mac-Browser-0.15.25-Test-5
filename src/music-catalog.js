@@ -1,3 +1,17 @@
 // Static exported catalog: no runtime directory scanning.
-window.FrontierMusicCatalog={"exploration":["A Moribund Theme 3.ogg","Baroque 10.ogg","Baroque 8.ogg","Baroque Theme.ogg","God was a Dinosaur.ogg","Occult 1.ogg","Occult Theme.ogg"],"combat":["Baroque Boss Fight 11.ogg","Horn Head Boss Theme.ogg","Master of the Flying Guillotine opening (2).ogg"]};
-
+window.FrontierMusicCatalog = {
+  "exploration": [
+    "A Moribund Theme 3.ogg",
+    "Baroque 10.ogg",
+    "Baroque 8.ogg",
+    "Baroque Theme.ogg",
+    "God was a Dinosaur.ogg",
+    "Occult 1.ogg",
+    "Occult Theme.ogg",
+  ],
+  "combat": [
+    "Baroque Boss Fight 11.ogg",
+    "Horn Head Boss Theme.ogg",
+    "Master of the Flying Guillotine opening (2).ogg",
+  ],
+};

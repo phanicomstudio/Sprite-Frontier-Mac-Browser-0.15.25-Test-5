@@ -1,0 +1,14 @@
+/* October 14, 2026: release regression reference is preserved inside SOURCE-HISTORY so this test is self-contained in full Windows/browser packages. Previous external sibling path: ../../phanicom-sprite-frontier-0.15.22/src/model-renderer.js. Reference bytes are unchanged. */
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict');
+/* @function alphaDepthTest.raster — Inputs: renderer path and Smooth boolean. Returns private production raster in isolated VM, using deterministic projection. Exposes test API in memory only; source file/algorithms remain unchanged. */
+function raster(filename,smooth){const scope={window:null,ImageData:undefined,FrontierDisplay:{smooth:/* @function alphaDepthTest.filtering — Inputs: none. Returns fixture filtering mode without mutation. */function(){return smooth;}},FrontierRender:{project:/* @function alphaDepthTest.project — Inputs: ignored camera and screen-space XYZ. Returns synthetic authoritative projection for independent old/new raster comparisons. */function(cam,x,y,depth){return {x,y,depth};}}};scope.window=scope;vm.createContext(scope);const source=fs.readFileSync(filename,'utf8').replace(/root\.FrontierModelRenderer\s*=/,'root.alphaRaster=triangle;root.FrontierModelRenderer=');vm.runInContext(source,scope);return scope.alphaRaster;}
+for(const smooth of [false,true]){
+ const reference=raster(path.resolve(__dirname,'../SOURCE-HISTORY/regression-references/0.15.22/model-renderer.js'),smooth),current=raster(path.resolve(__dirname,'../src/model-renderer.js'),smooth);
+ for(let seed=1;seed<=100;seed++){
+  const vertices=[];for(let i=0;i<3;i++)vertices.push({point:[((seed*17+i*37)%47)-8,((seed*31+i*19)%39)-6,1+((seed+i*7)%11)/3],uv:[(seed+i)%5/3,(seed+i*3)%7/4]});
+  const asset={json:{textures:[{source:0}]}},state={pixels:[{width:2,height:2,data:new Uint8Array([255,0,0,255,0,0,0,0,0,255,0,1,0,0,255,128])}]},material={factor:[1,1,1,seed%3===0?.01:1],texture:0,alphaMode:'OPAQUE',alphaDepth:true},camera={orthographic:seed%3===0},first={w:32,h:24,step:1,image:{data:new Uint8ClampedArray(32*24*4)}},second={w:32,h:24,step:1,image:{data:new Uint8ClampedArray(32*24*4)}},depthA={values:new Float32Array(32*24)},depthB={values:new Float32Array(32*24)};
+  assert.equal(current(second,depthB,vertices,asset,state,material,camera,true),reference(first,depthA,vertices,asset,state,material,camera));assert.deepEqual(depthB.values,depthA.values,'Alpha-only depth exactly matches historical color-raster visibility');assert(second.image.data.every(/* @function alphaDepthTest.noColor — Inputs: byte. Returns whether depth-only path retained clear color buffer. */function(value){return value===0;}));
+ }
+}
+console.log('PASS 200 exact alpha-aware depth comparisons against historical raster, both filters, perspective/orthographic and opacity factors');

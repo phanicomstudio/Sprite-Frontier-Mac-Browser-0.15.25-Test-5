@@ -1,3 +1,7 @@
+## October 22, 2026 — current iteration 0.16.0
+
+See EDITOR-REDESIGN-0.16.0.md for the implemented foundation, migration limits and remaining milestones, and SPRITEFUSION-0.16.0.md for local native-resolution generation, licensing and build provenance. Earlier explanations below remain historical; this dated entry supersedes conflicting UI, generation and normal-budget descriptions.
+
 # Sprite normals
 
 Open the normal workbench in authoring mode. Choose a registered sprite profile and Load this sprite artwork. Generate rounded silhouette normals or import a matching normal PNG. Paint/import height to refine the draft; height edits regenerate normals and replace imported normals. Preview lighting, height or RGB normals, then Apply to the current map. Remove deletes the selected profile binding. Apply/Remove support undo and project export/import. Loading a profile currently generates a fresh draft; it does not reopen its saved binding for editing.

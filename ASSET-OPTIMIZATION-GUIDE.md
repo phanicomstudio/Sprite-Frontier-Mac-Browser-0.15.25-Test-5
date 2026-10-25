@@ -88,3 +88,7 @@ future optimization. No Daggerfall/Max Payne/OpenMW source is incorporated.
 Next measurements: loaded versus visible assets per hub; prepared texture memory;
 landmark distance policies; cell unload residency; then offline resize/atlas
 pipeline and streaming with regression tests. Never erase asset provenance.
+
+
+## October 12, 2026 - 0.15.23 current behavior
+See ITERATION-0.15.23.md and PERFORMANCE-AUDIT-1523.md for current rendering, preparation ownership, performance evidence and limitations. Earlier version-specific instructions above remain history and are superseded where these documents differ. Locked 0.15.17 camera-facing sprite presentation remains mandatory.

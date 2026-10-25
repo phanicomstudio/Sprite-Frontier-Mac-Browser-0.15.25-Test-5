@@ -25,3 +25,7 @@ contract; this test uses node selection within a single shared assembly.
 
 Transition presentation and sound integration are pending, not implemented by
 copying this asset. No supplied door sound files have been selected yet.
+
+
+October 12, 2026 — clean texture replacement for iteration 0.15.23.
+Selected Antique_Door_Assembly_Clean.glb from the supplied Antique_Door_Clean_Pack.zip, distributed as assembly.glb and mirrored in src/door-asset.js for offline loading. SHA-256: 7aa9bb5965b24cf8dc554f1dc872a6ec01c41c7a5b6b535b1e6d2a02dfad2aa1. Frame node 0 and hinge leaf node 1 retain identical geometry and transforms (96 and 80 triangles). The embedded texture is sufficient; Blender sources, preview images, separate leaf/frame duplicates and texture-edit instructions are omitted from runtime distribution. Prior releases and the supplied pack remain intact.

@@ -1,3 +1,7 @@
+## Current update — 0.15.18, October 9, 2026
+
+Read ITERATION-0.15.18.md and CAMERA-SPRITE-PAUSE-GUIDE.md for current camera, sprite, door collision and pause behavior. Older version-specific statements below are retained history and superseded where the current guide differs.
+
 # 3D models and event volumes
 
 This iteration places static GLB/glTF 2.0 models alongside sprite events. A model's visual appearance, collision boxes and interaction zones are independent. A building is not automatically clickable.

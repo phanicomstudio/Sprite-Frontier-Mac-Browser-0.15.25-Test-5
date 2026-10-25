@@ -1,0 +1,5 @@
+/* October 13: completed native fixtures must not leave a mouse trap. */
+'use strict';
+/* @function nativeInputCleanup.release — Inputs: existing diagnostic browser connection. Returns promise. Releases pointer capture in the isolated native game window only, without navigating/closing other apps. Does not alter authored data or assert cleanup succeeded after an error. Call before CDP disconnect; ordinary browser fixtures own their own shutdown. */
+async function release(browser){const page=browser.contexts()[0]?.pages()[0];if(!page)return;if(!(page.url().includes('/work/native-')||page.url().includes('/work/native1525-editor-candidate/'))||!page.url().endsWith('/resources/app/index.html'))throw Error('Native cleanup requires an isolated diagnostic copy.');await page.evaluate(/* @function nativeInputCleanup.pointer — Inputs: none. Returns nothing; asks the document to release its own pointer lock. Production lock-change behavior owns any pause state changes. */function(){document.exitPointerLock?.();});}
+module.exports={release};

@@ -15,3 +15,12 @@ One local triangle BVH is shared per decoded asset. World queries include positi
 Tests cover actual imported glTF stairs climbed with WASD, roof jumping/landing with E, edge falling, fast swept landing, ceilings, transformed support and existing doorway/wall behavior. See WALKABLE-GEOMETRY-PROGRESS.md for remaining release gates.
 
 Default automatic step height: 0.6 world units. Change project parameters when geometry scale calls for a different climb limit. Short forward step placement handles bevels before stair treads; contact recovery permits moving away from existing overlap.
+
+## October 12, 2026 - 0.15.24 default supersedes older setup instructions
+
+The older instructions above describe manually selecting geometry collision.
+For new unconfigured 3D models, geometry collision is now automatic in the schema,
+placement palette and event draft UI. Native room modules use their actual solid
+volume automatically. Explicit non-solid/custom collision choices are preserved.
+Interaction zones remain independent; collision does not make a whole mesh a
+clickable event. Previous releases and their behavior are unchanged.

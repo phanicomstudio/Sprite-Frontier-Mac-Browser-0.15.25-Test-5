@@ -1,5 +1,98 @@
 /* Independent Doom-inspired transition model. Neighboring strip delays differ
  * by at most one logical pixel; a fixed 35 Hz clock makes timing independent of
  * rendering rate. The host owns the old-frame image and draws the new scene. */
-(/* @function screen-melt.callback.1 — Provides the callback for a callback. Inputs: root. Updates: root frontier screen melt. */ function(root){'use strict';/* @function screen-melt.create.2 — Builds a new instance and its public operations from the supplied configuration. Inputs: width; height; assignment pattern. Updates: offsets at 0; offsets at i. Uses: number is integer; error; sample. Returns: a record containing advance, done, strips, debug. */ function create(width,height,{random=Math.random,stripWidth=2}={}){if(!Number.isInteger(width)||width<1||width>4096||!Number.isInteger(height)||height<1||height>4096||!Number.isInteger(stripWidth)||stripWidth<1||stripWidth>64)throw Error('Invalid melt dimensions.');const count=Math.ceil(width/stripWidth),offsets=new Int32Array(count);const sample=/* @function screen-melt.sample.3 — Handles sample within screen melt. Inputs: no explicit arguments; uses enclosing module state. Uses: random; number is finite; error. Returns: r. */ ()=>{const r=random();if(!Number.isFinite(r)||r<0||r>=1)throw Error('Invalid melt random sample.');return r;};offsets[0]=-Math.floor(sample()*16);for(let i=1;i<count;i++)offsets[i]=Math.max(-15,Math.min(0,offsets[i-1]+Math.floor(sample()*3)-1));let pending=0,done=false,ticks=0;/* @function screen-melt.advance.4 — Handles advance within screen melt. Inputs: dt. Updates: pending; done; y; offsets at i. Uses: number is finite; error. Returns: true; done. */ function advance(dt){if(!Number.isFinite(dt)||dt<0)throw Error('Invalid melt elapsed time.');if(done)return true;pending=Math.min(pending+dt,2);let steps=Math.min(70,Math.floor(pending*35));pending-=steps/35;while(steps--&&!done){done=true;ticks++;for(let i=0;i<count;i++){let y=offsets[i];if(y<0)y++;else if(y<height)y=Math.min(height,y+(y<16?y+1:Math.max(1,Math.round(height/25))));offsets[i]=y;if(y<height)done=false;}}return done;}return {advance,get done/* @function screen-melt.done.5 — Handles done within screen melt. Inputs: no explicit arguments; uses enclosing module state. Returns: done. */ (){return done;},strips:/* @function screen-melt.strips.6 — Returns array from using offsets, a callback. Inputs: no explicit arguments; uses enclosing module state. Uses: array from. Returns: array from using offsets, a callback. */ ()=>Array.from(offsets,/* @function screen-melt.callback.7 — Returns a record containing x, width, y. Inputs: y; i. Returns: a record containing x, width, y. */ (y,i)=>({x:i*stripWidth,width:Math.min(stripWidth,width-i*stripWidth),y:Math.max(0,y)})),debug:/* @function screen-melt.debug.8 — Returns a record containing ticks, strips, done, bytes. Inputs: no explicit arguments; uses enclosing module state. Returns: a record containing ticks, strips, done, bytes. */ ()=>({ticks,strips:count,done,bytes:offsets.byteLength})};}root.FrontierScreenMelt={create};})(typeof window==='undefined'?globalThis:window);
-
+/* Historical contract retained; October 14, 2026 reviewed explanation follows. @function screen-melt.callback.1 — Provides the callback for a callback. Inputs: root. Updates: root frontier screen melt. */
+(/* @function screen-melt.installReviewed — Installs the independently written Doom-inspired strip-transition model. Neighbor delays remain correlated and a fixed 35 Hz logical clock separates motion timing from rendering rate; host owns frame images. Inputs: browser/global namespace root. Returns nothing; publishes API/defaults and initializes private ownership tables. Dependency/registration errors propagate. Later exported operations own simulation/rendering/authoring work; this does not start a second active game. */ function (
+  root,
+) {
+  "use strict";
+  /* @function screen-melt.create.2 — Builds a new instance and its public operations from the supplied configuration. Inputs: width; height; assignment pattern. Updates: offsets at 0; offsets at i. Uses: number is integer; error; sample. Returns: a record containing advance, done, strips, debug. */ function create(
+    width,
+    height,
+    { random = Math.random, stripWidth = 2 } = {},
+  ) {
+    if (
+      !Number.isInteger(width) ||
+      width < 1 ||
+      width > 4096 ||
+      !Number.isInteger(height) ||
+      height < 1 ||
+      height > 4096 ||
+      !Number.isInteger(stripWidth) ||
+      stripWidth < 1 ||
+      stripWidth > 64
+    )
+      throw Error("Invalid melt dimensions.");
+    const count = Math.ceil(width / stripWidth),
+      offsets = new Int32Array(count);
+    const sample =
+      /* @function screen-melt.sample.3 — Handles sample within screen melt. Inputs: no explicit arguments; uses enclosing module state. Uses: random; number is finite; error. Returns: r. */ () => {
+        const r = random();
+        if (!Number.isFinite(r) || r < 0 || r >= 1)
+          throw Error("Invalid melt random sample.");
+        return r;
+      };
+    offsets[0] = -Math.floor(sample() * 16);
+    for (let i = 1; i < count; i++)
+      offsets[i] = Math.max(
+        -15,
+        Math.min(0, offsets[i - 1] + Math.floor(sample() * 3) - 1),
+      );
+    let pending = 0,
+      done = false,
+      ticks = 0;
+    /* @function screen-melt.advance.4 — Handles advance within screen melt. Inputs: dt. Updates: pending; done; y; offsets at i. Uses: number is finite; error. Returns: true; done. */ function advance(
+      dt,
+    ) {
+      if (!Number.isFinite(dt) || dt < 0)
+        throw Error("Invalid melt elapsed time.");
+      if (done) return true;
+      pending = Math.min(pending + dt, 2);
+      let steps = Math.min(70, Math.floor(pending * 35));
+      pending -= steps / 35;
+      while (steps-- && !done) {
+        done = true;
+        ticks++;
+        for (let i = 0; i < count; i++) {
+          let y = offsets[i];
+          if (y < 0) y++;
+          else if (y < height)
+            y = Math.min(
+              height,
+              y + (y < 16 ? y + 1 : Math.max(1, Math.round(height / 25))),
+            );
+          offsets[i] = y;
+          if (y < height) done = false;
+        }
+      }
+      return done;
+    }
+    return {
+      advance,
+      get done /* @function screen-melt.done.5 — Handles done within screen melt. Inputs: no explicit arguments; uses enclosing module state. Returns: done. */() {
+        return done;
+      },
+      strips:
+        /* @function screen-melt.strips.6 — Returns array from using offsets, a callback. Inputs: no explicit arguments; uses enclosing module state. Uses: array from. Returns: array from using offsets, a callback. */ () =>
+          Array.from(
+            offsets,
+            /* @function screen-melt.callback.7 — Returns a record containing x, width, y. Inputs: y; i. Returns: a record containing x, width, y. */ (
+              y,
+              i,
+            ) => ({
+              x: i * stripWidth,
+              width: Math.min(stripWidth, width - i * stripWidth),
+              y: Math.max(0, y),
+            }),
+          ),
+      debug:
+        /* @function screen-melt.debug.8 — Returns a record containing ticks, strips, done, bytes. Inputs: no explicit arguments; uses enclosing module state. Returns: a record containing ticks, strips, done, bytes. */ () => ({
+          ticks,
+          strips: count,
+          done,
+          bytes: offsets.byteLength,
+        }),
+    };
+  }
+  root.FrontierScreenMelt = { create };
+})(typeof window === "undefined" ? globalThis : window);

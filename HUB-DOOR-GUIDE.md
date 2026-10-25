@@ -1,3 +1,7 @@
+## Current update — 0.15.18, October 9, 2026
+
+Read ITERATION-0.15.18.md and CAMERA-SPRITE-PAUSE-GUIDE.md for current camera, sprite, door collision and pause behavior. Older version-specific statements below are retained history and superseded where the current guide differs.
+
 # Hubs, static items and doors — 0.15.17
 
 Current behavior, October 9, 2026. Existing maps and earlier releases remain intact.
@@ -127,3 +131,7 @@ one transfer commit. Add item definitions without changing collision/rendering.
 Add leaf motion types in validation, timeline, presentation and tests together.
 Preserve previous comments/docs. `FUNCTION-REFERENCE-0.15.17.md` indexes current
 source contracts; run function-comment coverage and relevant behavior checks.
+
+
+## October 12, 2026 - 0.15.23 current behavior
+See ITERATION-0.15.23.md and PERFORMANCE-AUDIT-1523.md for current rendering, preparation ownership, performance evidence and limitations. Earlier version-specific instructions above remain history and are superseded where these documents differ. Locked 0.15.17 camera-facing sprite presentation remains mandatory.

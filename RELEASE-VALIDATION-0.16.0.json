@@ -1,0 +1,524 @@
+{
+  "iteration": "0.16.0",
+  "date": "2026-10-22",
+  "scope": "UI Audit Setup foundation and local Sprite Fusion replacement; full 0.16.x architecture milestones remain documented, not claimed complete.",
+  "functionComments": 6162,
+  "pureRegressions": [
+    {
+      "test": "tests/barrel153.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/interiors15.cjs",
+      "passed": true,
+      "seconds": 0.06
+    },
+    {
+      "test": "tests/run.cjs",
+      "passed": true,
+      "seconds": 0.19
+    },
+    {
+      "test": "tests/events.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/input-terrain.cjs",
+      "passed": true,
+      "seconds": 0.06
+    },
+    {
+      "test": "tests/event-foundation.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/port06.cjs",
+      "passed": true,
+      "seconds": 0.12
+    },
+    {
+      "test": "tests/editor08.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/fog10.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/large11.cjs",
+      "passed": true,
+      "seconds": 0.08
+    },
+    {
+      "test": "tests/event158.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/fixed-diagonals159.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/mz-foundation159.cjs",
+      "passed": true,
+      "seconds": 0.06
+    },
+    {
+      "test": "tests/event-motion159.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/mz-variables159.cjs",
+      "passed": true,
+      "seconds": 0.06
+    },
+    {
+      "test": "tests/mz-branch-editing159.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/mz-flow159.cjs",
+      "passed": true,
+      "seconds": 0.06
+    },
+    {
+      "test": "tests/mz-state159.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/mz-groups159.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/party-target159.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/event-touch159.cjs",
+      "passed": true,
+      "seconds": 0.06
+    },
+    {
+      "test": "tests/event-capacity159.cjs",
+      "passed": true,
+      "seconds": 0.08
+    },
+    {
+      "test": "tests/mz-erase159.cjs",
+      "passed": true,
+      "seconds": 0.06
+    },
+    {
+      "test": "tests/mz-timer159.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/mz-routes159.cjs",
+      "passed": true,
+      "seconds": 0.06
+    },
+    {
+      "test": "tests/mz-forced-routes159.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/mz-choices159.cjs",
+      "passed": true,
+      "seconds": 0.06
+    },
+    {
+      "test": "tests/mz-parallel159.cjs",
+      "passed": true,
+      "seconds": 0.08
+    },
+    {
+      "test": "tests/mz-number159.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/mz-gold159.cjs",
+      "passed": true,
+      "seconds": 0.06
+    },
+    {
+      "test": "tests/mz-items159.cjs",
+      "passed": true,
+      "seconds": 0.06
+    },
+    {
+      "test": "tests/map-identities159.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/page-cache159.cjs",
+      "passed": true,
+      "seconds": 0.06
+    },
+    {
+      "test": "tests/transfer-player159.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/event-continuation159.cjs",
+      "passed": true,
+      "seconds": 0.06
+    },
+    {
+      "test": "tests/scene-transition159.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/live-transfer159.cjs",
+      "passed": true,
+      "seconds": 0.06
+    },
+    {
+      "test": "tests/screen-fade159.cjs",
+      "passed": true,
+      "seconds": 0.06
+    },
+    {
+      "test": "tests/transparency159.cjs",
+      "passed": true,
+      "seconds": 0.06
+    },
+    {
+      "test": "tests/spatial-conditions159.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/event-templates159.cjs",
+      "passed": true,
+      "seconds": 0.06
+    },
+    {
+      "test": "tests/event-replacement159.cjs",
+      "passed": true,
+      "seconds": 0.06
+    },
+    {
+      "test": "tests/template-history159.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/screen-flash159.cjs",
+      "passed": true,
+      "seconds": 0.06
+    },
+    {
+      "test": "tests/screen-shake159.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/screen-tone159.cjs",
+      "passed": true,
+      "seconds": 0.06
+    },
+    {
+      "test": "tests/mz-se159.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/mz-route-se159.cjs",
+      "passed": true,
+      "seconds": 0.06
+    },
+    {
+      "test": "tests/gameplay-state159.cjs",
+      "passed": true,
+      "seconds": 0.06
+    },
+    {
+      "test": "tests/gameplay-commands159.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/gameplay-defaults159.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/quest-lifecycle159.cjs",
+      "passed": true,
+      "seconds": 0.06
+    },
+    {
+      "test": "tests/quest-maps159.cjs",
+      "passed": true,
+      "seconds": 0.06
+    },
+    {
+      "test": "tests/actor-behavior159.cjs",
+      "passed": true,
+      "seconds": 0.06
+    },
+    {
+      "test": "tests/screen-melt159.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/screen-melt-overlay159.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/sprite-lighting159.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/normal-bindings159.cjs",
+      "passed": true,
+      "seconds": 0.08
+    },
+    {
+      "test": "tests/normal-cache159.cjs",
+      "passed": true,
+      "seconds": 0.06
+    },
+    {
+      "test": "tests/sprite-projection1518.cjs",
+      "passed": true,
+      "seconds": 0.08
+    },
+    {
+      "test": "tests/model-container1511.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/model-debug1511.cjs",
+      "passed": true,
+      "seconds": 0.06
+    },
+    {
+      "test": "tests/model-events1511.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/model-library1511.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/model-scene1511.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/model-transform1511.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/model-volumes1511.cjs",
+      "passed": true,
+      "seconds": 0.06
+    },
+    {
+      "test": "tests/model-mesh-collision1513.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/model-walkable1514.cjs",
+      "passed": true,
+      "seconds": 0.06
+    },
+    {
+      "test": "tests/model-landing1516.cjs",
+      "passed": true,
+      "seconds": 0.89
+    },
+    {
+      "test": "tests/model-camera1516.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/function-comments1516.cjs",
+      "passed": true,
+      "seconds": 1.72
+    },
+    {
+      "test": "tests/hub-state1517.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/model-visibility1517.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/door-hub1517.cjs",
+      "passed": true,
+      "seconds": 0.06
+    },
+    {
+      "test": "tests/sampler1523.cjs",
+      "passed": true,
+      "seconds": 0.08
+    },
+    {
+      "test": "tests/raster-equivalence1523.cjs",
+      "passed": true,
+      "seconds": 1.0
+    },
+    {
+      "test": "tests/terrain-cache1523.cjs",
+      "passed": true,
+      "seconds": 0.28,
+      "initial_harness_failure": true,
+      "rerun": "Passed after exact-source extraction/whitespace fixture repair; assertions retained."
+    },
+    {
+      "test": "tests/terrain-clip1523.cjs",
+      "passed": true,
+      "seconds": 0.51,
+      "initial_harness_failure": true,
+      "rerun": "Passed after exact-source extraction/whitespace fixture repair; assertions retained."
+    },
+    {
+      "test": "tests/terrain-depth1523.cjs",
+      "passed": true,
+      "seconds": 0.24
+    },
+    {
+      "test": "tests/camera-basis1523.cjs",
+      "passed": true,
+      "seconds": 0.11
+    },
+    {
+      "test": "tests/transition-performance1523.cjs",
+      "passed": true,
+      "seconds": 0.06
+    },
+    {
+      "test": "tests/breathing1522.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/model-cache1523.cjs",
+      "passed": true,
+      "seconds": 0.06,
+      "initial_harness_failure": true,
+      "rerun": "Passed after exact-source extraction/whitespace fixture repair; assertions retained."
+    },
+    {
+      "test": "tests/authoring160.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/layout1524.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/layout-arrivals1524.cjs",
+      "passed": true,
+      "seconds": 0.06
+    },
+    {
+      "test": "tests/building1524.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/building-assemblies1524.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/runtime-maps1524.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/runtime-package1524.cjs",
+      "passed": true,
+      "seconds": 0.09
+    },
+    {
+      "test": "tests/gib-blood1526.cjs",
+      "passed": true,
+      "seconds": 0.06
+    },
+    {
+      "test": "tests/weapon-definitions1524.cjs",
+      "passed": true,
+      "seconds": 0.05
+    },
+    {
+      "test": "tests/item-definitions1524.cjs",
+      "passed": true,
+      "seconds": 0.05
+    }
+  ],
+  "browserPassed": [
+    "tests/browser/authoring160.cjs",
+    "tests/browser/spritefusion160.cjs",
+    "tests/browser/fonts1527.cjs",
+    "tests/browser/enemies1527.cjs",
+    "tests/browser/party-travel.cjs",
+    "tests/browser/arsenal1526.cjs",
+    "tests/browser/ballistics1526.cjs",
+    "tests/browser/item-flow1525.cjs",
+    "tests/browser/runtime-start1524.cjs"
+  ],
+  "upstreamRustTests": {
+    "image": 9,
+    "media": 3,
+    "passed": true,
+    "commit": "d14b06726cabab09c68a403ce2e684a52efbfe4c",
+    "rust": "1.99.1",
+    "wasmBindgen": "0.2.126"
+  },
+  "normalNativeSheet": {
+    "profile": "enemy-chiban",
+    "width": 1200,
+    "height": 2400,
+    "frameWidth": 400,
+    "frameHeight": 600,
+    "applied": true,
+    "validatedJsonRoundTrip": true,
+    "removeAndUndo": true,
+    "actualRuntimeLightingWorker": true
+  },
+  "originalSpriteHashes": {
+    "$Chiban VK 2.png": "0242553a508ddbc1cbe32474e57399de68063fde1fb22996f0148d0fb5adab76",
+    "$DF Grapeshot Mechanical Turk.png": "10d87e5fe2f892e650262e4bcced96645e832b85fe3176920405c93d07a3d3e0"
+  },
+  "limits": [
+    "No native macOS acceptance or high/smooth performance certification.",
+    "Buildings/storeys, shared boundaries, topology conflict resolution and integrated geometry-cutting functional doors remain subsequent milestones.",
+    "Windows uses independent 0.16.0 profile; import previous portable project JSON."
+  ],
+  "packageIntegrity": "Verified separately after archive creation; see distribution manifests and release integrity receipt."
+}

@@ -1,6 +1,6 @@
 // Offline data mirror / generated asset payload. Edit its matching JSON or source image, then regenerate this mirror; preserve equality in tests.
 // Offline mirror of project/events.json
-window.FrontierEventData={
+window.FrontierEventData = {
   "ammoTemplate": {
     "id": "template",
     "name": "Ammo box",
@@ -15,24 +15,24 @@ window.FrontierEventData={
         "solid": false,
         "condition": {
           "type": "always",
-          "key": ""
+          "key": "",
         },
         "commands": [
           {
             "type": "giveItem",
             "item": "ammo9",
-            "amount": 24
+            "amount": 24,
           },
           {
             "type": "selfSwitch",
             "key": "A",
-            "value": true
+            "value": true,
           },
           {
             "type": "message",
-            "text": "Collected 24 rounds of 9mm ammunition."
-          }
-        ]
+            "text": "Collected 24 rounds of 9mm ammunition.",
+          },
+        ],
       },
       {
         "name": "Empty",
@@ -41,16 +41,16 @@ window.FrontierEventData={
         "solid": false,
         "condition": {
           "type": "selfSwitch",
-          "key": "A"
+          "key": "A",
         },
         "commands": [
           {
             "type": "message",
-            "text": "This ammo box is empty."
-          }
-        ]
-      }
-    ]
+            "text": "This ammo box is empty.",
+          },
+        ],
+      },
+    ],
   },
   "initialEvents": [
     {
@@ -67,24 +67,24 @@ window.FrontierEventData={
           "solid": false,
           "condition": {
             "type": "always",
-            "key": ""
+            "key": "",
           },
           "commands": [
             {
               "type": "giveItem",
               "item": "ammo9",
-              "amount": 24
+              "amount": 24,
             },
             {
               "type": "selfSwitch",
               "key": "A",
-              "value": true
+              "value": true,
             },
             {
               "type": "message",
-              "text": "Collected 24 rounds of 9mm ammunition."
-            }
-          ]
+              "text": "Collected 24 rounds of 9mm ammunition.",
+            },
+          ],
         },
         {
           "name": "Empty",
@@ -93,16 +93,16 @@ window.FrontierEventData={
           "solid": false,
           "condition": {
             "type": "selfSwitch",
-            "key": "A"
+            "key": "A",
           },
           "commands": [
             {
               "type": "message",
-              "text": "This ammo box is empty."
-            }
-          ]
-        }
-      ]
+              "text": "This ammo box is empty.",
+            },
+          ],
+        },
+      ],
     },
     {
       "id": "ammo-east",
@@ -118,24 +118,24 @@ window.FrontierEventData={
           "solid": false,
           "condition": {
             "type": "always",
-            "key": ""
+            "key": "",
           },
           "commands": [
             {
               "type": "giveItem",
               "item": "ammo9",
-              "amount": 24
+              "amount": 24,
             },
             {
               "type": "selfSwitch",
               "key": "A",
-              "value": true
+              "value": true,
             },
             {
               "type": "message",
-              "text": "Collected 24 rounds of 9mm ammunition."
-            }
-          ]
+              "text": "Collected 24 rounds of 9mm ammunition.",
+            },
+          ],
         },
         {
           "name": "Empty",
@@ -144,16 +144,16 @@ window.FrontierEventData={
           "solid": false,
           "condition": {
             "type": "selfSwitch",
-            "key": "A"
+            "key": "A",
           },
           "commands": [
             {
               "type": "message",
-              "text": "This ammo box is empty."
-            }
-          ]
-        }
-      ]
+              "text": "This ammo box is empty.",
+            },
+          ],
+        },
+      ],
     },
     {
       "id": "ammo-north",
@@ -169,24 +169,24 @@ window.FrontierEventData={
           "solid": false,
           "condition": {
             "type": "always",
-            "key": ""
+            "key": "",
           },
           "commands": [
             {
               "type": "giveItem",
               "item": "ammo9",
-              "amount": 24
+              "amount": 24,
             },
             {
               "type": "selfSwitch",
               "key": "A",
-              "value": true
+              "value": true,
             },
             {
               "type": "message",
-              "text": "Collected 24 rounds of 9mm ammunition."
-            }
-          ]
+              "text": "Collected 24 rounds of 9mm ammunition.",
+            },
+          ],
         },
         {
           "name": "Empty",
@@ -195,16 +195,16 @@ window.FrontierEventData={
           "solid": false,
           "condition": {
             "type": "selfSwitch",
-            "key": "A"
+            "key": "A",
           },
           "commands": [
             {
               "type": "message",
-              "text": "This ammo box is empty."
-            }
-          ]
-        }
-      ]
+              "text": "This ammo box is empty.",
+            },
+          ],
+        },
+      ],
     },
     {
       "id": "guide",
@@ -220,17 +220,17 @@ window.FrontierEventData={
           "solid": false,
           "condition": {
             "type": "always",
-            "key": ""
+            "key": "",
           },
           "commands": [
             {
               "type": "message",
-              "text": "Preset test scene: labelled ammo boxes beside the start; hills ahead/right; moving clouds above. Move the mouse to look and click once to capture. Space holsters, then left-click or controller A interacts. E or controller B jumps. Tab opens HUD cursor mode; F2 opens the in-level editor."
-            }
-          ]
-        }
-      ]
-    }
-  ]
+              "text":
+                "Preset test scene: labelled ammo boxes beside the start; hills ahead/right; moving clouds above. Move the mouse to look and click once to capture. Space holsters, then left-click or controller A interacts. E or controller B jumps. Tab opens HUD cursor mode; F2 opens the in-level editor.",
+            },
+          ],
+        },
+      ],
+    },
+  ],
 };
-

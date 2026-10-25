@@ -1,3 +1,21 @@
+## October 22, 2026 — current iteration 0.16.0
+
+See EDITOR-REDESIGN-0.16.0.md for the implemented foundation, migration limits and remaining milestones, and SPRITEFUSION-0.16.0.md for local native-resolution generation, licensing and build provenance. Earlier explanations below remain historical; this dated entry supersedes conflicting UI, generation and normal-budget descriptions.
+
+## October 22, 2026 — current iteration 0.15.27
+
+See ENEMY-EVENTS-AND-FONTS-0.15.27.md for enemy events, arsenal archetypes, supplied sprites, muzzles, respawn/save ownership and readable editor/selectable gameplay fonts. This dated record supersedes conflicting behavior below; earlier explanations remain history.
+
+## October 22, 2026 — current iteration 0.15.26
+
+See PROJECTILE-ARSENAL-0.15.26.md for active finite projectile collision, weapon/ammo authoring, overdamage gibbing, cream/synth alias behavior, provenance and verification limits. src/ballistics.js owns shared swept movement and terminal impacts; src/arsenal.js owns presets and inventory ammo accounting; Phanicom_BloodSystem retains victim-owned blood identity. Earlier behavior descriptions below are preserved history and are superseded where this dated record explicitly differs.
+
+<!-- October 9, 2026: current 0.15.19 behavior is documented in ITERATION-0.15.19.md. Prior upright sprite and Arial pause notes below are superseded, retained as history. -->
+
+## Current update — 0.15.18, October 9, 2026
+
+Read ITERATION-0.15.18.md and CAMERA-SPRITE-PAUSE-GUIDE.md for current camera, sprite, door collision and pause behavior. Older version-specific statements below are retained history and superseded where the current guide differs.
+
 # Engine maintenance guide — 0.15.16
 
 Current release: see ITERATION-0.15.16.md for camera, landing and recovery behavior. FUNCTION-REFERENCE.md covers every owned runtime function, including the earlier engine. Older release sections below are retained as history.
@@ -172,3 +190,57 @@ map resources remain shared. Scene-transition owns transfer commit/resume and
 cancels previews. Every new callback/function has its own source contract; the
 current dated reference is FUNCTION-REFERENCE-0.15.17.md. Earlier explanations
 above remain historical where behavior differs.
+
+
+## October 10, 2026 — rendering iteration update
+
+Current rendering architecture and authoring instructions are in RENDERING-1522.md. PERFORMANCE-1522.md retains preliminary runs and the superseding precise-memory matrix. FUNCTION-REFERENCE-0.15.22.md/.json index maintained source contracts. Historical notes above remain intact; their resolution/breathing pending statements are superseded by the implemented controls, native command dialog and isolated live preview.
+
+High-density browser acceptance now covers aspect/fullscreen/preference reload, door cinematic dimensions and cell/project state roundtrip, camera clearance at 40 pitch/orbit combinations, door body blocking, room/model occlusion and pause/menu interactions. Packaging verification and native platform testing status are recorded separately at delivery.
+
+
+## Final release status — October 10, 2026
+
+Supersedes the development/pending status above: 0.15.22 is the complete resolution, filtering and native breathing iteration. Required source suites, comment coverage, high-density browser lifecycle/door/occlusion/guard tests and the eighteen-case precise-memory performance matrix passed. The browser archive was extracted and its real rendering-controls/preview/lifecycle test passed; both distribution manifests were hash-verified. Original assets and prior source block comments were compared with 0.15.21 and remain intact. Earlier release manifests were also verified unchanged.
+
+Complete Windows and Mac browser archives contain source, assets, function reference, guides and validation evidence. Native macOS execution was unavailable. Windows browser checks passed; the packaged runtime version probe exited successfully without diagnostic output, which does not prove native graphical acceptance. Manual native Windows/Mac acceptance remains explicitly unverified, rather than being represented as tested. Performance and GPU-memory limitations are documented in PERFORMANCE-1522.md and VALIDATION-1522.md.
+
+
+## October 12, 2026 - 0.15.23 current behavior
+See ITERATION-0.15.23.md and PERFORMANCE-AUDIT-1523.md for current rendering, preparation ownership, performance evidence and limitations. Earlier version-specific instructions above remain history and are superseded where these documents differ. Locked 0.15.17 camera-facing sprite presentation remains mandatory.
+
+
+### 0.15.23 rendering ownership
+`camera-basis.js` retains exact frame camera arithmetic. `outdoor-assets.js` owns weak world caches for heights/tiles; terrain revision and source edits invalidate them. `pixi-renderer.js` owns pooled mesh buffers and explicitly destroys exclusive geometry on growth. `geometry-gpu.js` owns private context textures/program/buffers and nonblocking setup fences; density replacement destroys and loses the retired context. `model-renderer.js` keeps opaque room GPU color separate from shared CPU depth, plus bounded camera-independent static model geometry (200,000 triangles/128 entries globally; 32 entries per asset). Exact parent matrix or scene replacement invalidates a model record. `scene-transition.js` owns one reservation/commit; app preparation starts shared destination decode before playback, door readiness waits under a black cover, and failure clears ownership. Options breathing reuses one session controller; authored map settings remain intact. No per-frame diagnostic logging is added.
+
+
+## October 14, 2026 — Test 2 authoring update
+
+See TEST-BUILD-0.15.25-TEST-2.md for the current workflows, validation and remaining limitations. Earlier release descriptions above are retained history. New native item sprites use FrontierSprites single-frame metadata; item placement uses normal event pages/self-switches, compact carried/drop state, the shared prop surface query, and active-cell light budgeting. Map folder metadata is authoring-only. Blank projects suppress example-map recovery migrations. No change to the locked 0.15.17 player sprite presentation.
+
+
+## October 14, 2026 — Test 3 editor layout and deletion
+
+Supersedes Test 2 three-column authoring layout: project actions are at the top; scene, build tools, categories and original property controls share a scrollable left dock. The playable edit view occupies the right. Authoring uses readable Arial text; game rendering and 0.15.17 sprite presentation are unchanged. Scene entries expose Delete alongside their names and route through the original owner transaction; Undo and Redo are visible on the top toolbar. Shared image/model asset files are retained when placed instances are deleted.
+
+Validation: real browser authors geometry, deletes a wall with the visible action, restores it with Undo, verifies left/right bounds, edits properties and checks playtest/runtime guards. Performance checks remain assigned to the user.
+
+
+## October 14, 2026 — Test 4 room movement and tile drafting
+
+Current behavior supersedes Test 3 handoff and boundary-stroke behavior. Entering playtest retains a clear editor XYZ position. If editor noclip or an edited spawn overlaps room collision or lies outside the painted floor, the runtime tries nearby supported points and authored tile centres, checking full body clearance. It does not rewrite the spawn, geometry or camera. If no clear point exists, it remains in the editor and reports the problem. Both editor/playtest transitions focus the game view so a hidden form control does not retain keyboard ownership.
+
+Tile painting and doorway insertion validate proposed additions before changing the draft. Out-of-bounds/capacity failures leave a usable draft; later paint and erase work without discarding it. Invalid dimensional fields preserve the previously rendered grid and show a correction message rather than clearing the canvas. Plan canvases and fieldsets fit the left dock, and touch painting suppresses browser scroll gestures.
+
+Validation: production browser controls reproduce a wall-overlapping saloon spawn, enter playtest nearby and move with WASD; reject an edge stroke then paint/erase/apply successfully; preserve canvas pixels during invalid input; verify dock bounds. Existing editor altitude/playtest, terrain/input and locked sprite-presentation checks are retained. Performance profiling remains with the user.
+
+
+## October 14, 2026 — Test 5 scene selection and separate Tile Room Editor
+
+Supersedes Test 3/4 hierarchy navigation: clicking a scene name highlights it without scrolling away. Edit selected explicitly opens its properties. Shift-click selects a visible range; Ctrl/Cmd-click toggles individual entries. Select all shown follows the search filter; Clear selection resets it. Delete selected removes the highlighted instances in one validated Undo transaction, including mixed room/event/light selections. A row Delete removes only that row. Both deletion paths retain dock/list scroll position, with normal end-of-list clamping, and preserve shared assets.
+
+Build Structures now opens a large, separate modal Tile Room Editor. The dock launcher remains available. Wall, floor and ceiling each have a texture picker, thumbnail and PNG/JPEG/WebP file loader (8MB maximum per file). Imported textures are embedded in portable authored data. New layouts default to Tin ceiling, rather than roof tiles. Saved older textures remain available for deliberate replacement. Apply room layout commits geometry and saved role choices; its visible replacement checkbox controls whether selected textures replace existing layout overrides. Apply textures to all room surfaces updates generated or named structural wall/floor/ceiling primitives in one Undo step without changing dimensions; unclassified furniture/boxes are retained. Original compiler preservation remains the default for other callers.
+
+The modal keeps settings and the grid in separate panes. It retains unsaved draft when closed normally; Apply/Discard are explicit. World movement is paused while this authoring window owns input; F2 closes it before switching mode. Existing mode-reset behavior for uncommitted drafts remains applicable. Original grid dimensional controls remain under Grid dimensions and room height.
+
+Delete current map still prevents deleting the last map or a map with incoming references. Rejections now explain the reason beside the buttons, including how to create a replacement map; no silent action or removed user files. Successful map deletion, map Undo/Redo and retained subsequent edits were exercised through the real controls. Optional authored encounter/courier examples remain under Optional examples and test maps. No prior controls/options were removed. See CONTROL-CHECKS-TEST-5.md for scope/evidence; this is not a certification of every possible engine workflow.

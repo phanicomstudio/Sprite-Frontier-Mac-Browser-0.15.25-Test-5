@@ -1,0 +1,186 @@
+/* October 12, 2026. Workspace chrome is separate from the game frame, so HUD
+ * anchors and the locked camera-facing sprite presentation are unaffected. */
+#workspaceBar{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid #18385b;gap:16px}
+#workspaceBar strong{font:20px Checkbook,monospace}
+#workspaceSettings{flex:1;min-width:0}
+#workspaceSettings>summary,.workspaceGroup>summary{cursor:pointer;padding:12px;font:16px Checkbook,monospace;color:#b5d9ff}
+.workspaceGroup{border:1px solid #18385b;border-radius:4px;margin:8px 0;background:#07111e}
+.workspaceGroup fieldset{border:0;margin:0;padding:12px}
+.engineAuthoring{max-width:none;padding:0 16px 16px}
+.engineAuthoring>header{padding:8px 0;align-items:start}
+.engineAuthoring>header>div:first-child{display:none}
+.engineAuthoring main{grid-template-columns:260px minmax(0,1fr) 320px;gap:12px;margin-top:12px}
+#workspaceAssets{max-height:calc(100vh - 130px);overflow:auto;padding:0 8px;border-right:1px solid #18385b}
+#workspaceAssets h2{font:20px Checkbook,monospace}
+#workspaceAssets fieldset{border:0;padding:0}
+#workspaceAssets label{font-size:14px;margin-top:10px}
+#workspaceAssets input,#workspaceAssets select{width:100%}
+#workspaceAssets input[type=checkbox]{width:auto;display:inline}
+#workspaceAssets p{font:13px monospace;line-height:1.5}
+.engineAuthoring aside{max-height:calc(100vh - 130px)}
+.engineAuthoring aside>#intro,.engineAuthoring aside>dl,.engineAuthoring aside>.note{display:none}
+.enginePlaytest{max-width:none;padding:0;background:#000}
+.enginePlaytest>header,.enginePlaytest>footer,.enginePlaytest main>aside,.enginePlaytest #workspaceAssets{display:none}
+.enginePlaytest main{display:block;margin:0}
+.enginePlaytest #viewport{border:0;margin:auto}
+.engineRuntime #workspaceBar{display:none}
+@media(max-width:1100px){.engineAuthoring main{grid-template-columns:220px minmax(0,1fr)}.engineAuthoring main>aside{grid-column:1/-1;max-height:none}}
+@media(max-width:700px){.engineAuthoring main{grid-template-columns:1fr}.engineAuthoring #workspaceAssets{max-height:none}.engineAuthoring aside{max-height:none}}
+
+/* October 12: scene inventory uses the established font and selection colors.
+ * A bounded scroll region keeps large cells from displacing construction tools. */
+#sceneHierarchyList{max-height:280px;overflow:auto;margin-top:10px}
+#sceneHierarchyList details{margin-bottom:8px}
+#sceneHierarchyList summary{font:14px Checkbook,monospace;cursor:pointer}
+#sceneHierarchyList button{display:block;width:100%;text-align:left;margin:3px 0;font-size:13px;overflow-wrap:anywhere}
+#sceneHierarchyList button[aria-pressed=true]{border-color:#ffdc72;color:#ffdc72}
+
+/* October 14, 2026: readable authoring controls; runtime HUD styling stays separate. */
+body.engineAuthoring #editor, body.engineAuthoring #workspaceAssets, body.engineAuthoring #workspaceSettings { font-family: Arial, sans-serif; font-size: 17px; line-height: 1.5; }
+body.engineAuthoring input, body.engineAuthoring select, body.engineAuthoring button { font-size: 17px; min-height: 38px; }
+#workspaceMaps { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+body.enginePlaytest #workspaceMaps { display:none; }
+
+/* October 14, 2026: supersedes the October 12 three-column layout above.
+ * Authoring is a bounded left dock and a right play/edit view, matching the
+ * supplied MZ reference. Original controls retain their handlers and history.
+ * Runtime and the locked sprite/game-frame coordinate spaces are unchanged. */
+body.engineAuthoring{height:100vh;box-sizing:border-box;display:flex;flex-direction:column;overflow:hidden;padding:0 12px 8px}
+body.engineAuthoring #workspaceBar{flex-wrap:wrap;justify-content:flex-start;gap:8px;padding:8px 0;flex-shrink:0}
+body.engineAuthoring #workspaceQuickActions{display:flex;flex-wrap:wrap;gap:6px}
+body.engineAuthoring #workspaceMaps{flex-basis:100%;gap:8px}
+body.engineAuthoring>header{margin:0;padding:0;flex-shrink:0}
+body.engineAuthoring main{display:grid;grid-template-columns:clamp(320px,30vw,460px) minmax(0,1fr);flex:1;min-height:0;margin:8px 0 0;align-items:start}
+body.engineAuthoring #workspaceAssets{grid-column:1;grid-row:1;height:100%;max-height:none;min-height:0;box-sizing:border-box;overflow:auto;padding:0 12px 12px 0}
+body.engineAuthoring #workspaceAssets aside{max-height:none;overflow:visible;padding:0;border:0;min-width:0}
+body.engineAuthoring #viewport{grid-column:2;grid-row:1;min-width:0;width:100%;max-height:100%;overflow:auto;align-self:start}
+body.engineAuthoring>footer{display:none}
+body.engineAuthoring #workspaceBar *,body.engineAuthoring #workspaceAssets *,body.engineAuthoring #workspaceSettings *{font-family:Arial,sans-serif!important;letter-spacing:normal;box-sizing:border-box}
+body.engineAuthoring #workspaceAssets label,body.engineAuthoring #workspaceAssets p,body.engineAuthoring #workspaceAssets summary{font-size:16px;line-height:1.45}
+body.engineAuthoring #workspaceAssets h2{font-size:20px}
+body.engineAuthoring #workspaceAssets button,body.engineAuthoring #workspaceAssets input,body.engineAuthoring #workspaceAssets select{font-size:16px}
+body.engineAuthoring #sceneHierarchyList{max-height:240px}
+body.engineAuthoring .sceneObjectRow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;align-items:stretch}
+body.engineAuthoring .sceneObjectRow button:last-child{width:auto;color:#ffd5d5;border-color:#965757;text-align:center;padding:6px 10px}
+body.engineAuthoring .editorTabs{position:sticky;top:0;z-index:3;background:#07111e;padding:6px 0;display:flex;flex-wrap:wrap;gap:4px}
+@media(max-width:700px){body.engineAuthoring main{grid-template-columns:280px minmax(260px,1fr);overflow:auto}body.engineAuthoring #workspaceMaps{flex-wrap:wrap}}
+
+/* October 14, 2026 Test 4: constrain intrinsic canvas/fieldset widths to the
+ * left dock. Pointer transforms already convert CSS size to logical pixels.
+ * Touch gestures paint instead of scrolling/cancelling a partially drawn stroke. */
+body.engineAuthoring #workspaceAssets fieldset{min-width:0;max-width:100%}
+body.engineAuthoring #workspaceAssets canvas{max-width:100%;height:auto}
+body.engineAuthoring #layoutPlan,body.engineAuthoring #roomPlan{display:block;width:100%;touch-action:none;user-select:none;cursor:crosshair}
+body.engineAuthoring #workspaceAssets select,body.engineAuthoring #workspaceAssets textarea{max-width:100%;min-width:0}
+
+/* October 14 Test 5: multiselection remains visible in the scene list. */
+#sceneSelectionActions{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+#sceneSelectionActions button{flex:1 1 130px}
+#sceneSelectionActions button:last-child{border-color:#965757;color:#ffd5d5}
+#sceneHierarchyList .sceneObjectRow button:first-child[aria-pressed=true]{background:#234664;border-color:#a9d5ff;color:#fff}
+
+/* October 14 Test 5: standalone Tile Room Editor, preserving all original tool
+ * controls and logical grid coordinates while giving the drawing space room. */
+#tileRoomWindow{width:min(1400px,96vw);height:min(940px,94vh);max-width:96vw;max-height:94vh;background:#101b28;color:#e1ecf5;border:1px solid #597c9b;padding:16px;overflow:auto}
+#tileRoomWindow::backdrop{background:#000a}
+#tileRoomWindow,#tileRoomWindow *{font-family:Arial,sans-serif!important;box-sizing:border-box;font-size:17px;line-height:1.4}
+#tileRoomWindow>header{position:sticky;top:-16px;background:#101b28;z-index:2;padding:10px 0;display:flex;justify-content:space-between}
+#tileRoomWindow h2{font-size:24px;margin:0}
+#tileRoomWindow #roomLayoutTools{display:grid!important;grid-template-columns:320px minmax(0,1fr);gap:20px;border:0;padding:12px 0;min-width:0}
+#tileRoomWindow #roomLayoutTools>legend,#tileRoomWindow #roomLayoutTools>p{display:none}
+#tileRoomWindow .tileRoomSettings,#tileRoomWindow .tileRoomStage{min-width:0}
+#tileRoomWindow label{display:block;margin:10px 0;font-size:17px}
+#tileRoomWindow button,#tileRoomWindow select,#tileRoomWindow input{font-size:17px;min-height:38px;max-width:100%}
+#tileRoomWindow select,#tileRoomWindow input:not([type=checkbox]){width:100%}
+#tileRoomWindow input[type=checkbox]{display:inline;width:auto;min-height:0}
+#tileRoomWindow #layoutMaterials img{width:100%;height:65px;object-fit:contain;background:#07111e;border:1px solid #39536d}
+#tileRoomWindow #layoutPlan{display:block;width:100%;height:auto;border:1px solid #597c9b;touch-action:none;user-select:none;cursor:crosshair}
+#tileRoomWindow .tileRoomStage{position:sticky;top:65px;align-self:start}
+#tileRoomWindow #layoutStatus{font-size:17px;color:#d6e8b6}
+@media(max-width:850px){#tileRoomWindow #roomLayoutTools{grid-template-columns:240px minmax(300px,1fr)}#tileRoomWindow{overflow:auto}}
+
+/* Test 5 visual review: each pane scrolls independently; material controls no
+ * longer push the drawing toolbar or window title off screen. */
+#tileRoomWindow[open]{display:flex;flex-direction:column;overflow:hidden}
+#tileRoomWindow>header{flex-shrink:0;position:static}
+#tileRoomWindow #roomLayoutTools{flex:1;min-height:0;overflow:hidden;margin:0}
+#tileRoomWindow .tileRoomSettings,#tileRoomWindow .tileRoomStage{overflow:auto;min-height:0;height:100%;padding-right:6px;position:static}
+
+/* Test 5: compact surface cards keep all three texture choices together even
+ * on a 720px-high display. The drawing canvas and Apply remain in one pane. */
+#tileRoomWindow .tileTextureCard{display:grid;grid-template-columns:minmax(0,1fr) 70px;gap:6px;align-items:center;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #39536d}
+#tileRoomWindow .tileTextureCard>label:first-child{grid-column:1;margin:0}
+#tileRoomWindow #layoutMaterials .tileTextureCard>img{grid-column:2;grid-row:1;width:70px;height:62px}
+#tileRoomWindow .tileTextureCard>label:last-child{grid-column:1/-1;margin:0;font-size:15px}
+#tileRoomWindow .tileTextureCard input{padding:5px;min-height:32px;margin-top:3px}
+#tileRoomWindow .tileRoomStage{display:flex;flex-direction:column;gap:8px;overflow:auto}
+#tileRoomWindow .tileRoomStage>label{flex-shrink:0;margin-top:0}
+#tileRoomWindow #layoutPlan{min-height:180px;flex:1 1 auto;height:0;max-height:600px;object-fit:fill}
+#tileRoomWindow .tileRoomStage>button,#tileRoomWindow #layoutStatus{flex-shrink:0;margin:0}
+
+/* October 22, 2026: readable authoring chrome in both editor and playtest modes. Gameplay overlays retain their independent font registry. */
+#workspaceBar,#workspaceBar *,#workspaceAssets,#workspaceAssets *,#workspaceSettings,#workspaceSettings *,#editor,#editor *,body>header,body>header *,body>footer,body>footer *{font-family:system-ui,Arial,sans-serif!important}
+
+/* October 22, 2026: UI Audit Setup supersedes the earlier scrolling left-only
+ * arrangement. Three bounded regions support palette / live view / contextual
+ * inspector. Existing compatibility controls remain available, never removed. */
+body.engineAuthoring.authoringWorkspace16 main{grid-template-columns:230px minmax(320px,1fr) 300px;align-items:stretch;gap:10px}
+body.engineAuthoring.authoringWorkspace16 #workspaceAssets{padding:0 8px 8px 0;overflow:auto}
+body.engineAuthoring.authoringWorkspace16 #viewport{grid-column:2;display:flex;flex-direction:column;height:100%;min-height:0;overflow:auto;align-self:stretch}
+body.engineAuthoring.authoringWorkspace16 #sceneInspector{grid-column:3;grid-row:1;overflow:auto;min-height:0;border-left:1px solid #39536d;padding:0 10px;font:14px system-ui,Arial,sans-serif}
+body.engineAuthoring.authoringWorkspace16 #sceneInspector *,#authoringPalette *,#authoringWorkspaces *{font-family:system-ui,Arial,sans-serif!important;box-sizing:border-box}
+body.engineAuthoring.authoringWorkspace16 #sceneInspector h2,#authoringPalette h2{font-size:17px;margin:10px 0}
+body.engineAuthoring.authoringWorkspace16 #sceneInspector label{font-size:14px;line-height:1.35;display:block;margin:8px 0}
+body.engineAuthoring.authoringWorkspace16 #sceneInspector input,body.engineAuthoring.authoringWorkspace16 #sceneInspector select{width:100%;min-width:0;font-size:14px;min-height:32px}
+body.engineAuthoring.authoringWorkspace16 #sceneInspector input[type=checkbox]{width:auto;min-height:0}
+body.engineAuthoring.authoringWorkspace16 #sceneInspector button,#authoringPalette button{font-size:14px;min-height:32px;margin:4px 0}
+#authoringPalette button{display:block;width:100%;text-align:left}
+#authoringWorkspaces{display:flex;gap:5px;flex-basis:100%}
+#authoringWorkspaces button{font-size:14px;min-height:32px;padding:6px 12px}
+#authoringWorkspaces button[aria-pressed=true]{background:#375875;color:white;border-color:#93c8f5}
+#authoringAdvanced{border-top:1px solid #39536d;padding-top:10px;margin-top:18px}
+#authoringAdvanced>summary{cursor:pointer;font-size:13px;color:#a8bfd2}
+body.engineAuthoring.authoringWorkspace16 #authoringAdvanced aside{display:block;padding:0;overflow:visible;max-height:none}
+#authoringViewTools{display:flex;align-items:center;gap:12px;padding:6px;background:#111e2d;flex-shrink:0;font:13px system-ui,Arial,sans-serif}
+#authoringViewTools label{display:flex;gap:8px;align-items:center;margin:0}
+#authoringViewTools select{min-height:30px;font-size:13px}
+#authoringPlan{flex:1;min-height:240px;overflow:auto;background:#111b27;padding:10px}
+#authoringPlan canvas{width:100%;height:auto;max-height:none;min-height:200px;touch-action:none;user-select:none}
+#authoringPlan .tileRoomStage{display:flex;flex-direction:column;gap:8px}
+#authoringPlan .tileRoomStage>label{flex-shrink:0}
+#authoringPlan #layoutPlan{height:auto;min-height:200px;max-height:none;flex:none}
+body.engineAuthoring #viewport[data-authoring-view=plan] #gameFrame{display:none}
+body.engineAuthoring #viewport[data-authoring-view=split] #gameFrame{max-height:50%;flex-shrink:0;overflow:auto}
+body.engineAuthoring #sceneToolContext fieldset{min-width:0;border:0;padding:0;margin:8px 0}
+body.engineAuthoring #sceneToolContext #roomLayoutTools>legend,body.engineAuthoring #sceneToolContext #roomLayoutTools>p{display:none}
+body.engineAuthoring #sceneToolContext #layoutMaterials img{width:64px;height:48px;object-fit:contain}
+body.engineAuthoring #sceneToolContext .tileTextureCard{display:grid;grid-template-columns:minmax(0,1fr) 64px;gap:5px}
+body.engineAuthoring #sceneToolContext .tileTextureCard>label:last-child{grid-column:1/-1}
+body.enginePlaytest.authoringWorkspace16 #sceneInspector,body.enginePlaytest #authoringViewTools,body.enginePlaytest #authoringPlan{display:none!important}
+body.engineAuthoring.authoringWorkspace16 #workspaceMaps[hidden]{display:none!important}
+body.engineAuthoring.authoringWorkspace16 #sceneHierarchyList{max-height:360px}
+#normalWorkbench{width:min(1050px,94vw);max-height:92vh;overflow:auto}
+#normalWorkbench #normalCanvas{max-width:100%;height:auto;max-height:55vh;object-fit:contain;touch-action:none}
+#spriteFusionSettings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#spriteFusionSettings>p,#spriteFusionSettings>legend{grid-column:1/-1}
+@media(max-width:1100px){body.engineAuthoring.authoringWorkspace16 main{grid-template-columns:180px minmax(280px,1fr) 260px}}
+@media(max-width:800px){body.engineAuthoring.authoringWorkspace16 main{grid-template-columns:170px minmax(280px,1fr) 240px;overflow:auto}}
+/* Palette stays visible while large scene lists scroll within their own area;
+ * deleting/selecting deep rows cannot carry the creation tools off screen. */
+body.engineAuthoring.authoringWorkspace16 #workspaceAssets{display:flex;flex-direction:column;overflow:hidden}
+#authoringPalette{flex:0 0 auto;max-height:42vh;overflow:auto}
+body.engineAuthoring.authoringWorkspace16 #sceneHierarchy{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+body.engineAuthoring.authoringWorkspace16 #sceneHierarchyList{flex:1;min-height:70px;max-height:none;overflow:auto}
+body.engineAuthoring.authoringWorkspace16 #sceneHierarchy>h2{margin:10px 0 5px}
+body.engineAuthoring.authoringWorkspace16 #sceneHierarchy>p{font-size:13px;line-height:1.3;margin:6px 0}
+body.engineAuthoring.authoringWorkspace16 #sceneSelectionActions button{font-size:13px;min-height:30px;margin:0}
+body.engineAuthoring.authoringWorkspace16 #sceneSelectionActions{gap:4px;margin:6px 0}
+body.engineAuthoring.authoringWorkspace16 #sceneHierarchy label{font-size:13px;margin:3px 0}
+#authoringHistory{display:flex;gap:6px}
+#authoringCurrentCell{display:flex;align-items:center;gap:8px;margin:0;font:13px system-ui,Arial,sans-serif}
+#authoringCurrentCell select{width:220px;max-width:26vw;min-height:32px;font-size:14px}
+body.enginePlaytest #authoringCurrentCell,body.enginePlaytest #authoringHistory,body.enginePlaytest #authoringWorkspaces{display:none}
+body.enginePlaytest #authoringProjectTools{display:none}
+/* The in-game remote/television HUD is presentation for playtest, not editing
+ * chrome. Hiding it here increases authoring space without changing gameplay. */
+body.engineAuthoring.authoringWorkspace16 #deviceHud{display:none}

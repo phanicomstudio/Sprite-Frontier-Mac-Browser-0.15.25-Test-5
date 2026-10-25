@@ -1,0 +1,20 @@
+{
+  "upstream": "https://github.com/Hugo-Dz/spritefusion-sprite-normals",
+  "commit": "d14b06726cabab09c68a403ce2e684a52efbfe4c",
+  "license": "MIT",
+  "copyright": "2026 Hugo Duprez",
+  "rust": "1.99.1",
+  "wasm_bindgen": "0.2.126",
+  "target": "wasm32-unknown-unknown",
+  "features": "--no-default-features --locked",
+  "glue_target": "no-modules",
+  "upstream_modified": false,
+  "files": {
+    "LICENSE": "f393af3dc9c9d4806661bf050ace275ad2b541bb7b2a7022d1a1ad003107564a",
+    "Cargo.lock": "3df7954024408e31f7e5fabb37e7914f08d6b1a76f9145cce93080944b9a5e5f",
+    "Cargo.toml": "4417904c1c12c3ba1c5901d9b567fcc92b8540d39cda9a532a541f7b1aa7810b",
+    "spritefusion_sprite_normals_bg.wasm": "b66d625eb061f0d2b0606613d92bdd1c2345e4ac9aa4111b929804d3ef578ea2",
+    "spritefusion_sprite_normals.js": "8e4f97bb65cb7accfc1c139b9f1f19356cd93e36b3dcda8835e2238cda8d0c02",
+    "spritefusion-embedded.js": "ff9e952bc44b2be529d2901d5810cc1b2842ac50bf1f7a967e9384772c0c7dbd"
+  }
+}

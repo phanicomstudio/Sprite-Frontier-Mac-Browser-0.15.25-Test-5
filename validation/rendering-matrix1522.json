@@ -1,0 +1,419 @@
+{
+  "platform": "Headless Chrome on Windows; CPU render submission timings, not GPU completion or native platform acceptance",
+  "observations": [
+    {
+      "scene": "forest",
+      "scale": 1,
+      "filtering": "crisp",
+      "samples": 28,
+      "medianMs": 31.19999998807907,
+      "p95Ms": 48.5,
+      "jsHeapBytes": 454033586,
+      "display": {
+        "scale": 1,
+        "filtering": "crisp",
+        "width": 640,
+        "height": 480,
+        "pixelWidth": 640,
+        "pixelHeight": 480,
+        "rasterStep": 2
+      },
+      "modelDebug": null
+    },
+    {
+      "scene": "forest",
+      "scale": 1.5,
+      "filtering": "crisp",
+      "samples": 32,
+      "medianMs": 30.900000005960464,
+      "p95Ms": 33.19999998807907,
+      "jsHeapBytes": 561265919,
+      "display": {
+        "scale": 1.5,
+        "filtering": "crisp",
+        "width": 640,
+        "height": 480,
+        "pixelWidth": 960,
+        "pixelHeight": 720,
+        "rasterStep": 1.3333333333333333
+      },
+      "modelDebug": null
+    },
+    {
+      "scene": "forest",
+      "scale": 2,
+      "filtering": "crisp",
+      "samples": 31,
+      "medianMs": 32.69999998807907,
+      "p95Ms": 34.599999994039536,
+      "jsHeapBytes": 667322880,
+      "display": {
+        "scale": 2,
+        "filtering": "crisp",
+        "width": 640,
+        "height": 480,
+        "pixelWidth": 1280,
+        "pixelHeight": 960,
+        "rasterStep": 1
+      },
+      "modelDebug": null
+    },
+    {
+      "scene": "forest",
+      "scale": 1,
+      "filtering": "smooth",
+      "samples": 33,
+      "medianMs": 29.69999998807907,
+      "p95Ms": 35.900000005960464,
+      "jsHeapBytes": 447902312,
+      "display": {
+        "scale": 1,
+        "filtering": "smooth",
+        "width": 640,
+        "height": 480,
+        "pixelWidth": 640,
+        "pixelHeight": 480,
+        "rasterStep": 2
+      },
+      "modelDebug": null
+    },
+    {
+      "scene": "forest",
+      "scale": 1.5,
+      "filtering": "smooth",
+      "samples": 32,
+      "medianMs": 30.80000001192093,
+      "p95Ms": 40.69999998807907,
+      "jsHeapBytes": 569950631,
+      "display": {
+        "scale": 1.5,
+        "filtering": "smooth",
+        "width": 640,
+        "height": 480,
+        "pixelWidth": 960,
+        "pixelHeight": 720,
+        "rasterStep": 1.3333333333333333
+      },
+      "modelDebug": null
+    },
+    {
+      "scene": "forest",
+      "scale": 2,
+      "filtering": "smooth",
+      "samples": 26,
+      "medianMs": 38.39999997615814,
+      "p95Ms": 47.60000002384186,
+      "jsHeapBytes": 648742432,
+      "display": {
+        "scale": 2,
+        "filtering": "smooth",
+        "width": 640,
+        "height": 480,
+        "pixelWidth": 1280,
+        "pixelHeight": 960,
+        "rasterStep": 1
+      },
+      "modelDebug": null
+    },
+    {
+      "scene": "textured-interior",
+      "scale": 1,
+      "filtering": "crisp",
+      "samples": 40,
+      "medianMs": 24.099999994039536,
+      "p95Ms": 35.400000005960464,
+      "jsHeapBytes": 420560861,
+      "display": {
+        "scale": 1,
+        "filtering": "crisp",
+        "width": 640,
+        "height": 480,
+        "pixelWidth": 640,
+        "pixelHeight": 480,
+        "rasterStep": 2
+      },
+      "modelDebug": {
+        "instances": 1,
+        "culled": 0,
+        "triangles": 136,
+        "pixels": 442,
+        "milliseconds": 0.5999999940395355
+      }
+    },
+    {
+      "scene": "textured-interior",
+      "scale": 1.5,
+      "filtering": "crisp",
+      "samples": 24,
+      "medianMs": 37.89999997615814,
+      "p95Ms": 44.5,
+      "jsHeapBytes": 404103167,
+      "display": {
+        "scale": 1.5,
+        "filtering": "crisp",
+        "width": 640,
+        "height": 480,
+        "pixelWidth": 960,
+        "pixelHeight": 720,
+        "rasterStep": 1.3333333333333333
+      },
+      "modelDebug": {
+        "instances": 1,
+        "culled": 0,
+        "triangles": 136,
+        "pixels": 988,
+        "milliseconds": 0.9000000059604645
+      }
+    },
+    {
+      "scene": "textured-interior",
+      "scale": 2,
+      "filtering": "crisp",
+      "samples": 12,
+      "medianMs": 68.7000000178814,
+      "p95Ms": 83.7999999821186,
+      "jsHeapBytes": 405628434,
+      "display": {
+        "scale": 2,
+        "filtering": "crisp",
+        "width": 640,
+        "height": 480,
+        "pixelWidth": 1280,
+        "pixelHeight": 960,
+        "rasterStep": 1
+      },
+      "modelDebug": {
+        "instances": 1,
+        "culled": 0,
+        "triangles": 136,
+        "pixels": 1716,
+        "milliseconds": 1.2000000178813934
+      }
+    },
+    {
+      "scene": "textured-interior",
+      "scale": 1,
+      "filtering": "smooth",
+      "samples": 36,
+      "medianMs": 25.69999998807907,
+      "p95Ms": 41.30000001192093,
+      "jsHeapBytes": 405037602,
+      "display": {
+        "scale": 1,
+        "filtering": "smooth",
+        "width": 640,
+        "height": 480,
+        "pixelWidth": 640,
+        "pixelHeight": 480,
+        "rasterStep": 2
+      },
+      "modelDebug": {
+        "instances": 1,
+        "culled": 0,
+        "triangles": 136,
+        "pixels": 442,
+        "milliseconds": 0.5
+      }
+    },
+    {
+      "scene": "textured-interior",
+      "scale": 1.5,
+      "filtering": "smooth",
+      "samples": 11,
+      "medianMs": 77.19999998807907,
+      "p95Ms": 91.40000000596046,
+      "jsHeapBytes": 426568999,
+      "display": {
+        "scale": 1.5,
+        "filtering": "smooth",
+        "width": 640,
+        "height": 480,
+        "pixelWidth": 960,
+        "pixelHeight": 720,
+        "rasterStep": 1.3333333333333333
+      },
+      "modelDebug": {
+        "instances": 1,
+        "culled": 0,
+        "triangles": 136,
+        "pixels": 988,
+        "milliseconds": 0.800000011920929
+      }
+    },
+    {
+      "scene": "textured-interior",
+      "scale": 2,
+      "filtering": "smooth",
+      "samples": 7,
+      "medianMs": 112.5,
+      "p95Ms": 124.39999997615814,
+      "jsHeapBytes": 409148300,
+      "display": {
+        "scale": 2,
+        "filtering": "smooth",
+        "width": 640,
+        "height": 480,
+        "pixelWidth": 1280,
+        "pixelHeight": 960,
+        "rasterStep": 1
+      },
+      "modelDebug": {
+        "instances": 1,
+        "culled": 0,
+        "triangles": 136,
+        "pixels": 1716,
+        "milliseconds": 1.4000000059604645
+      }
+    },
+    {
+      "scene": "model-heavy",
+      "scale": 1,
+      "filtering": "crisp",
+      "samples": 34,
+      "medianMs": 31.299999982118607,
+      "p95Ms": 36,
+      "jsHeapBytes": 438550813,
+      "display": {
+        "scale": 1,
+        "filtering": "crisp",
+        "width": 640,
+        "height": 480,
+        "pixelWidth": 640,
+        "pixelHeight": 480,
+        "rasterStep": 2
+      },
+      "modelDebug": {
+        "instances": 13,
+        "culled": 0,
+        "triangles": 1768,
+        "pixels": 1334,
+        "milliseconds": 5.199999988079071
+      }
+    },
+    {
+      "scene": "model-heavy",
+      "scale": 1.5,
+      "filtering": "crisp",
+      "samples": 23,
+      "medianMs": 40.19999998807907,
+      "p95Ms": 44.900000005960464,
+      "jsHeapBytes": 416144835,
+      "display": {
+        "scale": 1.5,
+        "filtering": "crisp",
+        "width": 640,
+        "height": 480,
+        "pixelWidth": 960,
+        "pixelHeight": 720,
+        "rasterStep": 1.3333333333333333
+      },
+      "modelDebug": {
+        "instances": 13,
+        "culled": 0,
+        "triangles": 1768,
+        "pixels": 3100,
+        "milliseconds": 4.0999999940395355
+      }
+    },
+    {
+      "scene": "model-heavy",
+      "scale": 2,
+      "filtering": "crisp",
+      "samples": 10,
+      "medianMs": 74.19999998807907,
+      "p95Ms": 115,
+      "jsHeapBytes": 421470786,
+      "display": {
+        "scale": 2,
+        "filtering": "crisp",
+        "width": 640,
+        "height": 480,
+        "pixelWidth": 1280,
+        "pixelHeight": 960,
+        "rasterStep": 1
+      },
+      "modelDebug": {
+        "instances": 13,
+        "culled": 0,
+        "triangles": 1768,
+        "pixels": 5744,
+        "milliseconds": 8.700000017881393
+      }
+    },
+    {
+      "scene": "model-heavy",
+      "scale": 1,
+      "filtering": "smooth",
+      "samples": 29,
+      "medianMs": 30.700000017881393,
+      "p95Ms": 43.099999994039536,
+      "jsHeapBytes": 423700862,
+      "display": {
+        "scale": 1,
+        "filtering": "smooth",
+        "width": 640,
+        "height": 480,
+        "pixelWidth": 640,
+        "pixelHeight": 480,
+        "rasterStep": 2
+      },
+      "modelDebug": {
+        "instances": 13,
+        "culled": 0,
+        "triangles": 1768,
+        "pixels": 1334,
+        "milliseconds": 4.5999999940395355
+      }
+    },
+    {
+      "scene": "model-heavy",
+      "scale": 1.5,
+      "filtering": "smooth",
+      "samples": 9,
+      "medianMs": 89.7000000178814,
+      "p95Ms": 97.40000000596046,
+      "jsHeapBytes": 440998653,
+      "display": {
+        "scale": 1.5,
+        "filtering": "smooth",
+        "width": 640,
+        "height": 480,
+        "pixelWidth": 960,
+        "pixelHeight": 720,
+        "rasterStep": 1.3333333333333333
+      },
+      "modelDebug": {
+        "instances": 13,
+        "culled": 0,
+        "triangles": 1768,
+        "pixels": 3100,
+        "milliseconds": 4.5999999940395355
+      }
+    },
+    {
+      "scene": "model-heavy",
+      "scale": 2,
+      "filtering": "smooth",
+      "samples": 4,
+      "medianMs": 134.5,
+      "p95Ms": 136.30000001192093,
+      "jsHeapBytes": 453226664,
+      "display": {
+        "scale": 2,
+        "filtering": "smooth",
+        "width": 640,
+        "height": 480,
+        "pixelWidth": 1280,
+        "pixelHeight": 960,
+        "rasterStep": 1
+      },
+      "modelDebug": {
+        "instances": 13,
+        "culled": 0,
+        "triangles": 1768,
+        "pixels": 5744,
+        "milliseconds": 5.199999988079071
+      }
+    }
+  ]
+}
