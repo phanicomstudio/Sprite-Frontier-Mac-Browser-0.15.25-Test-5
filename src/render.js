@@ -490,7 +490,8 @@
     const sin = Math.sin(cam.yaw),
       cos = Math.cos(cam.yaw);
     // Vector study: clear the textured placeholder and draw a world-space grid.
-    ctx.fillStyle = ctx.fog?.enabled ? ctx.fog.color : "#000";
+    // October 26: distance fog belongs to geometry; the clear/sky is never a fog-colored full-screen overlay.
+    ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, game.viewWidth, 480);
     if (cam.orthographic && !cam.outdoorIsometric) FrontierInterior.background(ctx, game, cam);
     else if ((!game.sourceWorld.interior || game.sourceWorld.interior.outdoor) || game.sourceWorld.sky?.panorama)

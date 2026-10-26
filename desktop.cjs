@@ -1,3 +1,4 @@
+/* October 26, 2026: 0.16.4 retains the 0.16.3 desktop profile intentionally: no schema change; existing local projects remain available. Historical isolation rationale follows. */
 /* October 26, 2026: 0.16.3 uses an independent desktop profile because default atmosphere/schema adoption must not overwrite earlier release profiles. Import an exported project explicitly; no saved data is copied or deleted. */
 /* Desktop lifecycle. The engine stays in its sandboxed renderer; this process
  * owns the window, fullscreen key, launch diagnostics and clean shutdown.

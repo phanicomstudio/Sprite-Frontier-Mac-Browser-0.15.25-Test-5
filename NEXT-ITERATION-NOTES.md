@@ -113,3 +113,8 @@ Acceptance: exercise real mouse movement/position, shooting, WASD+shooting and z
 ### October 26, 2026 — BANKED: Dusty Plum fog must not cover the sky
 
 User reports that plum fog covers the sky, especially noticeably in vector mode. Treat this as an unresolved atmosphere/rendering regression in the next iteration, alongside mouse/zoom parity. Dusty Plum is distance fog for world geometry, not a global color wash over the sky or panorama. Skyboxes/procedural sky must retain their authored colors, saturation and contrast. Audit vector/phosphor/outline and textured presentation separately, including background clears, sky layer fog state and post-processing; the cause has not yet been established. Verify an obvious distant-geometry fog gradient while the sky remains unaffected across camera types, zoom, display ratios and local/runtime exports. Preserve existing map overrides and high performance. Banked only; no rendering changes made by this note.
+
+
+## October 26, 2026 - 0.16.4 implementation of banked input/sky work
+
+The user subsequently authorized the next iteration in Git plus a local PC version only. The two preceding BANKED entries are historical intake, not the current status. See ITERATION-0.16.4.md and RELEASE-VALIDATION-0.16.4.json for implementation and measured delivery gates. Existing sprite presentation, weapon spread, collision and authoring systems remain in place.
