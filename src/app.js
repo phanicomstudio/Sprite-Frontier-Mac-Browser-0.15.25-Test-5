@@ -1,3 +1,4 @@
+/* October 26, 2026 — 0.16.3: paired-door arrivals, shared transform projection and map appearance are documented in ITERATION-0.16.3.md. Retained earlier contracts below are historical. */
 /* October 24, 2026 — 0.16.2 current behavior and units are described in ITERATION-0.16.2.md; earlier contracts below remain history. New camera/tactics helpers preserve existing owners and transactional validation. */
 /* MAINTAINER GUIDE
  * Application coordinator: creates playtests, routes input, drives simulation and binds editor/HUD controls. Change gameplay rules in their modules; keep this file responsible for orchestration. Authored world and runtime game are separate objects: editor mutations restart a temporary playtest.
@@ -594,7 +595,9 @@
       return;
     const dest = mapLibrary.get(exit.map),
       entry =
-        exit.entrance === "spawn" && dest
+        ["auto-door"].includes(exit.entrance) || exit.entrance?.startsWith("door:")
+          ? dest && FrontierHubWorkbench.doorArrival163(dest.world,mapLibrary.active,exit.entrance)
+          : exit.entrance === "spawn" && dest
           ? { ...dest.world.spawn, yaw: 0 }
           : dest?.world.cell?.arrivals?.find(
               /* @function app.cellArrival — Inputs: arrival. Returns matching named doorway; no effects. */ (
@@ -612,7 +615,7 @@
               ) => e.id === exit.entrance,
             );
     if (!dest || !entry) {
-      log("Map exit needs an existing destination entrance.");
+      log("Choose a destination door; automatic pairing requires exactly one door leading back.");
       travelCooldown = 2;
       return;
     }
@@ -1555,6 +1558,8 @@
     active: /* @function app.authoringCell — Inputs: none. Returns stable active cell ID, keeping same-named objects in different cells distinct. */ function(){return mapLibrary?.active || "startup";},
     editing: /* @function app.authoringMode — Inputs: none. Returns whether authoring is active; no state mutation. */ function(){return editing;},
     history: /* @function app.authoringHistory — Inputs: none. Returns current scene Undo/Redo lengths for toolbar availability, without exposing snapshots or other history owners. */ function(){return {undo:history.length,redo:redoHistory.length};},
+    anchor: /* @function app.authoringAnchor163 — Inputs: typed selected scene reference and copied source record. Returns world XYZ using the current runtime placement elevation for props/events, or authored absolute Z for structure. Reads only; follows actual terrain/model support instead of putting handles below raised objects. */function(ref,record){let z=record.z||0;if(ref.kind==="event"||ref.kind==="object"){for(const entity of [...(game.sceneEvents||[]),...game.maps.frontier.entities])if(entity.id===ref.id){z=entity.z||0;break;}}return [record.x,record.y,z];},
+    project: /* @function app.authoringProjection163 — Inputs: world XYZ metres. Returns projected logical canvas point only while editing; uses actual active camera including fixed/isometric views. No mutation. */function(x,y,z){return editing ? FrontierRender.project(FrontierRender.camera(game),x,y,z) : null;},
     mutate, removeMany:removeSceneSelection,
   });
   // Switch editor/playtest state, release capture and restart from authored data. F2 is the editor shortcut; Tab remains the HUD menu.
@@ -3226,6 +3231,8 @@
     if (!sceneTransition.ownsWorldView) {
       /* October 12: native effects append inside draw before GPU submission, using this frame's paused/cinematic-aware delta. */ game.effectDelta =
         playPaused || editing || sceneTransition.busy ? 0 : dt;
+      const appearanceFilter163=FrontierLocalLighting.appearanceFilter163(world.appearance);
+      if(view.style.filter!==appearanceFilter163)view.style.filter=appearanceFilter163;
       FrontierRender.draw(view, game);
     }
     // October 10: optional screen breathing uses a separate CSS scale so camera/sprite geometry and shake translation remain unchanged.
@@ -3325,7 +3332,7 @@
     $("badge").lastElementChild.textContent =
       (world.interior?.mode === "fixed" ? "Fixed interior · " : "") +
       (game.camera.firstPerson ? "First person" : "Third person") +
-      " · prototype 0.16.2";
+      " · prototype 0.16.3";
     if (world.interior)
       $("intro").textContent =
         world.interior.mode === "fixed"

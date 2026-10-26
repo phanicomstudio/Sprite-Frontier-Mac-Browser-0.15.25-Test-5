@@ -41,11 +41,15 @@
         ? {
             map: v.map,
             entrance: v.entrance,
+            ...(v.arrivalYaw===undefined ? {} : {arrivalYaw: checkedArrivalYaw163(v.arrivalYaw)}),
             transition: root.FrontierDoorTransition.validate(v.transition),
           }
         : {}),
     };
   }
+
+  /* @function hubWorkbench.checkedArrivalYaw163 — Inputs: facing degrees. Returns finite authored yaw, rejecting malformed or excessively large values before commit; no state changes. */
+  function checkedArrivalYaw163(value){if(!Number.isFinite(value)||Math.abs(value)>36000)throw Error("Door facing must be finite degrees.");return value;}
 
   /* @function hub-workbench.dialog — Inputs: title and optional dismiss handler. Returns modal element with status/footer. Close removes it and restores pause through caller. All fields are large plain-language controls. */
 
@@ -425,7 +429,7 @@
         ),
         arrival = field(
           d,
-          "Arrival position and facing",
+          "Destination door / advanced arrival",
           "select",
           hub.entrance,
           [["Default map spawn", "spawn"]],
@@ -487,11 +491,12 @@
         );
 
       /* @function hubWorkbench.arrivalChoices1525 — Inputs: optional retained arrival ID. Returns nothing; rebuilds the destination picker from authored map arrivals and entrance records, displaying XYZ metres and facing degrees. No map edits; missing saved IDs remain visible for correction and authoritative Apply rejects them. */
-      function arrivalChoices1525(retain = "spawn") {
+      function arrivalChoices1525(retain = "auto-door") {
         const destination = maps.find(
           /* @function hubWorkbench.destinationChoice1525 — Inputs: map record. Returns selected stable map-ID match; no effects. */
           function (entry) { return entry.id === map.value; });
-        arrival.replaceChildren(new Option("Default map spawn", "spawn"));
+        arrival.replaceChildren(new Option("Automatic reciprocal door", "auto-door"),new Option("Advanced: default map spawn", "spawn"));
+        for(const event of destination?.world.events || [])if(event.extensions?.hub?.kind==="door")arrival.append(new Option("Door: "+(event.name||event.id),"door:"+event.id));
         const points = [...(destination?.world.cell?.arrivals || []),
           ...(destination?.world.interior?.entrances || []),
           ...(destination?.world.travel?.entrances || [])];
@@ -501,13 +506,14 @@
           seen.add(point.id);
           arrival.append(new Option((point.name || point.id) + " — X " + point.x + ", Y " + point.y + ", Z " + (point.z ?? "auto") + ", facing " + Math.round((point.yaw || 0) * 180 / Math.PI) + "°", point.id));
         }
-        if (!seen.has(retain)) arrival.append(new Option("Missing arrival: " + retain, retain));
+        if (!Array.from(arrival.options).some(/* @function hubWorkbench.hasArrivalChoice163 — Inputs: picker option. Returns retained selector match without map mutation. */function(option){return option.value===retain;})) arrival.append(new Option("Missing arrival: " + retain, retain));
         arrival.value = retain;
       }
       map.onchange = /* @function hubWorkbench.changedDestination1525 — Inputs: change ignored. Returns nothing; selects the new map's default spawn and updates available arrival choices. No mutation. */ function () { arrivalChoices1525(); };
-      arrivalChoices1525(hub.entrance || "spawn");
+      arrivalChoices1525(hub.entrance || "auto-door");
+      const doorFacing163=field(d,"Walkable-side facing (degrees; 0 north, 90 east)","number",hub.arrivalYaw ?? -(draft.spatial?.rotation?.[2]||0));
       const arrivalHelp = document.createElement("p");
-      arrivalHelp.textContent = "To create or move an arrival: open the destination map, then Cell settings / arrivals. Set its X/Y/Z and facing there; select its name here.";
+      arrivalHelp.textContent = "Automatic uses the only destination door leading back here. Otherwise choose a door by name. Arrival is one foot in front, facing away; rotate the destination door or set its walkable-side facing below. Coordinate arrivals remain advanced overrides.";
       arrival.parentElement.after(arrivalHelp);
 
       // October 13: retain exact composition JSON for unusual assemblies, but
@@ -784,7 +790,7 @@
           );
           if (
             !dest ||
-            (arrival.value !== "spawn" &&
+            (arrival.value !== "spawn" && arrival.value !== "auto-door" && !dest.world.events.some(/* @function hubWorkbench.destinationDoor163 — Inputs: authored event. Returns whether selected door identity exists; no mutation. */function(e){return e.extensions?.hub?.kind==="door" && arrival.value==="door:"+e.id;}) &&
               !dest.world.cell?.arrivals?.some(
                 /* @function hub-workbench.arrivalExists — Inputs: arrival. Returns selected ID match; no effects. */ (
                   a,
@@ -812,6 +818,7 @@
               kind: "door",
               map: map.value,
               entrance: arrival.value,
+              arrivalYaw:Number(doorFacing163.value),
               transition: read(),
             }),
           };
@@ -1506,5 +1513,20 @@
     };
   }
 
-  root.FrontierHubWorkbench = { validateEvent, create };
+  /* October 26, 2026: paired-door arrivals supersede coordinate picking as the new-door default; explicit legacy arrivals remain valid. */
+  /* @function hubWorkbench.doorArrival163 — Inputs: destination world, source cell ID and arrival selector (auto-door or door:eventID). Returns fresh world-metre position/yaw radians, or null if missing/ambiguous. Door local +Y is its walkable front; model Z rotation is degrees. Uses authored arrivalYaw when supplied; never guesses between several return doors or mutates maps. Runtime collision checks must accept the result before transfer. */
+  function doorArrival163(world, source, selector) {
+    const candidates=[];
+    for(const event of world.events || []) {
+      const link=event.extensions?.hub;
+      if(link?.kind!=="door")continue;
+      if(selector==="auto-door" ? link.map===source : selector==="door:"+event.id)candidates.push(event);
+    }
+    if(candidates.length!==1)return null;
+    const door=candidates[0], degrees=door.extensions.hub.arrivalYaw;
+    const yaw=degrees===undefined ? -(door.spatial?.rotation?.[2]||0)*Math.PI/180 : degrees*Math.PI/180;
+    return {x:door.x+Math.sin(yaw)*0.3048,y:door.y+Math.cos(yaw)*0.3048,
+      ...(door.heightOffset===undefined ? {} : {z:(root.FrontierTerrain?.height(world,door.x,door.y)||0)+door.heightOffset}),yaw,doorId:door.id};
+  }
+  root.FrontierHubWorkbench = { validateEvent, create, doorArrival163 };
 })(typeof window === "undefined" ? globalThis : window);
