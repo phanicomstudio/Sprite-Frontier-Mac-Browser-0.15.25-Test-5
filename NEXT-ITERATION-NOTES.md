@@ -94,3 +94,18 @@ Keep current free dragging and add Blender-style X/Y/Z axis movement handles and
 ## October 26, 2026 — 0.16.3 roster implementation
 
 The preceding October 26 banked requirements now have a source implementation described in ITERATION-0.16.3.md. Later user steering adds default darkness rather than a general geometry-shadow overhaul; subtle Diablo-style player-light falloff; Dusty Plum distance fog; stronger adjustable sky saturation; outdoor-only sprite sun silhouettes; receiver deformation over terrain and geometry; and explicit performance budgets. The active sun path uses receiver-conforming meshes, superseding the initial ground-plane prototype. No Daggerfall/Diablo/Alisa assets or implementation were copied. This entry does not claim a full scene shadow mapper or released native packages.
+
+## October 26, 2026 — BANKED: camera/input parity and cursor-directed snapped combat
+
+Status: user explicitly requests banking for the next iteration. No implementation or packaging is authorized by this entry.
+
+User report: in the current isometric playtest, mouse input has no useful effect, so snapped combat with slight cursor magnetism is not functioning; zoom also appears inert. Treat this as an unresolved interaction regression despite earlier helper-level and launch tests passing. The established 3D/third-person experience is the parity benchmark across supported view types.
+
+Required behavior:
+- WASD controls player movement. Shooting aims toward the mouse/cursor direction, then snaps to the nearest supported firing angle. Movement must not override cursor-directed firing while the player is moving. This supersedes the 0.16.2 movement-priority aiming rule during shooting; retain its historical rationale and existing supported angle set unless separately changed.
+- Keep slight, bounded cursor/target magnetism, with visible-target/obstruction rules. It must assist aiming without replacing cursor control or making physical projectiles home around geometry. Preserve the accuracy/spread variable and swept projectile collision.
+- Make mouse aim usable in isometric and fixed views, with correct screen-to-world mapping at all supported zoom levels. Check cursor visibility/aim feedback and pointer-capture behavior in actual playtest, including moving and firing together.
+- Restore effective zoom input in isometric mode and consistent zoom behavior across supported cameras. Orthographic projection needs a real visible scale response; matching perspective controls must not leave the view unchanged. Keep aim projection, UI scaling, sprite proportions/locked billboard presentation and muzzle alignment correct after zooming.
+- Audit first-person, third-person, snapped isometric and fixed-camera controls together, using working 3D/third-person behavior as the benchmark while respecting each camera's presentation. Preserve existing options and make any unavoidable camera-specific difference explicit.
+
+Acceptance: exercise real mouse movement/position, shooting, WASD+shooting and zoom inputs in the shipped Windows app and browser build, in windowed/fullscreen and supported display ratios. Verify firing direction, snap-angle choice, subtle magnetism, wall obstruction and projectile impact after zoom, plus correct movement and muzzle alignment. Helper calculations and programmatically launched projectiles alone are insufficient evidence of usable mouse/zoom controls. Preserve high performance and run relevant camera/input/combat regressions and maintained-function comment coverage when implemented.
