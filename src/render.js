@@ -490,7 +490,8 @@
     const sin = Math.sin(cam.yaw),
       cos = Math.cos(cam.yaw);
     // Vector study: clear the textured placeholder and draw a world-space grid.
-    ctx.fillStyle = ctx.fog?.enabled ? ctx.fog.color : "#000";
+    // October 26: distance fog belongs to geometry; the clear/sky is never a fog-colored full-screen overlay.
+    ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, game.viewWidth, 480);
     if (cam.orthographic && !cam.outdoorIsometric) FrontierInterior.background(ctx, game, cam);
     else if ((!game.sourceWorld.interior || game.sourceWorld.interior.outdoor) || game.sourceWorld.sky?.panorama)
@@ -693,6 +694,8 @@
       });
     // Sort far to near for billboard occlusion. Player opacity stays 1; this is not a depth-buffer renderer.
     root.FrontierWater?.draw(ctx, game, cam, project);
+    // October 26: outdoor sprite silhouettes sit on the ground pass before models/actors, independent of billboard tilt. Interiors never receive sunlight shadows.
+    // Superseded within this iteration: ground-plane prototype retained as a documented helper, not the active render path.
     root.FrontierModelRenderer?.geometry(
       ctx,
       game,
@@ -704,6 +707,7 @@
       ),
     );
     root.FrontierModelRenderer?.draw(ctx, game, cam, entities);
+    root.FrontierSunShadows?.draw163(ctx,game,cam,entities,project);
     // Only horizontal room geometry belongs to the structural background pass.
     // Legacy MZ event priority never overrides world-space camera depth.
     const layer =

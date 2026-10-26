@@ -1,3 +1,5 @@
+/* October 26, 2026 — 0.16.4: fixed and isometric play share cursor input and reticle routing; isometric zoom changes transient affine scale. Perspective mouse look and authored camera values remain unchanged. */
+/* October 26, 2026 — 0.16.3: paired-door arrivals, shared transform projection and map appearance are documented in ITERATION-0.16.3.md. Retained earlier contracts below are historical. */
 /* October 24, 2026 — 0.16.2 current behavior and units are described in ITERATION-0.16.2.md; earlier contracts below remain history. New camera/tactics helpers preserve existing owners and transactional validation. */
 /* MAINTAINER GUIDE
  * Application coordinator: creates playtests, routes input, drives simulation and binds editor/HUD controls. Change gameplay rules in their modules; keep this file responsible for orchestration. Authored world and runtime game are separate objects: editor mutations restart a temporary playtest.
@@ -594,7 +596,9 @@
       return;
     const dest = mapLibrary.get(exit.map),
       entry =
-        exit.entrance === "spawn" && dest
+        ["auto-door"].includes(exit.entrance) || exit.entrance?.startsWith("door:")
+          ? dest && FrontierHubWorkbench.doorArrival163(dest.world,mapLibrary.active,exit.entrance)
+          : exit.entrance === "spawn" && dest
           ? { ...dest.world.spawn, yaw: 0 }
           : dest?.world.cell?.arrivals?.find(
               /* @function app.cellArrival — Inputs: arrival. Returns matching named doorway; no effects. */ (
@@ -612,7 +616,7 @@
               ) => e.id === exit.entrance,
             );
     if (!dest || !entry) {
-      log("Map exit needs an existing destination entrance.");
+      log("Choose a destination door; automatic pairing requires exactly one door leading back.");
       travelCooldown = 2;
       return;
     }
@@ -1555,6 +1559,8 @@
     active: /* @function app.authoringCell — Inputs: none. Returns stable active cell ID, keeping same-named objects in different cells distinct. */ function(){return mapLibrary?.active || "startup";},
     editing: /* @function app.authoringMode — Inputs: none. Returns whether authoring is active; no state mutation. */ function(){return editing;},
     history: /* @function app.authoringHistory — Inputs: none. Returns current scene Undo/Redo lengths for toolbar availability, without exposing snapshots or other history owners. */ function(){return {undo:history.length,redo:redoHistory.length};},
+    anchor: /* @function app.authoringAnchor163 — Inputs: typed selected scene reference and copied source record. Returns world XYZ using the current runtime placement elevation for props/events, or authored absolute Z for structure. Reads only; follows actual terrain/model support instead of putting handles below raised objects. */function(ref,record){let z=record.z||0;if(ref.kind==="event"||ref.kind==="object"){for(const entity of [...(game.sceneEvents||[]),...game.maps.frontier.entities])if(entity.id===ref.id){z=entity.z||0;break;}}return [record.x,record.y,z];},
+    project: /* @function app.authoringProjection163 — Inputs: world XYZ metres. Returns projected logical canvas point only while editing; uses actual active camera including fixed/isometric views. No mutation. */function(x,y,z){return editing ? FrontierRender.project(FrontierRender.camera(game),x,y,z) : null;},
     mutate, removeMany:removeSceneSelection,
   });
   // Switch editor/playtest state, release capture and restart from authored data. F2 is the editor shortcut; Tab remains the HUD menu.
@@ -1661,11 +1667,13 @@
     if (!blocked(e.x + dx, e.y, radius, ignore)) e.x += dx;
     if (!blocked(e.x, e.y + dy, radius, ignore)) e.y += dy;
   }
+  /* @function app.cursorAim164 — Inputs: none; reads active source and edit mode. Returns true for gameplay cursor-aim cameras, excluding free-flight authoring. Shared by capture, pointer, firing, look and reticle so these paths cannot disagree. No mutation. */
+  function cursorAim164() { return !editing && (world.interior?.mode === "fixed" || world.presentation?.mode === "isometric"); }
   // Gate firing against editor, menu, event execution and death before calling the combat host.
   /* @function app.shoot.92 — Gate firing against editor, menu, event execution and death before calling the combat host. Inputs: no explicit arguments; uses enclosing module state. Updates: game room aim point. Uses: mf fire shot. */ function shoot() {
     if (!editing && !playPaused && !session.busy && !world.cell?.safe && game.player.hp > 0) {
       const point =
-        world.interior?.mode === "fixed"
+        cursorAim164()
           ? game.pointer || { x: FrontierDisplay.get().width / 2, y: 240 }
           : { x: FrontierDisplay.get().width / 2, y: 96 };
       game.roomAimPoint = point;
@@ -2259,7 +2267,7 @@
     mousePaused = false;
     playPaused = false;
     captureAttempted = true;
-    if (world.interior?.mode === "fixed")
+    if (cursorAim164())
       game.pointer ||= {
         x: FrontierDisplay.get().width / 2,
         y: FrontierDisplay.get().height / 2,
@@ -2291,7 +2299,7 @@
     dx,
     dy,
   ) {
-    if (world.interior?.mode === "fixed") return;
+    if (cursorAim164()) return;
     game.camera.yaw += dx * FrontierParameters.get(world, "mouseYaw");
     game.camera.pitch = clampPitch(
       game.camera.pitch - dy * FrontierParameters.get(world, "mousePitch"),
@@ -2572,8 +2580,7 @@
       event,
     ) => {
       if (
-        world.interior?.mode === "fixed" &&
-        !editing &&
+        cursorAim164() &&
         document.pointerLockElement !== view
       )
         game.pointer = screenPoint(event);
@@ -2633,7 +2640,7 @@
     /* @function app.callback.162 — Provides the callback for view add event listener. Inputs: event. Updates: game pointer; game brush ghost; drag moved; game drag ghost; drag x. Uses: view get bounding client rect; screen point; mouse motion; rotate. Returns: without a result; without a result. */ (
       event,
     ) => {
-      if (world.interior?.mode === "fixed" && !editing) {
+      if (cursorAim164()) {
         if (document.pointerLockElement === view) {
           const bounds = view.getBoundingClientRect(),
             point = game.pointer || {
@@ -2820,6 +2827,14 @@
         zoomIntent = { camera: game.camera, roomZoom: target };
         return;
       }
+      // October 26: pixels/metre is the orthographic zoom parameter; dolly distance has no effect on this camera. Never overwrite the authored presentation scale.
+      if (world.presentation?.mode === "isometric" && !game.editorFlight) {
+        const target = Math.max(12, Math.min(100, (prior?.isoScale ?? game.camera.isoScale ?? world.presentation.scale) * Math.exp(-pixels * 0.0007)));
+        zoomIntent = { camera: game.camera, isoScale: target };
+        return;
+      }
+      // October 26 user correction: first-person zoom is unnecessary. Keep its original lens and ignore wheel without changing the third-person distance.
+      if (game.camera.firstPerson && !game.editorFlight) return;
       if (hudMode) return;
       const target = Math.max(
         FrontierParameters.get(world, "zoomMin"),
@@ -2856,8 +2871,8 @@
     if (zoomIntent && !playPaused) {
       if (zoomIntent.camera !== game.camera) zoomIntent = null;
       else {
-        const key = zoomIntent.roomZoom !== undefined ? "roomZoom" : "distance";
-        const current = game.camera[key] ?? 1;
+        const key = zoomIntent.roomZoom !== undefined ? "roomZoom" : zoomIntent.isoScale !== undefined ? "isoScale" : "distance";
+        const current = game.camera[key] ?? (key === "isoScale" ? world.presentation.scale : 1);
         const target = zoomIntent[key];
         game.camera[key] = current + (target - current) * (1 - Math.exp(-12 * dt));
         if (Math.abs(target - game.camera[key]) < 0.0001) {
@@ -3226,6 +3241,8 @@
     if (!sceneTransition.ownsWorldView) {
       /* October 12: native effects append inside draw before GPU submission, using this frame's paused/cinematic-aware delta. */ game.effectDelta =
         playPaused || editing || sceneTransition.busy ? 0 : dt;
+      const appearanceFilter163=FrontierLocalLighting.appearanceFilter163(world.appearance);
+      if(view.style.filter!==appearanceFilter163)view.style.filter=appearanceFilter163;
       FrontierRender.draw(view, game);
     }
     // October 10: optional screen breathing uses a separate CSS scale so camera/sprite geometry and shake translation remain unchanged.
@@ -3237,7 +3254,7 @@
     }
     FrontierInspection.update(hudMode);
     const reticle = $("crosshair"),
-      fixed = world.interior?.mode === "fixed";
+      fixed = cursorAim164();
     /* October 10, 2026: the DOM aiming marker stays sharp but follows the warped world point. Its forward transform is the inverse of screenPoint's click sampling. */
     if (fixed && game.pointer) {
       const width = FrontierDisplay.get().width,
@@ -3277,7 +3294,7 @@
     }
     $("gameFrame").classList.toggle(
       "roomAiming",
-      world.interior?.mode === "fixed" &&
+      cursorAim164() &&
         !hudMode &&
         !editing &&
         !game.player.holstered,
@@ -3325,7 +3342,7 @@
     $("badge").lastElementChild.textContent =
       (world.interior?.mode === "fixed" ? "Fixed interior · " : "") +
       (game.camera.firstPerson ? "First person" : "Third person") +
-      " · prototype 0.16.2";
+      " · prototype 0.16.4";
     if (world.interior)
       $("intro").textContent =
         world.interior.mode === "fixed"

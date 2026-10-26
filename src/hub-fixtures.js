@@ -291,6 +291,10 @@
       JSON.stringify(saloonDoor.extensions.hub.transition),
     );
     saloon.events.push(saloonExit);
+    // October 26: fresh bundled hub examples demonstrate named paired doors.
+    // Existing saved projects are not replaced; their manual arrivals stay available.
+    const pairs163=[[hub,"hub-shop-door",shop,"shop-exit"],[hub,"hub-home-door",home,"home-exit"],[hub,"hub-wild-door",wild,"wild-exit"],[hub,"hub-saloon-door",saloon,"saloon-return"]];
+    for(const [a,aid,b,bid] of pairs163){let left=null,right=null;for(const e of a.events)if(e.id===aid)left=e;for(const e of b.events)if(e.id===bid)right=e;if(!left||!right)continue;left.extensions.hub.entrance="door:"+bid;right.extensions.hub.entrance="door:"+aid;left.extensions.hub.arrivalYaw=0;right.extensions.hub.arrivalYaw=180;}
     const maps = [];
     for (const [id, name, world] of [
       ["hub-saloon", "Saloon Geometry Room", saloon],

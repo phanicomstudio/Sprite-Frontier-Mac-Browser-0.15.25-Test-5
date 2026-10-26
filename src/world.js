@@ -178,6 +178,8 @@
       throw Error(
         "Expected a Sprite Frontier v1 world, at most 20000 objects.",
       );
+    // October 26: do not silently reinterpret a future atmosphere schema.
+    if(w.atmosphereVersion!==undefined && w.atmosphereVersion!==1)throw Error("Unsupported atmosphere version.");
     // October 22, 2026: stable-ID legacy enemy conversion precedes event validation.
     w = root.FrontierEnemies?.migrate(w) || w;
     const { width, height } = dimensions(w);
@@ -404,7 +406,7 @@
     }
     if (root.FrontierFlight)
       result.flight = root.FrontierFlight.validate(w.flight);
-    if (root.FrontierFog) result.fog = root.FrontierFog.validate(w.fog);
+    if (root.FrontierFog) result.fog = root.FrontierFog.validate(w.atmosphereVersion===1 ? w.fog : {...w.fog,enabled:true,...(!w.fog || w.fog.color==="#081323" ? {color:"#665263",start:16,end:48}: {})});
     if (root.FrontierVector)
       result.vectorDisplay = root.FrontierVector.validate(w.vectorDisplay);
     if (root.FrontierWeaponTuning)
@@ -459,7 +461,11 @@
       );
     // October 12, 2026: radius lighting remains independent cell data and survives portable project validation.
     if (root.FrontierLocalLighting)
-      result.lighting = root.FrontierLocalLighting.validate(w.lighting);
+      result.lighting = root.FrontierLocalLighting.validate(w.atmosphereVersion===1 ? w.lighting : {...w.lighting,enabled:true,...(!w.lighting?.enabled ? {ambient:0.4,player:{...w.lighting?.player,enabled:true,radius:6,intensity:0.45,falloff:2,color:"#fff0dc"}} : {})});
+    // October 26: one-time atmosphere adoption enables lighting/fog on older maps, as requested. Subsequent explicit disabled/neutral choices persist through this marker.
+    result.atmosphereVersion=1;
+    // October 26: retain optional authored appearance; absent values use runtime legacy defaults without rewriting older maps.
+    if(w.appearance!==undefined)result.appearance=root.FrontierLocalLighting.appearance163(w.appearance);
     // October 24: presentation is cell data, independent of room geometry.
     if (w.presentation !== undefined) result.presentation = root.FrontierIsometric.validate(w.presentation);
     return result;

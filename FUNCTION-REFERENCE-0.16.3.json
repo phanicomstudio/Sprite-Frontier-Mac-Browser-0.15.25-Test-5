@@ -1,0 +1,241 @@
+{
+  "date": "2026-10-26",
+  "kind": "addendum",
+  "baseline": "FUNCTION-REFERENCE-0.16.2.json",
+  "functions": [
+    {
+      "file": "src/app.js",
+      "line": 1561,
+      "name": "app.authoringAnchor163",
+      "contract": "@function app.authoringAnchor163 \u2014 Inputs: typed selected scene reference and copied source record. Returns world XYZ using the current runtime placement elevation for props/events, or authored absolute Z for structure. Reads only; follows actual terrain/model support instead of putting handles below raised objects."
+    },
+    {
+      "file": "src/app.js",
+      "line": 1562,
+      "name": "app.authoringProjection163",
+      "contract": "@function app.authoringProjection163 \u2014 Inputs: world XYZ metres. Returns projected logical canvas point only while editing; uses actual active camera including fixed/isometric views. No mutation."
+    },
+    {
+      "file": "src/app.js",
+      "line": 2721,
+      "name": "app.callback.163",
+      "contract": "@function app.callback.163 \u2014 Provides the callback for view add event listener. Inputs: event. Updates: drag; game drag ghost. Uses: terrain tools end; screen point; move object; $. Returns: without a result; without a result."
+    },
+    {
+      "file": "src/authoring-scene.js",
+      "line": 129,
+      "name": "authoringScene.project163",
+      "contract": "@function authoringScene.project163 \u2014 Inputs: world-metre XYZ. Returns current logical viewport point or null; no authored mutation, caches or history. Host owns camera/projection and runtime-mode gating."
+    },
+    {
+      "file": "src/authoring-scene.js",
+      "line": 131,
+      "name": "authoringScene.transform163",
+      "contract": "@function authoringScene.transform163 \u2014 Inputs: typed reference, move/rotate, axis 0/1/2 and finite delta (metres or radians). Returns single validated history commit. Camera-facing sprites keep their locked presentation; rotation applies only to actual structural/model geometry and door arrival orientation. Unsupported axes fail explicitly rather than silently losing edits."
+    },
+    {
+      "file": "src/authoring-scene.js",
+      "line": 145,
+      "name": "authoringScene.rotateDoor163",
+      "contract": "@function authoringScene.rotateDoor163 \u2014 Inputs: none. Updates model rotation and authored walkable-side arrival facing in one transaction; failures roll back both."
+    },
+    {
+      "file": "src/authoring-scene.js",
+      "line": 149,
+      "name": "authoringScene.appearance163",
+      "contract": "@function authoringScene.appearance163 \u2014 Inputs: optional per-map appearance draft. Returns copied effective defaults or an undoable validated commit. Authored map/local/normal lighting is untouched; runtime writes reject."
+    },
+    {
+      "file": "src/authoring-scene.js",
+      "line": 150,
+      "name": "authoringScene.commitAppearance163",
+      "contract": "@function authoringScene.commitAppearance163 \u2014 Inputs: none. Writes only isolated appearance inside the owner's rollback/history boundary; no source assets are processed."
+    },
+    {
+      "file": "src/authoring-scene.js",
+      "line": 151,
+      "name": "authoringScene.fog163",
+      "contract": "@function authoringScene.fog163 \u2014 Inputs: optional distance-fog draft. Returns validated effective settings, or one owner history commit; units are metres and colors #RRGGBB. Does not change sky grading or light sources."
+    },
+    {
+      "file": "src/authoring-scene.js",
+      "line": 152,
+      "name": "authoringScene.commitFog163",
+      "contract": "@function authoringScene.commitFog163 \u2014 Inputs: none. Saves validated fog with migration marker so explicit disabled settings remain disabled after reload."
+    },
+    {
+      "file": "src/authoring-scene.js",
+      "line": 153,
+      "name": "authoringScene.anchor163",
+      "contract": "@function authoringScene.anchor163 \u2014 Inputs: typed reference. Returns copied current world anchor or null for stale selection. Host supplies runtime-supported elevation without exposing mutable entities."
+    },
+    {
+      "file": "src/authoring-workspace.js",
+      "line": 68,
+      "name": "authoringWorkspace.populateFog163",
+      "contract": "@function authoringWorkspace.populateFog163 \u2014 Inputs: validated fog. Updates only detached controls, leaving authored state unchanged until Apply."
+    },
+    {
+      "file": "src/authoring-workspace.js",
+      "line": 70,
+      "name": "authoringWorkspace.plumPreset163",
+      "contract": "@function authoringWorkspace.plumPreset163 \u2014 Inputs: ignored click. Resets draft to enabled 16\u201348 metre dusty plum, with no commit."
+    },
+    {
+      "file": "src/authoring-workspace.js",
+      "line": 71,
+      "name": "authoringWorkspace.applyFog163",
+      "contract": "@function authoringWorkspace.applyFog163 \u2014 Inputs: form submit. Saves validated fog as one Undo step; rejected ranges remain in draft with status."
+    },
+    {
+      "file": "src/authoring-workspace.js",
+      "line": 77,
+      "name": "authoringWorkspace.applyAppearance163",
+      "contract": "@function authoringWorkspace.applyAppearance163 \u2014 Inputs: form submit. Validates and saves one map appearance history step; reports errors without discarding the draft or altering lighting."
+    },
+    {
+      "file": "src/authoring-workspace.js",
+      "line": 188,
+      "name": "authoringWorkspace.handlePoint163",
+      "contract": "@function authoringWorkspace.handlePoint163 \u2014 Inputs: source record and kind. Returns metre XYZ for actual geometry anchor; legacy prop elevations convert feet at existing 0.3 m/foot convention. Does not mutate records."
+    },
+    {
+      "file": "src/authoring-workspace.js",
+      "line": 190,
+      "name": "authoringWorkspace.drawHandles163",
+      "contract": "@function authoringWorkspace.drawHandles163 \u2014 Inputs: animation timestamp ignored. Returns nothing; projects at most four points for one selection while editing, clears handles during modal/playtest and schedules next display frame. Draws preview displacement only; source changes happen once on release."
+    },
+    {
+      "file": "src/authoring-workspace.js",
+      "line": 216,
+      "name": "authoringWorkspace.beginHandle163",
+      "contract": "@function authoringWorkspace.beginHandle163 \u2014 Inputs: pointer press on an axis stroke. Captures selection and projection at drag start; no authored writes. Invalid/stale selections are ignored; consumes input so gameplay/free-drag owners do not move simultaneously."
+    },
+    {
+      "file": "src/authoring-workspace.js",
+      "line": 221,
+      "name": "authoringWorkspace.previewHandle163",
+      "contract": "@function authoringWorkspace.previewHandle163 \u2014 Inputs: captured pointer motion. Updates a transient metre/radian delta and visible status; snapping uses captured axis scale, never writes scene during drag. Shift temporarily bypasses snapping."
+    },
+    {
+      "file": "src/authoring-workspace.js",
+      "line": 229,
+      "name": "authoringWorkspace.commitHandle163",
+      "contract": "@function authoringWorkspace.commitHandle163 \u2014 Inputs: captured release. Commits finite nonzero delta once through shared validator/history, reports rejection without data loss and refreshes selection. Pointer release ends capture automatically."
+    },
+    {
+      "file": "src/authoring-workspace.js",
+      "line": 234,
+      "name": "authoringWorkspace.cancelHandle163",
+      "contract": "@function authoringWorkspace.cancelHandle163 \u2014 Inputs: interrupted pointer gesture. Discards transient delta without history or source mutation."
+    },
+    {
+      "file": "src/authoring-workspace.js",
+      "line": 235,
+      "name": "authoringWorkspace.escapeHandle163",
+      "contract": "@function authoringWorkspace.escapeHandle163 \u2014 Inputs: key event. Escape drops an in-progress transform without committing; other shortcuts keep their established owners."
+    },
+    {
+      "file": "src/ballistics.js",
+      "line": 17,
+      "name": "ballistics.sweep163",
+      "contract": "@function ballistics.sweep163 \u2014 Inputs: game, world endpoints, radius metres, optional owner ID and geometryOnly Boolean. Returns earliest normalized contact or null without applying damage. October 26: receiver queries omit actors/nonspatial billboards and march terrain at 0.25 m; default projectile behavior and exact mesh sweeps remain unchanged."
+    },
+    {
+      "file": "src/hub-workbench.js",
+      "line": 51,
+      "name": "hubWorkbench.checkedArrivalYaw163",
+      "contract": "@function hubWorkbench.checkedArrivalYaw163 \u2014 Inputs: facing degrees. Returns finite authored yaw, rejecting malformed or excessively large values before commit; no state changes."
+    },
+    {
+      "file": "src/hub-workbench.js",
+      "line": 509,
+      "name": "hubWorkbench.hasArrivalChoice163",
+      "contract": "@function hubWorkbench.hasArrivalChoice163 \u2014 Inputs: picker option. Returns retained selector match without map mutation."
+    },
+    {
+      "file": "src/hub-workbench.js",
+      "line": 793,
+      "name": "hubWorkbench.destinationDoor163",
+      "contract": "@function hubWorkbench.destinationDoor163 \u2014 Inputs: authored event. Returns whether selected door identity exists; no mutation."
+    },
+    {
+      "file": "src/hub-workbench.js",
+      "line": 1517,
+      "name": "hubWorkbench.doorArrival163",
+      "contract": "@function hubWorkbench.doorArrival163 \u2014 Inputs: destination world, source cell ID and arrival selector (auto-door or door:eventID). Returns fresh world-metre position/yaw radians, or null if missing/ambiguous. Door local +Y is its walkable front; model Z rotation is degrees. Uses authored arrivalYaw when supplied; never guesses between several return doors or mutates maps. Runtime collision checks must accept the result before transfer."
+    },
+    {
+      "file": "src/local-lighting.js",
+      "line": 434,
+      "name": "localLighting.sun163",
+      "contract": "@function localLighting.sun163 \u2014 Inputs: optional per-map sun settings. Returns bounded directional ground-shadow configuration; azimuth/elevation use degrees, opacity 0\u20130.6. Defaults enabled outdoors; render owner categorically excludes interiors. Invalid values throw before adoption."
+    },
+    {
+      "file": "src/local-lighting.js",
+      "line": 436,
+      "name": "localLighting.spriteSunShadow163",
+      "contract": "@function localLighting.spriteSunShadow163 \u2014 Inputs: active drawing adapter, live scene, projection camera, sprite-bearing entity and world-to-screen callback. Returns Boolean for a drawn alpha silhouette. Projects current artwork frame onto the local horizontal ground plane away from sun; reuses image/crop pools and restores all drawing state. Outdoors only, skips submerged/dead/missing frames and excessive offscreen shadows. This is a bounded ground-plane effect, not mesh/terrain shadow mapping or roof occlusion; it never changes locked actor billboarding."
+    },
+    {
+      "file": "src/local-lighting.js",
+      "line": 453,
+      "name": "localLighting.appearance163",
+      "contract": "@function localLighting.appearance163 \u2014 Inputs: optional per-cell appearance settings. Returns validated independent legacy/neutral profile with bounded contrast/saturation and softness in CSS pixels. Defaults provide restrained late-1990s image treatment; invalid input throws before project adoption. This is image treatment, not a replacement material or shadow renderer."
+    },
+    {
+      "file": "src/local-lighting.js",
+      "line": 460,
+      "name": "localLighting.appearanceFilter163",
+      "contract": "@function localLighting.appearanceFilter163 \u2014 Inputs: validated or partial cell appearance. Returns CSS filter text for world canvas only; neutral bypasses treatment. Does not alter HUD/editor text, pixels stored in assets, collision or normal-map caches."
+    },
+    {
+      "file": "src/sky-panorama.js",
+      "line": 45,
+      "name": "skyPanorama.validate163",
+      "contract": "@function skyPanorama.validate163 \u2014 Inputs: optional saved panorama settings. Returns normalized asset/orientation/wrap record plus finite saturation (default 1.2, range 0\u20132) and contrast (1.05, range 0.5\u20131.5). Invalid data throws before adoption; source pixels remain unmodified. October 26 extends the retained contract above."
+    },
+    {
+      "file": "src/sun-shadows.js",
+      "line": 4,
+      "name": "sunShadows.install163",
+      "contract": "@function sunShadows.install163 \u2014 Inputs: browser namespace. Publishes bounded renderer; allocates resources only when an outdoor scene actually draws shadows."
+    },
+    {
+      "file": "src/sun-shadows.js",
+      "line": 13,
+      "name": "sunShadows.receiver163",
+      "contract": "@function sunShadows.receiver163 \u2014 Inputs: live scene, world sprite-plane source point, normalized sun ray and caster ID. Returns nearest terrain/static-geometry hit with world coordinates/receiver key, or null. Rays are at most 32 m; shared sweep uses a numerical skin and does not mutate combat."
+    },
+    {
+      "file": "src/sun-shadows.js",
+      "line": 21,
+      "name": "sunShadows.receiverGrid163",
+      "contract": "@function sunShadows.receiverGrid163 \u2014 Inputs: scene, caster, current sprite frame/sheet, camera and validated sun. Returns fixed-size grid of nearest receiving-surface hits. Forty-five full rays per rebuild; frame UVs remain on original artwork. No textures, entities or source maps change."
+    },
+    {
+      "file": "src/sun-shadows.js",
+      "line": 32,
+      "name": "sunShadows.createSlot163",
+      "contract": "@function sunShadows.createSlot163 \u2014 Inputs: Pixi namespace and reusable depth texture. Returns pooled alpha-shadow mesh and mutable vertex buffers. Fixed capacity is 45 vertices/192 indices; resources persist across maps and frames instead of being recreated per caster."
+    },
+    {
+      "file": "src/sun-shadows.js",
+      "line": 41,
+      "name": "sunShadows.draw163",
+      "contract": "@function sunShadows.draw163 \u2014 Inputs: active Pixi drawing adapter, live game, active camera, visible entity candidates and projection callback. Returns count of submitted outdoor shadow meshes. Rebuilds at most two 45-ray grids per frame, caches at most 8 nearest casters, updates GPU depth from existing CPU data without readback, and rejects triangles crossing disconnected receivers. Interiors and disabled sun skip all work. Terrain/static mesh/custom collision must match visible receivers; transparent/noncollision decoration receives none."
+    },
+    {
+      "file": "src/sun-shadows.js",
+      "line": 52,
+      "name": "sunShadows.nearest163",
+      "contract": "@function sunShadows.nearest163 \u2014 Inputs: two eligible casters. Returns distance ordering so the bounded shadow budget prioritizes nearby gameplay actors; no source mutation."
+    },
+    {
+      "file": "src/sun-shadows.js",
+      "line": 72,
+      "name": "sunShadows.connected163",
+      "contract": "@function sunShadows.connected163 \u2014 Inputs: grid vertex index. Returns whether projected receiver exists and agrees with the first receiver, avoiding stretched shadows across disconnected surfaces."
+    }
+  ]
+}
