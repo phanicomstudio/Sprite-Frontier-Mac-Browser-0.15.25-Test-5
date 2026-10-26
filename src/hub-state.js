@@ -1,3 +1,4 @@
+/* October 26, 2026 — 0.16.5: successful door departures retain the approach side in saved gameplay state, independent of cinematic effect. Old saves omit doorSides and adopt an empty list; source maps remain unchanged. */
 /* October 13, 2026: supersedes the 32-cell persistence cap. Visited cell records are compact saved state, not active render scenes. Each cell retains item/storage limits; cleanup retains its fixed record budget. The number of saved cells alone no longer rejects travel or Save/Load. */
 /* 2026-10-09: compact cell persistence owns static drops and storage records.
  * These are gameplay records, never hidden render entities or independent timers.
@@ -102,6 +103,7 @@
     return {
       schema: "sprite-frontier-hubs/1",
       clock: 0,
+      doorSides: [],
       cells: {},
       carried: [],
       recovery: [],
@@ -129,6 +131,18 @@
     )
       throw Error("Invalid hub state.");
     const out = empty();
+    // Additive saved-state field: validate completely before adopting any live state.
+    if (value.doorSides !== undefined) {
+      if (!Array.isArray(value.doorSides) || value.doorSides.length > 100000) throw Error("Invalid saved door approach sides.");
+      const seen = new Set();
+      for (const record of value.doorSides) {
+        checkedDoorSide165(record);
+        const key = JSON.stringify([record.map, record.doorId]);
+        if (seen.has(key)) throw Error("Duplicate saved door approach side.");
+        seen.add(key);
+        out.doorSides.push({map:record.map,doorId:record.doorId,side:record.side});
+      }
+    }
     out.clock = value.clock;
     out.nextId = value.nextId;
     out.recoveryLimit = value.recoveryLimit;
@@ -313,7 +327,27 @@
     inventory.set(id, count - 1);
     return record;
   }
+  /* @function hubState.checkedDoorSide165 — Inputs: saved approach record with map/door identity and side sign. Returns nothing; throws malformed/unbounded identities or signs before state mutation. Side is relative to the door's authored walkable normal, never a coordinate or transition effect. */
+  function checkedDoorSide165(record) {
+    if (!record || typeof record.map !== "string" || !/^[A-Za-z0-9_-]{1,64}$/.test(record.map) || typeof record.doorId !== "string" || !record.doorId.length || record.doorId.length > 128 || ![1,-1].includes(record.side)) throw Error("Invalid saved door approach side.");
+  }
+  /* @function hubState.doorSide165 — Inputs: optional session store, stable cell ID and door event ID. Returns remembered +1/-1, otherwise undefined for an unvisited door or old save. Read-only; lookup occurs once per transfer, not per frame. */
+  function doorSide165(store,map,doorId) {
+    for (const record of store?.doorSides || []) if (record.map === map && record.doorId === doorId) return record.side;
+  }
+  /* @function hubState.rememberDoorSide165 — Inputs: live store plus successful departure {map,doorId,side}. Returns nothing; validates then inserts/replaces one detached compact record. Rejects a 100001st unique door before mutation; never evicts earlier routes or writes authored maps. Caller invokes only after transfer commit succeeds. */
+  function rememberDoorSide165(store,record) {
+    checkedDoorSide165(record);
+    const records=store.doorSides ||= [];
+    let index=-1;
+    for(let i=0;i<records.length;i++)if(records[i].map===record.map&&records[i].doorId===record.doorId){index=i;break;}
+    if(index<0 && records.length>=100000)throw Error("Saved door approach capacity exceeded.");
+    const copy={map:record.map,doorId:record.doorId,side:record.side};
+    if(index<0)records.push(copy);else records[index]=copy;
+  }
   root.FrontierHubState = {
+    doorSide165,
+    rememberDoorSide165,
     settings,
     owner,
     item,

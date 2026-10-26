@@ -1,0 +1,754 @@
+{
+  "iteration": "0.16.5",
+  "date": "2026-10-26",
+  "platform": "Windows PC only",
+  "behavior": "Paired doors remember successful approach side, return one foot onto that side facing outward, independent of transition presentation. Blocked side rejects instead of falling back behind door.",
+  "checks": {
+    "unitDoorSides": true,
+    "oldSaveAndRoundTrip": true,
+    "invalidDuplicateAmbiguousSides": true,
+    "rotationsDegrees": [
+      0,
+      90,
+      180,
+      270
+    ],
+    "testedSigns": [
+      -1,
+      1
+    ],
+    "realChrome": {
+      "native": false,
+      "evidence": [
+        {
+          "effect": "melt",
+          "memory": -1,
+          "x": 16,
+          "y": 13.6952,
+          "doorX": 16,
+          "doorY": 14,
+          "facingX": 1.2246467991473532e-16,
+          "facingY": -1,
+          "cameraYaw": 3.141592653589793,
+          "firstPerson": false,
+          "trace": [
+            {
+              "action": "reserved",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "committed",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "completed",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "reserved",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "committed",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "completed",
+              "map": "hub-test",
+              "fade": 0
+            }
+          ]
+        },
+        {
+          "effect": "door",
+          "memory": -1,
+          "x": 16,
+          "y": 13.6952,
+          "doorX": 16,
+          "doorY": 14,
+          "facingX": 1.2246467991473532e-16,
+          "facingY": -1,
+          "cameraYaw": 3.141592653589793,
+          "firstPerson": true,
+          "trace": [
+            {
+              "action": "reserved",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "committed",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "completed",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "reserved",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "committed",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "completed",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "reserved",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "door-ready",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "committed",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "completed",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "reserved",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "door-ready",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "committed",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "completed",
+              "map": "hub-test",
+              "fade": 0
+            }
+          ]
+        },
+        {
+          "effect": "fade",
+          "memory": -1,
+          "x": 16,
+          "y": 13.6952,
+          "doorX": 16,
+          "doorY": 14,
+          "facingX": 1.2246467991473532e-16,
+          "facingY": -1,
+          "cameraYaw": 3.141592653589793,
+          "firstPerson": false,
+          "trace": [
+            {
+              "action": "committed",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "completed",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "reserved",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "door-ready",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "committed",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "completed",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "reserved",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "door-ready",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "committed",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "completed",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "reserved",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "committed",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "completed",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "reserved",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "committed",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "completed",
+              "map": "hub-test",
+              "fade": 0
+            }
+          ]
+        },
+        {
+          "effect": "immediate",
+          "memory": -1,
+          "x": 16,
+          "y": 13.6952,
+          "doorX": 16,
+          "doorY": 14,
+          "facingX": 1.2246467991473532e-16,
+          "facingY": -1,
+          "cameraYaw": 3.141592653589793,
+          "firstPerson": false,
+          "trace": [
+            {
+              "action": "reserved",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "door-ready",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "committed",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "completed",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "reserved",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "committed",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "completed",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "reserved",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "committed",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "completed",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "reserved",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "committed",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "completed",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "reserved",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "committed",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "completed",
+              "map": "hub-test",
+              "fade": 0
+            }
+          ]
+        },
+        {
+          "blockedArrivalRejected": true,
+          "map": "hub-saloon",
+          "busy": false,
+          "side": -1
+        },
+        {
+          "presentation": "isometric",
+          "facing": {
+            "x": 1.2246467991473532e-16,
+            "y": -1,
+            "pointer": {
+              "x": 373.7401153701776,
+              "y": 268.8700576850888
+            },
+            "orthographic": true
+          }
+        },
+        {
+          "presentation": "fixed",
+          "facing": {
+            "x": 1.2246467991473532e-16,
+            "y": -1,
+            "pointer": {
+              "x": 542.2854575730736,
+              "y": 238.85192276350756
+            },
+            "orthographic": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    "realWindowsExecutable": {
+      "native": true,
+      "evidence": [
+        {
+          "effect": "melt",
+          "memory": -1,
+          "x": 16,
+          "y": 13.6952,
+          "doorX": 16,
+          "doorY": 14,
+          "facingX": 1.2246467991473532e-16,
+          "facingY": -1,
+          "cameraYaw": 3.141592653589793,
+          "firstPerson": false,
+          "trace": [
+            {
+              "action": "reserved",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "committed",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "completed",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "reserved",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "committed",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "completed",
+              "map": "hub-test",
+              "fade": 0
+            }
+          ]
+        },
+        {
+          "effect": "door",
+          "memory": -1,
+          "x": 16,
+          "y": 13.6952,
+          "doorX": 16,
+          "doorY": 14,
+          "facingX": 1.2246467991473532e-16,
+          "facingY": -1,
+          "cameraYaw": 3.141592653589793,
+          "firstPerson": true,
+          "trace": [
+            {
+              "action": "reserved",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "committed",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "completed",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "reserved",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "committed",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "completed",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "reserved",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "door-ready",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "committed",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "completed",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "reserved",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "door-ready",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "committed",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "completed",
+              "map": "hub-test",
+              "fade": 0
+            }
+          ]
+        },
+        {
+          "effect": "fade",
+          "memory": -1,
+          "x": 16,
+          "y": 13.6952,
+          "doorX": 16,
+          "doorY": 14,
+          "facingX": 1.2246467991473532e-16,
+          "facingY": -1,
+          "cameraYaw": 3.141592653589793,
+          "firstPerson": false,
+          "trace": [
+            {
+              "action": "committed",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "completed",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "reserved",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "door-ready",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "committed",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "completed",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "reserved",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "door-ready",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "committed",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "completed",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "reserved",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "committed",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "completed",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "reserved",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "committed",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "completed",
+              "map": "hub-test",
+              "fade": 0
+            }
+          ]
+        },
+        {
+          "effect": "immediate",
+          "memory": -1,
+          "x": 16,
+          "y": 13.6952,
+          "doorX": 16,
+          "doorY": 14,
+          "facingX": 1.2246467991473532e-16,
+          "facingY": -1,
+          "cameraYaw": 3.141592653589793,
+          "firstPerson": false,
+          "trace": [
+            {
+              "action": "reserved",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "door-ready",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "committed",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "completed",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "reserved",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "committed",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "completed",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "reserved",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "committed",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "completed",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "reserved",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "committed",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "completed",
+              "map": "hub-saloon",
+              "fade": 0
+            },
+            {
+              "action": "reserved",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "committed",
+              "map": "hub-test",
+              "fade": 0
+            },
+            {
+              "action": "completed",
+              "map": "hub-test",
+              "fade": 0
+            }
+          ]
+        },
+        {
+          "blockedArrivalRejected": true,
+          "map": "hub-saloon",
+          "busy": false,
+          "side": -1
+        },
+        {
+          "presentation": "isometric",
+          "facing": {
+            "x": 1.2246467991473532e-16,
+            "y": -1,
+            "pointer": {
+              "x": 373.7401153701776,
+              "y": 268.8700576850888
+            },
+            "orthographic": true
+          }
+        },
+        {
+          "presentation": "fixed",
+          "facing": {
+            "x": 1.2246467991473532e-16,
+            "y": -1,
+            "pointer": {
+              "x": 542.2854575730736,
+              "y": 238.85192276350756
+            },
+            "orthographic": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    "mainGameplaySuite": true,
+    "hubState1517": true,
+    "doorHub1517": true,
+    "sceneTransition159": true,
+    "desktopExport1524": true,
+    "browserInput164": true,
+    "functionCommentCoverage": {
+      "passed": true,
+      "functions": 6347
+    }
+  },
+  "performance": {
+    "newFramePasses": 0,
+    "perFrameSideSearches": 0,
+    "sideLookup": "Only at transfers; compact saved records; no asset copies or diagnostic logging in production."
+  },
+  "compatibility": [
+    "Old saves without doorSides adopt empty history.",
+    "Initial unvisited destination uses authored walkable front; latest successful departure becomes its remembered return side.",
+    "Fresh playtests remain isolated; existing saved playtests retain history when saved with this iteration.",
+    "Explicit advanced coordinate/map-spawn transfers remain available; the side rule is for actual paired-door destinations across all effect styles.",
+    "0.16.3/0.16.4 desktop save profile retained; first-person zoom remains disabled.",
+    "Previous Windows releases and Git history preserved."
+  ],
+  "limits": [
+    "100,000 unique remembered doors; capacity checked before transfer; no silent eviction.",
+    "Missing/ambiguous automatic pairing rejects; choose named destination door when needed.",
+    "Test diagnostics and temporary profiles excluded from shipping package."
+  ],
+  "nativeHarnessNote": "The final acceptance waits for the initial native navigation before test reload; an earlier harness navigation race was corrected. No engine workaround was introduced."
+}

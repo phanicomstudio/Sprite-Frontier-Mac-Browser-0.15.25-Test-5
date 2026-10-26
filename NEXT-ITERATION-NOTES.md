@@ -118,3 +118,8 @@ User reports that plum fog covers the sky, especially noticeably in vector mode.
 ## October 26, 2026 - 0.16.4 implementation of banked input/sky work
 
 The user subsequently authorized the next iteration in Git plus a local PC version only. The two preceding BANKED entries are historical intake, not the current status. See ITERATION-0.16.4.md and RELEASE-VALIDATION-0.16.4.json for implementation and measured delivery gates. Existing sprite presentation, weapon spread, collision and authoring systems remain in place.
+
+
+## October 26, 2026 - 0.16.5 door return-side correction
+
+User reported a DOOM-transition return spawning behind the original entrance, facing the wrong way. All paired-door transition styles now retain the successful approach side and align outward actor/camera/cursor facing. This supersedes unconditional authored-front return placement from 0.16.3/0.16.4. See ITERATION-0.16.5.md for persistence, blocked arrivals and validation.
