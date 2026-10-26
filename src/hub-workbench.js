@@ -1533,6 +1533,8 @@
   }
   /* @function hubWorkbench.doorDeparture165 — Inputs: source world/cell ID, transfer request (sourceDoorId from real interaction) and live player in world metres. Returns detached {map,doorId,side} or null for non-door/ambiguous legacy transfers. Projects approach onto the door's authored horizontal normal; exact-plane interaction falls back to opposite movement/facing. Does not mutate state, maps or actors. Effect names never affect side selection. */
   function doorDeparture165(world,map,exit,player) {
+    // Ordinary map exits/teleports must not overwrite a nearby door's remembered side.
+    if(!exit.sourceDoorId && exit.kind!=="door")return null;
     const candidates=[];
     for(const door of world.events || []) {
       const link=door.extensions?.hub;
