@@ -237,3 +237,7 @@ src/sun-shadows.js:52
 src/sun-shadows.js:72
 
 @function sunShadows.connected163 — Inputs: grid vertex index. Returns whether projected receiver exists and agrees with the first receiver, avoiding stretched shadows across disconnected surfaces.
+
+## Local build follow-up
+
+October 26: desktopExport.validate (tools/desktop-export.cjs) now matches the current runtime-export omission inventory, including authoring scene/workspace and Sprite Fusion editor payload. It still compares exact installed script/style ownership and runtime bootstrap before any native chooser. desktop.cjs keeps its existing lifecycle/IPC handlers but isolates the 0.16.3 user-data directory. No input path or sender guard is relaxed.

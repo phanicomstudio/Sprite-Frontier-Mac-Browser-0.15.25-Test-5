@@ -1,7 +1,7 @@
 {
   "date": "2026-10-26",
   "version": "0.16.3",
-  "delivery": "source review branch; not a native packaged release",
+  "delivery": "full local Windows and Mac/browser packages; Git review preserved",
   "tested": [
     "tests/function-comments1516.cjs",
     "tests/iteration163.cjs",
@@ -15,7 +15,8 @@
     "tests/lighting1524.cjs",
     "tests/sky-panorama1524.cjs",
     "tests/fog10.cjs",
-    "tests/fixed-diagonals159.cjs"
+    "tests/fixed-diagonals159.cjs",
+    "tests/desktop-export1524.cjs"
   ],
   "evidence": {
     "pairedDoorPositions": {
@@ -52,7 +53,18 @@
     "Collision-disabled decoration is not a shadow receiver; only nearby budgeted sprites cast sun silhouettes.",
     "No full scene sunlight shadow mapping, automatic time of day or local-light mesh shadow caster overhaul.",
     "Native chooser test needs prior interactive evidence; an independently generated production-descriptor runtime was tested instead.",
-    "Windows/Mac milestone packaging is not part of this routine Git source delivery."
+    "Mac/browser package tested in Chromium; no macOS hardware test was performed."
   ],
-  "functionCommentCoverage": 6279
+  "functionCommentCoverage": 6279,
+  "nativeWindowsAcceptance": {
+    "runtime": "Electron 44.5.1",
+    "isolatedProfile": true,
+    "mutedTest": true,
+    "checks": "Production editor, paired saloon transfers both ways, movement/Undo, atmosphere forms, receiver height/mesh tests, outdoor GPU sun pass, runtime descriptor generation; zero page errors",
+    "cpuDrawMedianMs": {
+      "baseline": 11.4,
+      "withShadows": 13.2
+    },
+    "diagnostics": "Preserved outside release folders in work/native163-evidence"
+  }
 }

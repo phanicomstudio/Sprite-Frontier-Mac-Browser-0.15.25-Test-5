@@ -1,6 +1,6 @@
 # Sprite Frontier 0.16.3 — door authoring and atmosphere
 
-October 26, 2026. Source iteration on a review branch; prior releases and main are preserved. This document describes implemented behavior, not a claim that Windows/Mac milestone packages have been released.
+October 26, 2026. Source iteration on a review branch; prior releases and main are preserved. The user additionally requested complete local Windows and Mac/browser packages. Their ZIPs and expanded folders are delivered separately from Git.
 
 ## Doors
 
@@ -38,4 +38,8 @@ Limits: this is coarse, budgeted sprite-to-receiver projection, not full scene s
 
 Focused source and real-browser tests cover named/ambiguous door pairing, exact one-foot positions and away-facing transfers both ways, shared X-handle movement and single Undo, appearance form/Undo, default darkness/falloff, receiver heights on flat ground/raised terrain/step geometry and a triangle-mesh receiver, live outdoor GPU shadow pass and bounded rays. Independent runtime-package startup checks clean gameplay DOM, source closure, F2 guard, pause/options and inventory. Sky GPU authoring tests cover panorama colors, rotation and wrap continuity. Projectile, lighting, fixed movement, workspace, normal-generator and comment-coverage regressions are checked separately.
 
-Measured synchronous CPU draw medians in the headless browser scene varied by run; shadow overhead was about 1.5–3.8 ms. This is relative CPU evidence, not a desktop GPU/60 FPS guarantee. No full Windows/Mac milestone package is claimed by this source review.
+Measured synchronous CPU draw medians in the headless browser scene varied by run; shadow overhead was about 1.5–3.8 ms. This is relative CPU evidence, not a desktop GPU/60 FPS guarantee. The additional Windows native acceptance passed against the staged executable (Electron 44.5.1), with an isolated muted diagnostic profile and no page errors. Its CPU draw medians were 11.4 ms without sun silhouettes and 13.2 ms with them. Diagnostics were removed from distributions and retained as workspace evidence. The browser package is checked separately; macOS hardware testing was not available.
+
+## Additional local-build request
+
+The Windows app uses its own Sprite-Frontier-0.16.3 profile. Prior profiles/releases are not modified; export a project from the older version and use Open Project in the new version to bring maps across. Source and packages retain original comments, assets, notices and earlier guides. The Windows export descriptor gate was corrected to match the current authoring-only modules and Sprite Fusion payload omission, with exact inventory/style/sender guards retained. Tests reject forged extra scripts, external resources, changed styles and missing runtime bootstrap. This fix is also committed to the same Git review.

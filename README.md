@@ -181,3 +181,5 @@ Current main is 0.16.2. See [rollback and release storage](docs/GITHUB-HISTORY.m
 ## October 26, 2026 — 0.16.3 source review
 
 Door pairing, shared movement/rotation handles and the first legacy rendering profile are implemented on the 0.16.3 review branch. Additional user direction makes ambient darkness, subtle player-light falloff and Dusty Plum distance fog defaults, with stronger per-map sky color and outdoor-only sprite sun silhouettes that deform across receiving surfaces. See [0.16.3 behavior, authoring and limits](ITERATION-0.16.3.md). Earlier releases, source explanations and locked sprite presentation remain preserved. Main remains the released 0.16.2 until review/merge; routine source delivery uses a pull request.
+
+October 26 local-delivery follow-up: complete Windows and Mac/browser packages are supplied in addition to this Git source review. The Windows build has an independent 0.16.3 profile and passed native acceptance. Its Export Game inventory gate now matches the redesigned editor and is covered by strict validation tests. See LOCAL-0.16.3.md.
