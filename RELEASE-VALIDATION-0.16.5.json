@@ -730,7 +730,8 @@
     "functionCommentCoverage": {
       "passed": true,
       "functions": 6347
-    }
+    },
+    "ordinaryExitsCannotOverwriteDoorHistory": true
   },
   "performance": {
     "newFramePasses": 0,

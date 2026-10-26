@@ -10,7 +10,7 @@ The rule is shared by DOOM melt, cinematic 3D doors, fades and immediate cuts. I
 
 Destination doors not previously used retain their authored walkable-side default. Once a door is used, the latest successful approach side becomes its return side. New ordinary doors already default to automatic reciprocal pairing. Named door selections still identify exact pairs when multiple doors exist; ambiguous automatic pairings reject rather than guess. Explicit advanced coordinate/map-spawn transfers remain available and are not silently converted into paired-door links.
 
-If the remembered arrival side is blocked, the transfer rejects visibly. It never searches the opposite side as a fallback. Source-door identity comes from the actual event interaction, so several doors between the same two cells do not share a single side record. Legacy direct travel callers may infer a source only when exactly one matching door exists.
+If the remembered arrival side is blocked, the transfer rejects visibly. It never searches the opposite side as a fallback. Source-door identity comes from the actual event interaction, so several doors between the same two cells do not share a single side record. Legacy direct door requests may infer a source only when exactly one matching door exists. Ordinary map exits and teleports never overwrite door approach history.
 
 ## Persistence and compatibility
 
