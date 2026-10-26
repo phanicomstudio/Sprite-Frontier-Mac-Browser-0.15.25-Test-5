@@ -1,3 +1,4 @@
+/* October 26, 2026 — 0.16.5: remembered approach sides supersede always using the destination authored normal on return trips. The same paired-door resolver serves every transfer presentation. */
 /* 2026-10-09: cell authoring and static inventory placement. This adapter keeps
 
 
@@ -1406,7 +1407,7 @@
       if (!raw) return false;
       const hub = validateEvent(raw);
       if (hub.kind === "door") {
-        api.travel(hub);
+        api.travel({...hub,sourceDoorId:hit.event.id});
         return true;
       }
       storageDialog(hit.event, hub);
@@ -1514,8 +1515,8 @@
   }
 
   /* October 26, 2026: paired-door arrivals supersede coordinate picking as the new-door default; explicit legacy arrivals remain valid. */
-  /* @function hubWorkbench.doorArrival163 — Inputs: destination world, source cell ID and arrival selector (auto-door or door:eventID). Returns fresh world-metre position/yaw radians, or null if missing/ambiguous. Door local +Y is its walkable front; model Z rotation is degrees. Uses authored arrivalYaw when supplied; never guesses between several return doors or mutates maps. Runtime collision checks must accept the result before transfer. */
-  function doorArrival163(world, source, selector) {
+  /* @function hubWorkbench.doorArrival163 — Inputs: destination world, source cell ID and arrival selector (auto-door or door:eventID). October 26 current inputs additionally accept optional saved hub store and destination cell ID. Returns fresh world-metre position/yaw radians on its remembered approach side (otherwise authored front), or null if missing/ambiguous. Door local +Y is its walkable front; model Z rotation is degrees. Uses authored arrivalYaw when supplied; never guesses between several return doors or mutates maps. Runtime collision checks must accept the result before transfer. */
+  function doorArrival163(world, source, selector, store, destinationMap) {
     const candidates=[];
     for(const event of world.events || []) {
       const link=event.extensions?.hub;
@@ -1524,9 +1525,27 @@
     }
     if(candidates.length!==1)return null;
     const door=candidates[0], degrees=door.extensions.hub.arrivalYaw;
-    const yaw=degrees===undefined ? -(door.spatial?.rotation?.[2]||0)*Math.PI/180 : degrees*Math.PI/180;
+    const baseYaw=degrees===undefined ? -(door.spatial?.rotation?.[2]||0)*Math.PI/180 : degrees*Math.PI/180;
+    const side=root.FrontierHubState?.doorSide165(store,destinationMap,door.id) ?? 1;
+    const yaw=baseYaw+(side<0 ? Math.PI : 0);
     return {x:door.x+Math.sin(yaw)*0.3048,y:door.y+Math.cos(yaw)*0.3048,
       ...(door.heightOffset===undefined ? {} : {z:(root.FrontierTerrain?.height(world,door.x,door.y)||0)+door.heightOffset}),yaw,doorId:door.id};
   }
-  root.FrontierHubWorkbench = { validateEvent, create, doorArrival163 };
+  /* @function hubWorkbench.doorDeparture165 — Inputs: source world/cell ID, transfer request (sourceDoorId from real interaction) and live player in world metres. Returns detached {map,doorId,side} or null for non-door/ambiguous legacy transfers. Projects approach onto the door's authored horizontal normal; exact-plane interaction falls back to opposite movement/facing. Does not mutate state, maps or actors. Effect names never affect side selection. */
+  function doorDeparture165(world,map,exit,player) {
+    const candidates=[];
+    for(const door of world.events || []) {
+      const link=door.extensions?.hub;
+      if(link?.kind!=="door")continue;
+      if(exit.sourceDoorId ? door.id===exit.sourceDoorId : link.map===exit.map)candidates.push(door);
+    }
+    if(candidates.length!==1)return null;
+    const door=candidates[0],degrees=door.extensions.hub.arrivalYaw;
+    const yaw=degrees===undefined ? -(door.spatial?.rotation?.[2]||0)*Math.PI/180 : degrees*Math.PI/180;
+    const nx=Math.sin(yaw),ny=Math.cos(yaw);
+    let approach=(player.x-door.x)*nx+(player.y-door.y)*ny;
+    if(Math.abs(approach)<0.01)approach=-((player.movementFacing?.x ?? player.facingX ?? 0)*nx+(player.movementFacing?.y ?? player.facingY ?? 1)*ny);
+    return {map,doorId:door.id,side:approach<0 ? -1 : 1};
+  }
+  root.FrontierHubWorkbench = { validateEvent, create, doorArrival163, doorDeparture165 };
 })(typeof window === "undefined" ? globalThis : window);
