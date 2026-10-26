@@ -18,11 +18,32 @@
     "tests/fixed-diagonals159.cjs"
   ],
   "evidence": {
-    "pairedDoorPositions": {"hub": [16, 14.3048], "saloon": [12, 17.1952]},
-    "receiverHeightsMetres": {"flat": 0.008, "hill": 1.008, "step": 2.008, "triangleMesh": 2.00809},
+    "pairedDoorPositions": {
+      "hub": [
+        16,
+        14.3048
+      ],
+      "saloon": [
+        12,
+        17.1952
+      ]
+    },
+    "receiverHeightsMetres": {
+      "flat": 0.008,
+      "hill": 1.008,
+      "step": 2.008,
+      "triangleMesh": 2.00809
+    },
     "mixedReceiverGridDistinctHeights": 2,
-    "shadowBudget": {"casters": 8, "maximumRebuildsPerFrame": 2, "maximumReceiverRaysPerFrame": 90},
-    "observedMedianCpuOverheadMsRange": [0.9, 3.8],
+    "shadowBudget": {
+      "casters": 8,
+      "maximumRebuildsPerFrame": 2,
+      "maximumReceiverRaysPerFrame": 90
+    },
+    "observedMedianCpuOverheadMsRange": [
+      0.9,
+      3.8
+    ],
     "runtimePackageFiles": 482
   },
   "limitations": [
@@ -32,5 +53,6 @@
     "No full scene sunlight shadow mapping, automatic time of day or local-light mesh shadow caster overhaul.",
     "Native chooser test needs prior interactive evidence; an independently generated production-descriptor runtime was tested instead.",
     "Windows/Mac milestone packaging is not part of this routine Git source delivery."
-  ]
+  ],
+  "functionCommentCoverage": 6279
 }
