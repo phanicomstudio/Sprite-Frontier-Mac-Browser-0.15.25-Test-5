@@ -1,3 +1,4 @@
+/* October 26, 2026: default radius lighting is enabled with 0.4 ambient; a subtle warm player light defaults on with six-metre smooth falloff. Earlier disabled-default comments below are superseded; explicit revision-1 map overrides survive. */
 /* October 12, 2026: independently authored radius lighting. Emission is separate
  * from enemy detection and exploration. No game assets or third-party lighting
  * implementation are used. World coordinates are metres with Z up. */
@@ -57,8 +58,8 @@
   /* @function localLighting.validate — Inputs: optional cell settings. Returns: independent lighting record; disabled by default preserves earlier cell appearance. Throws invalid capacities/parameters. Player/projectile emission is opt-in, and authored sources are limited to 128. */
   function validate(value = {}) {
     const v = {
-      enabled: false,
-      ambient: 0.35,
+      enabled: true,
+      ambient: 0.4,
       budget: 8,
       steps: 0,
       lights: [],
@@ -88,8 +89,9 @@
     return {
       ...v,
       lights,
+      sun:sun163(v.sun),
       player: source(
-        { enabled: false, radius: 4, z: 1.2, ...v.player },
+        { enabled: true, radius: 6, intensity: 0.45, falloff:2, color:"#fff0dc", z: 1.2, ...v.player },
         "player-light",
       ),
       projectiles: source(
@@ -428,7 +430,36 @@
     }
     return out;
   }
-  root.FrontierLocalLighting = {
+  /* October 26: legacy appearance is the default image treatment; explicit lighting remains independent. No geometry, billboard, UI typography or normal-map data is altered. */
+  /* @function localLighting.sun163 — Inputs: optional per-map sun settings. Returns bounded directional ground-shadow configuration; azimuth/elevation use degrees, opacity 0–0.6. Defaults enabled outdoors; render owner categorically excludes interiors. Invalid values throw before adoption. */
+  function sun163(value={}){const v={enabled:true,azimuth:135,elevation:45,opacity:0.24,...value};if(typeof v.enabled!=="boolean")throw Error("Sun enabled must be Boolean.");finite(v.azimuth,"Sun azimuth",-36000,36000);finite(v.elevation,"Sun elevation",10,85);finite(v.opacity,"Sun shadow opacity",0,0.6);return v;}
+  /* @function localLighting.spriteSunShadow163 — Inputs: active drawing adapter, live scene, projection camera, sprite-bearing entity and world-to-screen callback. Returns Boolean for a drawn alpha silhouette. Projects current artwork frame onto the local horizontal ground plane away from sun; reuses image/crop pools and restores all drawing state. Outdoors only, skips submerged/dead/missing frames and excessive offscreen shadows. This is a bounded ground-plane effect, not mesh/terrain shadow mapping or roof occlusion; it never changes locked actor billboarding. */
+  function spriteSunShadow163(ctx,game,cam,entity,project){
+    const world=game.sourceWorld,settings=world.lighting;
+    if((world.interior&&!world.interior.outdoor) || !settings?.enabled || entity.dead || !(entity.kind==="player" || entity.spriteProfile))return false;
+    const sun=sun163(settings.sun);if(!sun.enabled || !sun.opacity)return false;
+    const sheet=root.FrontierSprites?.sheet(entity);if(!sheet?.image.complete || !sheet.image.naturalWidth)return false;
+    const selected=root.FrontierDirections.select(entity,cam.yaw,sheet.direction,cam),frame=sheet.frames[selected.row*(sheet.columns||3)+selected.column];if(!frame)return false;
+    const z=entity.z ?? root.FrontierTerrain.height(world,entity.x,entity.y),water=root.FrontierWater?.level(world,entity.x,entity.y);if(Number.isFinite(water)&&water>z+0.05)return false;
+    const height=entity.height||1.65,metres=height/(sheet.referenceHeight||310),width=frame.w*metres,length=Math.min(8,frame.h*metres/Math.tan(sun.elevation*Math.PI/180)),angle=sun.azimuth*Math.PI/180;
+    const left=-frame.anchorX*metres,sideX=Math.cos(cam.yaw),sideY=-Math.sin(cam.yaw),dx=-Math.sin(angle)*length,dy=-Math.cos(angle)*length;
+    const bottom=project(cam,entity.x+sideX*left,entity.y+sideY*left,z+0.015),right=project(cam,entity.x+sideX*(left+width),entity.y+sideY*(left+width),z+0.015),top=project(cam,entity.x+sideX*left+dx,entity.y+sideY*left+dy,z+0.015);
+    if(!bottom||!right||!top || Math.hypot(top.x-bottom.x,top.y-bottom.y)>2000)return false;
+    const tint=ctx.assetLightTint,pools=ctx.assetPools,glow=ctx.assetGlow;ctx.save();
+    try{ctx.matrix=[(right.x-bottom.x)/frame.w,(right.y-bottom.y)/frame.w,(bottom.x-top.x)/frame.h,(bottom.y-top.y)/frame.h,top.x,top.y];ctx.globalAlpha=sun.opacity;ctx.assetLightTint=[0,0,0];ctx.assetPools=null;ctx.assetGlow=false;ctx.fogDepth=bottom.depth;ctx.drawImage(sheet.image,frame.x,frame.y,frame.w,frame.h,0,0,frame.w,frame.h);}
+    finally{ctx.restore();ctx.assetLightTint=tint;ctx.assetPools=pools;ctx.assetGlow=glow;}
+    return true;
+  }
+  /* @function localLighting.appearance163 — Inputs: optional per-cell appearance settings. Returns validated independent legacy/neutral profile with bounded contrast/saturation and softness in CSS pixels. Defaults provide restrained late-1990s image treatment; invalid input throws before project adoption. This is image treatment, not a replacement material or shadow renderer. */
+  function appearance163(value={}){
+    const v={mode:"legacy",contrast:1.04,saturation:0.94,softness:0.15,...value};
+    if(!["legacy","neutral"].includes(v.mode))throw Error("Choose legacy or neutral rendering.");
+    finite(v.contrast,"Image contrast",0.5,1.5);finite(v.saturation,"Image saturation",0,2);finite(v.softness,"Image softness",0,1);
+    return v;
+  }
+  /* @function localLighting.appearanceFilter163 — Inputs: validated or partial cell appearance. Returns CSS filter text for world canvas only; neutral bypasses treatment. Does not alter HUD/editor text, pixels stored in assets, collision or normal-map caches. */
+  function appearanceFilter163(value){const v=appearance163(value);return v.mode==="neutral" ? "none" : "contrast("+v.contrast+") saturate("+v.saturation+") blur("+v.softness+"px)";}
+  root.FrontierLocalLighting = {appearance163,appearanceFilter163,sun163,spriteSunShadow163,
     validate,
     source,
     frame,

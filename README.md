@@ -177,3 +177,7 @@ See ITERATION-0.16.2.md for isometric map creation and the textured wilderness t
 ## GitHub history (October 24, 2026)
 
 Current main is 0.16.2. See [rollback and release storage](docs/GITHUB-HISTORY.md).
+
+## October 26, 2026 — 0.16.3 source review
+
+Door pairing, shared movement/rotation handles and the first legacy rendering profile are implemented on the 0.16.3 review branch. Additional user direction makes ambient darkness, subtle player-light falloff and Dusty Plum distance fog defaults, with stronger per-map sky color and outdoor-only sprite sun silhouettes that deform across receiving surfaces. See [0.16.3 behavior, authoring and limits](ITERATION-0.16.3.md). Earlier releases, source explanations and locked sprite presentation remain preserved. Main remains the released 0.16.2 until review/merge; routine source delivery uses a pull request.

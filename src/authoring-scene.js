@@ -69,7 +69,7 @@
       if (!api.editing()) return false;
       if (!resolve(api.world(),api.active(),ref)) throw Error("The selected object no longer exists in this cell.");
       if(resolve(api.world(),api.active(),ref)?.shape==="round" && ("w" in patch || "d" in patch)) throw Error("Use the radius and arc controls for round geometry.");
-      const allowed = ref.kind === "primitive" ? ["name","x","y","z","w","d","h","yaw","texture","tileSize","textureMapping","textureRotation","textureOffsetU","textureOffsetV","preserveAspect","color"] : ["name","x","y"];
+      const allowed = ref.kind === "primitive" ? ["name","x","y","z","w","d","h","yaw","texture","tileSize","textureMapping","textureRotation","textureOffsetU","textureOffsetV","preserveAspect","color"] : ref.kind === "event" ? ["name","x","y","heightOffset","spatial"] : ref.kind === "object" ? ["name","x","y","elevation"] : ["name","x","y"];
       for (const property of Object.keys(patch)) if (!allowed.includes(property)) throw Error("Use the specialized inspector for " + property + ".");
       return api.mutate(/* @function authoringScene.commitPatch — Inputs: none. Returns nothing; resolves the live source again inside the owner transaction and applies only the validated property whitelist. World validation rejects invalid values atomically. */ function(){
         const record=resolve(api.world(),api.active(),ref);
@@ -126,7 +126,33 @@
     function history() { return api.history ? {...api.history()} : {undo:0,redo:0}; }
     /* @function authoringScene.presentation — Inputs: optional validated cell-camera draft. Returns copied current settings when reading, or transaction success when writing. Rejects playtest writes; changing projection preserves room geometry and event state and participates in normal Undo. */
     function presentation(value){if(value===undefined)return root.FrontierIsometric.validate(api.world().presentation);if(!api.editing())return false;const checked=root.FrontierIsometric.validate(value);return api.mutate(/* @function authoringScene.commitCamera — Inputs: none. Stores copied cell presentation inside existing validation/history boundary; rollback retains old camera on failure. */function(){api.world().presentation=checked;});}
-    return {selection,select,snapshot,update,remove,subscribe,refresh,list,detach,restoreGenerated,generatedEdits,history,presentation};
+    /* @function authoringScene.project163 — Inputs: world-metre XYZ. Returns current logical viewport point or null; no authored mutation, caches or history. Host owns camera/projection and runtime-mode gating. */
+    function project163(x,y,z){return api.project ? api.project(x,y,z) : null;}
+    /* @function authoringScene.transform163 — Inputs: typed reference, move/rotate, axis 0/1/2 and finite delta (metres or radians). Returns single validated history commit. Camera-facing sprites keep their locked presentation; rotation applies only to actual structural/model geometry and door arrival orientation. Unsupported axes fail explicitly rather than silently losing edits. */
+    function transform163(ref,mode,axis,delta){
+      if(!Number.isFinite(delta)||![0,1,2].includes(axis))throw Error("Invalid transform delta.");
+      const value=snapshot(ref);if(!value)throw Error("Selection is stale.");
+      if(mode==="move"){
+        const key=axis===0?"x":axis===1?"y":ref.kind==="primitive"?"z":ref.kind==="event"?"heightOffset":ref.kind==="object"?"elevation":null;
+        if(!key)throw Error("This element supports horizontal movement only.");
+        return update(ref,{[key]:(value[key]||0)+(key==="elevation"?Math.round(delta/0.3):delta)});
+      }
+      if(mode!=="rotate")throw Error("Choose Move or Rotate.");
+      if(ref.kind==="primitive" && axis===2)return update(ref,{yaw:(value.yaw||0)+delta});
+      if(ref.kind!=="event" || !value.spatial)throw Error("Rotation is available for structural surfaces and spatial events; billboard props retain their camera-facing presentation.");
+      const spatial=structuredClone(value.spatial);spatial.rotation=spatial.rotation||[0,0,0];spatial.rotation[axis]+=delta*180/Math.PI;
+      if(value.extensions?.hub?.kind==="door" && axis===2){
+        return api.mutate(/* @function authoringScene.rotateDoor163 — Inputs: none. Updates model rotation and authored walkable-side arrival facing in one transaction; failures roll back both. */function(){const door=resolve(api.world(),api.active(),ref);door.spatial=spatial;if(door.extensions.hub.arrivalYaw!==undefined)door.extensions.hub.arrivalYaw-=delta*180/Math.PI;});
+      }
+      return update(ref,{spatial});
+    }
+    /* @function authoringScene.appearance163 — Inputs: optional per-map appearance draft. Returns copied effective defaults or an undoable validated commit. Authored map/local/normal lighting is untouched; runtime writes reject. */
+    function appearance163(value){if(value===undefined)return root.FrontierLocalLighting.appearance163(api.world().appearance);if(!api.editing())return false;const checked=root.FrontierLocalLighting.appearance163(value);return api.mutate(/* @function authoringScene.commitAppearance163 — Inputs: none. Writes only isolated appearance inside the owner's rollback/history boundary; no source assets are processed. */function(){api.world().appearance=checked;});}
+    /* @function authoringScene.fog163 — Inputs: optional distance-fog draft. Returns validated effective settings, or one owner history commit; units are metres and colors #RRGGBB. Does not change sky grading or light sources. */
+    function fog163(value){if(value===undefined)return root.FrontierFog.validate(api.world().fog);if(!api.editing())return false;const checked=root.FrontierFog.validate(value);return api.mutate(/* @function authoringScene.commitFog163 — Inputs: none. Saves validated fog with migration marker so explicit disabled settings remain disabled after reload. */function(){api.world().fog=checked;api.world().atmosphereVersion=1;});}
+    /* @function authoringScene.anchor163 — Inputs: typed reference. Returns copied current world anchor or null for stale selection. Host supplies runtime-supported elevation without exposing mutable entities. */
+    function anchor163(ref){const record=snapshot(ref);return record ? (api.anchor?api.anchor(ref,record):[record.x,record.y,record.z||0]) : null;}
+    return {selection,select,snapshot,update,remove,subscribe,refresh,list,detach,restoreGenerated,generatedEdits,history,presentation,project163,transform163,appearance163,fog163,anchor163};
   }
   root.FrontierAuthoringScene = {entries,resolve,create};
 })(typeof window === "undefined" ? globalThis : window);

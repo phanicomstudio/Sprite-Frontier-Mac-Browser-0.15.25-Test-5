@@ -1,3 +1,5 @@
+/* October 26: receiver-only terrain marching uses 0.25 m steps on the metre-grid heightfield, followed by the same contact bisection. Projectile marching remains 0.05 m; mesh triangles remain exact swept queries in both modes. */
+/* October 26: optional geometryOnly sweep is reserved for sun-shadow receivers. Default projectile queries are unchanged; receiver queries omit actor bodies and nonspatial billboard props. */
 /* October 22, 2026 — independent finite-projectile implementation.
  * No Quake/OpenMW source or assets are copied. Coordinates are world metres,
  * Z up, time seconds. Supersedes spatial.advance penetration/ricochet policy.
@@ -12,7 +14,8 @@
   /* @function ballistics.box — Inputs: endpoints, authored box and projectile radius metres. Returns earliest normalized contact or null. Tests the actual rotated volume; projectiles are conservatively expanded by radius, including starting overlap. Missing blocker elevation spans -30..100 metres. No scene edits. */
   function box(a,b,e,r){return spatial.boxHit(localPoint(a,e),localPoint(b,e),{min:{x:-e.w/2,y:-e.d/2,z:0},max:{x:e.w/2,y:e.d/2,z:e.h??130}},r);}
   /* @function ballistics.sweep — Inputs: live game, world endpoints, radius metres and optional shooter ID. Returns earliest contact {t,id,kind} or null across full room volumes, model mesh/custom boxes, live bodies, terrain and map bounds. Uses the existing shared model BVH; no asset decoding or camera/cutaway filtering. Explicitly nonsolid trigger/item graphics are ignored. Zero-radius triangle queries use a 0.1mm numerical skin; tiny conservative corner contacts may precede a spherical contact. */
-  function sweep(game,a,b,r=0.015,ownerId=null){
+  /* @function ballistics.sweep163 — Inputs: game, world endpoints, radius metres, optional owner ID and geometryOnly Boolean. Returns earliest normalized contact or null without applying damage. October 26: receiver queries omit actors/nonspatial billboards and march terrain at 0.25 m; default projectile behavior and exact mesh sweeps remain unchanged. */
+  function sweep(game,a,b,r=0.015,ownerId=null,geometryOnly=false){
     let best=null;
     /* @function ballistics.take — Inputs: normalized candidate time/null, instance ID and contact kind. Returns nothing; retains earliest segment contact including exact endpoints. Equal-distance geometry wins over later body enumeration. No damage or scene mutation. */
     function take(t,id,kind){if(t!==null&&Number.isFinite(t)&&t>=0&&t<=1&&(!best||t<best.t))best={t,id,kind};}
@@ -25,7 +28,7 @@
     }
     const seen=new Set();
     for(const e of [...(game.maps?.frontier?.entities||[]),...(game.sceneEvents||[]),game.player]){
-      if(!e||seen.has(e.id)||e.id===ownerId||e.hidden||e.alive===false)continue;seen.add(e.id);
+      if(!e||seen.has(e.id)||e.id===ownerId||e.hidden||e.alive===false || (geometryOnly && (!e.spatial || e.combat || e===game.player)))continue;seen.add(e.id);
       if(e.spatial){
         if(e.spatial.collisionMode==='none')continue;
         const matrix=root.FrontierModelEvents.matrix(e);
@@ -53,7 +56,7 @@
     if(!terrainActive){} // Room floor primitives, including basements, own support.
     else if(clearance(0)<=0)take(0,null,'terrain');
     else if(world.terrain?.mode==='flat'&&!Object.keys(world.terrain?.edits||{}).length){if(clearance(1)<=0)take(clearance(0)/(clearance(0)-clearance(1)),null,'terrain');}
-    else {const steps=Math.max(1,Math.ceil(Math.hypot(b.x-a.x,b.y-a.y,b.z-a.z)/.05));for(let i=1;i<=steps;i++){if(best&&(i-1)/steps>best.t)break;if(clearance(i/steps)>0)continue;let lo=(i-1)/steps,hi=i/steps;for(let n=0;n<14;n++){const mid=(lo+hi)/2;if(clearance(mid)>0)lo=mid;else hi=mid;}take(hi,null,'terrain');break;}}
+    else {const steps=Math.max(1,Math.ceil(Math.hypot(b.x-a.x,b.y-a.y,b.z-a.z)/(geometryOnly?.25:.05)));for(let i=1;i<=steps;i++){if(best&&(i-1)/steps>best.t)break;if(clearance(i/steps)>0)continue;let lo=(i-1)/steps,hi=i/steps;for(let n=0;n<14;n++){const mid=(lo+hi)/2;if(clearance(mid)>0)lo=mid;else hi=mid;}take(hi,null,'terrain');break;}}
     for(const axis of ['x','y']){const limit=axis==='x'?(world.width??world.size):(world.height??world.size),d=b[axis]-a[axis];if(a[axis]<r||a[axis]>limit-r)take(0,null,'boundary');if(d>0&&b[axis]>limit-r)take((limit-r-a[axis])/d,null,'boundary');if(d<0&&b[axis]<r)take((r-a[axis])/d,null,'boundary');}
     return best;
   }

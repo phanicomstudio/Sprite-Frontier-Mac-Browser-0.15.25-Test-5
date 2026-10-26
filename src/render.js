@@ -693,6 +693,8 @@
       });
     // Sort far to near for billboard occlusion. Player opacity stays 1; this is not a depth-buffer renderer.
     root.FrontierWater?.draw(ctx, game, cam, project);
+    // October 26: outdoor sprite silhouettes sit on the ground pass before models/actors, independent of billboard tilt. Interiors never receive sunlight shadows.
+    // Superseded within this iteration: ground-plane prototype retained as a documented helper, not the active render path.
     root.FrontierModelRenderer?.geometry(
       ctx,
       game,
@@ -704,6 +706,7 @@
       ),
     );
     root.FrontierModelRenderer?.draw(ctx, game, cam, entities);
+    root.FrontierSunShadows?.draw163(ctx,game,cam,entities,project);
     // Only horizontal room geometry belongs to the structural background pass.
     // Legacy MZ event priority never overrides world-space camera depth.
     const layer =

@@ -66,3 +66,31 @@ Asset intake: sprites to be provided by the user. Use the existing test sprites 
 ## October 22, 2026 — enemy roster implemented in 0.15.27
 
 The roster above is implemented with Chiban and Mechanical Turk, plus readable authoring and project/event font selection. See ENEMY-EVENTS-AND-FONTS-0.15.27.md. Separate room-editor consultation remains banked; earlier roster text remains history.
+
+## October 26, 2026 — next-iteration roster: rendering direction and door authoring
+
+Status: BANKED / analysis and requirements only; no renderer or gameplay behavior changed by this entry.
+
+Source: ChatGPT chat "Alisa Rendering Techniques" (6adfa8e0-cf84-83e8-905c-2a37367d2ef0), read October 26. Five turns were available. Several assistant replies were content-reference placeholders; one detailed visual analysis and all five user messages were readable. The reader listed ten screenshot paths out of fifteen images mentioned in messages. Screenshot (11123) was inspected directly: a StarCraft Terran cinematic with strong red/green accents, warm practical light, deep shadows and softened imagery. Do not claim all reference images or hidden replies were reviewed, or that the analysis verifies Alisa's actual rendering implementation.
+
+### Rendering: default legacy real-time appearance with normal maps
+
+Explicit user decisions: target Alisa's gameplay environments and cutscene appearance, StarCraft 1 cinematics, and Castlevania 64 menus/house sequence; use legacy real-time rendering WITH normal-map additions; Blender 2.5b is a stylistic touchstone. Make this the standard appearance without requiring manual setup, while allowing overrides. This does not require installing or embedding obsolete Blender.
+
+Translate the direction into an integrated default material/lighting profile: rich diffuse textures, simple broad specular highlights, restrained reflections, staged colored key/fill lighting, selective darkness and modest image softness. Preserve normal-map sprite lighting and the existing Sprite Fusion workflow. Avoid making modern metallic/roughness materials a prerequisite. Fog, beams, glow, grading and resolution treatment are candidate supporting techniques to evaluate against references and performance, not individually confirmed new subsystems. Do not replace real-time gameplay with mandatory offline background renders; retain existing prerendered/fixed, isometric and 3D spaces.
+
+Apply defaults automatically to new content and unconfigured materials/maps. Preserve explicit authored lighting, textures, normal strength and presentation settings on existing projects; offer an undoable apply-profile operation rather than silently overwriting them. Expose readable controls under Environment/material inspection with optional advanced settings. Maintain locked 0.15.17 sprite tilt, proportions, frame/muzzle alignment and camera behavior. Gothic menu art direction concerns in-game presentation; the editor retains its readable system font and existing user font choices.
+
+Implementation assessment must distinguish missing engine features from settings already supported, check renderer/export compatibility and light/post-processing budgets, then define measurable defaults. Validate the same original test room in perspective, fixed and isometric views, with and without normal maps; verify actor/background coherence, useful dark-area visibility, text/HUD readability, save/reload, overrides and Windows/Mac browser exports. Suggested visual benchmarks: ornate warm interior, colored industrial corridor, and gothic gameplay menu. Reference artwork is inspiration, not licensed shipping assets. This roster item is not a promise that any filter can recreate detailed reference art automatically.
+
+### Paired doors: automatic destination arrival (explicit October 26 request)
+
+Default two-way links target a named reciprocating destination door, not hand-entered arrival coordinates. Place the player about one foot (0.3048 metres) in front of that door on its authored walkable exit side, facing away. Example: leaving the saloon arrives outside its entrance facing the street. Preserve advanced explicit arrival overrides. Resolve orientation from destination-door facing, check collision/clearance and floor elevation, and suppress immediate bounce-back. If a safe arrival cannot be found, report it rather than silently placing inside geometry. Validate both directions, rotated doors, camera modes, save/load and existing transition styles. Do not imply multiplayer/party support exists; apply to supported transferred actors without overlap when applicable.
+
+### Shared move/rotate controls (explicit October 26 request)
+
+Keep current free dragging and add Blender-style X/Y/Z axis movement handles and a Move/Rotate option for existing/new doors, events, props and other supported scene objects. Reuse shared selection and transforms; expose grid/angle snapping and numeric properties, with one history transaction per completed manipulation. Door rotation updates automatic arrival facing/offset consistently. Distinguish editing world axes from camera/screen axes and retain locked sprite billboarding; a facing override must not change sprite presentation.
+
+## October 26, 2026 — 0.16.3 roster implementation
+
+The preceding October 26 banked requirements now have a source implementation described in ITERATION-0.16.3.md. Later user steering adds default darkness rather than a general geometry-shadow overhaul; subtle Diablo-style player-light falloff; Dusty Plum distance fog; stronger adjustable sky saturation; outdoor-only sprite sun silhouettes; receiver deformation over terrain and geometry; and explicit performance budgets. The active sun path uses receiver-conforming meshes, superseding the initial ground-plane prototype. No Daggerfall/Diablo/Alisa assets or implementation were copied. This entry does not claim a full scene shadow mapper or released native packages.

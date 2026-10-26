@@ -9,7 +9,7 @@
     const panel = document.createElement("fieldset");
     panel.id = "skyTools";
     panel.innerHTML =
-      '<legend>Sky and distant scenery</legend><label><input id="skyEnabled" type="checkbox">Enable sky</label><label>Image panorama<select id="skyPanoramaAsset"><option value="">Procedural sky only</option></select></label><img id="skyPanoramaPreview" alt="Chosen sky preview" hidden style="max-width:100%;max-height:140px;object-fit:contain"><label>Sky orientation (degrees)<input id="skyOrientation" type="number" min="-36000" max="36000" step="15" value="0"></label><label><input id="skyWrapBlend" type="checkbox" checked>Blend horizontal wrap seams</label><p>Wrap blending combines two samples of the original sky to hide seams. Source images remain unchanged. Sky is unlit and has no collision. Optional cloud and mountain layers draw over it.</p><div id="skyLayerRows"></div><button id="skyAddCloud">Add cloud layer</button><button id="skyAddMountain">Add mountain layer</button><button id="skyApply">Apply sky settings</button><button id="skyReset">Reset sky draft to defaults</button><p id="skyStatus" role="status"></p>';
+      '<legend>Sky and distant scenery</legend><label><input id="skyEnabled" type="checkbox">Enable sky</label><label>Image panorama<select id="skyPanoramaAsset"><option value="">Procedural sky only</option></select></label><img id="skyPanoramaPreview" alt="Chosen sky preview" hidden style="max-width:100%;max-height:140px;object-fit:contain"><label>Sky orientation (degrees)<input id="skyOrientation" type="number" min="-36000" max="36000" step="15" value="0"></label><label>Sky saturation<input id="skySaturation" type="number" min="0" max="2" step="0.05" value="1.2"></label><label>Sky contrast<input id="skyContrast" type="number" min="0.5" max="1.5" step="0.05" value="1.05"></label><label><input id="skyWrapBlend" type="checkbox" checked>Blend horizontal wrap seams</label><p>Wrap blending combines two samples of the original sky to hide seams. Source images remain unchanged. Sky is unlit and has no collision. Optional cloud and mountain layers draw over it.</p><div id="skyLayerRows"></div><button id="skyAddCloud">Add cloud layer</button><button id="skyAddMountain">Add mountain layer</button><button id="skyApply">Apply sky settings</button><button id="skyReset">Reset sky draft to defaults</button><p id="skyStatus" role="status"></p>';
     document.getElementById("editor").append(panel);
     /* @function skyEditor.control — Inputs: stable control ID. Returns current element or null. Read-only lookup. */
     function control(id) {
@@ -159,6 +159,8 @@
       control("skyPanoramaAsset").value = sky.panorama?.asset || "";
       control("skyOrientation").value = sky.panorama?.orientation || 0;
       control("skyWrapBlend").checked = sky.panorama?.wrapBlend ?? true;
+      control("skySaturation").value=sky.panorama?.saturation ?? 1.2;
+      control("skyContrast").value=sky.panorama?.contrast ?? 1.05;
       layerDraft = structuredClone(sky.layers);
       layerRows();
       preview();
@@ -182,6 +184,7 @@
               asset: control("skyPanoramaAsset").value,
               orientation: Number(control("skyOrientation").value),
               wrapBlend: control("skyWrapBlend").checked,
+              saturation:Number(control("skySaturation").value),contrast:Number(control("skyContrast").value),
             };
           const value = root.FrontierSky.validate(draft),
             accepted = api.mutate(

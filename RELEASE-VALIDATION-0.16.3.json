@@ -1,0 +1,36 @@
+{
+  "date": "2026-10-26",
+  "version": "0.16.3",
+  "delivery": "source review branch; not a native packaged release",
+  "tested": [
+    "tests/function-comments1516.cjs",
+    "tests/iteration163.cjs",
+    "tests/browser/iteration163.cjs",
+    "tests/browser/runtime163.cjs",
+    "tests/browser/sky1524.cjs",
+    "tests/browser/iteration162.cjs",
+    "tests/browser/authoring160.cjs",
+    "tests/browser/ballistics1526.cjs",
+    "tests/door-hub1517.cjs",
+    "tests/lighting1524.cjs",
+    "tests/sky-panorama1524.cjs",
+    "tests/fog10.cjs",
+    "tests/fixed-diagonals159.cjs"
+  ],
+  "evidence": {
+    "pairedDoorPositions": {"hub": [16, 14.3048], "saloon": [12, 17.1952]},
+    "receiverHeightsMetres": {"flat": 0.008, "hill": 1.008, "step": 2.008, "triangleMesh": 2.00809},
+    "mixedReceiverGridDistinctHeights": 2,
+    "shadowBudget": {"casters": 8, "maximumRebuildsPerFrame": 2, "maximumReceiverRaysPerFrame": 90},
+    "observedMedianCpuOverheadMsRange": [0.9, 3.8],
+    "runtimePackageFiles": 482
+  },
+  "limitations": [
+    "Headless Chromium CPU comparison is not native GPU frame-rate certification.",
+    "Coarse shadow receiver grids omit triangles crossing disconnected receivers; small boundary gaps may remain.",
+    "Collision-disabled decoration is not a shadow receiver; only nearby budgeted sprites cast sun silhouettes.",
+    "No full scene sunlight shadow mapping, automatic time of day or local-light mesh shadow caster overhaul.",
+    "Native chooser test needs prior interactive evidence; an independently generated production-descriptor runtime was tested instead.",
+    "Windows/Mac milestone packaging is not part of this routine Git source delivery."
+  ]
+}

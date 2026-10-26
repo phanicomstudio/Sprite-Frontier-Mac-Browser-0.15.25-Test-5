@@ -1,3 +1,4 @@
+/* October 26: panorama saturation defaults to 1.2 and contrast to 1.05; shader-only grading preserves original sky artwork and sampling/wrap geometry. Per-map values persist. */
 /* October 13, 2026: image panoramas retain the supplied source pixels. Optional
  * dual-sample wrapping makes the material continuous at both horizontal seams;
  * this is renderer sampling, not a claim that the original image is seamless.
@@ -24,7 +25,7 @@
   void main(){vScreen=aPosition;gl_Position=vec4(aPosition.x*2.-1.,1.-aPosition.y*2.,0.,1.);}`;
   const fragment = `#version 300 es
   precision highp float;in vec2 vScreen;out vec4 color;uniform sampler2D uImage;
-  uniform vec4 uCamera;uniform vec4 uView;uniform float uBlend;
+  uniform vec4 uCamera;uniform vec4 uView;uniform float uBlend;uniform vec2 uPunch;
   void main(){
     float side=(vScreen.x*uView.x-uView.z)/360.;
     float up=(uView.w-vScreen.y*480.)/360.;
@@ -37,8 +38,11 @@
     // where the half-turn sample wraps. Neither discontinuity survives blending.
     float weight=pow(sin(u*3.14159265359),2.);
     color=mix(first,mix(texture(uImage,vec2(fract(u+.5),v)),first,weight),uBlend);
+    float grey=dot(color.rgb,vec3(.2126,.7152,.0722));
+    color.rgb=clamp((mix(vec3(grey),color.rgb,uPunch.x)-.5)*uPunch.y+.5,0.,1.);
   }`;
   /* @function skyPanorama.validate — Inputs: optional saved panorama record. Returns sanitized record or undefined. Accepts only fixed catalog IDs, finite orientation degrees -36000–36000 and explicit wrapBlend boolean. Throws malformed input before map commit; no asset loading. */
+  /* @function skyPanorama.validate163 — Inputs: optional saved panorama settings. Returns normalized asset/orientation/wrap record plus finite saturation (default 1.2, range 0–2) and contrast (1.05, range 0.5–1.5). Invalid data throws before adoption; source pixels remain unmodified. October 26 extends the retained contract above. */
   function validate(value) {
     if (value === undefined) return undefined;
     if (
@@ -52,13 +56,16 @@
       ) ||
       !Number.isFinite(value.orientation) ||
       Math.abs(value.orientation) > 36000 ||
-      typeof value.wrapBlend !== "boolean"
+      typeof value.wrapBlend !== "boolean" ||
+      !Number.isFinite(value.saturation ?? 1.2) || (value.saturation ?? 1.2)<0 || (value.saturation ?? 1.2)>2 ||
+      !Number.isFinite(value.contrast ?? 1.05) || (value.contrast ?? 1.05)<0.5 || (value.contrast ?? 1.05)>1.5
     )
       throw Error("Invalid image sky panorama.");
     return {
       asset: value.asset,
       orientation: value.orientation,
       wrapBlend: value.wrapBlend,
+      saturation:value.saturation ?? 1.2,contrast:value.contrast ?? 1.05,
     };
   }
   /* @function skyPanorama.image — Inputs: trusted catalog identity. Returns ready HTML image or null during loading/failure. Loads each of four assets once, rejects images over 4096 per side and reports failure once. No pixel readback or per-frame image allocation. */
@@ -139,6 +146,7 @@
             uCamera: { value: new Float32Array(4), type: "vec4<f32>" },
             uView: { value: new Float32Array(4), type: "vec4<f32>" },
             uBlend: { value: 1, type: "f32" },
+            uPunch:{value:new Float32Array([1.2,1.05]),type:"vec2<f32>"},
           },
         },
       });
@@ -170,6 +178,7 @@
       camera.cy ?? 96,
     ]);
     uniforms.uBlend = settings.wrapBlend ? 1 : 0;
+    uniforms.uPunch.set([settings.saturation ?? 1.2,settings.contrast ?? 1.05]);
     ctx.flushStroke();
     ctx.graphic = null;
     ctx.app.stage.addChild(state.mesh);
