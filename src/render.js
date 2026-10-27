@@ -708,6 +708,8 @@
     );
     root.FrontierModelRenderer?.draw(ctx, game, cam, entities);
     root.FrontierSunShadows?.draw163(ctx,game,cam,entities,project);
+    // October 26: subtle isometric contact blobs remain on receiving floors while jumping; sunlight remains a separate effect.
+    root.FrontierContactShadows?.draw166(ctx,game,cam,entities,project);
     // Only horizontal room geometry belongs to the structural background pass.
     // Legacy MZ event priority never overrides world-space camera depth.
     const layer =

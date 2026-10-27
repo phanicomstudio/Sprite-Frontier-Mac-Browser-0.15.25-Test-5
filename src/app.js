@@ -600,6 +600,75 @@
       if(point)game.pointer={x:point.x,y:point.y};
     } else game.camera.yaw=entry.yaw;
   }
+  /* @function app.arrivalPreview166 — Inputs: destination authored world and world-metre arrival. Returns a disposable collision/camera query context with destination event models and actor at rest. Reuses shared assets, never starts simulation, decodes artwork or mutates active actors/maps. Called only during transfer preflight. */
+  function arrivalPreview166(destination,entry) {
+    const player={...game.player,x:entry.x,y:entry.y,z:entry.z??FrontierTerrain.height(destination,entry.x,entry.y)};
+    return {sourceWorld:destination,player,camera:{...game.camera,yaw:entry.yaw},viewWidth:game.viewWidth,sceneEvents:(destination.events||[]).map(
+      /* @function app.arrivalHost166 — Inputs: authored destination event. Returns detached world model host for shared collision queries; source transform and assets remain unchanged. */
+      function(e){return {...e,modelId:e.spatial?.modelId||e.modelId,z:FrontierTerrain.height(destination,e.x,e.y)+(e.heightOffset||0)};}
+    )};
+  }
+  /* @function app.arrivalBlocked166 — Inputs: destination world and candidate world-metre arrival. Returns whether room, solid event, prop or actual model collision blocks the player's standing body. Uses source session conditions as before; queries never move live state or choose the opposite door side. */
+  function arrivalBlocked166(destination,entry) {
+    return (
+      FrontierInterior.blocked(
+        destination,
+        entry.x,
+        entry.y,
+        0.13,
+        entry.z ?? FrontierTerrain.height(destination, entry.x, entry.y),
+      ) ||
+      destination.events.some(
+        /* @function app.callback.27 — Provides the callback for dest world events some. Inputs: e. Uses: frontier events active page. Returns: chain and the inverse of page through and page priority does not equal "below" and page priority does not equal "above" and math hypot using e x minus entry x, e y minus entry y is less than 0.55. */ (
+          e,
+        ) => {
+          const page = e.pages[FrontierEvents.activePage(e, session.state)];
+          return (
+            page?.solid &&
+            !page.through &&
+            page.priority !== "below" &&
+            page.priority !== "above" &&
+            Math.hypot(e.x - entry.x, e.y - entry.y) < 0.55
+          );
+        },
+      ) ||
+      destination.objects.some(
+        /* @function app.callback.28 — Returns math hypot using e x minus entry x, e y minus entry y is less than e radius plus 0.13. Inputs: e. Returns: math hypot using e x minus entry x, e y minus entry y is less than e radius plus 0.13. */ (
+          e,
+        ) => Math.hypot(e.x - entry.x, e.y - entry.y) < e.radius + 0.13,
+      )
+
+    ) || !!FrontierModelCollision?.blocked(arrivalPreview166(destination,entry),entry.x,entry.y,.13);
+  }
+  /* @function app.arrivalPathBlocked166 — Inputs: destination and paired-door candidate in world metres. Returns whether geometry obstructs the same-side corridor from just outside the destination door to the standing point. Three body-height swept rays include thin walls/models/terrain; the destination door leaf itself is excluded because this is a transfer, not opening that leaf locally. Prevents the larger arrival offset from jumping through another wall. No actor/source mutation; evaluated only during transfer preflight. */
+  function arrivalPathBlocked166(destination,candidate) {
+    const door=destination.events.find(
+      /* @function app.arrivalDoor166 — Inputs: destination event. Returns stable target door identity match. */
+      function(e){return e.id===candidate.doorId;}
+    );
+    if(!door)return true;
+    const preview=arrivalPreview166(destination,candidate);
+    preview.sceneEvents=preview.sceneEvents.filter(
+      /* @function app.arrivalLeaf166 — Inputs: collision host. Returns whether it is not the transferred-through leaf, preserving every other obstruction. */
+      function(e){return e.id!==candidate.doorId;}
+    );
+    const x=door.x+Math.sin(candidate.yaw)*.35,y=door.y+Math.cos(candidate.yaw)*.35,z=candidate.z??FrontierTerrain.height(destination,x,y);
+    for(const height of [.16,.825,1.49])if(FrontierBallistics.sweep(preview,{x,y,z:z+height},{x:candidate.x,y:candidate.y,z:preview.player.z+height},.13,game.player.id,true))return true;
+    return false;
+  }
+  /* @function app.readableDoorArrival166 — Inputs: destination and paired-door arrival at five-foot minimum. Returns first clear same-side point with readable third-person framing, or null. Tries at most seven one-foot outward increments (5–11 feet); checks standing collision and actual collision-constrained camera/body projection. Fixed/isometric and first-person retain their own framing. No animation, actor teleport or camera clipping bypass occurs. */
+  function readableDoorArrival166(destination,entry) {
+    for(let step=0;step<7;step++) {
+      const candidate={...entry,x:entry.x+Math.sin(entry.yaw)*step*.3048,y:entry.y+Math.cos(entry.yaw)*step*.3048};
+      if(arrivalBlocked166(destination,candidate)||arrivalPathBlocked166(destination,candidate))continue;
+      const preview=arrivalPreview166(destination,candidate),camera=FrontierRender.camera(preview);
+      if(camera.orthographic || preview.camera.firstPerson)return candidate;
+      const point=FrontierRender.project(camera,preview.player.x,preview.player.y,preview.player.z);
+      const height=point&&point.scale*1.65;
+      if(point && height<=288 && point.y<=440 && point.y-height>=24)return candidate;
+    }
+    return null;
+  }
   /* @function app.attemptTravel.24 — Handles attempt travel within application input, simulation and editor coordination. Inputs: exit. Updates: travel cooldown; pending travel. Uses: map library get; dest world interior entrances find; dest world travel entrances find; log. Returns: without a result; without a result. */ function attemptTravel(
     exit,
   ) {
@@ -608,8 +677,8 @@
       pendingTravel
     )
       return;
-    const dest = mapLibrary.get(exit.map),
-      entry =
+    const dest = mapLibrary.get(exit.map);
+    let entry =
         ["auto-door"].includes(exit.entrance) || exit.entrance?.startsWith("door:")
           ? dest && FrontierHubWorkbench.doorArrival163(dest.world,mapLibrary.active,exit.entrance,hubState,exit.map)
           : exit.entrance === "spawn" && dest
@@ -637,36 +706,10 @@
     const doorDeparture=FrontierHubWorkbench.doorDeparture165(world,mapLibrary.active,exit,game.player);
     // Reserve persistence capacity before any presentation or map commit; never evict an earlier route to make room.
     if(doorDeparture && hubState.doorSides.length>=100000 && FrontierHubState.doorSide165(hubState,doorDeparture.map,doorDeparture.doorId)===undefined){log("Cannot remember another door approach; transfer cancelled.");return;}
-    if (
-      FrontierInterior.blocked(
-        dest.world,
-        entry.x,
-        entry.y,
-        0.13,
-        entry.z ?? FrontierTerrain.height(dest.world, entry.x, entry.y),
-      ) ||
-      dest.world.events.some(
-        /* @function app.callback.27 — Provides the callback for dest world events some. Inputs: e. Uses: frontier events active page. Returns: chain and the inverse of page through and page priority does not equal "below" and page priority does not equal "above" and math hypot using e x minus entry x, e y minus entry y is less than 0.55. */ (
-          e,
-        ) => {
-          const page = e.pages[FrontierEvents.activePage(e, session.state)];
-          return (
-            page?.solid &&
-            !page.through &&
-            page.priority !== "below" &&
-            page.priority !== "above" &&
-            Math.hypot(e.x - entry.x, e.y - entry.y) < 0.55
-          );
-        },
-      ) ||
-      dest.world.objects.some(
-        /* @function app.callback.28 — Returns math hypot using e x minus entry x, e y minus entry y is less than e radius plus 0.13. Inputs: e. Returns: math hypot using e x minus entry x, e y minus entry y is less than e radius plus 0.13. */ (
-          e,
-        ) => Math.hypot(e.x - entry.x, e.y - entry.y) < e.radius + 0.13,
-      )
-    ) {
-      log(entry.doorId ? "The arrival side is blocked. Clear that side; the door will not place you behind it." : "Arrival entrance is blocked. Move it in the Room editor.");
-      travelCooldown = 2;
+    if(entry.doorId)entry=readableDoorArrival166(dest.world,entry);
+    if(!entry || arrivalBlocked166(dest.world,entry)) {
+      log(entry?.doorId ? "The arrival side has no clear, readable camera space. Clear that side; the door will not place you behind it." : "No safe arrival space. Move the entrance in the Room editor.");
+      travelCooldown=2;
       return;
     }
     pendingTravel = {
@@ -2847,7 +2890,7 @@
       }
       // October 26: pixels/metre is the orthographic zoom parameter; dolly distance has no effect on this camera. Never overwrite the authored presentation scale.
       if (world.presentation?.mode === "isometric" && !game.editorFlight) {
-        const target = Math.max(12, Math.min(100, (prior?.isoScale ?? game.camera.isoScale ?? world.presentation.scale) * Math.exp(-pixels * 0.0007)));
+        const target = Math.max(12, Math.min(200, (prior?.isoScale ?? game.camera.isoScale ?? world.presentation.scale) * Math.exp(-pixels * 0.0007)));
         zoomIntent = { camera: game.camera, isoScale: target };
         return;
       }
@@ -3360,7 +3403,7 @@
     $("badge").lastElementChild.textContent =
       (world.interior?.mode === "fixed" ? "Fixed interior · " : "") +
       (game.camera.firstPerson ? "First person" : "Third person") +
-      " · prototype 0.16.5";
+      " · prototype 0.16.6";
     if (world.interior)
       $("intro").textContent =
         world.interior.mode === "fixed"
