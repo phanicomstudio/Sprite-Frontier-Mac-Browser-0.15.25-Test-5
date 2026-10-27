@@ -34,6 +34,10 @@
     {
       "owner": "tests/browser/iteration166.cjs; updated door-return165 and earlier tests",
       "contract": "Actual Chrome/native wheel/jump/door lifecycle plus pixel/timing evidence; controlled fixture settings only. Updated assertions explicitly supersede one-foot and 100 px/m historical expectations."
+    },
+    {
+      "owner": "authoringWorkspace.install; fullscreen166 UI acceptance",
+      "contract": "Moves the existing Fullscreen button to the main toolbar, retaining the original handler and export behavior. Playtest CSS keeps it above pause UI. Actual editor/playtest fullscreen entry and pause-menu exit are verified in Chrome/Windows, with asynchronous native state waits."
     }
   ]
 }

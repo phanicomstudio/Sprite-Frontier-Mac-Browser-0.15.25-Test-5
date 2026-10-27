@@ -475,7 +475,7 @@
     "contactProfileBounds": true,
     "functionCommentCoverage": {
       "passed": true,
-      "functions": 6384
+      "functions": 6394
     }
   },
   "performance": {
@@ -495,5 +495,23 @@
     "Contact effect applies to isometric geometry gameplay and static receiving geometry; prerendered artwork/perspective unchanged.",
     "Diagnostics/test profiles excluded from distribution.",
     "No new third-party code/assets or licenses."
-  ]
+  ],
+  "editorPlaytestFullscreen": {
+    "browser": {
+      "native": false,
+      "editorControlVisible": true,
+      "playtestControlVisible": true,
+      "editorFullscreen": true,
+      "playtestFullscreen": true,
+      "pauseExit": true
+    },
+    "windows": {
+      "native": true,
+      "editorControlVisible": true,
+      "playtestControlVisible": true,
+      "editorFullscreen": true,
+      "playtestFullscreen": true,
+      "pauseExit": true
+    }
+  }
 }

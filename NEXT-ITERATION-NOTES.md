@@ -128,3 +128,6 @@ User reported a DOOM-transition return spawning behind the original entrance, fa
 ## October 26, 2026 - 0.16.6 readability and jump-contact follow-up
 
 User supplied a door close-up and a preferred camera-distance reference (about five feet/five W taps), requested isometric zoom parity with normal third-person, and requested a subtle shrinking/growing ground contact blob for jump feedback. Five-foot minimum plus bounded same-side camera-safe placement supersedes the prior one-foot default; transient isometric zoom reaches 200 px/m with framing; pooled receiver-conforming contact blobs supply jump feedback. See ITERATION-0.16.6.md. First-person zoom remains disabled.
+
+
+October 26 follow-up: fullscreen remains available for editor playtesting. The original control is promoted to the main toolbar, retaining its handler and pause exit; native/browser fullscreen UI acceptance passes.
