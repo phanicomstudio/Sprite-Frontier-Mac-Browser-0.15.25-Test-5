@@ -1,3 +1,4 @@
+/* October 26, 2026 — 0.16.6: paired arrivals now begin five feet (1.524 m) away on the remembered side; app preflight may extend farther on that same side to obtain readable collision-safe third-person framing. Supersedes the one-foot offset below. */
 /* October 26, 2026 — 0.16.5: remembered approach sides supersede always using the destination authored normal on return trips. The same paired-door resolver serves every transfer presentation. */
 /* 2026-10-09: cell authoring and static inventory placement. This adapter keeps
 
@@ -1528,7 +1529,7 @@
     const baseYaw=degrees===undefined ? -(door.spatial?.rotation?.[2]||0)*Math.PI/180 : degrees*Math.PI/180;
     const side=root.FrontierHubState?.doorSide165(store,destinationMap,door.id) ?? 1;
     const yaw=baseYaw+(side<0 ? Math.PI : 0);
-    return {x:door.x+Math.sin(yaw)*0.3048,y:door.y+Math.cos(yaw)*0.3048,
+    return {x:door.x+Math.sin(yaw)*1.524,y:door.y+Math.cos(yaw)*1.524,
       ...(door.heightOffset===undefined ? {} : {z:(root.FrontierTerrain?.height(world,door.x,door.y)||0)+door.heightOffset}),yaw,doorId:door.id};
   }
   /* @function hubWorkbench.doorDeparture165 — Inputs: source world/cell ID, transfer request (sourceDoorId from real interaction) and live player in world metres. Returns detached {map,doorId,side} or null for non-door/ambiguous legacy transfers. Projects approach onto the door's authored horizontal normal; exact-plane interaction falls back to opposite movement/facing. Does not mutate state, maps or actors. Effect names never affect side selection. */

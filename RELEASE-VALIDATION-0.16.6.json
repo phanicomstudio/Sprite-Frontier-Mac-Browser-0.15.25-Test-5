@@ -1,0 +1,499 @@
+{
+  "iteration": "0.16.6",
+  "date": "2026-10-26",
+  "platformDelivery": "Windows only",
+  "cameraReproduction": {
+    "originalDoorOffsetMetres": 0.3048,
+    "originalProjectedBodyHeightPixels": 3312.6674,
+    "newMinimumMetres": 1.524,
+    "searchStepMetres": 0.3048,
+    "searchPoints": 7,
+    "maxThirdPersonBodyHeightPixels": 288
+  },
+  "realBrowserZoomJumpShadow": {
+    "native": false,
+    "zoom": {
+      "scale": 199.9994157629002,
+      "height": 329.9990360087853,
+      "top": 80,
+      "feet": 409.9990360087853,
+      "thirdHeight": 258.2608695652175,
+      "authored": 38
+    },
+    "ground": {
+      "z": 0,
+      "profile": {
+        "id": "player",
+        "height": 0,
+        "floor": 0,
+        "radius": 0.3,
+        "opacity": 0.16
+      },
+      "debug": {
+        "casters": 1,
+        "rays": 0
+      }
+    },
+    "airborne": {
+      "z": 0.8034753600000009,
+      "grounded": false,
+      "profile": {
+        "id": "player",
+        "height": 0.8034753600000009,
+        "floor": 0,
+        "radius": 0.27589573919999993,
+        "opacity": 0.12786098559999995
+      }
+    },
+    "landing": {
+      "id": "player",
+      "height": 0,
+      "floor": 0,
+      "radius": 0.3,
+      "opacity": 0.16
+    },
+    "cost": {
+      "baselineMs": 12.5,
+      "contactsMs": 13.600000023841858
+    },
+    "changedPixelChannels": 1839,
+    "errors": []
+  },
+  "realWindowsZoomJumpShadow": {
+    "native": true,
+    "zoom": {
+      "scale": 199.99933252169146,
+      "height": 329.99889866079087,
+      "top": 80,
+      "feet": 409.99889866079087,
+      "thirdHeight": 258.2608695652175,
+      "authored": 38
+    },
+    "ground": {
+      "z": 0,
+      "profile": {
+        "id": "player",
+        "height": 0,
+        "floor": 0,
+        "radius": 0.3,
+        "opacity": 0.16
+      },
+      "debug": {
+        "casters": 1,
+        "rays": 0
+      }
+    },
+    "airborne": {
+      "z": 0.7017885600000027,
+      "grounded": false,
+      "profile": {
+        "id": "player",
+        "height": 0.7017885600000027,
+        "floor": 0,
+        "radius": 0.2789463431999999,
+        "opacity": 0.1319284575999999
+      }
+    },
+    "landing": {
+      "id": "player",
+      "height": 0,
+      "floor": 0,
+      "radius": 0.3,
+      "opacity": 0.16
+    },
+    "cost": {
+      "baselineMs": 10.399999976158142,
+      "contactsMs": 7.799999952316284
+    },
+    "changedPixelChannels": 1839,
+    "errors": []
+  },
+  "realWindowsDoorArrivals": {
+    "native": true,
+    "evidence": [
+      {
+        "effect": "melt",
+        "memory": -1,
+        "x": 16,
+        "y": 11.561599999999999,
+        "doorX": 16,
+        "doorY": 14,
+        "facingX": 1.2246467991473532e-16,
+        "facingY": -1,
+        "bodyHeight": 250.82863778180345,
+        "cameraYaw": 3.141592653589793,
+        "firstPerson": false,
+        "trace": [
+          {
+            "action": "reserved",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "committed",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "completed",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "reserved",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "committed",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "completed",
+            "map": "hub-test",
+            "fade": 0
+          }
+        ]
+      },
+      {
+        "effect": "door",
+        "memory": -1,
+        "x": 16,
+        "y": 12.475999999999999,
+        "doorX": 16,
+        "doorY": 14,
+        "facingX": 1.2246467991473532e-16,
+        "facingY": -1,
+        "bodyHeight": 3201.2257991928655,
+        "cameraYaw": 3.141592653589793,
+        "firstPerson": true,
+        "trace": [
+          {
+            "action": "reserved",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "committed",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "completed",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "reserved",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "committed",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "completed",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "reserved",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "door-ready",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "committed",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "completed",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "reserved",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "door-ready",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "committed",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "completed",
+            "map": "hub-test",
+            "fade": 0
+          }
+        ]
+      },
+      {
+        "effect": "fade",
+        "memory": -1,
+        "x": 16,
+        "y": 11.561599999999999,
+        "doorX": 16,
+        "doorY": 14,
+        "facingX": 1.2246467991473532e-16,
+        "facingY": -1,
+        "bodyHeight": 250.82863778180345,
+        "cameraYaw": 3.141592653589793,
+        "firstPerson": false,
+        "trace": [
+          {
+            "action": "committed",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "completed",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "reserved",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "door-ready",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "committed",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "completed",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "reserved",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "door-ready",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "committed",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "completed",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "reserved",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "committed",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "completed",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "reserved",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "committed",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "completed",
+            "map": "hub-test",
+            "fade": 0
+          }
+        ]
+      },
+      {
+        "effect": "immediate",
+        "memory": -1,
+        "x": 16,
+        "y": 11.561599999999999,
+        "doorX": 16,
+        "doorY": 14,
+        "facingX": 1.2246467991473532e-16,
+        "facingY": -1,
+        "bodyHeight": 250.82863778180345,
+        "cameraYaw": 3.141592653589793,
+        "firstPerson": false,
+        "trace": [
+          {
+            "action": "reserved",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "door-ready",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "committed",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "completed",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "reserved",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "committed",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "completed",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "reserved",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "committed",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "completed",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "reserved",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "committed",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "completed",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "reserved",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "committed",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "completed",
+            "map": "hub-test",
+            "fade": 0
+          }
+        ]
+      },
+      {
+        "blockedArrivalRejected": true,
+        "map": "hub-saloon",
+        "busy": false,
+        "side": -1
+      },
+      {
+        "presentation": "isometric",
+        "facing": {
+          "x": 1.2246467991473532e-16,
+          "y": -1,
+          "pointer": {
+            "x": 373.7401153701776,
+            "y": 268.8700576850888
+          },
+          "orthographic": true
+        }
+      },
+      {
+        "presentation": "fixed",
+        "facing": {
+          "x": 1.2246467991473532e-16,
+          "y": -1,
+          "pointer": {
+            "x": 511.39185828166524,
+            "y": 246.73082728077944
+          },
+          "orthographic": true
+        }
+      }
+    ],
+    "errors": []
+  },
+  "checks": {
+    "coreGameplaySuite": true,
+    "browserInput164": true,
+    "browserAuthoringDoorsSun163": true,
+    "affineInversions": 72,
+    "rememberedSideUnitMatrix": true,
+    "modelCamera1516": true,
+    "nativeExportInventory": true,
+    "contactProfileBounds": true,
+    "functionCommentCoverage": {
+      "passed": true,
+      "functions": 6384
+    }
+  },
+  "performance": {
+    "maxContactCasters": 8,
+    "maxContactReceiverRaysPerFrame": 9,
+    "verticesPerBlob": 9,
+    "trianglesPerBlob": 8,
+    "productionGpuReadbacks": 0,
+    "perFrameLogging": false,
+    "note": "Timing records measure focused CPU scene submission with test-only readback kept outside the timing interval. Warmup/noise can make the effect-enabled median lower; this is not proof of a speedup or a cross-hardware guarantee."
+  },
+  "compatibility": [
+    "Existing approach-side memory and desktop profile retained.",
+    "First-person zoom remains disabled; no actor billboard tilt, frame, proportion or muzzle calibration change.",
+    "Authored isometric starting-scale validation remains 12\u2013100; only transient wheel zoom reaches 200.",
+    "A confined paired-door destination can reject if no safe same-side readable arrival fits; advanced explicit arrivals remain available.",
+    "Contact effect applies to isometric geometry gameplay and static receiving geometry; prerendered artwork/perspective unchanged.",
+    "Diagnostics/test profiles excluded from distribution.",
+    "No new third-party code/assets or licenses."
+  ]
+}
