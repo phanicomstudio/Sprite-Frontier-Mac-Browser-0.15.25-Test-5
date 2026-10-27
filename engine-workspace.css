@@ -213,3 +213,6 @@ body.engineAuthoring.authoringWorkspace16 #sceneHierarchy>h2 {font-size:18px;mar
 body.enginePlaytest #workspaceBar {pointer-events:none}
 body.enginePlaytest #workspaceBar button {pointer-events:auto}
 body.enginePlaytest #workspaceToggle {pointer-events:auto;z-index:1100}
+
+/* October 26, 2026: the restored Fullscreen playtest control stays above the 2000-layer pause panel; the original fullscreen handler stays authoritative. */
+body.enginePlaytest #workspaceBar #fullscreen {position:relative;pointer-events:auto;z-index:2100}

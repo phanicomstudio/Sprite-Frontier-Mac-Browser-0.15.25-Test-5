@@ -27,6 +27,8 @@
   for(const id of ["undo","redo"])document.getElementById(id)?.addEventListener("click",/* @function authoringWorkspace.historyChanged — Inputs: ignored click. Returns nothing; refreshes shared inspection after the original history handler commits/restarts. No additional history entry or world mutation. */ function(){queueMicrotask(/* @function authoringWorkspace.inspectAfterHistory — Inputs: none. Returns nothing; resolves current world after original Undo/Redo handler. */ function(){scene.refresh();});});
   const currentCell=document.getElementById("activeMap")?.closest("label");if(currentCell){currentCell.id="authoringCurrentCell";bar.append(currentCell);}
   bar.append(historyBar,settingsButton,navigation);
+  // October 26, 2026: fullscreen is an editor/playtest capability. Move the original control out of Advanced tools; retain its handler and pause/fullscreen ownership.
+  const fullscreenButton166=document.getElementById("fullscreen");if(fullscreenButton166)bar.insertBefore(fullscreenButton166,settingsButton);
   const viewTools=document.createElement("div");viewTools.id="authoringViewTools";
   viewTools.innerHTML='<label>Editing view<select id="authoringView"><option value="scene">3D / current camera</option><option value="plan">Plan</option><option value="split">Plan + scene</option></select></label><span id="authoringViewStatus">Edit mode · world distances in metres</span>';
   const plan=document.createElement("section");plan.id="authoringPlan";plan.hidden=true;
