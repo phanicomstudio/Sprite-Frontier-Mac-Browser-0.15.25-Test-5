@@ -1,0 +1,407 @@
+{
+  "iteration": "0.16.8",
+  "date": "2026-10-28",
+  "coreChecksPassed": 64,
+  "maintainedFunctionsDocumented": 6503,
+  "browserChecks": [
+    {
+      "test": "browser/palette168",
+      "pass": true,
+      "output": "PASS exact original GPU pixels, all original controls, supplied swatches, HUD filtering and Undo\n"
+    },
+    {
+      "test": "browser/combat167",
+      "pass": true,
+      "output": "PASS actual enemy creation/settings, continuous aim, calibrated flashes, cover recovery, death/remains and opaque/transparent static cover\n"
+    },
+    {
+      "test": "browser/iteration164",
+      "pass": true,
+      "output": "PASS real isometric mouse/WASD/fire/reticle/wheel and sky fog separation Chrome\n"
+    },
+    {
+      "test": "browser/indexed-doors",
+      "pass": true,
+      "output": "PASS real paired-door round trips on original approach side, outward facing and save-state validation: melt/door/fade/immediate Chrome\n"
+    }
+  ],
+  "indexedInputEvidence": "test-artifacts/palette168-input.json",
+  "gpuComparisonCases": 5,
+  "rgbaChannelsCompared": 40960,
+  "mismatches": 0,
+  "sourceHashes": {
+    "63-1668073320-226851507.webp": "cbc639e3e81163c48d7ba6024a77ea3d3294b18e71a06490be922d871c81a9f2",
+    "fallout2-swatches.json": "dabbd579a5d368cd37757e5476a3d391b63b0383860514b0379e0792e14c9b22",
+    "PhanicomPaletteDither.js": "4621a95b0432ec2e30f1840d7cc09b5dee3ee9c7d06f06813cf15f39e658e182"
+  },
+  "doorEvidence": {
+    "native": false,
+    "evidence": [
+      {
+        "effect": "melt",
+        "memory": -1,
+        "x": 16,
+        "y": 11.561599999999999,
+        "doorX": 16,
+        "doorY": 14,
+        "facingX": 1.2246467991473532e-16,
+        "facingY": -1,
+        "bodyHeight": 250.82863778180345,
+        "cameraYaw": 3.141592653589793,
+        "firstPerson": false,
+        "trace": [
+          {
+            "action": "reserved",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "committed",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "completed",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "reserved",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "committed",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "completed",
+            "map": "hub-test",
+            "fade": 0
+          }
+        ]
+      },
+      {
+        "effect": "door",
+        "memory": -1,
+        "x": 16,
+        "y": 12.475999999999999,
+        "doorX": 16,
+        "doorY": 14,
+        "facingX": 1.2246467991473532e-16,
+        "facingY": -1,
+        "bodyHeight": 3201.2257991928655,
+        "cameraYaw": 3.141592653589793,
+        "firstPerson": true,
+        "trace": [
+          {
+            "action": "reserved",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "committed",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "completed",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "reserved",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "committed",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "completed",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "reserved",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "door-ready",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "committed",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "completed",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "reserved",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "door-ready",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "committed",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "completed",
+            "map": "hub-test",
+            "fade": 0
+          }
+        ]
+      },
+      {
+        "effect": "fade",
+        "memory": -1,
+        "x": 16,
+        "y": 11.561599999999999,
+        "doorX": 16,
+        "doorY": 14,
+        "facingX": 1.2246467991473532e-16,
+        "facingY": -1,
+        "bodyHeight": 250.82863778180345,
+        "cameraYaw": 3.141592653589793,
+        "firstPerson": false,
+        "trace": [
+          {
+            "action": "committed",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "completed",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "reserved",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "door-ready",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "committed",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "completed",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "reserved",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "door-ready",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "committed",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "completed",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "reserved",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "committed",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "completed",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "reserved",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "committed",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "completed",
+            "map": "hub-test",
+            "fade": 0
+          }
+        ]
+      },
+      {
+        "effect": "immediate",
+        "memory": -1,
+        "x": 16,
+        "y": 11.561599999999999,
+        "doorX": 16,
+        "doorY": 14,
+        "facingX": 1.2246467991473532e-16,
+        "facingY": -1,
+        "bodyHeight": 250.82863778180345,
+        "cameraYaw": 3.141592653589793,
+        "firstPerson": false,
+        "trace": [
+          {
+            "action": "reserved",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "door-ready",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "committed",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "completed",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "reserved",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "committed",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "completed",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "reserved",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "committed",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "completed",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "reserved",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "committed",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "completed",
+            "map": "hub-saloon",
+            "fade": 0
+          },
+          {
+            "action": "reserved",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "committed",
+            "map": "hub-test",
+            "fade": 0
+          },
+          {
+            "action": "completed",
+            "map": "hub-test",
+            "fade": 0
+          }
+        ]
+      },
+      {
+        "blockedArrivalRejected": true,
+        "map": "hub-saloon",
+        "busy": false,
+        "side": -1
+      },
+      {
+        "presentation": "isometric",
+        "facing": {
+          "x": 1.2246467991473532e-16,
+          "y": -1,
+          "pointer": {
+            "x": 373.7401153701776,
+            "y": 268.8700576850888
+          },
+          "orthographic": true
+        }
+      },
+      {
+        "presentation": "fixed",
+        "facing": {
+          "x": 1.2246467991473532e-16,
+          "y": -1,
+          "pointer": {
+            "x": 511.39185828166524,
+            "y": 246.73082728077944
+          },
+          "orthographic": true
+        }
+      },
+      {
+        "palette": {
+          "doorFrames": 24,
+          "meltFrames": 51,
+          "hudFrames": 108,
+          "error": ""
+        }
+      }
+    ],
+    "errors": []
+  },
+  "limits": [
+    "Chrome/WebGL tested; cross-driver bit identity is not claimed.",
+    "Supplied lossy reference contains 231 swatches, not an authenticated full game palette.",
+    "HTML HUD captures capped at 10 Hz; aiming cursor and cinematic layers update live.",
+    "Routine source PR; no new native package requested or produced."
+  ]
+}

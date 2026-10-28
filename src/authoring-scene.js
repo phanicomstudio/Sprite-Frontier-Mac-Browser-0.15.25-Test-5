@@ -152,7 +152,9 @@
     function fog163(value){if(value===undefined)return root.FrontierFog.validate(api.world().fog);if(!api.editing())return false;const checked=root.FrontierFog.validate(value);return api.mutate(/* @function authoringScene.commitFog163 — Inputs: none. Saves validated fog with migration marker so explicit disabled settings remain disabled after reload. */function(){api.world().fog=checked;api.world().atmosphereVersion=1;});}
     /* @function authoringScene.anchor163 — Inputs: typed reference. Returns copied current world anchor or null for stale selection. Host supplies runtime-supported elevation without exposing mutable entities. */
     function anchor163(ref){const record=snapshot(ref);return record ? (api.anchor?api.anchor(ref,record):[record.x,record.y,record.z||0]) : null;}
-    return {selection,select,snapshot,update,remove,subscribe,refresh,list,detach,restoreGenerated,generatedEdits,history,presentation,project163,transform163,appearance163,fog163,anchor163};
+    /* @function authoringScene.paletteDither168 — Inputs: optional original-plugin settings. Returns validated copied settings or one undoable map commit; play mode rejects edits. */
+    function paletteDither168(value){if(value===undefined)return root.FrontierPaletteDither.validate(api.world().paletteDither);if(!api.editing())return false;const checked=root.FrontierPaletteDither.validate(value);return api.mutate(/* @function authoringScene.commitPalette168 — Inputs: none. Writes validated map effect only inside normal history/save transaction. */function(){api.world().paletteDither=checked;});}
+    return {paletteDither168,selection,select,snapshot,update,remove,subscribe,refresh,list,detach,restoreGenerated,generatedEdits,history,presentation,project163,transform163,appearance163,fog163,anchor163};
   }
   root.FrontierAuthoringScene = {entries,resolve,create};
 })(typeof window === "undefined" ? globalThis : window);

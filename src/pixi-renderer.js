@@ -948,7 +948,7 @@
     }
     // Submit the assembled stage once; Pixi owns GPU work.
     /* Historical contract retained; October 14, 2026 reviewed explanation follows. @function pixi-renderer.end.32 — Handles end within pixi renderer. Inputs: no explicit arguments; uses enclosing module state. Updates: this app stage filters; this underwater filter; u u time; u u strength; u u frequency. Uses: this flush stroke; p gl program from; screen tone some; this app renderer render. */
-    /* @function pixiRenderer.reviewed32 — Submits the assembled Pixi frame once. Inputs: none. Returns nothing; flushes vector strokes and applies reusable underwater, tone and breathing filters before rendering stage. Updates only captured effect uniforms/areas; DOM HUD is outside the passes. Does not step simulation or measure GPU elapsed time; renderer errors propagate. */ end() {
+    /* @function pixiRenderer.reviewed32 — Submits the assembled Pixi frame once. Inputs: none. Returns nothing; flushes vector strokes and applies reusable underwater, tone and breathing filters before rendering stage. Updates only captured effect uniforms/areas; DOM HUD is outside the passes. Does not step simulation or measure GPU elapsed time; renderer errors propagate. */ /* @function pixiRenderer.indexedEnd168 — Inputs: none. Submits original pooled world/effects, then optional original-plugin indexed pass and retained HUD compositor. Disabled maps keep the previous path; projection, sprite presentation and simulation remain unchanged. */ end() {
       this.flushStroke();
       const w = this.underwater;
       this.app.stage.filters = null;
@@ -1046,6 +1046,7 @@
         this.breathingFilters.push(this.breathingFilter);
         this.app.stage.filters = this.breathingFilters;
       }
+      root.FrontierPaletteDither?.apply(this);
       this.app.renderer.render({
         container: this.app.stage,
       });

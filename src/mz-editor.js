@@ -73,6 +73,7 @@
     document.body.append(d);
     const enemyButton=button('Enemy settings / create enemy...', /* @function mzEditor.enemy167 — Inputs: click ignored. Applies current event draft through existing validation before opening its enemy settings; invalid drafts remain here. Existing pages are retained. */ function(){if(!apply())return;d.close();root.FrontierEnemyTools?.open(draft.id);});
     d.querySelector('.mzEventHeader').after(enemyButton);
+    const paletteButton=button('Palette dither command...',/* @function mzEditor.addPalette168 — Inputs: click ignored. Opens original plugin commands and appends validated record through existing event draft history. */function(){root.FrontierPaletteDither.commandDialog(null,/* @function mzEditor.acceptPalette168 — Inputs: validated command. Appends to active page inside edit transaction without changing authored scene until Apply. */function(command){edit(/* @function mzEditor.paletteDraft168 — Inputs: none. Adds command to current page; edit owns validation/Undo. */function(){draft.pages[pageIndex].commands.push(command);});});});enemyButton.after(paletteButton);
     d.querySelector(".mzImageMovement fieldset").append(
       button(
         "Model, collision and interaction zones…",
@@ -811,6 +812,7 @@
     /* @function mz-editor.editCommand.61 — Handles edit command within mz editor. Inputs: no explicit arguments; uses enclosing module state. Updates: initial create else. Uses: frontier gameplay dialogs open; frontier template dialogs replace; api world; api templates. Returns: without a result; without a result. */ function editCommand() {
       const index = Math.min(...selection),
         c = draft.pages[pageIndex].commands[index];
+      if(['SetDitherScale','SetDitherStrength','SetPaletteMode'].includes(c?.type)){root.FrontierPaletteDither.commandDialog(c,/* @function mzEditor.replacePalette168 — Inputs: validated original command. Replaces selected command through event draft history. */function(command){edit(/* @function mzEditor.paletteReplace168 — Inputs: none. Updates selected page command; edit owns validation/Undo. */function(){draft.pages[pageIndex].commands[index]=command;});});return;}
       if (c?.type === "screenBreathing") {
         FrontierBreathingDialog.open(
           c,
