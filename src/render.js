@@ -1,3 +1,4 @@
+/* October 28, 2026 - 0.16.7: see ITERATION-0.16.7.md for current combat/authoring behavior; older comments below are retained historical contracts where explicitly superseded. */
 // October 22, 2026: canvas labels use the registered gameplay face, or readable authoring face; prior release literals are superseded.
 /* October 14, 2026: transient editorFlight bypasses camera geometry clearance only in authoring; playtest retains normal camera collision and locked sprite presentation. */
 /* MAINTAINER GUIDE
@@ -215,7 +216,7 @@
       ? FrontierSprites.sheet(e)
       : root.FrontierCandy;
     if (!sheet?.image.complete || !sheet.image.naturalWidth) return false;
-    const { row, column: col } = FrontierDirections.select(
+    const { row, column: col } = (e.dead && e.enemyConfig?.deathSprite && (e.deathAge||0)<(e.enemyConfig.deathSeconds||.6)) ? {row:0,column:Math.min((sheet.columns||3)-1,Math.floor((e.deathAge||0)/(e.enemyConfig.deathSeconds||.6)*(sheet.columns||3)))} : FrontierDirections.select(
         e,
         cam.yaw,
         sheet.direction,
@@ -1083,8 +1084,12 @@
       if (p) {
         ctx.fogDepth = cam.outdoorIsometric ? Math.max(0,p.depth-depth(cam,game.player.x,game.player.y,game.player.z||0)) : p.depth;
         ctx.fillStyle = flash.color || "#ffe5a1";
-        const s = Math.max(2, p.scale * 0.045);
-        ctx.fillRect(p.x - s / 2, p.y - s / 2, s, s);
+        const s = Math.max(3, Math.min(24,p.scale * .16)) * Math.max(.3,flash.life/flash.maxLife);
+        ctx.save();
+        const flashClip=root.FrontierTerrainOcclusion?.mask(ctx.terrainDepth,{x:p.x-s,y:p.y-s,width:s*2,height:s*2},p.depth);
+        if(flashClip){if(ctx.setGraphicClip)ctx.setGraphicClip(flashClip);else{ctx.beginPath();for(const region of flashClip.regions||[flashClip])ctx.rect(region.x,region.y,region.width,region.height);ctx.clip();}}
+        ctx.beginPath();ctx.moveTo(p.x-s,p.y);ctx.lineTo(p.x-s*.25,p.y-s*.25);ctx.lineTo(p.x,p.y-s);ctx.lineTo(p.x+s*.25,p.y-s*.25);ctx.lineTo(p.x+s,p.y);ctx.lineTo(p.x+s*.25,p.y+s*.25);ctx.lineTo(p.x,p.y+s);ctx.lineTo(p.x-s*.25,p.y+s*.25);ctx.closePath();ctx.fill();
+        ctx.fillStyle='#fff8dd';ctx.fillRect(p.x-s*.2,p.y-s*.2,s*.4,s*.4);ctx.restore();if(ctx.setGraphicClip)ctx.setGraphicClip(null);
       }
     }
     if (game.authoring && game.brushGhost) {
