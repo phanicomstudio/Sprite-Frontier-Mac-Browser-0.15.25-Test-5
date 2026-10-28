@@ -297,7 +297,7 @@
     capture:
       /* @function app.capture.9 — Returns frontier pixi capture using canvas. Inputs: canvas. Uses: frontier pixi capture. Returns: frontier pixi capture using canvas. */ (
         canvas,
-      ) => FrontierPixi.capture(canvas),
+      ) => {if(!FrontierPaletteDither.captureRaw(FrontierPixi.current(),canvas))FrontierPixi.capture(canvas);},
   });
   const transitionEffect =
     /* @function app.transitionEffect.10 — Returns world transition effect equals "melt" and the inverse of match media using "(prefers-reduced-motion: reduce)" matches selects "melt" or "fade". Inputs: no explicit arguments; uses enclosing module state. Uses: match media. Returns: world transition effect equals "melt" and the inverse of match media using "(prefers-reduced-motion: reduce)" matches selects "melt" or "fade". */ /* @function app.transitionEffect1517 — Inputs: none. Returns cell-selected door/melt/fade/immediate mode, with reduced-motion preference forcing fade. No mutation; October 9 supersedes fade/melt-only selection above. */ () =>
@@ -486,13 +486,14 @@
   let hubState = FrontierHubState.empty(),
     hubWorkbench;
   /* @function app.captureRuntime.18 — Handles capture runtime within application input, simulation and editor coordination. Inputs: no explicit arguments; uses enclosing module state. Uses: frontier event state capture; screen fade capture; screen flash capture; screen shake capture. Returns: a record containing copied fields, screenFade, screenFlash, screenShake, screenTone, behaviors, replacements, player. */
-  /* @function app.captureRuntime1527 — Inputs: none. Returns detached per-cell runtime snapshot including validated enemy ammo, death timers and changed death switches. Observes lethal transitions with zero elapsed time; existing actor records still own HP/position/death. Used by save and transfer; does not advance gameplay or alter authored enemies. */ function captureRuntime() {
+  /* @function app.captureRuntime1527 — Inputs: none. Returns detached per-cell runtime snapshot including validated enemy ammo, death timers and changed death switches. Observes lethal transitions with zero elapsed time; existing actor records still own HP/position/death. Used by save and transfer; does not advance gameplay or alter authored enemies. */ /* @function app.captureRuntime168 — Inputs: none. Returns existing validated cell/player/event snapshot plus optional transient palette override for save/travel; does not mutate authored map palette settings. */ function captureRuntime() {
     return {
       ...FrontierEventState.capture(session.state),
       screenFade: screenFade.capture(),
       screenFlash: screenFlash.capture(),
       screenShake: screenShake.capture(),
       screenTone: screenTone.capture(),
+      paletteDither: game.paletteDitherOverride ? FrontierPaletteDither.validate(game.paletteDitherOverride) : null,
       behaviors: session.captureBehaviors(),
       replacements: session.replacementReferences(),
       player: {
@@ -538,11 +539,13 @@
     };
   }
   /* @function app.restoreRuntime.22 — Handles restore runtime within application input, simulation and editor coordination. Inputs: state; shared. Updates: session state self switches; event x; event y; game scene signature; session state at k. Uses: screen tone restore; screen shake restore; screen flash restore; screen fade restore. */
-  /* @function app.restoreRuntime1527 — Inputs: optional saved cell state, shared player/session state and reentry boolean (false for save load; true only for real cell travel). Restores actors before enemy ammo/timers, applies reentry respawn only to dead configured enemies, and preserves shared inventory/equipment order. Throws malformed enemy state; caller validates portable saves before adoption. World metres and simulation seconds retain existing ownership. */ function restoreRuntime(
+  /* @function app.restoreRuntime1527 — Inputs: optional saved cell state, shared player/session state and reentry boolean (false for save load; true only for real cell travel). Restores actors before enemy ammo/timers, applies reentry respawn only to dead configured enemies, and preserves shared inventory/equipment order. Throws malformed enemy state; caller validates portable saves before adoption. World metres and simulation seconds retain existing ownership. */ /* @function app.restoreRuntime168 — Inputs: validated cell/shared snapshots and reentry flag. Restores existing gameplay owners plus validated optional palette override; legacy snapshots default to map appearance. No palette assets or author settings are replaced. */ function restoreRuntime(
     state,
     shared,
     reentry = false,
   ) {
+    const paletteOverride=shared?.paletteDither??state?.paletteDither;
+    game.paletteDitherOverride=paletteOverride ? FrontierPaletteDither.validate(paletteOverride) : null;
     if (shared?.screenTone || state?.screenTone)
       screenTone.restore(shared?.screenTone || state.screenTone);
     if (shared?.screenShake || state?.screenShake)
@@ -1204,6 +1207,7 @@
           speed,
           frames,
         ) => screenShake.start(power, speed, frames),
+      paletteDither: /* @function app.paletteDither168 — Inputs: original plugin command name and arguments. Applies validated transient effect to active game; event runtime owns dispatch and error reporting. */ function(name,args){FrontierPaletteDither.command(game,name,args);},
       screenTone:
         /* @function app.screenTone.63 — Handles screen tone within application input, simulation and editor coordination. Inputs: tone; frames. Uses: frontier pixi tone supported; error; screen tone start. */ (
           tone,
@@ -3302,9 +3306,12 @@
     if (!sceneTransition.ownsWorldView) {
       /* October 12: native effects append inside draw before GPU submission, using this frame's paused/cinematic-aware delta. */ game.effectDelta =
         playPaused || editing || sceneTransition.busy ? 0 : dt;
-      const appearanceFilter163=FrontierLocalLighting.appearanceFilter163(world.appearance);
+      const appearanceFilter163=(game.paletteDitherOverride||world.paletteDither)?.enabled ? "none" : FrontierLocalLighting.appearanceFilter163(world.appearance); // October 28: indexed output must not be recolored/blurred after quantization; authored appearance is preserved and resumes when disabled.
       if(view.style.filter!==appearanceFilter163)view.style.filter=appearanceFilter163;
+      const sampling168=(game.paletteDitherOverride||world.paletteDither)?.enabled ? "pixelated" : (FrontierDisplay.get().filtering==="smooth"?"auto":"pixelated");if(view.style.imageRendering!==sampling168)view.style.imageRendering=sampling168; // October 28: nearest presentation preserves palette colors; local smoothing preference resumes when disabled.
       FrontierRender.draw(view, game);
+    } else if((game.paletteDitherOverride||world.paletteDither)?.enabled) {
+      FrontierPaletteDither.transition(FrontierPixi.current(),game.paletteDitherOverride||world.paletteDither);
     }
     // October 10: optional screen breathing uses a separate CSS scale so camera/sprite geometry and shake translation remain unchanged.
     /* Superseded October 10, 2026: reference radial breathing is now a scene filter; CSS stretching is removed to keep HUD and pointer space stable. */ view.style.scale =
@@ -3403,7 +3410,7 @@
     $("badge").lastElementChild.textContent =
       (world.interior?.mode === "fixed" ? "Fixed interior · " : "") +
       (game.camera.firstPerson ? "First person" : "Third person") +
-      " · prototype 0.16.7";
+      " · prototype 0.16.8";
     if (world.interior)
       $("intro").textContent =
         world.interior.mode === "fixed"

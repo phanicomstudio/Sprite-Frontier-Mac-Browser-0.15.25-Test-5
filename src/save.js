@@ -258,6 +258,7 @@
               inventory: core.inventory,
               selfSwitches: core.selfSwitches,
               enemyState: root.FrontierEnemies?.validateState(v.enemyState) || {},
+              ...(v.paletteDither===undefined ? {} : {paletteDither:v.paletteDither===null?null:root.FrontierPaletteDither.validate(v.paletteDither)}),
               actors: v.actors.map(
                 /* @function save.callback.8 — Returns a record containing id, x, y, hp, dead, gibbed. Inputs: a. Returns: a record containing id, x, y, hp, dead, gibbed. */ (
                   a,

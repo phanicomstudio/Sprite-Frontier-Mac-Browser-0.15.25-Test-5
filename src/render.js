@@ -1150,6 +1150,7 @@
     }
     /* October 12, 2026: append native particles before the one GPU submission. The former application call appended after submission and the next begin cleared those objects before they could be displayed. effectDelta is the owning frame's simulation seconds; explicit standalone draws default to zero advancement. */
     root.FrontierNativeEffects?.draw(canvas, game, game.effectDelta ?? 0);
+    ctx.paletteDither=game.paletteDitherOverride||game.sourceWorld.paletteDither;
     root.FrontierPixi?.end();
   }
   // Draw the overview map independently of the perspective renderer; its coordinates are world X/Y.
