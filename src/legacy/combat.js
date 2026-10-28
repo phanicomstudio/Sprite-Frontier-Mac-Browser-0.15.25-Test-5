@@ -514,7 +514,7 @@
     ui.updateWeaponHUD();
     if (target?.type === "monster") provokeFaction(game, target, ui);
     const shot = MF.createProjectile(game, p, p.weapon, direction);
-    game.muzzleFlashes.push({
+    if (!shot.position) game.muzzleFlashes.push({ // October 28: calibrated physical shots emit their flash in ballistics; preserve legacy fallback.
       map: game.currentMapId,
       x: p.x + direction.x * 0.2,
       y: p.y + direction.y * 0.2,

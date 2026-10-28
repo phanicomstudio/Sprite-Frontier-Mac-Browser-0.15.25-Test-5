@@ -1,3 +1,4 @@
+/* October 28, 2026 - 0.16.7: see ITERATION-0.16.7.md for current combat/authoring behavior; older comments below are retained historical contracts where explicitly superseded. */
 /* MAINTAINER GUIDE
  * Native height-aware projectile sweeps and ricochets. Replaces the legacy 2D projectile functions after they load. Segment/AABB hits and terrain intersections choose the earliest collision, independent of display pixels.
  * See CODE-GUIDE.md for load order, ownership and extension recipes.
@@ -232,7 +233,7 @@
             ),
           ),
         ),
-        hit = sweep(game, aimStart, far, 0, owner.id),
+        hit = root.FrontierBallistics ? root.FrontierBallistics.sweep(game, aimStart, far, 0, owner.id) : sweep(game, aimStart, far, 0, owner.id),
         target = between(aimStart, far, hit?.t ?? 1);
       if (cam.orthographic && owner.id === game.player.id) {
         const point = game.pointer || game.roomAimPoint,
@@ -261,6 +262,7 @@
           target.z = (game.player.z || 0) + 1;
         }
       }
+      if(owner.id===game.player.id&&!cam.orthographic&&root.FrontierIsometric?.assist167)Object.assign(target,root.FrontierIsometric.assist167(game,muzzle,target));
       const length =
           Math.hypot(
             target.x - muzzle.x,
@@ -287,7 +289,7 @@
         z: Math.sin(elevation),
       };
       const guide = root.FrontierMuzzle?.barrel(owner, game);
-      if (guide) {
+      if (guide && owner.id !== game.player.id) {
         const spreadAngle =
             owner.id === game.player.id
               ? Math.atan2(direction.x, direction.y) - game.camera.yaw
@@ -304,12 +306,8 @@
       // sector with launch-only assistance. Third-person and NPC paths above
       // remain unchanged. Existing weapon spread is applied after assistance;
       // collision, hitscan, lifetime and projectile-light ownership stay shared.
-      if (cam.orthographic && owner.id === game.player.id && root.FrontierFixedLaunch && root.FrontierMuzzle?.frame(owner, game)) {
-        const launch = root.FrontierFixedLaunch.calculate(root, owner, game, target, { speed: shot.speed, ...(cam.outdoorIsometric ? {blend:game.sourceWorld.presentation.magnetism} : {}) });
-        const yaw = Math.atan2(launch.direction.x, launch.direction.y) + spread;
-        const pitch = Math.asin(Math.max(-1, Math.min(1, launch.direction.z)));
-        shot.direction = { x: Math.sin(yaw) * Math.cos(pitch), y: Math.cos(yaw) * Math.cos(pitch), z: Math.sin(pitch) };
-      }
+      // October 28, 2026: the historical sector-launch behavior described above is superseded.
+      // Continuous target aim owns live shots; the old helper remains in muzzle.js and Git history.
       shot.position = {
         ...muzzle,
       };

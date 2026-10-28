@@ -71,6 +71,8 @@
     d.innerHTML =
       '<header><span id="mzEventTitle">Event Editor</span><button id="mzEventClose" aria-label="Close event editor">×</button></header><div class="mzEventHeader"><label>Name:<input id="mzEventName" maxlength="80"></label><label>Note:<input id="mzEventNote" maxlength="10000"></label><div id="mzPageActions"></div></div><nav id="mzPageTabs" aria-label="Event pages"></nav><div class="mzPageBody"><section class="mzPageSettings"><fieldset id="mzConditions"><legend>Conditions</legend></fieldset><div class="mzImageMovement"><fieldset><legend>Image</legend><button id="mzImage" class="mzChecker" aria-label="Select event image">(None)</button></fieldset><fieldset><legend>Autonomous Movement</legend><label>Type:<select id="mzMoveType"><option value="stationary">Fixed</option><option value="random">Random</option><option value="approach">Approach</option><option value="custom">Custom</option></select></label><button id="mzMoveRoute" disabled>Route…</button><label>Speed:<select id="mzMoveSpeed"></select></label><label>Frequency:<select id="mzMoveFrequency"></select></label></fieldset></div><div class="mzOptionsPriority"><fieldset id="mzOptions"><legend>Options</legend></fieldset><div><fieldset><legend>Trigger</legend><select id="mzTrigger"><option value="interact">Action Button</option><option value="playerTouch">Player Touch</option><option value="eventTouch">Event Touch</option><option value="autorun">Autorun</option><option value="parallel">Parallel</option></select></fieldset></div></div></section><fieldset class="mzContents"><legend>Contents</legend><div id="mzCommandList" tabindex="0" role="listbox" aria-label="Event commands" aria-multiselectable="true"></div></fieldset></div><details id="mzEngineSettings"><summary>Sprite Frontier properties and playtest</summary><div id="mzPlacement"></div><button id="mzPlaytest">Apply and playtest event</button></details><p id="mzEventStatus" class="mzStatus"></p><footer><button id="mzEventOK">OK</button><button id="mzEventCancel">Cancel</button><button id="mzEventApply">Apply</button></footer>';
     document.body.append(d);
+    const enemyButton=button('Enemy settings / create enemy...', /* @function mzEditor.enemy167 — Inputs: click ignored. Applies current event draft through existing validation before opening its enemy settings; invalid drafts remain here. Existing pages are retained. */ function(){if(!apply())return;d.close();root.FrontierEnemyTools?.open(draft.id);});
+    d.querySelector('.mzEventHeader').after(enemyButton);
     d.querySelector(".mzImageMovement fieldset").append(
       button(
         "Model, collision and interaction zones…",
@@ -1306,7 +1308,7 @@
             e,
           ) => e.id === draft.id,
         );
-        api.mutate(
+        const accepted = api.mutate(
           /* @function mz-editor.callback.107 — Provides the callback for api mutate. Inputs: no explicit arguments; uses enclosing module state. Updates: list at index. Uses: api world; list find index; list push; clone. */ () => {
             const list = api.world().events,
               index = list.findIndex(
@@ -1320,6 +1322,7 @@
           /* @function mz-editor.callback.109 — Returns choose using checked id. Inputs: no explicit arguments; uses enclosing module state. Uses: choose. Returns: choose using checked id. */ () =>
             choose(checked.id),
         );
+        if(accepted===false){status("Event change rejected; correct placement before opening enemy settings.");return false;}
         draft = clone(checked);
         draftHistory = [];
         draftRedo = [];
@@ -1333,8 +1336,9 @@
           api.testEvent(returnId);
           returnButton.hidden = false;
         }
+        return true;
       } catch (e) {
-        status(e.message);
+        status(e.message);return false;
       }
     }
     $("mzEventOK").onclick =

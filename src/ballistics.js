@@ -1,3 +1,4 @@
+/* October 28, 2026 - 0.16.7: see ITERATION-0.16.7.md for current combat/authoring behavior; older comments below are retained historical contracts where explicitly superseded. */
 /* October 26: receiver-only terrain marching uses 0.25 m steps on the metre-grid heightfield, followed by the same contact bisection. Projectile marching remains 0.05 m; mesh triangles remain exact swept queries in both modes. */
 /* October 26: optional geometryOnly sweep is reserved for sun-shadow receivers. Default projectile queries are unchanged; receiver queries omit actor bodies and nonspatial billboard props. */
 /* October 22, 2026 — independent finite-projectile implementation.
@@ -46,6 +47,8 @@
         }
         continue;
       }
+      // October 28: static sprite cover uses opaque pixels on the displayed plane, independent of movement boxes.
+      if(!geometryOnly&&!e.combat&&e!==game.player&&!e.behaviorOwned&&!e.through&&root.FrontierSprites?.cover167){const t=root.FrontierSprites.cover167(game,e,a,b);if(t!==undefined){take(t,e.id,'sprite');continue;}}
       if(e.solid===false&&!e.combat&&e!==game.player)continue;
       const radius=e.radius??.13,z=e.z||0,height=e.height??1.65;
       take(spatial.boxHit(a,b,{min:{x:e.x-radius,y:e.y-radius,z},max:{x:e.x+radius,y:e.y+radius,z:z+height}},r),e.id,'body');
@@ -72,6 +75,7 @@
     const anchor={x:owner.x,y:owner.y,z:(owner.z||0)+Math.min(1.1,(owner.height||1.65)*.65)};
     const contact=sweep(game,anchor,p.position,p.radius,owner.id);
     if(contact){p.position=point(anchor,p.position,contact.t);p.previousPosition={...p.position};p.launchContact=contact;}
+    if(game.muzzleFlashes && (!owner.lastFlash167 || game.elapsed-owner.lastFlash167.time>.001 || owner.lastFlash167.time!==game.elapsed)){owner.lastFlash167={time:game.elapsed};game.muzzleFlashes.push({map:game.currentMapId,x:p.position.x,y:p.position.y,z:p.position.z,life:.085,maxLife:.085,color:'#ffe5a1',calibrated:true});if(game.muzzleFlashes.length>64)game.muzzleFlashes.shift();}
     return p;
   };
   /* @function ballistics.explosion — Inputs: live game, terminal shot, contact record and existing combat UI. Returns nothing; applies direct damage once and bounded reference-style radial falloff with full-world obstruction checks, then emits bounded generic particles. Direct target is excluded from splash to avoid duplicate damage. Existing combat adapter owns friendly-fire/death/event rules. Expiry detonates explosive shots; ordinary expiry is not a blast. */
