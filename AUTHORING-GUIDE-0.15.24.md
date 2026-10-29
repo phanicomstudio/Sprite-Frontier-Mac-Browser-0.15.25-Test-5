@@ -295,3 +295,8 @@ portable project import and local reload. The generated gameplay package also
 retains embedded overrides through Save/Load and two-way cell travel. Starting
 value Undo history resets after importing a project so older records cannot
 remove item definitions used by newly imported maps.
+
+
+## October 29, 2026 — current 0.16.9 workflow
+
+Use the direct Build tools rather than the historical category/Scene tool prerequisites described above. Choose a piece/material then click the scene; choose Raise/Lower/Flatten/Smooth/Paint then drag outdoor ground. Plan shares selection/group movement/Undo; Isometric layout previews rotation/tilt before explicit map Apply. Events > Weapon damage and sounds contains all native projectile profiles and separate current-map melee, with optional imported audio and default restore. Environment contains Dithering, Shadow strength and Isometric visibility. See ITERATION-0.16.9.md for current steps and FEATURE-STATUS-0.16.9.md for gaps. Existing guides remain historical where those routes have moved.

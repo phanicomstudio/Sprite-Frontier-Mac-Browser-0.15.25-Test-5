@@ -164,3 +164,39 @@ Add muzzle flashes through existing muzzle calibration for player and enemy weap
 ## October 28, 2026 - 0.16.7 implementation
 
 The preceding October 28 enemy authoring, automatic silhouette cover, revised 2% magnetism, aggression/free aim and muzzle-flash entries are now implemented in the source branch. See ITERATION-0.16.7.md for current behavior, compatibility and explicit limits; RELEASE-VALIDATION-0.16.7.json records executed checks. The earlier aggressive magnetism/Off-option suggestion remains superseded. Previous source baseline is retained for exact rollback.
+
+## October 29, 2026 - BANKED: temporary enemy directions and combat clarity
+
+User tested Windows 0.16.8 and requested these corrections for the next iteration. Planning only; no gameplay, assets, defaults or saved maps changed by this entry.
+
+- Use the available left/right views in the temporary Chiban and Mechanical Turk sheets instead of forcing every facing to the first row. Current built-in profiles declare one row. Inspect the actual supplied artwork, map only available views, preserve frame proportions/anchors and locked camera-facing sprite tilt, and calibrate muzzle/flash positions for every adopted frame. Do not invent missing rotations or constrain continuous projectile aim to available sprite angles. Verify movement and aiming in perspective, first-person and isometric/fixed presentations.
+- Review enemy durability against player pistol damage and make Health easy to find in the placed-enemy workflow. Current pistol archetype is 60 HP; do not silently change authored health or assume the reported durability is solely HP rather than missed impacts. Verify actual damage and saved per-enemy overrides.
+- Make attack-on-sight versus retaliation explicit in enemy creation and inspection. The wilderness fixture intentionally sets hostile=false (retaliation), so its waiting to be attacked is presently authored behavior. Review the test fixture's intended aggression and communicate it clearly; preserve intentional retaliatory enemies and existing settings. Verify detection/engagement, pursuit and finite cover behavior.
+
+Current authoring route: F2 -> Events -> Create / edit enemies -> Edit placed enemy -> Health / Aggression / Detection range -> Apply enemy changes. Preserve the equivalent Event Editor enemy-settings entry point.
+
+## October 29, 2026 - BANKED: actionable tools and terrain activation
+
+User reports the Terrain brush compatibility section is empty, then finds Raise terrain settings but dragging does nothing. Source inspection: authoringWorkspace.activate('terrainTools') opens/relocates the field without setting sceneTool='brush'; actual viewport painting is gated by editorTools.active(), which only accepts that separate sceneTool value. Treat visible selected tools that are not active as a workflow defect. Verify the empty compatibility shell and actual pointer routing against the shipped Windows package during implementation.
+
+User direction: too many menus and obtuse wording; collapse everyday authoring into usable, actionable tools. Choosing a tool must activate it and expose only its relevant settings. Terrain Raise/Lower/Flatten/Smooth/Paint should be direct actions, with clear active-state feedback and a visible affected area. No second Scene tool switch or old category tab should be required. Describe interaction in ordinary language (for example, drag on the ground to raise it); show a useful explanation when the hovered surface cannot be edited. Hide irrelevant fields such as Flatten height while raising. Remove empty duplicate sections only after their real controls are migrated and verified; retain all capabilities and advanced access.
+
+Carry the same interaction contract through object placement, movement, rotation, material painting, doors and enemy placement. One clear entry per task, one active tool, contextual settings and consistent Undo. This reinforces the approved unified editor architecture; do not add another standalone editor or another layer of menus. Banked for next iteration, not implemented in 0.16.8.
+
+## October 29, 2026 - BANKED: shared construction materials and readable contact shadows
+
+Construction workflow: directly choose Wall, Floor, Stairs, Block or Prefab, place by clicking/dragging in the scene, adjust with visible move/rotate/resize handles, and choose seamless material thumbnails with repeat scale. Use the same workflow inside rooms and outdoors. Selection exposes the existing object's dimensions/material immediately; advanced controls remain available without prerequisites.
+
+User reports player shadows are too subtle. Add a project-wide shadow darkness/strength control with a clear visual preview, applying consistently across perspective 3D and isometric modes. Inspect existing sun-shadow versus contact-blob owners; keep their purposes distinguishable and do not change world lighting/darkness as a substitute for shadow opacity. Preserve outdoor-only sun behavior, terrain/geometry conformity, existing sprite presentation and high performance. Verify equivalent appearance at comparable character screen scale in both views, including jumping and landings.
+
+Provide an NPC/enemy event option to use the same ground contact/blob shadow as the player, especially in isometric mode. Reuse the shared shadow renderer rather than introducing separate enemy effects. Expose this through actionable event creation/inspection settings, with a coherent shared default and explicit per-event override; retain existing authored values. Blob stays grounded under the actor and responds to height above the actual supporting surface, using the previously requested subtle shrink/fade on ascent and recovery approaching ground. Avoid overlapping blobs or unintended double darkness where sun and contact shadows combine. Banked only; no shadow behavior changes in current build.
+
+
+## October 29, 2026 - clarified deliberate shadow split
+
+User clarified that contact/blob shadows must remain limited to isometric gameplay. The separate outdoor sun-shadow system remains responsible for perspective 3D. This supersedes any reading of the preceding parity request as adding blobs to perspective mode. Strength controls should expose the separate systems clearly. User additionally requires preserving all deliberate architecture/presentation/gameplay splits while consolidating UI; document boundaries and flag changes before implementation.
+
+
+## October 29, 2026 — 0.16.9 correction slice
+
+Direct terrain activation, visible brush area, actionable piece placement/material import, two-view enemy metadata, discoverable HP/hostility, separate shadow strengths/event contact option, shared weapon damage/imported SFX, simple original dithering controls, isometric composition angles, real geometry cutaway/enemy contours and shared plan manipulation are implemented and covered by focused acceptance in this branch. Prior banked entries remain history; current workflow is ITERATION-0.16.9.md. FEATURE-STATUS-0.16.9.md explicitly records larger unimplemented architecture proposals. User requested completing those too; do not treat disclosure alone as implementation or mark the whole redesign finished. Preserve deliberate splits.

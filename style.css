@@ -221,3 +221,12 @@ body[data-frontier-editing=true] #gameFrame,body[data-frontier-editing=true] #ga
 
 #pauseSettings,#pauseSettings *{font-family:var(--frontier-game-font),sans-serif!important}
 #gameFrame #muzzlePanel,#gameFrame #muzzlePanel *,#gameFrame dialog,#gameFrame dialog *{font-family:system-ui,Arial,sans-serif!important}
+
+/* October 29, 2026: bounded material thumbnails support existing native selects; imported texture validation remains owned by the surface importer. */
+.materialChoices169 { display:flex;flex-wrap:wrap;gap:5px;max-height:180px;overflow:auto;margin:6px 0; }
+.materialChoices169 button { width:58px!important;min-width:58px!important;min-height:58px!important;padding:3px!important;flex:0 0 58px; }
+.materialChoices169 img { display:block;width:48px;height:48px;object-fit:cover; }
+#authoringPalette button[aria-pressed="true"] { outline:2px solid #9df6b0;outline-offset:-2px; }
+
+/* October 29: feature audit is editor-only; fullscreen/playtest controls retain their existing visibility. */
+body[data-frontier-editing="false"] #featureStatus169{display:none}

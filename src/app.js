@@ -1457,6 +1457,7 @@
               !FrontierEvents.graphics.includes(page.mz.image.profile)
                 ? page.mz.image.profile
                 : event.spriteProfile || undefined,
+            groundShadow:event.groundShadow,
             vectorTreatment: event.vectorTreatment || "map",
             combat,
             maxHp: combat?.maxHp || 24,
@@ -1626,6 +1627,8 @@
     history: /* @function app.authoringHistory — Inputs: none. Returns current scene Undo/Redo lengths for toolbar availability, without exposing snapshots or other history owners. */ function(){return {undo:history.length,redo:redoHistory.length};},
     anchor: /* @function app.authoringAnchor163 — Inputs: typed selected scene reference and copied source record. Returns world XYZ using the current runtime placement elevation for props/events, or authored absolute Z for structure. Reads only; follows actual terrain/model support instead of putting handles below raised objects. */function(ref,record){let z=record.z||0;if(ref.kind==="event"||ref.kind==="object"){for(const entity of [...(game.sceneEvents||[]),...game.maps.frontier.entities])if(entity.id===ref.id){z=entity.z||0;break;}}return [record.x,record.y,z];},
     project: /* @function app.authoringProjection163 — Inputs: world XYZ metres. Returns projected logical canvas point only while editing; uses actual active camera including fixed/isometric views. No mutation. */function(x,y,z){return editing ? FrontierRender.project(FrontierRender.camera(game),x,y,z) : null;},
+    weapons:/* @function app.weaponDamage169 — Inputs: optional project override draft. Returns detached current weapon definitions, or adopts through project-default history only while editing. Existing per-enemy overrides remain separately authored. */function(value){if(value===undefined)return structuredClone(mapLibrary.gameplayDefaults.extensions.weaponDefinitions||{});if(!editing)return false;mapLibrary.weaponDamage169(value);return true;},
+    shadows:/* @function app.shadowSettings169 — Inputs: shared strength draft. Applies only while editing through the existing whole-project transaction; throws on invalid data and preserves independent render systems. */function(value){if(!editing)return false;mapLibrary.shadowSettings169(value);return true;},
     mutate, removeMany:removeSceneSelection,
   });
   // Switch editor/playtest state, release capture and restart from authored data. F2 is the editor shortcut; Tab remains the HUD menu.
@@ -3229,10 +3232,7 @@
           },
           game.ui,
         );
-        PhanicomCombatCore.playGoldenEyeProfile(
-          cfg.audioProfile,
-          cfg.audioVolume,
-        );
+        PhanicomABS.playWeaponSound169(game,w,e);
         e.attackTime = FrontierEnemyTactics.afterShot(e);
       }
       if (!e.combat && distance < 1.05 && !e.attackTime && !e.stunTime) {
@@ -3410,7 +3410,7 @@
     $("badge").lastElementChild.textContent =
       (world.interior?.mode === "fixed" ? "Fixed interior · " : "") +
       (game.camera.firstPerson ? "First person" : "Third person") +
-      " · prototype 0.16.8";
+      " · prototype 0.16.9";
     if (world.interior)
       $("intro").textContent =
         world.interior.mode === "fixed"
@@ -3732,7 +3732,7 @@
     };
   try {
     const saved = localStorage.getItem("phanicom-muzzles-0.15.22");
-    if (saved) FrontierMuzzle.load(JSON.parse(saved));
+    if (saved) FrontierMuzzle.load(FrontierEnemies.upgradeProfiles169(JSON.parse(saved)));
   } catch {}
   // Project rules are authored separately from event pages. Applying uses the
   // same validated/undoable mutation path as other editor changes.
@@ -3824,7 +3824,8 @@
                 i,
               ) => Number($("cerebral-threshold" + i).value),
             ),
-            melee: Object.fromEntries(
+            // October 29: numeric melee editing retains separately imported sound bytes.
+            melee: {...world.cerebral.melee, ...Object.fromEntries(
               [
                 "name",
                 "damage",
@@ -3842,7 +3843,7 @@
                     : Number($("melee-" + k).value),
                 ],
               ),
-            ),
+            )},
           });
         },
       );

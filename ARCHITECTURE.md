@@ -60,3 +60,8 @@ above remain historical where behavior differs.
 ## October 28, 2026 - 0.16.8 palette output
 
 The original PhanicomPaletteDither v2 algorithm is ported in src/palette-dither.js, loaded after isometric and before world validation. Environment > Indexed palette / dithering owns map settings; original event commands use the existing interpreter and save/travel owners. The final Pixi pass can composite the retained HTML HUD; live door/melt layers and raw melt capture avoid frozen/double-indexed transitions. Prior appearance remains unchanged when disabled. See ITERATION-0.16.8.md and FUNCTION-REFERENCE-0.16.8.md for controls, source provenance, lifecycle, limits and validation. Existing documentation above is retained.
+
+
+## October 29, 2026 — 0.16.9 authoring and visibility boundaries
+
+See ITERATION-0.16.9.md, FUNCTION-REFERENCE-0.16.9.md and FEATURE-STATUS-0.16.9.md. The shared plan/Inspector are adapters over existing source collections and history, not a new authoritative scene format. New isometric visibility uses geometry-only depth to reveal pixels without changing collision or targeting. Contact blobs remain isometric-only; outdoor sun shadows remain separate. Native project firearms and map-local melee keep their established owners, with adjacent readable damage/sound controls. Advanced settings retain imported sound bytes. Full Buildings/Storeys/shared boundaries and host-attached door cutting remain explicit undelivered roadmap items, not inferred from UI labels.

@@ -407,6 +407,7 @@
     if (root.FrontierFlight)
       result.flight = root.FrontierFlight.validate(w.flight);
     if (root.FrontierFog) result.fog = root.FrontierFog.validate(w.atmosphereVersion===1 ? w.fog : {...w.fog,enabled:true,...(!w.fog || w.fog.color==="#081323" ? {color:"#665263",start:16,end:48}: {})});
+    if(root.FrontierIsometricVisibility169)result.visibility169=root.FrontierIsometricVisibility169.validate(w.visibility169);
     if(root.FrontierPaletteDither)result.paletteDither=root.FrontierPaletteDither.validate(w.paletteDither);
     if (root.FrontierVector)
       result.vectorDisplay = root.FrontierVector.validate(w.vectorDisplay);

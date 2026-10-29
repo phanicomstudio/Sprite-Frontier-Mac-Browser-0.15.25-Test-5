@@ -21,7 +21,7 @@
     // October 22: generation and normalized authoring are editor-only.
     "spritefusion-normal-generator",
     "authoring-scene",
-    "authoring-workspace",
+    "authoring-workspace", "authoring-tools169",
     "editor-tools",
     "effects-editor",
     "model-workbench",

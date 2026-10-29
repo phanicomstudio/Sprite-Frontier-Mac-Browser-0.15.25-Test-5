@@ -697,6 +697,7 @@
     root.FrontierWater?.draw(ctx, game, cam, project);
     // October 26: outdoor sprite silhouettes sit on the ground pass before models/actors, independent of billboard tilt. Interiors never receive sunlight shadows.
     // Superseded within this iteration: ground-plane prototype retained as a documented helper, not the active render path.
+    root.FrontierIsometricVisibility169?.begin(ctx,game,cam);
     root.FrontierModelRenderer?.geometry(
       ctx,
       game,
@@ -964,6 +965,7 @@
         }
       }
     }
+    root.FrontierIsometricVisibility169?.draw(ctx,game,cam,entities);
     if (game.authoring) {
       root.FrontierInterior?.outline(ctx, game.sourceWorld, cam, project);
       for (const e of game.sceneEvents || []) {
@@ -1197,6 +1199,8 @@
     sy,
   ) {
     const cam = camera(game);
+    // October 29: outdoor isometric terrain shares the affine camera but not a flat artwork plane. Refine height so visible raised ground, brush centre and placement agree.
+    if(cam.outdoorIsometric){let point=FrontierInterior.groundPoint(cam,sx,sy);for(let i=0;i<10;i++){const z=FrontierTerrain.height(game.sourceWorld,point.x,point.y),next=FrontierInterior.groundPoint(cam,sx,sy+z*cam.room.camera.heightScale);if(Math.hypot(next.x-point.x,next.y-point.y)<.001)return {...next,z};point=next;}return {...point,z:FrontierTerrain.height(game.sourceWorld,point.x,point.y)};}
     if (cam.orthographic) return FrontierInterior.groundPoint(cam, sx, sy);
     const side = (sx - (cam.cx || 320)) / 360,
       up = ((cam.cy ?? 96) - sy) / 360,

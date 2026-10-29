@@ -706,6 +706,7 @@
       ctx.restore();
       game.roomBackend = "GPU color / CPU shared depth";
     } else {
+      root.FrontierIsometricVisibility169?.cutout(ctx,surface);
       composite(ctx, surface);
       game.roomBackend = "CPU";
     }
@@ -1267,7 +1268,7 @@
         480,
       );
       ctx.restore();
-    } else composite(ctx, surface);
+    } else {root.FrontierIsometricVisibility169?.cutout(ctx,surface);composite(ctx, surface);}
     game.modelDebug = {
       instances,
       culled,
