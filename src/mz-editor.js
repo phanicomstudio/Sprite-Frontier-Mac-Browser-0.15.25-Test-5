@@ -73,6 +73,8 @@
     document.body.append(d);
     const enemyButton=button('Enemy settings / create enemy...', /* @function mzEditor.enemy167 — Inputs: click ignored. Applies current event draft through existing validation before opening its enemy settings; invalid drafts remain here. Existing pages are retained. */ function(){if(!apply())return;d.close();root.FrontierEnemyTools?.open(draft.id);});
     d.querySelector('.mzEventHeader').after(enemyButton);
+    const shadowLabel169=document.createElement('label'),shadow169=document.createElement('input');shadow169.type='checkbox';shadow169.id='mzGroundShadow';shadow169.checked=draft?.groundShadow!==false;shadowLabel169.append(shadow169,'Ground shadow (isometric only)');enemyButton.after(shadowLabel169);
+    shadow169.onchange=/* @function mzEditor.shadow169 — Inputs: checkbox change ignored. Records the per-event isometric contact setting in existing event draft history; Apply still owns world adoption. */function(){edit(/* @function mzEditor.shadowDraft169 — Inputs: none. Copies only current checkbox state into the isolated event draft. */function(){draft.groundShadow=shadow169.checked;});};
     const paletteButton=button('Palette dither command...',/* @function mzEditor.addPalette168 — Inputs: click ignored. Opens original plugin commands and appends validated record through existing event draft history. */function(){root.FrontierPaletteDither.commandDialog(null,/* @function mzEditor.acceptPalette168 — Inputs: validated command. Appends to active page inside edit transaction without changing authored scene until Apply. */function(command){edit(/* @function mzEditor.paletteDraft168 — Inputs: none. Adds command to current page; edit owns validation/Undo. */function(){draft.pages[pageIndex].commands.push(command);});});});enemyButton.after(paletteButton);
     d.querySelector(".mzImageMovement fieldset").append(
       button(
@@ -626,6 +628,7 @@
     }
     /* @function mz-editor.refresh.45 — Handles refresh within mz editor. Inputs: no explicit arguments; uses enclosing module state. Updates: behavior summary text content; budget notice text content; extra notice text content; extra notice hidden; $ using "mzEventTitle" text content. Uses: settings; frontier events diagnostics; frontier event schema extra page conditions; $. Returns: without a result. */ function refresh() {
       if (!draft) return;
+      shadow169.checked=draft.groundShadow!==false;
       const p = draft.pages[pageIndex],
         m = settings(p);
       behaviorSummary.textContent = p.behavior

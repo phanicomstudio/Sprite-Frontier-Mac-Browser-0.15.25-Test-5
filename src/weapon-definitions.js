@@ -62,7 +62,7 @@
       Object.keys(value).length > 64
     )
       throw Error("Weapon settings must be a profile dictionary (up to 64).");
-    const result = {};
+    const result = {};let soundBytes169=0;
     for (const [id, fields] of Object.entries(value)) {
       if (
         !/^[a-z0-9_-]{1,64}$/i.test(id) ||
@@ -112,6 +112,7 @@
             falloff: light.falloff,
             flicker: light.flicker,
           };
+        } else if(key==="soundAsset") {checked[key]=validateSound169(v);soundBytes169+=checked[key].src.length;if(soundBytes169>24000000)throw Error("Imported weapon sounds exceed the 24 MB encoded project budget.");
         } else if (key === "fireMode") {
           if (!["semi", "auto", "burst"].includes(v))
             throw Error("Invalid firing mode.");
@@ -304,7 +305,8 @@
       const result = {};
       for (const row of rows)
         if (row.enabled.checked) {
-          const values = {};
+          // October 29: advanced edits retain the imported firing sound owned by the simple weapon panel.
+          const values = draft[row.id]?.soundAsset ? {soundAsset: structuredClone(draft[row.id].soundAsset)} : {};
           for (const [key, control] of Object.entries(row.fields))
             values[key] = numbers[key] ? Number(control.value) : control.value;
           if (row.lightMode.value === "off") values.light = { enabled: false };
@@ -337,5 +339,7 @@
     parent.append(wrapper);
     return control;
   }
-  root.FrontierWeaponDefinitions = { validate, defaults, apply, editor };
+  /* @function weaponDefinitions.validateSound169 — Inputs: optional imported sound record. Returns detached name/data URL for WAV, OGG or MP3 within 2 MB decoded/2.8 MB encoded bounds. Rejects paths, arbitrary URLs and malformed base64 at the project boundary; actual media decoding occurs on explicit import/preview. No playback or registry mutation. */
+  function validateSound169(value){if(!value||typeof value.name!=="string"||value.name.length>120||typeof value.src!=="string"||value.src.length>2800000||!/^data:audio\/(?:wav|x-wav|wave|ogg|mpeg);base64,[A-Za-z0-9+/]+={0,2}$/.test(value.src))throw Error("Choose an embedded WAV, OGG or MP3 sound under 2 MB.");return {name:value.name,src:value.src};}
+  root.FrontierWeaponDefinitions = {validateSound169, validate, defaults, apply, editor };
 })(typeof window === "undefined" ? globalThis : window);

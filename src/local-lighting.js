@@ -89,6 +89,7 @@
     return {
       ...v,
       lights,
+      shadows:shadows169(v.shadows),
       sun:sun163(v.sun),
       player: source(
         { enabled: true, radius: 6, intensity: 0.45, falloff:2, color:"#fff0dc", z: 1.2, ...v.player },
@@ -459,7 +460,9 @@
   }
   /* @function localLighting.appearanceFilter163 — Inputs: validated or partial cell appearance. Returns CSS filter text for world canvas only; neutral bypasses treatment. Does not alter HUD/editor text, pixels stored in assets, collision or normal-map caches. */
   function appearanceFilter163(value){const v=appearance163(value);return v.mode==="neutral" ? "none" : "contrast("+v.contrast+") saturate("+v.saturation+") blur("+v.softness+"px)";}
-  root.FrontierLocalLighting = {appearance163,appearanceFilter163,sun163,spriteSunShadow163,
+  /* @function localLighting.shadows169 — Inputs: optional shared shadow draft. Returns a detached pair of finite 0-4 strength multipliers. Sun and isometric contact effects remain separate; invalid values reject before adoption. Defaults retain sun and make the previously faint contacts more readable. */
+  function shadows169(value={}){const sun=value.sun??1,contact=value.contact??1.75;finite(sun,"Sun shadow strength",0,4);finite(contact,"Isometric ground shadow strength",0,4);return {sun,contact};}
+  root.FrontierLocalLighting = {shadows169,appearance163,appearanceFilter163,sun163,spriteSunShadow163,
     validate,
     source,
     frame,

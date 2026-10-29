@@ -89,6 +89,8 @@
   }
 // Prefer an available explicit SE; otherwise use the original procedural weapon sound profile.
   /* @function Phanicom_ActiveCombat.sound.5 — Prefer an available explicit SE; otherwise use the original procedural weapon sound profile. Inputs: game; weapon; owner. Uses: root phanicom se has; root phanicom se play; core play golden eye profile. */ function sound(game,weapon,owner){
+    // October 29: imported per-profile firing sounds use the same voice pool for players and enemies. Blank slots follow the untouched manifest/procedural path below.
+    if(weapon.soundAsset&&root.PhanicomSE.weaponAsset169(weapon.id||weapon.profileId,weapon.soundAsset,(weapon.volume??90)/100,(weapon.pitch??100)/100,/* @function activeCombat.soundFallback169 — Inputs: media failure text ignored. Replays only the original default path once after asynchronous decode/play failure; does not retry custom bytes or change weapon state. */function(){sound(game,{...weapon,soundAsset:undefined},owner);}))return;
 // The source project refers to Laser1/2 but did not supply those stock MZ
 // files. Use explicit supplied beam sounds instead of silently dropping audio.
     const aliases={
@@ -184,7 +186,7 @@
   }
   ;
   root.PhanicomABS={
-    weapons,equip,update,pattern,parseWeapon:core.parseWeaponItem,parseEvent:core.parseCombatEvent,
+    playWeaponSound169:sound,weapons,equip,update,pattern,parseWeapon:core.parseWeaponItem,parseEvent:core.parseCombatEvent,
     /* @function Phanicom_ActiveCombat.setPlayerDeathMode.10 — Handles set player death mode within phanicom active combat. Inputs: game; mode. Updates: game death mode. Uses: a list of "normal", "sprite", "gib", "damage" includes; error. */ setPlayerDeathMode(game,mode){
       if(!['normal','sprite','gib','damage'].includes(mode))throw Error('Invalid death mode.');
       game.deathMode=mode;

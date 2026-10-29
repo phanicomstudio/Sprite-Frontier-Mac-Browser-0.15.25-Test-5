@@ -43,8 +43,9 @@
               spec.walkSequence.length
           ]
         : spec.idleColumn;
+    // October 29: the two available temporary views follow screen-left/right; movement/shot direction remains continuous and billboard tilt is unchanged.
     return {
-      row: spec.rows[sector],
+      row: spec.horizontalRows ? spec.horizontalRows[Math.sin(angle)<-0.001?"left":"right"] : spec.rows[sector],
       column: col,
     };
   }

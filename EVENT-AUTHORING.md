@@ -34,3 +34,8 @@ above remain historical where behavior differs.
 ## October 28, 2026 - 0.16.8 palette output
 
 The original PhanicomPaletteDither v2 algorithm is ported in src/palette-dither.js, loaded after isometric and before world validation. Environment > Indexed palette / dithering owns map settings; original event commands use the existing interpreter and save/travel owners. The final Pixi pass can composite the retained HTML HUD; live door/melt layers and raw melt capture avoid frozen/double-indexed transitions. Prior appearance remains unchanged when disabled. See ITERATION-0.16.8.md and FUNCTION-REFERENCE-0.16.8.md for controls, source provenance, lifecycle, limits and validation. Existing documentation above is retained.
+
+
+## October 29, 2026 — enemy/weapon discovery
+
+Events > Create / edit enemies opens actual enemy archetype/instance behavior, including Health, hostility, patrol/pursuit, cadence, cover, death/remains and respawn. The event Image picker alone changes presentation. Isometric ground shadow is an event checkbox; omitted values use the shared default. New enemies can inherit project weapon damage; existing explicit damage is retained. Events > Weapon damage and sounds sets projectile/pellet/blast damage and optional sound assets; map-local melee stays separate. Imported effects are embedded typed audio, portable with saves/projects/exports, and blank slots use original defaults. See ITERATION-0.16.9.md.

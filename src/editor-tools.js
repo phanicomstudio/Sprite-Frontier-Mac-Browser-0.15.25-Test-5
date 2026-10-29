@@ -63,6 +63,9 @@
             else delete w.groundMaterial;
           },
         );
+    /* @function editorTools.brushSettings169 - Inputs: change event ignored. Shows only settings relevant to the selected brush, preserving draft values and original paint handlers. No world mutation. */
+    function brushSettings169(){const mode=$("brushTool").value;$("brushHeight").closest("label").hidden=mode!=="flatten";const material=$("paintMaterial");if(material)material.closest("label").hidden=mode!=="texture";}
+    box.querySelector("#brushTool").addEventListener("change",brushSettings169);
     $("sceneTool").append(new Option("Terrain / water brush", "brush"));
     $("sceneTool").closest("label").after(box);
     const water = document.createElement("fieldset");
@@ -385,6 +388,7 @@
       p,
     ) {
       if (!p) return false;
+      if(api.world().interior&&!api.world().interior.outdoor){const status=document.getElementById("authoringViewStatus");if(status)status.textContent="Ground brushes edit outdoor terrain. Select a floor to change an indoor surface.";return false;}
       stroke = {
         before: {
           terrain: structuredClone(api.world().terrain),
