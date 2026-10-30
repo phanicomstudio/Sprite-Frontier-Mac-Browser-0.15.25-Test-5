@@ -1,0 +1,206 @@
+{
+  "sourceProject": "tiger-electronics",
+  "sourceType": "item",
+  "sourceSha256": "015bee6d9790238955d050927f525374d9ca6a58ef3627a79a25602c6fcf6c42",
+  "databaseEntries": 700,
+  "namedEntries": 617,
+  "matched": [
+    {
+      "nativeId": "material-junk-scrap",
+      "nativeName": "Junk Scrap",
+      "sourceId": 132,
+      "sourceName": "Junk Scrap",
+      "match": "exact name"
+    },
+    {
+      "nativeId": "material-tech-scrap",
+      "nativeName": "Tech Scrap",
+      "sourceId": 134,
+      "sourceName": "Tech Scrap",
+      "match": "exact name"
+    },
+    {
+      "nativeId": "material-metal-scrap",
+      "nativeName": "Metal Scrap",
+      "sourceId": 133,
+      "sourceName": "Metal Scrap",
+      "match": "exact name"
+    },
+    {
+      "nativeId": "material-telemetry-module",
+      "nativeName": "Telemetry Module",
+      "sourceId": 650,
+      "sourceName": "Telemetry Module",
+      "match": "exact name"
+    },
+    {
+      "nativeId": "material-phaneton-battery",
+      "nativeName": "Phaneton Battery",
+      "sourceId": 651,
+      "sourceName": "Phaneton Battery",
+      "match": "exact name"
+    },
+    {
+      "nativeId": "material-wires",
+      "nativeName": "Wires",
+      "sourceId": 145,
+      "sourceName": "Wires",
+      "match": "exact name"
+    },
+    {
+      "nativeId": "material-wire-spool",
+      "nativeName": "Wire Spool",
+      "sourceId": 146,
+      "sourceName": "Wire Spool",
+      "match": "exact name"
+    },
+    {
+      "nativeId": "material-magnetic-material",
+      "nativeName": "Magnetic Material",
+      "sourceId": 150,
+      "sourceName": "Magnetic Material",
+      "match": "exact name"
+    },
+    {
+      "nativeId": "material-phanteton-condensate-cartridge",
+      "nativeName": "Phanteton Condensate Cartridge",
+      "sourceId": 154,
+      "sourceName": "Phaneton Condensate Cartridge",
+      "match": "explicit recorded spelling/spacing alias; native display name preserved"
+    },
+    {
+      "nativeId": "material-textile-filament",
+      "nativeName": "Textile Filament",
+      "sourceId": 163,
+      "sourceName": "Textile Filament",
+      "match": "exact name"
+    },
+    {
+      "nativeId": "material-uncured-imipolex-resin",
+      "nativeName": "Uncured Imipolex Resin",
+      "sourceId": 166,
+      "sourceName": "Uncured Imipolex Resin",
+      "match": "exact name"
+    },
+    {
+      "nativeId": "material-imipolex-cube",
+      "nativeName": "Imipolex Cube",
+      "sourceId": 131,
+      "sourceName": "Imipolex Cube",
+      "match": "exact name"
+    },
+    {
+      "nativeId": "material-metallic-filament",
+      "nativeName": "Metallic Filament",
+      "sourceId": 164,
+      "sourceName": "Metallic Filament",
+      "match": "exact name"
+    },
+    {
+      "nativeId": "material-organoid-plug",
+      "nativeName": "Organoid Plug",
+      "sourceId": 652,
+      "sourceName": "Organoid Plug",
+      "match": "exact name"
+    },
+    {
+      "nativeId": "material-organoid-socket",
+      "nativeName": "Organoid Socket",
+      "sourceId": 653,
+      "sourceName": "Organoid Socket",
+      "match": "exact name"
+    },
+    {
+      "nativeId": "material-organoid-phosphor-crt",
+      "nativeName": "Organoid Phosphor CRT",
+      "sourceId": 654,
+      "sourceName": "Organoid Phosphor CRT",
+      "match": "exact name"
+    },
+    {
+      "nativeId": "material-neuro-uplink-board",
+      "nativeName": "Neuro Uplink Board",
+      "sourceId": 655,
+      "sourceName": "Neuro Uplink Board",
+      "match": "exact name"
+    },
+    {
+      "nativeId": "material-organoid-networking-board",
+      "nativeName": "Organoid Networking Board",
+      "sourceId": 656,
+      "sourceName": "Organoid Networking Board",
+      "match": "exact name"
+    },
+    {
+      "nativeId": "material-organoid-memory-board",
+      "nativeName": "Organoid Memory Board",
+      "sourceId": 657,
+      "sourceName": "Organoid Memory Board",
+      "match": "exact name"
+    },
+    {
+      "nativeId": "material-muther-board",
+      "nativeName": "Muther Board",
+      "sourceId": 658,
+      "sourceName": "MutherBoard",
+      "match": "explicit recorded spelling/spacing alias; native display name preserved"
+    },
+    {
+      "nativeId": "material-organoid-processor",
+      "nativeName": "Organoid Processor",
+      "sourceId": 659,
+      "sourceName": "Organoid Processor",
+      "match": "exact name"
+    },
+    {
+      "nativeId": "material-psy-block",
+      "nativeName": "Psy Block",
+      "sourceId": 660,
+      "sourceName": "Psy Block",
+      "match": "exact name"
+    }
+  ],
+  "unresolved": [
+    {
+      "nativeId": "material-plastic-scrap",
+      "name": "Plastic Scrap",
+      "reason": "No unambiguous source match; description remains blank.",
+      "possibleSource": {
+        "id": 153,
+        "name": "Plastic",
+        "status": "Different item name; not automatically equated with Plastic Scrap."
+      }
+    },
+    {
+      "nativeId": "material-phaneton-condensate",
+      "name": "Phaneton Condensate",
+      "reason": "No unambiguous source match; description remains blank."
+    }
+  ],
+  "sourceRecipes": [
+    {
+      "project": "tiger-electronics",
+      "type": "item",
+      "id": 100,
+      "name": "Sausage bits in cream",
+      "note": "<Food><PhanicomCombine: 10, 12>",
+      "status": "Reference only; no native recipe activated or assumed."
+    },
+    {
+      "project": "tiger-electronics",
+      "type": "item",
+      "id": 312,
+      "name": "Pasted Sausage Cream",
+      "note": "<PhanicomCombine: 10, 12>",
+      "status": "Reference only; no native recipe activated or assumed."
+    },
+    {
+      "project": "tiger-electronics",
+      "type": "item",
+      "id": 557,
+      "name": "Empty Organ Life Support Case",
+      "note": "<PhanicomCombine: $561, 148, 134>",
+      "status": "Reference only; no native recipe activated or assumed."
+    }
+  ]
+}

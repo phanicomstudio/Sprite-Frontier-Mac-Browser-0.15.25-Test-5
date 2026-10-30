@@ -200,3 +200,55 @@ User clarified that contact/blob shadows must remain limited to isometric gamepl
 ## October 29, 2026 — 0.16.9 correction slice
 
 Direct terrain activation, visible brush area, actionable piece placement/material import, two-view enemy metadata, discoverable HP/hostility, separate shadow strengths/event contact option, shared weapon damage/imported SFX, simple original dithering controls, isometric composition angles, real geometry cutaway/enemy contours and shared plan manipulation are implemented and covered by focused acceptance in this branch. Prior banked entries remain history; current workflow is ITERATION-0.16.9.md. FEATURE-STATUS-0.16.9.md explicitly records larger unimplemented architecture proposals. User requested completing those too; do not treat disclosure alone as implementation or mark the whole redesign finished. Preserve deliberate splits.
+
+
+## October 29, 2026 — BANKED: isometric visibility, fog and zoom-aware LOD
+
+User reports sprites/events popping out during movement when zoomed out in isometric mode. User explicitly requests banking the fix for the next iteration; do not change gameplay/rendering or rebuild the current package now.
+
+Source assessment (not a reproduced visual acceptance result): render.js queries a fixed camera-centred +/-52 metre region and filters billboard candidates using the legacy camera-depth <45 cutoff. Zoom-out expands the visible map without expanding those limits. Isometric billboard fog uses player-relative forward depth, whereas model fog uses camera depth. Default Dusty Plum fog is 16–48 metres, so the billboard cutoff can occur before full fog coverage. Fog exists in isometric mode; this is a visibility/fog consistency issue, not evidence that fog is disabled or events are deleted.
+
+Next-iteration requirements:
+- Derive conservative isometric render candidates from the actual viewport, zoom, yaw/tilt, terrain/elevation and object bounds. Include partly visible tall/wide sprites and models rather than relying only on their origins. Avoid abrupt visible popping during movement/zoom.
+- Establish a consistent documented world-distance convention for isometric sprite, model and terrain fog. Coordinate culling with the fog boundary when enabled; retain visible objects when fog is disabled. Preserve the deliberate separation of sky grading from geometry fog and fixed-artwork alignment from live geometry.
+- Keep render visibility separate from actor/event simulation scheduling, collision, projectile sweeps, cover, acquisition and save state. Increasing render coverage must not wake every distant enemy or discard sleeping state.
+- Evaluate zoom-aware, screen-size LOD as a companion performance measure, as suggested by the user. Prefer bounded distant animation refresh, normal-lighting updates, shadow/effect work and appropriate existing model LOD/geometry simplification where supported. LOD is not permission to hide clearly visible objects, change locked billboard tilt/proportions, degrade nearby combat or silently approximate the exact palette-dither shader. Preserve full nearby player/enemy behavior and the separate sun/isometric-contact shadow systems.
+- Use hysteresis/smooth transitions so crossing LOD bands does not flicker or thrash caches. Reuse pooled/cached resources and spatial queries; avoid unbounded per-frame all-world work.
+
+Acceptance: reproduce on Isometric Textured Wilderness; move/zoom at minimum/default/maximum scales and several yaw/tilt angles; test fog on/off and changed ranges, large/tall sprites, models, event enemies, raised terrain and map edges. Verify partial-screen visibility, stable transitions, collision/aim/AI parity and save persistence. Measure candidate counts, frame cost and cache/memory behavior on dense maps; do not assume an LOD policy improves performance without measurement. Recheck perspective/fixed modes, sky exclusion, exact dithering and maintained-function comments.
+
+Status: BANKED / not implemented in 0.16.9. LOD policy and budgets must be chosen against measurements during the next iteration.
+
+
+## October 29, 2026 - BANKED: Zimmerit crafting and starter materials
+
+User supplied Phanicom_ZimmeritCombine.js and 24 item names. Exact names/blank descriptions are recorded in data/crafting-materials-draft.json; original plugin/provenance in docs/reference/zimmerit-combine/. CRAFTING-DESIGN.md records reviewed behavior and the requested remote button plus Recipes authoring section. No combinations or prices supplied; do not invent them or claim runtime crafting exists. Later user plans to import descriptions, potentially all items, from an MZ project; retain source project/type/ID mappings and stable native references.
+
+
+## October 29, 2026 - crafting descriptions imported into draft
+
+User supplied Items.json and is preparing an inventory screen for weapon/item selection, equipment and descriptions. Original source/provenance retained; 22/24 draft descriptions matched with source project/type/ID. Plastic Scrap and base Phaneton Condensate remain unresolved; Plastic is only a candidate. See crafting-source-import-report.json and CRAFTING-DESIGN.md. Do not silently activate source recipes/all items, normalize zero prices or redesign the inventory before the user supplies their screen direction.
+
+
+## October 29, 2026 — BANKED: discoverable Item Editor and descriptions
+
+User explicitly requests a place to define items and write/edit their descriptions in the next iteration. Provide one clear Items authoring entry, integrated with the upcoming inventory and recipe workflows, adapting the existing project item-definition owner rather than creating a parallel catalog.
+
+Required everyday controls: create/duplicate/delete/search items; stable ID, readable name, multiline description, category, icon/image, and applicable price/equipment/use properties. Show only applicable properties; retain advanced capabilities. Item descriptions must be editable in ordinary text fields and readable from the in-game inventory. Crafting recipes and pickups must reference the same stable definitions. Do not require editing JSON or RPG Maker note tags for everyday item authoring.
+
+Preserve existing definitions and user-written descriptions, source project/type/ID import mappings, authored/runtime inventory separation and existing save/export behavior. Preview future MZ merges and resolve conflicting descriptions explicitly; no silent overwrite or name-only deduplication. Reject or guide deletion of items referenced by recipes/events/inventories rather than leaving dangling references. Reconcile legitimate imported zero prices explicitly; never invent a price merely to satisfy the current positive-price validator. Keep all 24 starter names and the two unresolved source matches visible.
+
+Acceptance: create an item with multiline description, edit it, reference it in a recipe/pickup, read it in inventory, and verify Undo plus save/reload/project and runtime exports. Confirm existing items and source mappings survive import/edit round trips. This is banked for the next iteration, not implemented in the current packaged release.
+
+
+## October 29, 2026 - BANKED: Skill-O-Matic skill-on-target UI
+
+User supplied A fixed housing, B underlying scrollable skill-slot strip and C draggable thumb for the right-hand groove. Assets copied byte-for-byte to img/ui/skill-o-matic with metadata/hashes. Skill labels use readable segmented LCD-style lettering. Click skill then world target; slider down scrolls to later skills. Clip B under A, synchronize hit areas/text/scroll and prevent UI click-through into weapons/world actions. See SKILL-O-MATIC-DESIGN.md. User references Fallout 1/2/Sonora behavior; exact native rules must be audited before claiming parity. Hold full runtime/inventory implementation while user supplies UI design.
+
+
+Skill-O-Matic visual clarification: user provided finalized composition, preserved under docs/reference/skill-o-matic/user-final-appearance.png. Match red-orange segmented lettering/unlit segments, clipped rows and fitted slider; displayed skills are placeholders only. See SKILL-O-MATIC-DESIGN.md.
+
+
+## October 29, 2026 — 0.16.10 Skill-O-Matic prototype
+
+User authorized one working placeholder skill plus a red remote button before finishing the inventory design. Skill-O-Matic A/B/C composition, LCD TEST SCAN label, actual slider/wheel/key scrolling and safe skill-then-target routing are implemented through existing pause/HUD/reach/inspection owners. Empty rows are disabled test art, not canonical skills. No native Fallout chance/cost/progression system is claimed. Full inventory/crafting/item editor and previously banked isometric culling/fog/LOD remain pending; this prototype does not silently begin those implementations. See ITERATION-0.16.10.md and SKILL-O-MATIC-DESIGN.md.

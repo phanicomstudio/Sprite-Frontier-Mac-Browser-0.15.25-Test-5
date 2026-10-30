@@ -65,3 +65,8 @@ The original PhanicomPaletteDither v2 algorithm is ported in src/palette-dither.
 ## October 29, 2026 — 0.16.9 authoring and visibility boundaries
 
 See ITERATION-0.16.9.md, FUNCTION-REFERENCE-0.16.9.md and FEATURE-STATUS-0.16.9.md. The shared plan/Inspector are adapters over existing source collections and history, not a new authoritative scene format. New isometric visibility uses geometry-only depth to reveal pixels without changing collision or targeting. Contact blobs remain isometric-only; outdoor sun shadows remain separate. Native project firearms and map-local melee keep their established owners, with adjacent readable damage/sound controls. Advanced settings retain imported sound bytes. Full Buildings/Storeys/shared boundaries and host-attached door cutting remain explicit undelivered roadmap items, not inferred from UI labels.
+
+
+## October 29, 2026 — Skill-O-Matic prototype boundary
+
+The runtime-only-neutral skill-o-matic.js controller is included in both engine and gameplay exports. It owns DOM composition and transient selection/scroll state; app.js retains simulation pause, camera/cursor ownership, target reach/occlusion and inspection. TEST SCAN is a harmless integration probe with no persistent skill stat or event command. Original art and a locally defined vector LCD alphabet require no third-party font. UI clicks are consumed before ordinary interaction/weapon routing; restart/editor changes discard the probe. Original shader/HUD capture includes the new image/SVG layers. Full skill rules remain a separate future task.

@@ -39,6 +39,7 @@
     captureAttempted = false,
     playPaused = false,
     hudMode = false;
+  let skillOMatic = null;
   // Pause controls stay outside the canvas so they remain readable and usable
   // even when geometry hides the player. Escape and controller Start pause.
   const pausePanel = document.createElement("section");
@@ -984,6 +985,7 @@
   // and simulation continue. Returning preserves the existing camera orientation.
   /* @function app.toggleHUD.42 — and simulation continue. Returning preserves the existing camera orientation. Inputs: no explicit arguments; uses enclosing module state. Updates: hud mode; $ using "inventoryPanel" hidden; drag; game pointer. Uses: $ using "gameFrame" class list toggle; $; keys clear; mouse reset. Returns: without a result. */ function toggleHUD() {
     if (editing || session.busy) return;
+    skillOMatic?.reset();
     hudMode = !hudMode;
     $("gameFrame").classList.toggle("hudCursor", hudMode);
     $("inventoryPanel").hidden = true;
@@ -1002,6 +1004,7 @@
   // Remember whether gameplay owned mouse look before the inventory opened, then restore that mode on close.
   /* @function app.inventoryToggle.44 — Remember whether gameplay owned mouse look before the inventory opened, then restore that mode on close. Inputs: no explicit arguments; uses enclosing module state. Updates: $ using "inventoryPanel" hidden; inventory resume; play paused; drag; mouse paused. Uses: $; keys clear; mouse reset; document exit pointer lock. Returns: without a result. */ function inventoryToggle() {
     if (editing || session.busy) return;
+    skillOMatic?.reset();
     const opening = $("inventoryPanel").hidden;
     $("inventoryPanel").hidden = !opening;
     if (opening) inventoryResume = !mousePaused && !hudMode;
@@ -1029,6 +1032,7 @@
   $("inventoryClose").onclick = inventoryToggle;
   /* @function app.journalToggle.47 — Handles journal toggle within application input, simulation and editor coordination. Inputs: no explicit arguments; uses enclosing module state. Updates: $ using "journalPanel" hidden; play paused. Uses: $; keys clear; release look; journal render. Returns: without a result. */ function journalToggle() {
     if (editing || session.busy) return;
+    skillOMatic?.reset();
     const opening = $("journalPanel").hidden;
     $("journalPanel").hidden = !opening;
     playPaused = opening;
@@ -1103,6 +1107,7 @@
   ) {
     // October 9: authoring/fresh playtests reset temporary drops; real cell
     // transfers explicitly preserve compact session state, as save import does.
+    skillOMatic?.reset(); // October 29: transient test-skill UI never survives a session/cell replacement.
     if (!preserveHub) hubState = FrontierHubState.empty();
     $("seed").value = world.seed;
     $("mapWidth").value = world.width ?? world.size;
@@ -1886,6 +1891,14 @@
     log(name + ": " + text);
     clickFeedback();
   }
+  // October 29: this single prototype skill reuses actual reach/occlusion and inspection; no new probability or progression rules are inferred from the reference games.
+  skillOMatic = FrontierSkillOMatic.create({
+    allowed: /* @function app.skillAllowed — Inputs: none. Allows the prototype only in alive, idle gameplay, excluding editor, paused menus, dialogue and cell transitions. */ function(){return !editing&&!playPaused&&!session.busy&&!sceneTransition.busy&&game.player.hp>0;},
+    prepare: /* @function app.skillPrepare — Inputs: none. Returns prior cursor/look/pause ownership, releases held input and pauses world simulation while the chooser owns the cursor. Does not change camera orientation or authored data. */ function(){const prior={hud:hudMode,look:!mousePaused&&!hudMode,pause:playPaused};hudMode=true;$("gameFrame").classList.add("hudCursor");releaseLook(true);return prior;},
+    finish: /* @function app.skillFinish — Inputs: prior input ownership and whether target mode is requested. Restores the prior mode on cancel; target mode uses existing HUD cursor routing with simulation resumed. Clears held shots/keys without changing weapon or camera. */ function(prior,targeting){hudMode=targeting||!!prior?.hud;$("gameFrame").classList.toggle("hudCursor",hudMode);releaseLook(targeting?false:!!prior?.pause);if(!targeting&&prior?.look&&!prior.pause)captureLook();},
+    scan: /* @function app.skillScan — Inputs: logical display point. Returns reachable target display name after original inspection, or null for invalid/out-of-reach/occluded/dead target. No resources, health, inventory, event commands or saved skills are modified. */ function(point){const hit=nearbyTarget(point);if(!hit)return null;inspect(point);return hit.event?.name||hit.target.name||hit.target.kind;},
+    log
+  });
   // Intersect a screen ray with terrain and delegate placement at the resulting world coordinates.
   /* @function app.place.99 — Intersect a screen ray with terrain and delegate placement at the resulting world coordinates. Inputs: point. Uses: frontier render ground point; place at; log. */ function place(
     point,
@@ -2656,6 +2669,7 @@
         preventScroll: true,
       });
       if (session.busy && !editing) return;
+      if (skillOMatic?.target(screenPoint(event),event.button)) {event.preventDefault();return;}
       const activateOnly =
         !hudMode &&
         !editing &&
@@ -3296,7 +3310,8 @@
       !playPaused ||
       editing ||
       !$("inventoryPanel").hidden ||
-      !$("journalPanel").hidden;
+      !$("journalPanel").hidden ||
+      !!skillOMatic?.opened();
     FrontierBreathing.tick(
       game,
       dt,
@@ -3410,7 +3425,7 @@
     $("badge").lastElementChild.textContent =
       (world.interior?.mode === "fixed" ? "Fixed interior · " : "") +
       (game.camera.firstPerson ? "First person" : "Third person") +
-      " · prototype 0.16.9";
+      " · prototype 0.16.10";
     if (world.interior)
       $("intro").textContent =
         world.interior.mode === "fixed"
