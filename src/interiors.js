@@ -152,6 +152,7 @@
     r.floor = polygon(r.floor, bounds);
     if (root.FrontierRoomLayout)
       r.layout = root.FrontierRoomLayout.validate(r.layout, bounds);
+    if(r.construction){r.construction=root.FrontierConstruction.validate(r.construction);r.primitives=root.FrontierConstruction.compile(r.construction,r.primitives).primitives;}
     const ids = new Set();
     const lists = ["blockers", "sprites", "primitives", "entrances", "exits"];
     for (const key of lists) {
@@ -305,6 +306,7 @@
       camera: r.camera,
       floor: r.floor,
       ...(r.layout ? { layout: r.layout } : {}),
+      ...(r.construction?{construction:r.construction}:{}),
       ...Object.fromEntries(
         lists.map(
           /* @function interiors.callback.10 — Returns a list of k, r at k. Inputs: k. Returns: a list of k, r at k. */ (
@@ -601,7 +603,7 @@
         (c.screenY + dx * c.axisXY + dy * c.axisYY - z * c.heightScale) *
           cam.fit,
       scale: c.heightScale * cam.fit,
-      depth: cam.outdoorIsometric ? ((x-cam.x)*Math.sin(cam.yaw)+(y-cam.y)*Math.cos(cam.yaw))*Math.cos(cam.pitch)+(z-cam.z)*Math.sin(cam.pitch) : 24 + ((x - 9) * Math.sin(cam.yaw) + (y - 9) * Math.cos(cam.yaw)),
+      depth: cam.outdoorIsometric ? 30+(((x-cam.x)*Math.sin(cam.yaw)+(y-cam.y)*Math.cos(cam.yaw))*Math.cos(cam.pitch)+(z-cam.z)*Math.sin(cam.pitch))*.02 : 24 + ((x - 9) * Math.sin(cam.yaw) + (y - 9) * Math.cos(cam.yaw)),
     };
   }
   /* @function interiors.groundPoint.28 — Handles ground point within interior rooms and their camera. Inputs: cam; sx; sy. Returns: a record containing x, y. */ function groundPoint(

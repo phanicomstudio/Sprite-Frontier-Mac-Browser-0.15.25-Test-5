@@ -25,12 +25,15 @@
     for (const [kind, location, key, group] of collections) {
       for (const record of owner(world, location)?.[key] || []) {
         result.push({cellId, kind, id:record.id, name:record.name || record.id, group,
-          generated:kind === "primitive" && record.layoutGroup === "grid-layout",
+          generated:kind === "primitive" && (record.layoutGroup === "grid-layout" || !!record.constructionRoom),
+          path:structuralPath(world,record,kind),
           role:record.moduleType || kind, model:kind === "event" && !!record.spatial?.model});
       }
     }
     return result;
   }
+  /* @function authoringScene.structuralPath — Inputs: authored world and connected component. Returns readable actual Building/Storey/Room ownership path, preserving optional missing parents as ungrouped. No coordinate mutation or decorative inferred ownership. */
+  function structuralPath(world,record,kind){const c=world.interior?.construction;if(!c)return [];const member=c.members?.find(/* @function authoringScene.membership — Inputs: typed structural ownership link. Returns exact collection/ID match; no spatial inference. */function(m){return m.kind===kind&&m.id===record.id;}),roomId=record.constructionRoom||member?.roomId;if(!roomId)return [];const room=c.rooms.find(/* @function authoringScene.pathRoom — Inputs: recipe. Returns actual component owner. */function(r){return r.id===roomId;}),building=c.buildings.find(/* @function authoringScene.pathBuilding — Inputs: building. Returns room organizational parent. */function(b){return b.id===room?.buildingId;}),storey=c.storeys.find(/* @function authoringScene.pathStorey — Inputs: storey. Returns room elevation-reference parent. */function(s){return s.id===room?.storeyId;});return [building?.name||'Ungrouped building',storey?.name||'No storey',room?.name||roomId];}
   /* @function authoringScene.resolve — Inputs: authored world, active cell ID and typed reference. Returns current source record or null for a stale/foreign/unsupported reference. Never resolves an ID across kinds or cells and never mutates source. */
   function resolve(world, cellId, ref) {
     if (!ref || ref.cellId !== cellId || typeof ref.id !== "string") return null;
@@ -52,7 +55,7 @@
     function selection() {
       if (cell !== api.active()) { cell = api.active(); selected = []; }
       const fresh=[];
-      for(const ref of selected) {const record=resolve(api.world(),cell,ref);if(record)fresh.push({...ref,name:record.name||record.id,role:record.moduleType||ref.kind,generated:ref.kind==="primitive" && record.layoutGroup==="grid-layout"});}
+      for(const ref of selected) {const record=resolve(api.world(),cell,ref);if(record)fresh.push({...ref,name:record.name||record.id,role:record.moduleType||ref.kind,generated:ref.kind==="primitive" && (record.layoutGroup==="grid-layout"||!!record.constructionRoom)});}
       selected=fresh;
       return structuredClone(selected);
     }
@@ -94,9 +97,12 @@
     /* @function authoringScene.list — Inputs: none. Returns fresh normalized entries for the active cell; no direct mutable source references are exposed. */
     function list() { return entries(api.world(),api.active()); }
     /* @function authoringScene.generatedEdits — Inputs: none. Returns copied legacy grid override ledger records for explicit restore/review. No derived scene writes or inference of historical deletions. */
-    function generatedEdits() { return structuredClone(api.world().interior?.layout?.edits?.parts || []); }
+    function generatedEdits() { const room=api.world().interior;return structuredClone([...(room?.layout?.edits?.parts||[]),...(room?.construction?.rooms||[]).flatMap(/* @function authoringScene.connectedEdits — Inputs: connected room recipe. Returns persistent component overrides for same explicit review/restore UI. */function(r){return r.overrides||[];})]); }
     /* @function authoringScene.detach — Inputs: typed generated primitive reference. Returns commit boolean; preserves effective geometry/material/collision under a new independent identity, suppressing original through transaction capture. Selection follows the new independent part. Rejects stale or non-generated targets. */
     function detach(ref) {
+      const connected=resolve(api.world(),api.active(),ref);
+      if(api.editing()&&ref?.kind==='primitive'&&connected?.constructionRoom){if(connected.openingHost)throw Error('Detach or remove the opening through its host first.');let id;const accepted=api.mutate(/* @function authoringScene.detachConnected1611 — Inputs: none. Preserves effective part as ordinary independent geometry and lets construction capture suppress its former generated identity in the same Undo transaction. */function(){const part=resolve(api.world(),api.active(),ref);id='part-'+crypto.randomUUID();part.id=id;delete part.constructionRoom;delete part.constructionBuilding;delete part.constructionStorey;delete part.constructionBase;});if(accepted)select([{...ref,id}]);return accepted;}
+
       const record=resolve(api.world(),api.active(),ref);
       if(!api.editing() || ref?.kind!=="primitive" || record?.layoutGroup!=="grid-layout") return false;
       let id="independent-part",serial=1;const used=new Set();for(const entry of entries(api.world(),api.active()))used.add(entry.id);
@@ -109,6 +115,9 @@
     }
     /* @function authoringScene.restoreGenerated — Inputs: generated origin ID. Returns owner commit boolean; removes that explicit override and regenerates only owned grid geometry. Independent/detached parts stay intact; restoring may deliberately recreate original structure, so UI identifies the target. Invalid topology/capacity rolls back atomically. */
     function restoreGenerated(id) {
+      const parent=api.world().interior?.construction?.rooms.find(/* @function authoringScene.restoreParent1611 — Inputs: connected recipe. Returns parent owning the selected override identity. */function(room){return room.overrides.some(/* @function authoringScene.restoreEdit1611 — Inputs: component override. Returns exact selected identity. */function(edit){return edit.id===id;});});
+      if(parent&&api.editing())return api.mutate(/* @function authoringScene.restoreConnected1611 — Inputs: none. Clears exactly one connected override inside original Undo transaction; no independent piece is deleted. */function(){const target=api.world().interior.construction.rooms.find(/* @function authoringScene.restoreCurrentParent1611 — Inputs: live recipe. Returns same stable parent. */function(room){return room.id===parent.id;});target.overrides=target.overrides.filter(/* @function authoringScene.keepConnectedEdit1611 — Inputs: component override. Retains all other authored edits. */function(edit){return edit.id!==id;});});
+
       if(!api.editing())return false;
       let found=false;for(const edit of api.world().interior?.layout?.edits?.parts || [])if(edit.id===id)found=true;
       if(!found)return false;
@@ -168,7 +177,7 @@
     function bounds169(){const w=api.world();return {width:w.width??w.size,height:w.height??w.size};}
     /* @function authoringScene.moveMany169 — Inputs: typed selections and finite XY delta in metres. Returns one atomic scene-history commit, rejects stale targets or play mode. Keeps height/rotation/material/event ownership unchanged; generator overrides are captured by the existing owner. */
     function moveMany169(refs,dx,dy){if(!api.editing())return false;if(!Number.isFinite(dx)||!Number.isFinite(dy))throw Error("Invalid move.");for(const ref of refs)if(!resolve(api.world(),api.active(),ref))throw Error("Selection is stale.");return api.mutate(/* @function authoringScene.commitMoveMany169 — Inputs: none. Moves actual selected source records together in one validated transaction; rollback handles map bounds or collision validation. */function(){for(const ref of refs){const r=resolve(api.world(),api.active(),ref);r.x+=dx;r.y+=dy;}});}
-    return {bounds169,moveMany169,melee169,cellKind169,visibility169,weapons169,shadows169,paletteDither168,selection,select,snapshot,update,remove,subscribe,refresh,list,detach,restoreGenerated,generatedEdits,history,presentation,project163,transform163,appearance163,fog163,anchor163};
+    return {editEvent:api.editEvent,bounds169,moveMany169,melee169,cellKind169,visibility169,weapons169,shadows169,paletteDither168,selection,select,snapshot,update,remove,subscribe,refresh,list,detach,restoreGenerated,generatedEdits,history,presentation,project163,transform163,appearance163,fog163,anchor163};
   }
   root.FrontierAuthoringScene = {entries,resolve,create};
 })(typeof window === "undefined" ? globalThis : window);

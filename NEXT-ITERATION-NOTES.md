@@ -252,3 +252,8 @@ Skill-O-Matic visual clarification: user provided finalized composition, preserv
 ## October 29, 2026 — 0.16.10 Skill-O-Matic prototype
 
 User authorized one working placeholder skill plus a red remote button before finishing the inventory design. Skill-O-Matic A/B/C composition, LCD TEST SCAN label, actual slider/wheel/key scrolling and safe skill-then-target routing are implemented through existing pause/HUD/reach/inspection owners. Empty rows are disabled test art, not canonical skills. No native Fallout chance/cost/progression system is claimed. Full inventory/crafting/item editor and previously banked isometric culling/fog/LOD remain pending; this prototype does not silently begin those implementations. See ITERATION-0.16.10.md and SKILL-O-MATIC-DESIGN.md.
+
+
+## October 29, 2026 — current combined 0.16.11 behavior
+
+See [ITERATION-0.16.11.md](ITERATION-0.16.11.md), [FUNCTION-REFERENCE-0.16.11.md](FUNCTION-REFERENCE-0.16.11.md) and [LOCAL-0.16.11.md](LOCAL-0.16.11.md). These current chapters supersede earlier pending notes for inventory, crafting, catalog/recipe editing, connected rectangular construction, shared boundaries/openings and zoom-aware isometric visibility. Earlier explanations remain historical. The 24 starter materials are ordinary items; two descriptions and production recipe choices remain unauthored. TEST SCAN is intentionally a test skill. Fixed-artwork tools, sprite presentation and distinct shadow systems remain supported. Old bundled room examples are retired only from fresh projects, not deleted from saved projects.

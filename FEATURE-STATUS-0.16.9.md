@@ -35,3 +35,8 @@ These remaining items require further implementation and acceptance; the user's 
 ## Deliberate splits retained
 
 Contact blobs / outdoor sun; map darkness / shadow opacity; source asset / instance material; room structure / loaded cell / camera presentation; fixed artwork alignment / live geometry; authored world / temporary playtest; scene / project map / event draft / gameplay-default histories; explicit per-enemy damage / shared project damage; map melee / project native firearms. Consolidating controls does not silently combine these contracts.
+
+
+## October 29, 2026 — current combined 0.16.11 behavior
+
+See [ITERATION-0.16.11.md](ITERATION-0.16.11.md), [FUNCTION-REFERENCE-0.16.11.md](FUNCTION-REFERENCE-0.16.11.md) and [LOCAL-0.16.11.md](LOCAL-0.16.11.md). These current chapters supersede earlier pending notes for inventory, crafting, catalog/recipe editing, connected rectangular construction, shared boundaries/openings and zoom-aware isometric visibility. Earlier explanations remain historical. The 24 starter materials are ordinary items; two descriptions and production recipe choices remain unauthored. TEST SCAN is intentionally a test skill. Fixed-artwork tools, sprite presentation and distinct shadow systems remain supported. Old bundled room examples are retired only from fresh projects, not deleted from saved projects.

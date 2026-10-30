@@ -182,6 +182,7 @@
     if(w.atmosphereVersion!==undefined && w.atmosphereVersion!==1)throw Error("Unsupported atmosphere version.");
     // October 22, 2026: stable-ID legacy enemy conversion precedes event validation.
     w = root.FrontierEnemies?.migrate(w) || w;
+    w = root.FrontierConstruction?.synchronize(w)||w;
     const { width, height } = dimensions(w);
     if (w.width !== undefined && w.size !== undefined && w.size !== width)
       throw Error("Legacy size must match width.");

@@ -1,3 +1,4 @@
+/* October 29: status rows below supersede the 0.16.9 inventory/structure gap labels after integrated implementation and acceptance. Prior contracts remain in dated iteration documentation and Git history. */
 /* October 29, 2026: presentation helpers for existing authoring controls; no new geometry/material ownership. */
 (/* @function authoringTools.install169 — Inputs: browser namespace. Publishes thumbnail and feature-status builders without creating a session or changing authored data. */function(root){
   "use strict";
@@ -12,14 +13,14 @@
     ["Ready","Prefab/model placement","Choose an imported/supplied model, then Place selected model. Optional preview remains separate; model material slots keep their own asset-library controls."],
     ["Ready","Enemy events","Health, hostility, patrol, pursuit, firing pauses, death/remains and isometric ground shadow are in Create / edit enemies. Single-image selection alone is not an enemy."],
     ["Ready","Generated room edits","Delete, materials, compatible resizing, detach and restore persist through the existing recipe/override ledger."],
-    ["Separate systems","Inventory ownership","Event-item inventory/drop actions and built-in combat weapon/ammo ownership remain distinct; full weapon dropping is not exposed as a working action."],
-    ["Partial","Whole editor migration","Advanced controls retain their owners. Not every model, UV or event property is in the common inspector; they are accessible through their specialized tools."],
+    ["Ready","Inventory and crafting","Original-art inventory, equipment/use/drop, ammunition-preserving weapon drops, native component crafting and Items & Recipes use the same actual item definitions and stock."],
+    ["Contextual tools","Inspector","Shared transforms, material mapping, model slot overrides and event pages are reachable from selection. Specialist editors retain their original validators and Undo owners."],
     ["Ready","Shared plan view","Select and move surfaces, props, lights, arrivals and events in the same scene; group drags share one Undo step. Draw room and Background room retain their detailed footprint/calibration views."],
-    ["Partial","Doors and openings","Cinematic/melt/fade/cut cell transfers work. Automatic host-wall cutting and a unified local-door assembly workflow are still missing; authored openings remain separate."],
+    ["Ready","Doors and openings","Rooms & buildings cuts selected connected walls and optionally creates a functional local hinge or transfer event. Actual slabs own both visible geometry and collision. Small door tests cover cinema/melt/fade pairs."],
     ["Deliberate limit","Shadow budgets","Outdoor sun silhouettes and isometric contact blobs are deliberately different systems. Both use bounded nearby caster/receiver budgets; not every distant actor casts a shadow."],
     ["Supported subset","Event commands","Only registered supported commands execute; the command chooser marks unsupported commands unavailable. Arbitrary third-party plugin code is not executed."],
-    ["Not available","Buildings, storeys and shared room boundaries","The proposed structural ownership/storey isolation/shared-wall model is not implemented. Existing geometry and room tools remain usable without these features."],
-    ["Not available","Automatic topology repair","Recipe edits that lose edited components reject with a conflict; ambiguous changes are not silently remapped."],
+    ["Ready","Buildings, storeys and shared boundaries","Optional structural parents retain world positions; connected rooms keep manual overrides, explicit coincident wall joins, host openings, detachment and editor-only storey isolation."],
+    ["Explicit repair","Geometry conflicts","Invalid openings, shared-wall moves and lost edited components reject atomically. Restore selected component edits, detach parts, unlink shared walls or remove/retarget openings explicitly; ambiguous topology is never guessed."],
     ["Deliberate split","Presentation and data","Rooms are structures, cells are loaded worlds, and cameras/combat are presentation. Fixed artwork and live geometry keep distinct alignment tools. Authored data stays separate from temporary playtests."],
     ["Deliberate split","History","Scene Undo, project map-operation Undo, event draft history and template/default history remain separate owners; labels identify which operation can be reversed."]
   ];

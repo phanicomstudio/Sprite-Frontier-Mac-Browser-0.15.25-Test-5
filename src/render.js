@@ -216,12 +216,14 @@
       ? FrontierSprites.sheet(e)
       : root.FrontierCandy;
     if (!sheet?.image.complete || !sheet.image.naturalWidth) return false;
-    const { row, column: col } = (e.dead && e.enemyConfig?.deathSprite && (e.deathAge||0)<(e.enemyConfig.deathSeconds||.6)) ? {row:0,column:Math.min((sheet.columns||3)-1,Math.floor((e.deathAge||0)/(e.enemyConfig.deathSeconds||.6)*(sheet.columns||3)))} : FrontierDirections.select(
+    const selectedFrame = (e.dead && e.enemyConfig?.deathSprite && (e.deathAge||0)<(e.enemyConfig.deathSeconds||.6)) ? {row:0,column:Math.min((sheet.columns||3)-1,Math.floor((e.deathAge||0)/(e.enemyConfig.deathSeconds||.6)*(sheet.columns||3)))} : FrontierDirections.select(
         e,
         cam.yaw,
         sheet.direction,
         cam,
       ),
+      detail=root.FrontierViewVisibility?.detail(ctx.game,e,p,cam,selectedFrame)||{frame:selectedFrame,light:null},
+      {row,column:col}=detail.frame,
       f = sheet.frames[row * (sheet.columns || 3) + col],
       scale = ((e.height || 1.65) * p.scale) / (sheet.referenceHeight || 310);
     const level = root.FrontierWater?.level(ctx.world, e.x, e.y),
@@ -309,7 +311,7 @@
           ctx.rect(r.x, r.y, r.width, r.height);
         ctx.clip();
       }
-      ctx.assetLightTint =
+      ctx.assetLightTint = detail.light ||=
         root.FrontierLocalLighting?.sample(
           ctx.localLightFrame,
           e.x,
@@ -425,11 +427,12 @@
     y,
     z = 0,
   ) {
-    return (
+    const forward = (
       ((x - cam.x) * Math.sin(cam.yaw) + (y - cam.y) * Math.cos(cam.yaw)) *
         Math.cos(cam.pitch) +
       (z - cam.z) * Math.sin(cam.pitch)
     );
+    return cam.outdoorIsometric?30+forward*.02:forward;
   }
   // Project world XYZ into logical screen coordinates and scale; reject geometry behind the near plane.
   /* @function render.project.9 — Project world XYZ into logical screen coordinates and scale; reject geometry behind the near plane. Inputs: cam; x; y; assignment pattern. Uses: root frontier interior project; depth. Returns: root frontier interior project using cam, x, y; null. */ function project(
@@ -485,7 +488,7 @@
       : null;
     ctx.vectorDisplay =
       game.sourceWorld.vectorDisplay || root.FrontierVector?.defaults;
-    ctx.fog = root.FrontierFog?.settings(game);
+    ctx.fog = root.FrontierViewVisibility?.fog(game,cam)||root.FrontierFog?.settings(game);
     ctx.fogDepth = 0;
     ctx.imageSmoothingEnabled = false;
     const sin = Math.sin(cam.yaw),
@@ -628,13 +631,14 @@
           segment(x, y, Math.min(x + step, x1), y);
     // Authoring ghost is a draw-only copy: dragging cannot change saved data
     // until the undoable pointer-up transaction commits.
+    const visibleBounds=root.FrontierViewVisibility.bounds(game,cam);
     let entities = root.FrontierActivity
       ? root.FrontierActivity.query(
           game,
-          cam.x - 52,
-          cam.y - 52,
-          cam.x + 52,
-          cam.y + 52,
+          visibleBounds.minX,
+          visibleBounds.minY,
+          visibleBounds.maxX,
+          visibleBounds.maxY,
         )
       : [...game.maps.frontier.entities, ...(game.sceneEvents || [])];
     // 2026-10-09: retain bounds-visible landmarks beyond the origin query without waking actors.
@@ -665,6 +669,7 @@
               }
             : e,
       );
+    if(game.authoring&&root.FrontierAuthorView?.state.storey)entities=entities.filter(/* @function render.storeyEntity1611 — Inputs: candidate entity. Preserves only actual isolated-storey members and unassigned exteriors in editor; runtime physics/activity are untouched. */function(e){return root.FrontierAuthorView.visible(game,e);});
     if (game.sourceWorld.interior) {
       const r = game.sourceWorld.interior;
       for (const e of r.sprites)
@@ -740,7 +745,7 @@
           q,
         ) =>
           q.p &&
-          q.p.depth < 45 &&
+          (cam.outdoorIsometric || q.p.depth < 45) &&
           !q.e.transparent &&
           !q.e.modelId &&
           q.e.kind !== "roomFace" &&
@@ -752,13 +757,14 @@
           b,
         ) => layer(a.e) - layer(b.e) || b.p.depth - a.p.depth,
       );
+    if(ctx.terrainDepth)ctx.terrainDepth.affineDepthScale=cam.outdoorIsometric?.02:0;
     for (const { e, p } of queue) {
       if (p.x < -250 || p.x > (game.viewWidth || 640) + 250) continue;
-      ctx.fogDepth = cam.outdoorIsometric ? Math.max(0,p.depth-depth(cam,game.player.x,game.player.y,game.player.z||0)) : p.depth;
+      ctx.fogDepth = p.depth;
       const h = Math.min(1800, (e.height || 1.65) * p.scale),
         w = h * 0.6;
       ctx.globalAlpha =
-        ((e.kind === "player" ? 1 : Math.max(0.18, 1 - (cam.outdoorIsometric ? Math.hypot(e.x-game.player.x,e.y-game.player.y) : p.depth) / 55)) *
+        ((e.kind === "player" ? 1 : (cam.outdoorIsometric ? 1 : Math.max(0.18,1-p.depth/55))) *
           (e.opacity ?? 255)) /
         255;
       ctx.save();
@@ -883,7 +889,7 @@
       for (const e of game.sceneEvents || []) {
         const p = project(cam, e.x, e.y, e.z || 0);
         if (e.isAmmo && p && p.depth < 14) {
-          ctx.fogDepth = cam.outdoorIsometric ? Math.max(0,p.depth-depth(cam,game.player.x,game.player.y,game.player.z||0)) : p.depth;
+          ctx.fogDepth = p.depth;
           ctx.fillStyle = "#8fbdff";
           ctx.font = "11px " + (root.FrontierFonts?.family() || "monospace");
           ctx.fillText(
@@ -905,7 +911,7 @@
           FrontierTerrain.height(game.sourceWorld, e.x, e.y),
         );
         if (p) {
-          ctx.fogDepth = cam.outdoorIsometric ? Math.max(0,p.depth-depth(cam,game.player.x,game.player.y,game.player.z||0)) : p.depth;
+          ctx.fogDepth = p.depth;
           if (cam.orthographic) {
             const outside = !FrontierInterior.inside(
                 game.sourceWorld.interior.floor,
@@ -1075,7 +1081,7 @@
         s.z / 40 + FrontierTerrain.height(game.sourceWorld, s.x, s.y),
       );
       if (p) {
-        ctx.fogDepth = cam.outdoorIsometric ? Math.max(0,p.depth-depth(cam,game.player.x,game.player.y,game.player.z||0)) : p.depth;
+        ctx.fogDepth = p.depth;
         ctx.fillStyle = s.color;
         const size = Math.max(1, Math.min(7, (s.size * p.scale) / 80));
         ctx.fillRect(p.x, p.y, size, size);
@@ -1084,7 +1090,7 @@
     for (const flash of game.muzzleFlashes) {
       const p = project(cam, flash.x, flash.y, flash.z);
       if (p) {
-        ctx.fogDepth = cam.outdoorIsometric ? Math.max(0,p.depth-depth(cam,game.player.x,game.player.y,game.player.z||0)) : p.depth;
+        ctx.fogDepth = p.depth;
         ctx.fillStyle = flash.color || "#ffe5a1";
         const s = Math.max(3, Math.min(24,p.scale * .16)) * Math.max(.3,flash.life/flash.maxLife);
         ctx.save();
@@ -1250,17 +1256,18 @@
     eventsOnly = false,
   ) {
     const cam = camera(game);
+    const visibleBounds=root.FrontierViewVisibility.bounds(game,cam);
     let nearest = null,
-      best = 45;
+      best = cam.outdoorIsometric?Infinity:45;
     let candidates = eventsOnly
       ? game.sceneEvents || []
       : root.FrontierActivity
         ? root.FrontierActivity.query(
             game,
-            cam.x - 52,
-            cam.y - 52,
-            cam.x + 52,
-            cam.y + 52,
+            visibleBounds.minX,
+            visibleBounds.minY,
+            visibleBounds.maxX,
+            visibleBounds.maxY,
           )
         : [...game.maps.frontier.entities, ...(game.sceneEvents || [])];
     if (!eventsOnly) {
@@ -1272,6 +1279,7 @@
         );
       candidates = candidates.concat(game.hubDrops || []);
     }
+    if(game.authoring&&root.FrontierAuthorView?.state.storey)candidates=candidates.filter(/* @function render.storeyPick1611 — Inputs: pick candidate. Uses the same actual ownership visibility as rendering so hidden storeys cannot intercept a click. */function(e){return root.FrontierAuthorView.visible(game,e);});
     const zone = root.FrontierModelTargeting?.pick(
       game,
       sx,

@@ -300,3 +300,8 @@ remove item definitions used by newly imported maps.
 ## October 29, 2026 — current 0.16.9 workflow
 
 Use the direct Build tools rather than the historical category/Scene tool prerequisites described above. Choose a piece/material then click the scene; choose Raise/Lower/Flatten/Smooth/Paint then drag outdoor ground. Plan shares selection/group movement/Undo; Isometric layout previews rotation/tilt before explicit map Apply. Events > Weapon damage and sounds contains all native projectile profiles and separate current-map melee, with optional imported audio and default restore. Environment contains Dithering, Shadow strength and Isometric visibility. See ITERATION-0.16.9.md for current steps and FEATURE-STATUS-0.16.9.md for gaps. Existing guides remain historical where those routes have moved.
+
+
+## October 29, 2026 — current combined 0.16.11 behavior
+
+See [ITERATION-0.16.11.md](ITERATION-0.16.11.md), [FUNCTION-REFERENCE-0.16.11.md](FUNCTION-REFERENCE-0.16.11.md) and [LOCAL-0.16.11.md](LOCAL-0.16.11.md). These current chapters supersede earlier pending notes for inventory, crafting, catalog/recipe editing, connected rectangular construction, shared boundaries/openings and zoom-aware isometric visibility. Earlier explanations remain historical. The 24 starter materials are ordinary items; two descriptions and production recipe choices remain unauthored. TEST SCAN is intentionally a test skill. Fixed-artwork tools, sprite presentation and distinct shadow systems remain supported. Old bundled room examples are retired only from fresh projects, not deleted from saved projects.

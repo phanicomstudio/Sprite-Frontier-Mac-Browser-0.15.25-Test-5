@@ -41,6 +41,7 @@
       extensions.weaponDefinitions = root.FrontierWeaponDefinitions.validate(
         extensions.weaponDefinitions,
       );
+    if(extensions.recipes!==undefined)extensions.recipes=root.FrontierCrafting.validate(extensions.recipes,extensions.itemDefinitions||root.FrontierItemDefinitions.defaults());
     return { schema: v.schema, ...state, extensions };
   }
   /* Historical generated explanation: @function gameplay-defaults.open.3 — Handles open within gameplay defaults. Inputs: initial; accept. Updates: d id; d class name; d inner html; section dataset collection; legend text content. Uses: validate; document create element; d set attribute; input. */

@@ -91,6 +91,8 @@
           4: "camera",
           7: "fire",
           9: "pause",
+          12: "menuUp",
+          13: "menuDown",
         };
         const actions = enabled
           ? Array.from(pressed)

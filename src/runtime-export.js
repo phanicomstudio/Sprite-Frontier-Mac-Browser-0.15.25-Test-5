@@ -7,6 +7,8 @@
 ) {
   "use strict";
   const excluded = [
+    "construction-editor",
+    "catalog-editor",
     "editor",
     "editor-workbench",
     "event-context",

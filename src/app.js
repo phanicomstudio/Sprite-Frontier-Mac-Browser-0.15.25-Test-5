@@ -39,7 +39,7 @@
     captureAttempted = false,
     playPaused = false,
     hudMode = false;
-  let skillOMatic = null;
+  let skillOMatic = null, inventoryScreen1611 = null, craftingMenu1611 = null;
   // Pause controls stay outside the canvas so they remain readable and usable
   // even when geometry hides the player. Escape and controller Start pause.
   const pausePanel = document.createElement("section");
@@ -985,6 +985,9 @@
   // and simulation continue. Returning preserves the existing camera orientation.
   /* @function app.toggleHUD.42 — and simulation continue. Returning preserves the existing camera orientation. Inputs: no explicit arguments; uses enclosing module state. Updates: hud mode; $ using "inventoryPanel" hidden; drag; game pointer. Uses: $ using "gameFrame" class list toggle; $; keys clear; mouse reset. Returns: without a result. */ function toggleHUD() {
     if (editing || session.busy) return;
+    // October 29: isolation belongs to an existing storey, never a stale ID from another cell.
+    if(window.FrontierAuthorView?.state.storey&&!world.interior?.construction?.storeys.some(/* @function app.validStorey1611 — Inputs: destination storey. Returns whether the current editor isolation still has an authored target; no world mutation. */function(storey){return storey.id===FrontierAuthorView.state.storey;}))FrontierAuthorView.state.storey='';
+    craftingMenu1611?.reset();
     skillOMatic?.reset();
     hudMode = !hudMode;
     $("gameFrame").classList.toggle("hudCursor", hudMode);
@@ -1004,6 +1007,7 @@
   // Remember whether gameplay owned mouse look before the inventory opened, then restore that mode on close.
   /* @function app.inventoryToggle.44 — Remember whether gameplay owned mouse look before the inventory opened, then restore that mode on close. Inputs: no explicit arguments; uses enclosing module state. Updates: $ using "inventoryPanel" hidden; inventory resume; play paused; drag; mouse paused. Uses: $; keys clear; mouse reset; document exit pointer lock. Returns: without a result. */ function inventoryToggle() {
     if (editing || session.busy) return;
+    craftingMenu1611?.reset();
     skillOMatic?.reset();
     const opening = $("inventoryPanel").hidden;
     $("inventoryPanel").hidden = !opening;
@@ -1032,6 +1036,7 @@
   $("inventoryClose").onclick = inventoryToggle;
   /* @function app.journalToggle.47 — Handles journal toggle within application input, simulation and editor coordination. Inputs: no explicit arguments; uses enclosing module state. Updates: $ using "journalPanel" hidden; play paused. Uses: $; keys clear; release look; journal render. Returns: without a result. */ function journalToggle() {
     if (editing || session.busy) return;
+    craftingMenu1611?.reset();
     skillOMatic?.reset();
     const opening = $("journalPanel").hidden;
     $("journalPanel").hidden = !opening;
@@ -1060,7 +1065,7 @@
   // October 14: retain DOM focus/selection between frames; rebuild only on live state changes.
   let inventorySignature1525 = "", inventoryGame1525 = null;
   // Render inventory values from runtime state; ammo is displayed from combat reserve/loaded counts.
-  /* @function app.inventoryRender.49 — Render inventory values from runtime state; ammo is displayed from combat reserve/loaded counts. Inputs: no explicit arguments; uses enclosing module state. Updates: li text content. Uses: $; list replace children; a list of spread element filter; document create element. */ function inventoryRender() {
+  /* @function app.inventoryRender.49 — Render inventory values from runtime state; ammo is displayed from combat reserve/loaded counts. Inputs: no explicit arguments; uses enclosing module state. Updates: li text content. Uses: $; list replace children; a list of spread element filter; document create element. */ function inventoryRenderLegacy1525() {
     const list = $("inventoryItems");
     FrontierArsenal.prepare(game);
     const signature = JSON.stringify([...session.state.inventory]) + ":" + game.player.ammoReserve + ":" + game.player.ammoLoaded + ":" + game.player.hp + ":" + game.player.holstered + ":" + game.player.weapon.id + ":" + (game.itemDropPreview?.itemId || "");
@@ -1099,6 +1104,9 @@
     }
     hubWorkbench?.inventory(list);
   }
+  // October 29, 2026: supersedes the retained legacy list above. Real item ownership and the supplied original device now share the same inventory coordinator.
+  /* @function app.inventoryRender1611 — Inputs: none. Synchronizes the shared ammo mirror and one-time legacy equipment migration, then updates the original-art screen only when live values change. No authored values are changed. */
+  function inventoryRender(){FrontierArsenal.prepare(game);FrontierInventory.ensure(game,hubState);inventoryScreen1611?.render(FrontierInventory.rows(game),game.player.hp+':'+game.player.ammoLoaded+':'+game.player.ammoReserve);}
   // Stop old footsteps and create a fresh runtime copy. Authored world stays intact; switches, pickups and combat reset unless explicitly restored.
   /* @function app.restart.51 — Stop old footsteps and create a fresh runtime copy. Authored world stays intact; switches, pickups and combat reset unless explicitly restored. Inputs: assignment pattern; assignment pattern. Updates: $ using "seed" value; $ using "mapWidth" value; $ using "mapHeight" value; $ using "inventoryPanel" hidden; $ using "journalPanel" hidden. Uses: $; map library remember; footsteps stop; music stop. */ function restart(
     keepPosition = false,
@@ -1107,6 +1115,8 @@
   ) {
     // October 9: authoring/fresh playtests reset temporary drops; real cell
     // transfers explicitly preserve compact session state, as save import does.
+    craftingMenu1611?.reset();
+    window.FrontierConstructionTools?.cancel();
     skillOMatic?.reset(); // October 29: transient test-skill UI never survives a session/cell replacement.
     if (!preserveHub) hubState = FrontierHubState.empty();
     $("seed").value = world.seed;
@@ -1406,6 +1416,8 @@
                 : null;
           const entity = {
             ...old,
+            localDoor:event.extensions?.localDoor,
+            localDoorOpen:!!event.extensions?.localDoor&&index>0,
             behaviorOwned: !!page.behavior,
             behaviorPhase: event.behaviorPhase,
             definitionRevision: event.definitionRevision || 0,
@@ -1507,6 +1519,7 @@
       action();
       // October 22: capture generated-part intent inside the same Undo/rollback boundary.
       window.FrontierRoomLayout?.captureEdits(before, world);
+      window.FrontierConstruction?.capture(before,world);
       // October 12, 2026: update parent-relative wall decorations at the edit boundary before validating the resulting cell.
       window.FrontierRoomLayout?.synchronize(world);
       window.FrontierPropPlacement?.synchronize(world);
@@ -1634,6 +1647,7 @@
     project: /* @function app.authoringProjection163 — Inputs: world XYZ metres. Returns projected logical canvas point only while editing; uses actual active camera including fixed/isometric views. No mutation. */function(x,y,z){return editing ? FrontierRender.project(FrontierRender.camera(game),x,y,z) : null;},
     weapons:/* @function app.weaponDamage169 — Inputs: optional project override draft. Returns detached current weapon definitions, or adopts through project-default history only while editing. Existing per-enemy overrides remain separately authored. */function(value){if(value===undefined)return structuredClone(mapLibrary.gameplayDefaults.extensions.weaponDefinitions||{});if(!editing)return false;mapLibrary.weaponDamage169(value);return true;},
     shadows:/* @function app.shadowSettings169 — Inputs: shared strength draft. Applies only while editing through the existing whole-project transaction; throws on invalid data and preserves independent render systems. */function(value){if(!editing)return false;mapLibrary.shadowSettings169(value);return true;},
+    editEvent: /* @function app.inspectEvent1611 — Inputs: typed event reference. Opens the original event-page editor for that stable selection only in authoring; no property changes occur until original Apply. */function(ref){if(editing&&ref.kind==="event"){editor.choose(ref.id);editor.openEvent?.();}},
     mutate, removeMany:removeSceneSelection,
   });
   // Switch editor/playtest state, release capture and restart from authored data. F2 is the editor shortcut; Tab remains the HUD menu.
@@ -2583,6 +2597,29 @@
         config,
       ) => doorPresentation.preview(config),
   });
+  craftingMenu1611=FrontierCraftingMenu.create({
+    allowed: /* @function app.craftingAllowed — Inputs: none. Accepts only alive, idle gameplay with no competing inventory, dialog or transition. No state mutation. */function(){return !editing&&!playPaused&&!session.busy&&!sceneTransition.busy&&game.player.hp>0;},
+    game: /* @function app.craftingGame — Inputs: none. Returns current original game owner after travel/restart. */function(){return game;},
+    state: /* @function app.craftingState — Inputs: none. Returns current hub ownership store, never a duplicated inventory. */function(){return hubState;},
+    recipes: /* @function app.craftingRecipes — Inputs: none. Returns validated current project recipes; absent recipes mean no invented combination. */function(){return mapLibrary?.gameplayDefaults?.extensions?.recipes||[];},
+    prepare: /* @function app.craftingPrepare — Inputs: none. Pauses simulation and releases original look with held input cleared; captures previous cursor/look state for restoration. */function(){skillOMatic?.reset();const prior={hud:hudMode,look:!mousePaused&&!hudMode};releaseLook(true);return prior;},
+    finish: /* @function app.craftingFinish — Inputs: acquired input state. Restores gameplay pause/cursor owner on close, without moving camera or editing stock. */function(prior){releaseLook(false);if(prior?.look&&!prior.hud)captureLook();}
+  });
+  if(!window.FRONTIER_RUNTIME_ONLY)window.FrontierConstructionTools=FrontierConstructionEditor.create({
+    world: /* @function app.constructionWorld — Inputs: none. Returns original authored world only to trusted transaction adapter. */function(){return world;},
+    game: /* @function app.constructionGame — Inputs: none. Returns actual current viewport/player for ground placement. */function(){return game;},
+    editing: /* @function app.constructionEditing — Inputs: none. Returns original authoring mode; gameplay cannot commit rooms. */function(){return editing;},
+    maps: /* @function app.constructionMaps — Inputs: none. Returns lightweight project map IDs/names for linked doors, not copied assets. */function(){return mapLibrary.snapshot().maps.map(/* @function app.constructionMapName — Inputs: detached map. Returns stable identity/name pair only. */function(m){return {id:m.id,name:m.name};});},
+    mutate
+  });
+  if(!window.FRONTIER_RUNTIME_ONLY)window.FrontierCatalogTools=FrontierCatalogEditor.create({
+    allowed: /* @function app.catalogAllowed — Inputs: none. Allows project-definition changes only in editor. */function(){return editing;},
+    read: /* @function app.catalogRead — Inputs: none. Returns detached effective project catalog and recipes. */function(){const e=mapLibrary.gameplayDefaults.extensions;return {items:e.itemDefinitions||FrontierItemDefinitions.defaults(),recipes:e.recipes||[]};},
+    save: /* @function app.catalogSave — Inputs: complete detached definition draft. Uses project history/validation and includes actual runtime ownership references in deletion guard. No edits are applied in play mode. */function(value){if(!editing)throw Error('Return to the editor first.');mapLibrary.catalog1611(value,{inventory:[...session.state.inventory],carried:hubState.carried,cells:hubState.cells});}
+  });
+  inventoryScreen1611=FrontierInventoryScreen.create($("inventoryPanel"),$("inventoryClose"),$("inventoryItems"),
+    /* @function app.inventoryAction1611 — Inputs: explicit physical action and selected stable item ID. Delegates equip/use/drop to their existing state owners and returns readable feedback; exceptions stay inside the open screen without consuming another item. */
+    function(action,id){if(action==='equip'){FrontierInventory.equip(game,id);return 'Equipped '+FrontierInventory.definition(id).name+'.';}if(action==='use')return 'Restored '+FrontierInventory.use(game,hubState,id)+' health.';if(action==='drop'){hubWorkbench.dropItem(id);return 'Placed '+FrontierInventory.definition(id).name+'.';}throw Error('Unsupported inventory action.');});
   // October 12: hub storage/drop logic remains shared gameplay; its cell-edit
   // buttons and context authoring bindings are installed only in the editor.
   if (!window.FRONTIER_RUNTIME_ONLY) {
@@ -2996,6 +3033,8 @@
     $("controllerStatus").textContent = pad.connected
       ? "Controller connected · standard layout"
       : "Controller: connect and press a button.";
+    // October 29: open menus retain input ownership even when a controller sends Start. It closes the owning menu rather than unpausing gameplay underneath it.
+    if(!$("inventoryPanel").hidden||craftingMenu1611?.opened()||skillOMatic?.opened()){for(const action of pad.actions){if(!$("inventoryPanel").hidden){if(action==='menuUp')inventoryScreen1611.scroll(-1);else if(action==='menuDown')inventoryScreen1611.scroll(1);else if(action==='pause')inventoryToggle();}else if(action==='pause'){craftingMenu1611?.reset();skillOMatic?.reset();}}return;}
     for (const action of pad.actions) {
       if (action === "pause") {
         playPaused = !playPaused;
@@ -3016,7 +3055,7 @@
       }
     }
     if (playPaused) return;
-    if (!editing) hubWorkbench?.tick(dt);
+    if (!editing) { FrontierInventory.ensure(game,hubState); hubWorkbench?.tick(dt); FrontierLocalDoors.update(game,dt); }
     if (!session.busy && !editing && !hudMode) {
       if (world.interior?.mode !== "fixed")
         game.camera.yaw += pad.look.x * 2.2 * dt;
@@ -3311,7 +3350,7 @@
       editing ||
       !$("inventoryPanel").hidden ||
       !$("journalPanel").hidden ||
-      !!skillOMatic?.opened();
+      !!skillOMatic?.opened() || !!craftingMenu1611?.opened();
     FrontierBreathing.tick(
       game,
       dt,
@@ -3425,7 +3464,7 @@
     $("badge").lastElementChild.textContent =
       (world.interior?.mode === "fixed" ? "Fixed interior · " : "") +
       (game.camera.firstPerson ? "First person" : "Third person") +
-      " · prototype 0.16.10";
+      " · prototype 0.16.11";
     if (world.interior)
       $("intro").textContent =
         world.interior.mode === "fixed"

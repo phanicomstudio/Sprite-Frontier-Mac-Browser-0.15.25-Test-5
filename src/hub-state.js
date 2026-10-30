@@ -103,6 +103,7 @@
     return {
       schema: "sprite-frontier-hubs/1",
       clock: 0,
+      gearVersion: 0,
       doorSides: [],
       cells: {},
       carried: [],
@@ -143,6 +144,8 @@
         out.doorSides.push({map:record.map,doorId:record.doorId,side:record.side});
       }
     }
+    if(value.gearVersion!==undefined&&![0,1].includes(value.gearVersion))throw Error("Invalid inventory migration version.");
+    out.gearVersion=value.gearVersion||0;
     out.clock = value.clock;
     out.nextId = value.nextId;
     out.recoveryLimit = value.recoveryLimit;

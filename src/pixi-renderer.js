@@ -601,6 +601,7 @@
             this.localLightFrame,
             this.game.viewWidth || 640,
             batch.mesh.tint,
+            this.fog,
           )
         : batch.mesh;
       this.app.stage.addChild(mesh);

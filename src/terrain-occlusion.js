@@ -143,7 +143,7 @@
               : Infinity,
           visible =
             y <= y1 &&
-            (solid <= inverse + 0.002 * inverse ||
+            (solid <= inverse + (d.affineDepthScale ? .1*d.affineDepthScale*inverse*inverse : 0.002 * inverse) ||
               (support && hitZ <= support.z + 0.015));
         if (visible && start < 0) start = y;
         if (!visible && start >= 0) {

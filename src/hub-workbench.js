@@ -1091,7 +1091,7 @@
       const game = api.game(), p = game.player;
       if (!game.camera.firstPerson) return { x:p.x, y:p.y, z:p.z || 0 };
       const ray = root.FrontierModelTargeting.ray(game, (game.viewWidth || 640)/2, 96),
-        surface = root.FrontierPropEditor.surface(ray, game);
+        surface = root.FrontierPlacementSurface.surface(ray, game);
       if (!surface || surface.distance > 3 || surface.normal[2] < 0.5)
         throw Error("Aim at an upward floor, table or shelf within 3 metres.");
       const [x,y,z] = surface.point, height = carriedProperties1525(id).worldHeight || 0.35;
@@ -1129,16 +1129,17 @@
         store = api.state(),
         cell = root.FrontierHubState.cell(store, api.map());
       if (cell.drops.length >= 2000) throw Error("Cell drop capacity reached.");
-      const stack = root.FrontierHubState.consume(store, inventory, id, {
-          owner: { kind: "player" },
-          properties: definition.properties || {},
-          questProtected: definition.questProtected,
-        }),
-        record = root.FrontierHubState.drop(store, api.map(), stack, point);
-      // October 22: dropping the last copy releases an equipped pickup weapon;
-      // a second owned definition for the same profile keeps it available.
-      if(definition.properties?.weaponProfile===api.game().player.weapon.id&&!root.FrontierItems.some(/* @function hubWorkbench.otherOwnedWeapon — Inputs: catalog definition. Returns whether another remaining owned stack equips this same profile. Reads authoritative quantities after consume. */function(item){return item.properties?.weaponProfile===definition.properties.weaponProfile&&(inventory.get(item.id)||0)>0;}))root.PhanicomABS.equip(api.game(),'handgun');
+      // October 29: supersedes direct consume/drop and implicit pistol fallback. Validate on detached stock/details/cell first; store clocks and other cells retain their owner.
+      const draftInventory=new Map(inventory),draft={...store,carried:structuredClone(store.carried),cells:{...store.cells,[api.map()]:{...cell,drops:cell.drops.slice()}}};
+      const stack=root.FrontierHubState.consume(draft,draftInventory,id,{owner:{kind:'player'},properties:definition.properties||{},questProtected:!!definition.questProtected});
+      const profile=definition.properties?.weaponProfile,player=api.game().player;
+      const lastWeapon=profile&&!root.FrontierItems.some(/* @function hubWorkbench.remainingProfile1611 — Inputs: catalog item. Returns remaining real ownership for the dropped combat profile in the detached draft; no live mutation. */function(item){return item.properties?.weaponProfile===profile&&(draftInventory.get(item.id)||0)>0;});
+      if(lastWeapon&&root.FrontierArsenal.pool(root.PhanicomABS.weapons.get(profile))==='ammo9')stack.properties={...stack.properties,weaponMagazine:profile===player.weapon.id?player.ammoLoaded:(player.magazines?.[profile]||0)};
+      const record=root.FrontierHubState.drop(draft,api.map(),stack,point);
+      inventory.clear();for(const entry of draftInventory)inventory.set(...entry);store.carried=draft.carried;cell.drops=draft.cells[api.map()].drops;store.nextId=draft.nextId;
+      if(lastWeapon){player.magazines||={};player.magazines[profile]=0;if(player.weapon.id===profile){if(root.FrontierArsenal.pool(player.weapon)==='ammo9')player.ammoLoaded=0;player.holstered=true;}}
       dropSignature = "";
+      root.FrontierInventory?.syncAmmo(api.game());
       api.game().itemDropPreview = null;
       // Publish the confirmed static item immediately, even while inventory
       // pauses simulation. Zero time cannot advance cleanup or light timers.
@@ -1309,6 +1310,7 @@
       /* @function hub-workbench.refreshStorage — Inputs: none. Rebuilds panel after committed operation. Shows quantities, prices and current gold; returns nothing. No per-frame rebuild. */
 
       function refresh() {
+        root.FrontierInventory?.syncAmmo(api.game());
         list.replaceChildren();
         const state = api.session().state,
           info = document.createElement("p");
@@ -1318,7 +1320,7 @@
           const stack = stacks[i],
             def = catalog(stack.itemId),
             row = document.createElement("p"),
-            price = hub.kind === "container" ? 0 : def.price || 1;
+            price = hub.kind === "container" ? 0 : def.price ?? 1;
           row.textContent =
             def.name + " × " + stack.quantity + " — " + price + " gold";
           button(
@@ -1356,16 +1358,17 @@
               hub.kind === "container" ? "Store one" : "Sell one",
               /* @function hub-workbench.depositStock — Inputs: none. Transfers one carried item to this container/shop after capacity check. Merchant credits catalog sale value; properties extensibility remains in stock records. */ () => {
                 if (stacks.length >= 2000) throw Error("Storage is full.");
-                stacks.push(
-                  root.FrontierHubState.consume(store, state.inventory, id, {
-                    owner: { kind: "player" },
-                    properties: def.properties || {},
-                  }),
-                );
+                // October 29: store/sell a last-copy pistol with its real loaded magazine, just like dropping it; no free reload or ammunition loss.
+                const profile=def.properties?.weaponProfile,player=api.game().player;
+                const lastWeapon=profile&&!root.FrontierItems.some(/* @function hubWorkbench.remainingStoredProfile1611 — Inputs: catalog item. Returns ownership after this one-item deposit, accounting for alternate definitions sharing a profile. No live mutation. */function(item){return item.properties?.weaponProfile===profile&&((state.inventory.get(item.id)||0)-(item.id===id?1:0))>0;});
+                const stack=root.FrontierHubState.consume(store,state.inventory,id,{owner:{kind:'player'},properties:def.properties||{}});
+                if(lastWeapon&&root.FrontierArsenal.pool(root.PhanicomABS.weapons.get(profile))==='ammo9')stack.properties={...stack.properties,weaponMagazine:profile===player.weapon.id?player.ammoLoaded:(player.magazines?.[profile]||0)};
+                stacks.push(stack);
+                if(lastWeapon){player.magazines||={};player.magazines[profile]=0;if(player.weapon.id===profile){if(root.FrontierArsenal.pool(player.weapon)==='ammo9')player.ammoLoaded=0;player.holstered=true;}}
                 if (hub.kind === "merchant")
                   state.gold =
                     (state.gold || 0) +
-                    Math.max(1, Math.floor((def.price || 1) / 2));
+                    Math.max(0, Math.floor((def.price ?? 1) / 2));
                 refresh();
               },
             );
@@ -1399,6 +1402,7 @@
           const inv = api.session().state.inventory;
           root.FrontierHubState.carry(store, inv, stack);
           root.FrontierHubState.pickup(store, api.map(), hit.target.dropId);
+          root.FrontierInventory?.syncAmmo(api.game());
           dropSignature = "";
           api.log("Picked up " + catalog(stack.itemId).name + ".");
         }
