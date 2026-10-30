@@ -1,0 +1,3 @@
+# Function reference — 0.16.12
+
+October 29, 2026. app.exitFullscreen1612 unlocks keyboard capture and exits HTML fullscreen with visible failure feedback. app.editorFullscreenEscape1612 handles editor Escape before menu routing; playtest pause is unchanged. The original fullscreen handler chooses document-root fullscreen for the editor and viewport fullscreen for gameplay, keeping the exit control inside the current target. desktop.fullscreenFallback1612 and fullscreenFailure1612 provide F11 recovery across HTML and native fullscreen. Source-adjacent comments document ownership, arguments and failure behavior. tests/browser/fullscreen1612.cjs tests the real browser transitions. Earlier function references remain unchanged.

@@ -2142,16 +2142,24 @@
         wide ? "1.7777777778" : "1.3333333333",
       );
     };
+  // October 29: the escape hatch lives inside either fullscreen target, above editor/dialog layers. Original pause handling remains unchanged in playtest.
+  const fullscreenExit1612=document.createElement('button');
+  fullscreenExit1612.id='fullscreenExit1612';fullscreenExit1612.type='button';fullscreenExit1612.textContent='Exit fullscreen [Esc]';fullscreenExit1612.hidden=true;
+  fullscreenExit1612.onclick=/* @function app.exitFullscreen1612 — Inputs: click ignored. Exits browser/HTML fullscreen only through its original API, unlocks captured keyboard keys and reports failure without changing authoring or gameplay state. Returns a promise; no world/history edits. */async function(){try{navigator.keyboard?.unlock();if(document.fullscreenElement)await document.exitFullscreen();}catch{log('Could not exit fullscreen. Press F11 to leave the desktop fullscreen window.');}};
+  document.addEventListener('keydown',/* @function app.editorFullscreenEscape1612 — Inputs: document keydown from any focused editor control. Escape exits editor HTML fullscreen before menu handlers can consume it; repeat is ignored. Playtest Escape retains its deliberate pause behavior. No edits are cancelled or committed. */function(event){if(editing&&document.fullscreenElement&&event.key==='Escape'&&!event.repeat){event.preventDefault();event.stopImmediatePropagation();void fullscreenExit1612.onclick();}},{capture:true});
   $("fullscreen").onclick =
     /* @function app.onclick.121 — Responds to a button or clickable control. Inputs: no explicit arguments; uses enclosing module state. Uses: document exit fullscreen; $ using "viewport" request fullscreen; $; log. */ async () => {
       try {
         if (document.fullscreenElement) await document.exitFullscreen();
         else {
-          await $("viewport").requestFullscreen();
-          try {
-            await navigator.keyboard?.lock(["Escape"]);
-          } catch {
-            /* Browser may reserve Escape; fullscreenchange below pauses after exit. */
+          // October 29, 2026: editor fullscreen must include its toolbar, and Escape must remain available. Supersedes viewport-only editor fullscreen with locked Escape.
+          await (editing ? document.documentElement : $("viewport")).requestFullscreen();
+          if (!editing) {
+            try {
+              await navigator.keyboard?.lock(["Escape"]);
+            } catch {
+              /* Browser may reserve Escape; fullscreenchange below pauses after exit. */
+            }
           }
         }
       } catch {
@@ -2161,6 +2169,9 @@
   document.addEventListener(
     "fullscreenchange",
     /* @function app.callback.122 — Provides the callback for document add event listener. Inputs: no explicit arguments; uses enclosing module state. Updates: $ using "fullscreen" text content. Uses: $. */ () => {
+      // Keep an explicit exit control inside the active fullscreen subtree, even for viewport-only playtests.
+      fullscreenExit1612.hidden=!document.fullscreenElement;
+      if(document.fullscreenElement)document.fullscreenElement.append(fullscreenExit1612);else{fullscreenExit1612.remove();navigator.keyboard?.unlock();}
       $("fullscreen").textContent = document.fullscreenElement
         ? "Exit fullscreen"
         : "Fullscreen";
@@ -3465,7 +3476,7 @@
     $("badge").lastElementChild.textContent =
       (world.interior?.mode === "fixed" ? "Fixed interior · " : "") +
       (game.camera.firstPerson ? "First person" : "Third person") +
-      " · prototype 0.16.11";
+      " · prototype 0.16.12";
     if (world.interior)
       $("intro").textContent =
         world.interior.mode === "fixed"
