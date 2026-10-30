@@ -230,3 +230,30 @@ body[data-frontier-editing=true] #gameFrame,body[data-frontier-editing=true] #ga
 
 /* October 29: feature audit is editor-only; fullscreen/playtest controls retain their existing visibility. */
 body[data-frontier-editing="false"] #featureStatus169{display:none}
+/* October 29, 2026: Skill-O-Matic prototype uses original A/B/C image ratios.
+   Percentages are measured in A's 1054x1058 canvas; no artwork is resampled. */
+#skillOMaticPanel{position:absolute;z-index:115;left:50%;top:50%;transform:translate(-50%,-50%);width:min(76vw,68vh,620px);max-width:94%;pointer-events:auto;color:#d4d8ce;}
+#skillOMaticPanel[hidden],#skillOMaticTarget[hidden]{display:none!important}
+.skillOMaticToolbar{display:flex;align-items:center;justify-content:space-between;background:#13150f;padding:4px 8px;font:12px system-ui,Arial,sans-serif;}
+.skillOMaticToolbar button{padding:4px 8px;font-size:12px;}
+.skillOMaticCase{position:relative;width:100%;aspect-ratio:1054/1058;}
+.skillOMaticHousing{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;}
+.skillOMaticWindow{position:absolute;left:11.3852%;top:8.6957%;width:58.8235%;height:65.9735%;z-index:1;overflow:auto;scrollbar-width:none;background:#171b12;overscroll-behavior:contain;}
+.skillOMaticWindow::-webkit-scrollbar{display:none}
+.skillOMaticStrip{position:relative;width:100%;aspect-ratio:647/1502;background:url('img/ui/skill-o-matic/Skill-o-matic-B.png') top left/100% 100% no-repeat;}
+#gameFrame .skillOMaticRow{position:absolute;left:1.55%;width:96.6%;padding:0;margin:0;border:0;border-radius:7px;background:transparent;box-shadow:none;}
+#gameFrame .skillOMaticRow:disabled{opacity:1;}
+#gameFrame .skillOMaticRow:not(:disabled):hover,#gameFrame .skillOMaticRow:focus-visible{outline:1px solid #f09858;outline-offset:-3px;background:#da6c2412;}
+.skillOMaticRow svg{position:absolute;left:8%;top:26%;height:47%;max-width:86%;width:auto;overflow:visible;pointer-events:none;}
+#skillOMaticSlider{position:absolute;left:81.4042%;top:11.1531%;width:7.9696%;height:16.6352%;z-index:3;touch-action:none;cursor:grab;user-select:none;}
+#skillOMaticSlider:active{cursor:grabbing}
+#skillOMaticSlider img{width:100%;height:100%;display:block;pointer-events:none;}
+#skillOMaticSlider:focus-visible{outline:1px solid #f09858;}
+.skillOMaticHelp{margin:0;background:#11170fed;padding:7px;font:12px/1.35 system-ui,Arial,sans-serif;}
+#skillOMaticTarget{position:absolute;left:50%;top:8%;transform:translateX(-50%);z-index:114;max-width:80%;padding:7px 12px;background:#171b12e8;border:1px solid #a36c45;color:#f3a67b;font:13px/1.4 system-ui,Arial,sans-serif;pointer-events:none;}
+.remoteDevice button#remoteSkills{left:63%;top:78.4%;width:11%;height:3.1%;min-width:12px;min-height:7px;border:1px solid #ee8d78;background:#a4231b;box-shadow:inset 0 0 2px #ffbc99;padding:0;pointer-events:none;}
+.hudCursor .remoteDevice button#remoteSkills{pointer-events:auto;}
+body[data-frontier-editing=true] #remoteSkills{display:none;}
+
+/* Keep prototype instructions readable; the actual LCD labels are original vector segments. */
+#gameFrame .skillOMaticToolbar,#gameFrame .skillOMaticToolbar *,#gameFrame .skillOMaticHelp,#gameFrame #skillOMaticTarget{font-family:system-ui,Arial,sans-serif!important;}
