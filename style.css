@@ -289,3 +289,6 @@ body[data-frontier-editing=true] #remoteSkills{display:none;}
 @media(max-width:950px){.catalogColumns1611{grid-template-columns:1fr;}}
 /* Remote Combine follows the established HUD cursor ownership, matching Skills. */
 .remoteDevice button#remoteCrafting{pointer-events:none;}.hudCursor .remoteDevice button#remoteCrafting{pointer-events:auto;}body[data-frontier-editing=true] #remoteCrafting{display:none;}
+
+/* October 29: catalog authoring is visible on the editor toolbar only; playtests keep the remote and fullscreen controls. */
+body.enginePlaytest #openItemsRecipes{display:none}

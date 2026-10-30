@@ -2426,10 +2426,11 @@
     },
     { capture: true, passive: false },
   );
+  // October 29: hidden controls can retain focus after a menu closes. Only visible form controls suppress gameplay shortcuts; otherwise Inventory would fail after closing Skill-O-Matic.
   const form =
     /* @function app.form.150 — Returns /INPUT|SELECT|TEXTAREA|BUTTON/ test using event target tag name. Inputs: event. Uses: /INPUT|SELECT|TEXTAREA|BUTTON/ test. Returns: /INPUT|SELECT|TEXTAREA|BUTTON/ test using event target tag name. */ (
       event,
-    ) => /INPUT|SELECT|TEXTAREA|BUTTON/.test(event.target.tagName);
+    ) => /INPUT|SELECT|TEXTAREA|BUTTON/.test(event.target.tagName) && event.target.getClientRects().length > 0;
   document.addEventListener(
     "keydown",
     /* @function app.callback.151 — Provides the callback for document add event listener. Inputs: event. Updates: $ using "weaponProfile" value. Uses: number input controller key; event key to lower case; event prevent default; event stop propagation. Returns: without a result; without a result. */ (
