@@ -1,3 +1,5 @@
+
+  // October 30, 2026: use the active Pixi projection for screen and filter targets; direct clip-space positions invert/resize custom meshes during filtering.
 /* October 26: panorama saturation defaults to 1.2 and contrast to 1.05; shader-only grading preserves original sky artwork and sampling/wrap geometry. Per-map values persist. */
 /* October 13, 2026: image panoramas retain the supplied source pixels. Optional
  * dual-sample wrapping makes the material continuous at both horizontal seams;
@@ -21,8 +23,8 @@
   const images = new Map(),
     states = new WeakMap();
   const vertex = `#version 300 es
-  precision highp float;in vec2 aPosition;out vec2 vScreen;
-  void main(){vScreen=aPosition;gl_Position=vec4(aPosition.x*2.-1.,1.-aPosition.y*2.,0.,1.);}`;
+  precision highp float;in vec2 aPosition;out vec2 vScreen;uniform vec4 uView;uniform mat3 uProjectionMatrix;uniform mat3 uWorldTransformMatrix;uniform mat3 uTransformMatrix;
+  void main(){vScreen=aPosition;gl_Position=vec4((uProjectionMatrix*uWorldTransformMatrix*uTransformMatrix*vec3(aPosition*uView.xy,1.)).xy,0.,1.);}`;
   const fragment = `#version 300 es
   precision highp float;in vec2 vScreen;out vec4 color;uniform sampler2D uImage;
   uniform vec4 uCamera;uniform vec4 uView;uniform float uBlend;uniform vec2 uPunch;
@@ -181,7 +183,7 @@
     uniforms.uPunch.set([settings.saturation ?? 1.2,settings.contrast ?? 1.05]);
     ctx.flushStroke();
     ctx.graphic = null;
-    ctx.app.stage.addChild(state.mesh);
+    (ctx.drawStage||ctx.app.stage).addChild(state.mesh);
     return true;
   }
   /* @function skyPanorama.memoryBytes — Inputs: none. Returns decoded source RGBA estimate for ready banked images. Excludes GPU copies; no readback/allocation. At most four images are retained. */

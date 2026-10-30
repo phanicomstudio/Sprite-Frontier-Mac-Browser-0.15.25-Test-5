@@ -1,6 +1,6 @@
 {
   "name": "phanicom-sprite-frontier",
-  "version": "0.16.13",
+  "version": "0.16.14",
   "private": true,
   "description": "Offline vector billboard exploration prototype",
   "scripts": {
@@ -17,6 +17,7 @@
     "test:iteration169": "node tests/iteration169.cjs && node tests/browser/iteration169.cjs && node tests/browser/features169.cjs && node tests/function-comments1516.cjs",
     "test:palette": "node tests/palette168.cjs && node tests/browser/palette168.cjs",
     "test:integration1611": "node tests/construction1611.cjs && node tests/crafting1611.cjs && node tests/visibility1611.cjs && node tests/browser/inventory1611.cjs && node tests/browser/catalog1611.cjs && node tests/browser/transactions1611.cjs && node tests/browser/authoring1611.cjs && node tests/browser/doors1611.cjs && node tests/browser/visibility1611.cjs && node tests/function-comments1516.cjs",
+    "test:dither": "node tests/palette168.cjs && node tests/browser/palette168.cjs && node tests/browser/projection1614.cjs && node tests/browser/dither1614.cjs && node tests/function-comments1516.cjs",
     "test:fullscreen": "node tests/browser/fullscreen1612.cjs && node tests/function-comments1516.cjs"
   },
   "dependencies": {
