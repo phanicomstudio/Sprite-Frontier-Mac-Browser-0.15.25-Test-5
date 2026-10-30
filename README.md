@@ -188,3 +188,8 @@ October 26 local-delivery follow-up: complete Windows and Mac/browser packages a
 ## October 29, 2026 — current combined 0.16.11 behavior
 
 See [ITERATION-0.16.11.md](ITERATION-0.16.11.md), [FUNCTION-REFERENCE-0.16.11.md](FUNCTION-REFERENCE-0.16.11.md) and [LOCAL-0.16.11.md](LOCAL-0.16.11.md). These current chapters supersede earlier pending notes for inventory, crafting, catalog/recipe editing, connected rectangular construction, shared boundaries/openings and zoom-aware isometric visibility. Earlier explanations remain historical. The 24 starter materials are ordinary items; two descriptions and production recipe choices remain unauthored. TEST SCAN is intentionally a test skill. Fixed-artwork tools, sprite presentation and distinct shadow systems remain supported. Old bundled room examples are retired only from fresh projects, not deleted from saved projects.
+
+
+## 0.16.12 - October 29, 2026
+
+Editor fullscreen retains its toolbar and supports Escape plus a visible exit button; desktop F11 recovers from HTML fullscreen before toggling native fullscreen. Complete cumulative Windows release, same compatible 0.16.11 project profile. See ITERATION-0.16.12.md.

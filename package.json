@@ -1,6 +1,6 @@
 {
   "name": "phanicom-sprite-frontier",
-  "version": "0.16.11",
+  "version": "0.16.12",
   "private": true,
   "description": "Offline vector billboard exploration prototype",
   "scripts": {
@@ -16,7 +16,8 @@
     "test:skills": "node tests/browser/skill-o-matic1610.cjs && node tests/function-comments1516.cjs && node tests/desktop-export1524.cjs",
     "test:iteration169": "node tests/iteration169.cjs && node tests/browser/iteration169.cjs && node tests/browser/features169.cjs && node tests/function-comments1516.cjs",
     "test:palette": "node tests/palette168.cjs && node tests/browser/palette168.cjs",
-    "test:integration1611": "node tests/construction1611.cjs && node tests/crafting1611.cjs && node tests/visibility1611.cjs && node tests/browser/inventory1611.cjs && node tests/browser/catalog1611.cjs && node tests/browser/transactions1611.cjs && node tests/browser/authoring1611.cjs && node tests/browser/doors1611.cjs && node tests/browser/visibility1611.cjs && node tests/function-comments1516.cjs"
+    "test:integration1611": "node tests/construction1611.cjs && node tests/crafting1611.cjs && node tests/visibility1611.cjs && node tests/browser/inventory1611.cjs && node tests/browser/catalog1611.cjs && node tests/browser/transactions1611.cjs && node tests/browser/authoring1611.cjs && node tests/browser/doors1611.cjs && node tests/browser/visibility1611.cjs && node tests/function-comments1516.cjs",
+    "test:fullscreen": "node tests/browser/fullscreen1612.cjs && node tests/function-comments1516.cjs"
   },
   "dependencies": {
     "pixi.js": "8.22.0"

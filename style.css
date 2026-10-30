@@ -292,3 +292,6 @@ body[data-frontier-editing=true] #remoteSkills{display:none;}
 
 /* October 29: catalog authoring is visible on the editor toolbar only; playtests keep the remote and fullscreen controls. */
 body.enginePlaytest #openItemsRecipes{display:none}
+
+/* October 29, 2026: fullscreen exit remains accessible above editor dialogs and HUD overlays; hidden outside fullscreen. */
+#fullscreenExit1612:not([hidden]){position:fixed;right:14px;top:14px;z-index:2147483647;pointer-events:auto;background:#07111e;color:#fff;border:1px solid #9fceff;padding:10px 14px;font:16px Arial,sans-serif}

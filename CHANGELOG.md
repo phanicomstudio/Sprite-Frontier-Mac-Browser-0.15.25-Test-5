@@ -175,3 +175,8 @@ Mac is a complete browser edition. See TEST-REPORT-0.15.17.md for scope/limits.
 ## 0.16.11 - October 29, 2026
 
 Combined original-art inventory, transparent D-pad controls, shared item/recipe authoring and atomic crafting; connected rectangular rooms/buildings/storeys, persistent component overrides, explicit shared walls and real door openings; focused door-test maps replace redundant fresh-project examples; zoom-aware isometric visibility, fog and cosmetic LOD. Existing saves, original sprite presentation, shadow-system splits and prior release documentation remain preserved. See ITERATION-0.16.11.md and TEST-REPORT-0.16.11.md.
+
+
+## 0.16.12 - October 29, 2026
+
+Editor fullscreen retains its toolbar and supports Escape plus a visible exit button; desktop F11 recovers from HTML fullscreen before toggling native fullscreen. Complete cumulative Windows release, same compatible 0.16.11 project profile. See ITERATION-0.16.12.md.

@@ -265,7 +265,8 @@ if (!app.requestSingleInstanceLock()) {
             input,
           ) => {
             if (input.type === "keyDown" && input.key === "F11") {
-              win.setFullScreen(!win.isFullScreen());
+              // October 29: HTML fullscreen owns the toolbar button; leave it first instead of nesting native fullscreen around a trapped viewport.
+              win.webContents.executeJavaScript("document.fullscreenElement ? (navigator.keyboard?.unlock(), document.exitFullscreen(), true) : false").then(/* @function desktop.fullscreenFallback1612 — Inputs: whether HTML fullscreen was active. Toggles the existing native window only when HTML fullscreen did not own the screen. Closed windows are ignored; no renderer-supplied code is evaluated. */function(exited){if(!exited&&win&&!win.isDestroyed())win.setFullScreen(!win.isFullScreen());}).catch(/* @function desktop.fullscreenFailure1612 — Inputs: fixed-script evaluation failure. Uses the native window toggle as an emergency exit while retaining renderer error reporting. Closed windows are ignored. */function(){if(win&&!win.isDestroyed())win.setFullScreen(!win.isFullScreen());});
               event.preventDefault();
             }
           },
