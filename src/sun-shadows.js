@@ -9,7 +9,7 @@
   void main(){gl_Position=vec4(aPosition.x/uViewport.x*2.-1.,1.-aPosition.y/uViewport.y*2.,0.,1.);vUV=aUV;vInverse=aInverse;vFog=aFog;vScreen=aPosition/uViewport;}`;
   const fragment=`#version 300 es
   precision highp float;uniform sampler2D uImage;uniform sampler2D uDepth;uniform vec2 uViewport;uniform vec2 uDepthSize;uniform float uOpacity;uniform float uOrtho;in vec2 vUV;in float vInverse;in float vFog;in vec2 vScreen;out vec4 color;
-  void main(){vec2 screen=vScreen;vec3 packed=texture(uDepth,screen).rgb;float inverse=(packed.r*65536.+packed.g*256.+packed.b)*255./16777215.*16.;if(inverse>vInverse+.002)discard;float alpha=texture(uImage,uOrtho>.5?vUV:vUV/max(vInverse,.000001)).a;color=vec4(0.,0.,0.,alpha*uOpacity*(1.-vFog));}`;
+  void main(){vec2 screen=vScreen;vec3 packed=texture(uDepth,screen).rgb;float inverse=(packed.r*65536.+packed.g*256.+packed.b)*255./16777215.*16.;if(inverse>vInverse+(uOrtho>.5?.002*vInverse*vInverse:.002))discard;float alpha=texture(uImage,uOrtho>.5?vUV:vUV/max(vInverse,.000001)).a;color=vec4(0.,0.,0.,alpha*uOpacity*(1.-vFog));}`;
   /* @function sunShadows.receiver163 â€” Inputs: live scene, world sprite-plane source point, normalized sun ray and caster ID. Returns nearest terrain/static-geometry hit with world coordinates/receiver key, or null. Rays are at most 32 m; shared sweep uses a numerical skin and does not mutate combat. */
   function receiver163(game,from,direction,id){
     const end={x:from.x+direction.x*32,y:from.y+direction.y*32,z:from.z+direction.z*32};
@@ -85,7 +85,7 @@
   const contacts166=new WeakMap();
   const contactFragment166=`#version 300 es
   precision highp float;uniform sampler2D uDepth;uniform float uOpacity;uniform float uSoftness;in vec2 vUV;in float vInverse;in float vFog;in vec2 vScreen;out vec4 color;
-  void main(){vec3 packed=texture(uDepth,vScreen).rgb;float inverse=(packed.r*65536.+packed.g*256.+packed.b)*255./16777215.*16.;if(inverse>vInverse+.002)discard;float radius=length(vUV*2.-1.);float alpha=1.-smoothstep(.3*(1.-uSoftness),1.,radius);color=vec4(0.,0.,0.,alpha*uOpacity*(1.-vFog));}`;
+  void main(){vec3 packed=texture(uDepth,vScreen).rgb;float inverse=(packed.r*65536.+packed.g*256.+packed.b)*255./16777215.*16.;if(inverse>vInverse+.002*vInverse*vInverse)discard;float radius=length(vUV*2.-1.);float alpha=1.-smoothstep(.3*(1.-uSoftness),1.,radius);color=vec4(0.,0.,0.,alpha*uOpacity*(1.-vFog));}`;
   /* @function contactShadow.profile166 — Inputs: height above receiving floor in metres. Returns radius/opacity/softness, gently shrinking and softening over the first two metres. Landing restores the original contact size/density; no time integration, sun direction or actor mutation. */
   function contactProfile166(height){if(!Number.isFinite(height))throw Error("Contact shadow height must be finite.");const t=Math.max(0,Math.min(1,height/2));return {radius:.3*(1-.2*t),opacity:.16*(1-.5*t),softness:t};}
   /* @function contactShadow.slot166 — Inputs: Pixi namespace and shared packed receiver-depth source. Returns one reusable 9-vertex/24-index GPU blob slot with analytic soft radial alpha. No image assets, per-frame texture creation or CPU bitmap painting. */

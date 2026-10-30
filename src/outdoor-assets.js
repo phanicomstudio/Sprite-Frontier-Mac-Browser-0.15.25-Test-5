@@ -856,9 +856,7 @@
   /* @function outdoorAssets.drawCached1524 — Inputs: renderer context, game, camera and original projection service. Returns nothing. Reuses exact sorted triangles for an unchanged static terrain/camera; still clears and resubmits shared depth every frame for sprite/model interoperability. Mutable lighting and textures are evaluated every draw. Changed views rebuild through historical clipping/projection and release obsolete packet references. */
   function draw(ctx, game, cam, project) {
     const projector = project,
-      key = cam.orthographic
-        ? null
-        : viewKey1524(game.sourceWorld, cam, game.viewWidth || 640);
+      key = viewKey1524(game.sourceWorld, cam, game.viewWidth || 640)+(cam.orthographic?JSON.stringify(cam.room.camera):"");
     project = root.FrontierCameraBasis?.create(cam, project) || project;
     const world = game.sourceWorld,
       height1523 = heightSampler1523(world),
@@ -884,8 +882,9 @@
       const depth =
         ((point[0] - cam.x) * sy + (point[1] - cam.y) * cy) * cp +
         (point[2] - cam.z) * sp;
-      depthCache.set(point, depth);
-      return depth;
+      const encoded=cam.outdoorIsometric?30+depth*.02:depth;
+      depthCache.set(point, encoded);
+      return encoded;
     }
     /* @function outdoor-assets.projectPoint1523 — Inputs: shared world XYZ vertex. Returns original projection or null, reused for adjacent triangles during this frame. Cache does not outlive camera state. */ function projectPoint1523(
       point,
@@ -914,15 +913,16 @@
         flowX: 0,
         flowY: 0,
       };
+    const visibleBounds=cam.outdoorIsometric?root.FrontierViewVisibility.bounds(game,cam,0):{minX:cam.x-48,minY:cam.y-48,maxX:cam.x+48,maxY:cam.y+48};
     if (!reused) {
       for (
-        let x = Math.max(0, Math.floor(cam.x - 48));
-        x < Math.min(bounds.width, cam.x + 48);
+        let x = Math.max(0, Math.floor(visibleBounds.minX));
+        x < Math.min(bounds.width, visibleBounds.maxX);
         x++
       )
         for (
-          let y = Math.max(0, Math.floor(cam.y - 48));
-          y < Math.min(bounds.height, cam.y + 48);
+          let y = Math.max(0, Math.floor(visibleBounds.minY));
+          y < Math.min(bounds.height, visibleBounds.maxY);
           y++
         ) {
           const tile = terrainTile1523(world, x, y, height1523);

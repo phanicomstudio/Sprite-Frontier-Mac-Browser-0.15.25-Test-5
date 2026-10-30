@@ -249,3 +249,8 @@ Delete current map still prevents deleting the last map or a map with incoming r
 ## October 28, 2026 - 0.16.8 palette output
 
 The original PhanicomPaletteDither v2 algorithm is ported in src/palette-dither.js, loaded after isometric and before world validation. Environment > Indexed palette / dithering owns map settings; original event commands use the existing interpreter and save/travel owners. The final Pixi pass can composite the retained HTML HUD; live door/melt layers and raw melt capture avoid frozen/double-indexed transitions. Prior appearance remains unchanged when disabled. See ITERATION-0.16.8.md and FUNCTION-REFERENCE-0.16.8.md for controls, source provenance, lifecycle, limits and validation. Existing documentation above is retained.
+
+
+## October 29, 2026 — current combined 0.16.11 behavior
+
+See [ITERATION-0.16.11.md](ITERATION-0.16.11.md), [FUNCTION-REFERENCE-0.16.11.md](FUNCTION-REFERENCE-0.16.11.md) and [LOCAL-0.16.11.md](LOCAL-0.16.11.md). These current chapters supersede earlier pending notes for inventory, crafting, catalog/recipe editing, connected rectangular construction, shared boundaries/openings and zoom-aware isometric visibility. Earlier explanations remain historical. The 24 starter materials are ordinary items; two descriptions and production recipe choices remain unauthored. TEST SCAN is intentionally a test skill. Fixed-artwork tools, sprite presentation and distinct shadow systems remain supported. Old bundled room examples are retired only from fresh projects, not deleted from saved projects.

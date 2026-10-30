@@ -1,3 +1,4 @@
+/* October 29, 2026: 0.16.11 isolates its connected-room/catalog schema in a new desktop profile. Earlier profiles and user projects remain untouched; use Open Project to import explicitly. Supersedes shared-profile behavior below for this release. */
 /* October 26, 2026: 0.16.4 retains the 0.16.3 desktop profile intentionally: no schema change; existing local projects remain available. Historical isolation rationale follows. */
 /* October 26, 2026: 0.16.3 uses an independent desktop profile because default atmosphere/schema adoption must not overwrite earlier release profiles. Import an exported project explicitly; no saved data is copied or deleted. */
 /* Desktop lifecycle. The engine stays in its sandboxed renderer; this process
@@ -19,7 +20,7 @@ const fs = require("node:fs"),
 // exported project JSON explicitly; no legacy profile is copied or deleted.
 app.setPath(
   "userData",
-  path.join(app.getPath("appData"), "Sprite-Frontier-0.16.3"),
+  path.join(app.getPath("appData"), "Sprite-Frontier-0.16.11"),
 );
 const root = path.dirname(process.execPath);
 let diagnostics = null,

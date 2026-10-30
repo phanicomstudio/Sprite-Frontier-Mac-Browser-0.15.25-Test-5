@@ -257,3 +257,38 @@ body[data-frontier-editing=true] #remoteSkills{display:none;}
 
 /* Keep prototype instructions readable; the actual LCD labels are original vector segments. */
 #gameFrame .skillOMaticToolbar,#gameFrame .skillOMaticToolbar *,#gameFrame .skillOMaticHelp,#gameFrame #skillOMaticTarget{font-family:system-ui,Arial,sans-serif!important;}
+/* October 29, 2026: the original inventory image fills the available game view
+   with aspect ratio preserved in wide and 4:3 layouts. The physical D-pad hit
+   regions are deliberately invisible, with no replacement button artwork. */
+#gameFrame #inventoryPanel.inventoryDevicePanel{position:absolute;inset:0;transform:none;margin:0;padding:0;border:0;border-radius:0;max-width:none;max-height:none;width:100%;height:100%;z-index:125;background:#060807f5;box-shadow:none;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+#gameFrame #inventoryPanel.inventoryDevicePanel[hidden]{display:none!important;}
+.inventoryDeviceCase{position:relative;height:98%;max-width:98%;flex:none;container-type:inline-size;}
+.inventoryDeviceBase{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;}
+.inventoryDeviceToolbar{position:absolute;left:1%;right:1%;top:1%;display:flex;align-items:center;justify-content:space-between;z-index:3;pointer-events:none;font:12px system-ui,Arial,sans-serif;}
+.inventoryDeviceToolbar button{pointer-events:auto;padding:4px 8px;font:12px system-ui,Arial,sans-serif;}
+.inventoryDeviceDescription,.inventoryDeviceItems,.inventoryDeviceStatus{position:absolute;box-sizing:border-box;color:#85291d;overflow:auto;overscroll-behavior:contain;scrollbar-width:none;white-space:pre-wrap;pointer-events:auto;}
+.inventoryDeviceDescription{font-size:clamp(10px,2.2cqw,18px);line-height:1.35;}
+.inventoryDeviceDescription h3{font:inherit;font-weight:bold;margin:0 0 .5em;}
+.inventoryDeviceDescription p{margin:0;}
+.inventoryDeviceDescription img{float:right;max-width:25%;max-height:60%;object-fit:contain;margin-left:4px;}
+.inventoryDeviceItems{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(4,1fr);gap:2px 8px;align-content:start;overflow:hidden;}
+#gameFrame .inventoryDeviceItems button{min-width:0;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;font-size:clamp(9px,2cqw,16px);text-align:left;line-height:1.15;color:#85291d;background:transparent;border:0;border-radius:0;padding:1px;box-shadow:none;}
+#gameFrame .inventoryDeviceItems button[aria-pressed=true]{color:#3e1810;text-decoration:underline;}
+.inventoryDeviceItems small{position:absolute;right:0;bottom:0;font:clamp(8px,1.6cqw,12px) system-ui,Arial,sans-serif;}
+.inventoryDeviceStatus{font:clamp(8px,1.7cqw,13px)/1.2 system-ui,Arial,sans-serif;margin:0;}
+#gameFrame .inventoryDeviceHit{position:absolute;z-index:2;background:transparent;border:0;border-radius:0;box-shadow:none;color:transparent;padding:0;opacity:1;}
+#gameFrame .inventoryDeviceHit:hover,#gameFrame .inventoryDeviceHit:active,#gameFrame .inventoryDeviceHit:disabled{background:transparent;border:0;box-shadow:none;opacity:1;}
+#gameFrame .inventoryDeviceHit:focus-visible{outline:1px solid #9abce4;outline-offset:-2px;}
+/* October 29: native crafting is a readable in-game menu; no replacement inventory artwork is drawn. */
+#gameFrame #craftingPanel{position:absolute;inset:4%;z-index:126;overflow:auto;background:#141b20f7;color:#d2e0ec;border:1px solid #788a94;padding:16px;font:14px system-ui,Arial,sans-serif;}
+#gameFrame #craftingPanel[hidden]{display:none!important;}
+.craftingSlots{display:grid;gap:8px;}.craftingSlots label{display:flex;gap:8px;align-items:center;}.craftingSlots select{flex:1;min-width:0;}.craftingSlots input{width:80px;}.craftingResults{display:grid;gap:8px;margin-top:15px;}
+#remoteCrafting{position:absolute;left:12%;top:62%;width:73%;height:5%;font:8px system-ui,Arial,sans-serif;padding:0;}
+/* October 29: focused shared catalog editor; individual fields remain readable without opening every item at once. */
+.catalogEditor1611{width:94vw;max-width:1450px;max-height:90vh;overflow:auto;font:14px system-ui,Arial,sans-serif;}.catalogColumns1611{display:grid;grid-template-columns:220px minmax(250px,1fr) minmax(300px,1fr);gap:20px;}.catalogColumns1611 section{min-width:0;}.catalogColumns1611 label{display:grid;gap:4px;margin:8px 0;}.catalogColumns1611 input,.catalogColumns1611 select,.catalogColumns1611 textarea{max-width:100%;box-sizing:border-box;width:100%;}.catalogColumns1611 textarea{min-height:100px;}.catalogColumns1611 fieldset{display:flex;gap:6px;padding:4px;}.catalogColumns1611 fieldset label{flex:1;min-width:0;}.catalogColumns1611 fieldset input[type=checkbox]{width:auto;}
+@media(max-width:950px){.catalogColumns1611{grid-template-columns:1fr;}}
+/* Remote Combine follows the established HUD cursor ownership, matching Skills. */
+.remoteDevice button#remoteCrafting{pointer-events:none;}.hudCursor .remoteDevice button#remoteCrafting{pointer-events:auto;}body[data-frontier-editing=true] #remoteCrafting{display:none;}
+
+/* October 29: catalog authoring is visible on the editor toolbar only; playtests keep the remote and fullscreen controls. */
+body.enginePlaytest #openItemsRecipes{display:none}

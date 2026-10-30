@@ -1140,7 +1140,7 @@
       const state = prepare(e.transitionSource || asset),
         preparedVertices = new WeakMap(),
         materials = new Map(),
-        fog = root.FrontierFog?.settings(game),
+        fog = root.FrontierViewVisibility?.fog(game,cam)||root.FrontierFog?.settings(game),
         basis = root.FrontierCameraBasis?.create(cam, FrontierRender.project),
         depths = new WeakMap();
       /* @function model-renderer.cachedDepth1523 — Inputs: immutable triangle vertex. Returns exact camera forward depth cached by transformed point for this draw only; no source/camera mutation. Legacy camera arithmetic remains authoritative. */

@@ -74,11 +74,13 @@
               : policy.mode === "custom"
                 ? policy.distance
                 : game.sourceWorld?.modelDrawDistance || 52;
-        const d = distance(e, root.FrontierModelLibrary.get(e.modelId), cam);
-        e.modelCoverage = Number.isFinite(limit)
+        // October 29: default isometric visibility follows projected viewport clipping in the geometry renderer, not distance from its artificial camera origin. Explicit custom/unlimited author choices remain meaningful.
+        const isoDefault=cam.outdoorIsometric&&policy.mode==='default';
+        const d = distance(e, root.FrontierModelLibrary.get(e.modelId), cam.outdoorIsometric?{...cam,x:game.player.x,y:game.player.y}:cam);
+        e.modelCoverage = !isoDefault&&Number.isFinite(limit)
           ? Math.max(0, Math.min(1, (limit - d) / Math.min(8, limit * 0.2)))
           : 1;
-        if (d <= limit) result.push(e);
+        if (isoDefault || d <= limit) result.push(e);
         else culled++;
       }
     game.modelVisibilityDebug = {

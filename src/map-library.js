@@ -463,6 +463,11 @@
       const pistol=FrontierEnemies.preset("handgun");pistol.hostile=true;pistol.coverChance=25;pistol.patrol=[[30,30],[34,30]];iso.world.events.push(FrontierEnemies.event("iso-pistol-test","Pistol patrol - attacks on sight",30,30,pistol,"enemy-chiban"));
       const cover=FrontierEvents.create("iso-cover",32,29);cover.x=32;cover.y=29;cover.name="Static cover event";cover.height=2;cover.pages[0].graphic="chest";cover.pages[0].solid=true;iso.world.events.push(cover);project.maps.push(iso);}
 
+    // October 29 user authorization: fresh projects retire redundant old room fixtures. Saved/imported projects are adopted later without this filter; original fixture builders remain documented history.
+    const retiredRoomIds=new Set(['room-test','ruin-test','hub-saloon','hub-test','hub-shop','hub-home','hub-wilderness']);
+    project.maps=project.maps.filter(/* @function mapLibrary.currentExamples1611 — Inputs: fresh bundled map. Retains wilderness/demo while replacing only redundant shipped room examples; user saves are not filtered. */function(map){return !retiredRoomIds.has(map.id);});
+    delete demo.travel;demo.events=demo.events.filter(/* @function mapLibrary.retireOldGuide1611 — Inputs: fresh demo event. Removes only obsolete ruin-guide fixture; author-created events are not involved. */function(event){return event.id!=='hub-guide';});
+    project.maps.push(...root.FrontierDoorTests.create(api.world()));
     const label = document.createElement("label");
     label.textContent = "Active map";
     const picker = document.createElement("select");
@@ -1330,9 +1335,12 @@
             incoming.gameplayDefaults.extensions.itemDefinitions,
             assetMerge.mapping,
           );
+          const oldRecipes=existing.gameplayDefaults.extensions.recipes,incomingRecipes=incoming.gameplayDefaults.extensions.recipes;
+          const mergedRecipes=oldRecipes!==undefined||incomingRecipes!==undefined?root.FrontierCrafting.merge(oldRecipes||[],incomingRecipes||[],mergedItems||root.FrontierItemDefinitions.defaults()):undefined;
           FrontierModelLibrary.restore(assetMerge.models);
           if (mergedItems !== undefined)
             project.gameplayDefaults.extensions.itemDefinitions = mergedItems;
+          if(mergedRecipes!==undefined)project.gameplayDefaults.extensions.recipes=mergedRecipes;
           project.models = assetMerge.models;
           project.templates = mergedTemplates.bank;
           project.maps.push(...incoming.maps);
@@ -1362,6 +1370,8 @@
       shadowSettings169(value){const checked=root.FrontierLocalLighting.shadows169(value),current=snapshot(),candidate=structuredClone(current);for(const map of candidate.maps){map.world.lighting=root.FrontierLocalLighting.validate(map.world.lighting);map.world.lighting.shadows=checked;}commitManagement1524(validate(candidate),{maps:current.maps.slice(),active:current.active});mapHistory1524.property169="shadows";},
       /* @function mapLibrary.weaponDamage169 — Inputs: complete validated native weapon override dictionary. Returns nothing after existing project-default adoption/history. Non-damage overrides are retained by the caller draft, and equipped clones refresh through normal session construction. Rejection preserves the old project. */
       weaponDamage169(value){const before=structuredClone(project.gameplayDefaults),next=structuredClone(before);next.extensions.weaponDefinitions=root.FrontierWeaponDefinitions.validate(value);adoptGameplayDefaults(next);gameplayHistory.push({before,after:project.gameplayDefaults});refreshGameplayHistory();},
+      /* @function mapLibrary.catalog1611 — Inputs: complete item/recipe draft and live reference-bearing state. Returns nothing after one project defaults transaction. Stable-ID removal is conservatively refused when any exact reference remains in authored maps, templates, starting values, recipes or current inventory/ownership. Extra metadata and all unrelated extensions/history remain intact. */
+      catalog1611(value,runtime){const before=structuredClone(project.gameplayDefaults),next=structuredClone(before),items=root.FrontierItemDefinitions.validate(value.items),recipes=root.FrontierCrafting.validate(value.recipes,items),known=new Set(items.map(/* @function mapLibrary.itemIdentity1611 — Inputs: definition. Returns stable item ID for removal guard. */function(item){return item.id;}));const previous=before.extensions.itemDefinitions||root.FrontierItemDefinitions.defaults();const references=snapshot();delete references.gameplayDefaults.extensions.itemDefinitions;references.gameplayDefaults.extensions.recipes=recipes;const text=JSON.stringify([references,runtime]);for(const item of previous)if(!known.has(item.id)&&text.includes(JSON.stringify(item.id)))throw Error('Item is still referenced: '+item.name+'. Retarget its pickups, recipes or starting inventory before deleting.');next.extensions.itemDefinitions=items;next.extensions.recipes=recipes;adoptGameplayDefaults(next);gameplayHistory.push({before,after:project.gameplayDefaults});refreshGameplayHistory();},
       get gameplayDefaults /* Historical contract retained; October 14 reviewed explanation follows. @function map-library.gameplayDefaults.57 — Handles gameplay defaults within map library. Inputs: no explicit arguments; uses enclosing module state. Uses: structured clone. Returns: structured clone using project gameplay defaults. */
   /* @function mapLibrary.reviewedgameplayDefaults_57 — Returns an isolated starting-gameplay-value draft. Inputs: none. Returns structured clone of project defaults so dialog edits cannot mutate project before Apply. No writes; uncloneable unsupported data would throw, although schema requires portable values. */() {
         return structuredClone(project.gameplayDefaults);

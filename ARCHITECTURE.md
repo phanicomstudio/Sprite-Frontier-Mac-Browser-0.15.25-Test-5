@@ -70,3 +70,8 @@ See ITERATION-0.16.9.md, FUNCTION-REFERENCE-0.16.9.md and FEATURE-STATUS-0.16.9.
 ## October 29, 2026 — Skill-O-Matic prototype boundary
 
 The runtime-only-neutral skill-o-matic.js controller is included in both engine and gameplay exports. It owns DOM composition and transient selection/scroll state; app.js retains simulation pause, camera/cursor ownership, target reach/occlusion and inspection. TEST SCAN is a harmless integration probe with no persistent skill stat or event command. Original art and a locally defined vector LCD alphabet require no third-party font. UI clicks are consumed before ordinary interaction/weapon routing; restart/editor changes discard the probe. Original shader/HUD capture includes the new image/SVG layers. Full skill rules remain a separate future task.
+
+
+## October 29, 2026 — current combined 0.16.11 behavior
+
+See [ITERATION-0.16.11.md](ITERATION-0.16.11.md), [FUNCTION-REFERENCE-0.16.11.md](FUNCTION-REFERENCE-0.16.11.md) and [LOCAL-0.16.11.md](LOCAL-0.16.11.md). These current chapters supersede earlier pending notes for inventory, crafting, catalog/recipe editing, connected rectangular construction, shared boundaries/openings and zoom-aware isometric visibility. Earlier explanations remain historical. The 24 starter materials are ordinary items; two descriptions and production recipe choices remain unauthored. TEST SCAN is intentionally a test skill. Fixed-artwork tools, sprite presentation and distinct shadow systems remain supported. Old bundled room examples are retired only from fresh projects, not deleted from saved projects.
