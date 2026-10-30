@@ -11,3 +11,6 @@ Controlled isometric visibility fixture: distant visible sprite retained beyond 
 Historical 0.15.23 exact-baseline audit tests raster-equivalence1523, terrain-depth1523 and camera-basis1523 could not run because their external sibling 0.15.22 source directory is absent. Their original tests are preserved, not changed to report a pass. Current viewport/depth and actual GPU occlusion tests cover the changed isometric path. Old browser fixtures targeting retired fresh-project hub/ruin examples are historical; focused doors1611 exercises the new shipped cells.
 
 Intentional authoring limits: no invented production recipes or unconfirmed item descriptions; TEST SCAN remains a placeholder; connected recipe creation is rectangular while existing specialized freeform/background workflows remain available; topology conflicts require explicit repair and never silently discard edits. See ITERATION-0.16.11.md for exact controls and ownership boundaries.
+
+
+Packaged Windows acceptance passed after the hidden-menu focus regression was corrected: actual executable startup, original Skills controls, original-art inventory with transparent D-pad, remote crafting, Fallout swatch settings and live GPU HUD. Test diagnostics and isolated profile are removed before final ZIP creation.
