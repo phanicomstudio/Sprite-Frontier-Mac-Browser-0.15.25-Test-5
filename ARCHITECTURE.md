@@ -102,3 +102,7 @@ The shared built-in antique door now uses the supplied mirrored two-sided assemb
 ## November 1, 2026 — 0.16.21 presentation ownership
 
 `src/first-person.js` is loaded before render/application startup. It consumes project weapon `firstPerson` assignments and the active player sprite profile; it owns only overlay resources and transient sway/recovery state. The existing renderer performs its draw before screen/death effects and final palette composition. Alpha/albedo and physical launch remain authoritative. The shared normal owner provides reactive light response; passive owner-light exclusion is carried by light identity through live normal descriptors and scalar samples. Sun cache updates are oldest-first and never erase a budget-deferred valid caster; orthographic contact shadows remain separate.
+
+## November 1, 2026 — 0.16.22 launch ownership
+
+The viewmodel module supplies a camera-relative launch origin only for the active assigned first-person player. Spatial projectile creation consumes it before existing camera-target/spread calculation and the body-to-muzzle launch sweep. Third-person and NPC origins remain with their original sprite calibration. Sway is a fixed-time presentation signal and never changes physical launch. See FUNCTION-REFERENCE-0.16.22.md.

@@ -277,3 +277,7 @@ The shared built-in antique door now uses the supplied mirrored two-sided assemb
 ## November 1, 2026 — 0.16.21 maintenance
 
 See ITERATION-0.16.21.md and FUNCTION-REFERENCE-0.16.21.md. Character-linked viewmodel draw lives in src/first-person.js; weapon overrides serialize assignments. Do not make sway alter aim/collision or convert the locked world billboard. Owner-specific lighting exclusion must not filter projectile sources. Keep cached shadows while bounded refresh is deferred, and preserve perspective sun versus orthographic contact ownership. New acceptance: tests/first-person1621.cjs and tests/browser/iteration1621.cjs, shadow1621.cjs; existing combat167 and lighting suites still run.
+
+## November 1, 2026 — 0.16.22 first-person fixes
+
+Keep fixed-time smoothed sway separate from projectile aim. First-person spawn offsets are validated weapon/character data and feed MF.createProjectile through the existing spatial/ballistics ownership chain. Flash anchors remain image coordinates. Wheel return does not enable first-person zoom or alter orthographic maps. See ITERATION-0.16.22.md and tests/first-person1622.cjs.

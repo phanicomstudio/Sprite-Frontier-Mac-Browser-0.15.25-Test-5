@@ -214,8 +214,8 @@
         draft[id]?.name ?? weapon.name ?? id,
       );
       const assignments=structuredClone(draft[id]?.firstPerson || weapon.firstPerson || {});
-      const firstPersonFields={character:field(row,"First-person character sprite profile","text",Object.keys(assignments)[0]||"candy-armed"),src:field(row,"First-person image path (blank uses default)","text",Object.values(assignments)[0]?.src||"")};
-      for(const [key,label,fallback] of [["columns","Animation columns",1],["rows","Animation rows",1],["fps","Firing animation frames per second",8],["scale","First-person artwork scale",1],["muzzleX","Muzzle horizontal position (0–1)",.547],["muzzleY","Muzzle vertical position (0–1)",.483]])firstPersonFields[key]=field(row,label,"number",Object.values(assignments)[0]?.[key]??fallback);
+      const firstPersonFields={character:field(row,"First-person character sprite profile","text",Object.keys(assignments)[0]||"candy-armed"),src:field(row,"First-person image path (blank uses default)","text",Object.values(assignments)[0]?.src||(id==="handgun"?"img/weapons/first-person/candy/pistol/armed-test.png":""))};
+      for(const [key,label,fallback] of [["columns","Animation columns",1],["rows","Animation rows",1],["fps","Firing animation frames per second",8],["scale","First-person artwork scale",1],["muzzleX","Flash horizontal position on image (0–1)",.547],["muzzleY","Flash vertical position on image (0–1)",.483],["spawnForward","First-person projectile spawn forward (metres)",.45],["spawnRight","First-person projectile spawn right (metres)",.08],["spawnUp","First-person projectile spawn up from eye (metres)",-.15]])firstPersonFields[key]=field(row,label,"number",Object.values(assignments)[0]?.[key]??fallback);
       const imageUpload=field(row,"Import first-person PNG/WebP","file","");imageUpload.accept="image/png,image/webp";
       imageUpload.onchange=/* @function weaponDefinitions.importFirstPerson1621 — Inputs: file selection event unused. Embeds one PNG/WebP up to 8 MB in the draft only; project Apply remains the transaction boundary. Read failure reports to input validity without changing the saved project. */async function(){
         const file=imageUpload.files[0];if(!file)return;
@@ -320,7 +320,7 @@
           const character=row.firstPersonFields.character.value.trim();
           if(row.firstPersonFields.src.value.trim()){
             const definition={src:row.firstPersonFields.src.value.trim()};
-            for(const key of ["columns","rows","fps","scale","muzzleX","muzzleY"])definition[key]=Number(row.firstPersonFields[key].value);
+            for(const key of ["columns","rows","fps","scale","muzzleX","muzzleY","spawnForward","spawnRight","spawnUp"])definition[key]=Number(row.firstPersonFields[key].value);
             values.firstPerson[character]=definition;
           }else delete values.firstPerson[character];
           // November 1: per-weapon off mode is superseded; every projectile emits.

@@ -2965,7 +2965,15 @@
         return;
       }
       // October 26 user correction: first-person zoom is unnecessary. Keep its original lens and ignore wheel without changing the third-person distance.
-      if (game.camera.firstPerson && !game.editorFlight) return;
+      // November 1, 2026: outward wheel leaves first-person; inward wheel never magnifies its lens. Fixed/isometric paths have already returned.
+      if (game.camera.firstPerson && !game.editorFlight) {
+        if (!editing && pixels > 0) {
+          game.camera.firstPerson = false;
+          game.camera.distance = Math.min(FrontierParameters.get(world,"zoomMax"),Math.max(FrontierParameters.get(world,"zoomMin")+.35,game.camera.distance));
+          zoomIntent = null; $("camera").textContent = "First person [V]";
+        }
+        return;
+      }
       if (hudMode) return;
       // November 1: a fresh inward wheel action at the settled perspective limit enters first-person; orthographic/fixed paths returned above.
       const minimum = FrontierParameters.get(world, "zoomMin");
@@ -3482,7 +3490,7 @@
     $("badge").lastElementChild.textContent =
       (world.interior?.mode === "fixed" ? "Fixed interior · " : "") +
       (game.camera.firstPerson ? "First person" : "Third person") +
-      " · prototype 0.16.21";
+      " · prototype 0.16.22";
     if (world.interior)
       $("intro").textContent =
         world.interior.mode === "fixed"

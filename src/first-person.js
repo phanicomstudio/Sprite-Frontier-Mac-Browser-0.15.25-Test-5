@@ -1,3 +1,4 @@
+/* November 1, 2026 — 0.16.22: fixed-time smoothed sway supersedes distance-driven phase, so running does not accelerate the cycle. First-person launch offsets now feed the actual shared projectile factory; flash coordinates remain image-relative. */
 /* November 1, 2026: first-person artwork is a presentation layer; simulation aim, collision, third-person billboards and camera lens remain authoritative. */
 (/* @function firstPerson.install1621 â€” Inputs: browser namespace. Registers a bounded image cache and character-linked presentation helpers; loads no images until a matching armed view is used. */ function(root){
 
@@ -30,7 +31,7 @@
         src:entry.src
       };
 
-      for(const [key,min,max,fallback] of [['columns',1,32,1],['rows',1,32,1],['fps',1,60,8],['scale',.25,2,1],['muzzleX',0,1,.547],['muzzleY',0,1,.483]]){
+      for(const [key,min,max,fallback] of [['columns',1,32,1],['rows',1,32,1],['fps',1,60,8],['scale',.25,2,1],['muzzleX',0,1,.547],['muzzleY',0,1,.483],['spawnForward',.05,2,.45],['spawnRight',-1,1,.08],['spawnUp',-1,1,-.15]]){
 
         const number=entry[key]??fallback;
 
@@ -57,6 +58,26 @@
 
     return player.weapon.firstPerson?.[character]||((character==='candy-armed'&&(player.weapon.profileId||player.weapon.id)==='handgun')?candy:null);
 
+  }
+
+  /* @function firstPerson.motion1622 — Inputs: transient state, elapsed seconds and travelled metres. Returns smooth pixel offsets. A fixed 0.85 Hz cadence is independent of run speed; speed controls only a bounded amplitude. Teleports contribute no motion, and exponential filters settle gently at rest without per-frame allocations outside the return record. */
+  function motion(state,dt,distance){
+    const moving=dt>0&&distance<1?Math.min(1,distance/dt/.7):0;
+    state.amplitude+=(moving-state.amplitude)*(1-Math.exp(-dt*7));
+    if(state.amplitude>.001)state.phase+=dt*Math.PI*2*.85;
+    const blend=1-Math.exp(-dt*12);
+    state.swayX=(state.swayX||0)+(Math.sin(state.phase)*7*state.amplitude-(state.swayX||0))*blend;
+    state.swayY=(state.swayY||0)+(Math.cos(state.phase*2)*2*state.amplitude-(state.swayY||0))*blend;
+    return {x:state.swayX,y:state.swayY};
+  }
+
+  /* @function firstPerson.muzzle1622 — Inputs: actor, live game and authoritative camera. Returns camera-relative world XYZ in metres for an assigned armed player, otherwise null. Forward follows pitch/yaw, right/up follow the orthonormal camera basis. Visual sway never changes aim or spawn. Existing ballistics sweeps from the body to this origin, preventing launch through nearby geometry. */
+  function muzzle(actor,game,cam){
+    if(actor!==game.player||!game.camera.firstPerson||cam.orthographic||game.sourceWorld.interior?.mode==='fixed')return null;
+    const d=assignment(actor);if(!d)return null;
+    const yaw=cam.yaw,pitch=cam.pitch||0,sy=Math.sin(yaw),cy=Math.cos(yaw),sp=Math.sin(pitch),cp=Math.cos(pitch);
+    const forward=d.spawnForward??.45,right=d.spawnRight??.08,up=d.spawnUp??-.15;
+    return {x:cam.x+sy*cp*forward+cy*right-sy*sp*up,y:cam.y+cy*cp*forward-sy*right-cy*sp*up,z:cam.z+sp*forward+cp*up};
   }
 
   /* @function firstPerson.draw1621 â€” Inputs: existing drawing adapter, live game and camera. Draws armed artwork fitted without stretching to 4:3/widescreen. Movement-derived sway and shot recovery are presentation-only; bounded cache and frame-time easing allocate no recurring images. Returns whether artwork was submitted. Decode failure leaves world usable. */
@@ -93,11 +114,8 @@
 
     const now=game.elapsed||0,dt=Math.max(0,Math.min(.05,now-state.time)),distance=Math.hypot(game.player.x-state.x,game.player.y-state.y);
 
-    const moving=dt>0&&distance>0&&distance<1;
-
-    state.amplitude+=(Number(moving)-state.amplitude)*(1-Math.exp(-dt*14));
-
-    if(moving)state.phase+=distance*8;
+    // Supersedes distance-driven phase: running must not accelerate the sway cycle.
+    const sway=motion(state,dt,distance);
 
     if(game.player.lastFlash167?.time!==undefined)state.shot=game.player.lastFlash167.time;
 
@@ -107,7 +125,7 @@
 
     const fw=image.naturalWidth/definition.columns,fh=image.naturalHeight/definition.rows,s=Math.min(width/fw,height/fh)*definition.scale;
 
-    const x=(width-fw*s)/2+Math.sin(state.phase)*2.2*state.amplitude,y=height-fh*s+Math.cos(state.phase*2)*1.2*state.amplitude+recoil*5;
+    const x=(width-fw*s)/2+sway.x,y=height-fh*s+sway.y+recoil*5;
 
     const age=now-state.shot,frame=age>=0&&age<definition.columns*definition.rows/definition.fps?Math.floor(age*definition.fps):0;
 
@@ -160,7 +178,7 @@
   }
 
   root.FrontierFirstPerson={
-    validate,assignment,draw
+    validate,assignment,motion,muzzle,draw
   };
 
 })(typeof window==='undefined'?globalThis:window);

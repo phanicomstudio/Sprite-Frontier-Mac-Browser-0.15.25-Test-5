@@ -329,3 +329,7 @@ In perspective 3D/third-person environments, scrolling inward beyond the closest
 ## November 1, 2026 — implemented 0.16.21 roster
 
 The banked first-person Candy pistol/character assignments/sway/wheel entry, passive-owner light exclusion, clarified darkness/player-light workflow, bounded shadow cache stability and initial combat-feedback/engagement tuning are implemented. See ITERATION-0.16.21.md for exact behavior, limits and tests. Earlier pending chapters remain history. Bakersfield/New Blood visual recreation and a new comparison courtyard remain reference proposals, not finished art/content or claims of identical combat feel.
+
+## November 1, 2026 — implemented 0.16.22 corrections
+
+User-reported missing wheel-out return, small jittery run-accelerated sway and unclear first-person launch calibration are corrected. See ITERATION-0.16.22.md. Prior 0.16.21 wheel/sway behavior is superseded; lighting, shadow and projectile guarantees remain.

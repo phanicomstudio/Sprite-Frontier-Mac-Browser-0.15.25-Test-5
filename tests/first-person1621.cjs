@@ -12,7 +12,7 @@ require('../src/weapon-definitions.js');
 
 const binding={
   'candy-armed':{
-    src:'img/weapons/first-person/candy/pistol/armed-test.png',columns:1,rows:1,fps:8,scale:1,muzzleX:.547,muzzleY:.483
+    src:'img/weapons/first-person/candy/pistol/armed-test.png',columns:1,rows:1,fps:8,scale:1,muzzleX:.547,muzzleY:.483,spawnForward:.45,spawnRight:.08,spawnUp:-.15
   }
 };
 
