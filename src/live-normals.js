@@ -196,6 +196,8 @@
     u.uStrength=image.frontierNormalStrength??1;
 
     if(frame)for(const light of frame.lights){
+      // Only the passive owner light is excluded; projectile and shared-profile actors remain lit.
+      if(s.ownerId && light.excludedOwnerId===s.ownerId)continue;
 
       // Blockers use the same established room-volume test at the actor center; surface detail stays per fragment.
       let blocked=false;

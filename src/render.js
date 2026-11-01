@@ -317,10 +317,11 @@
           e.x,
           e.y,
           (e.z || 0) + (e.height || 1.65) * 0.5,
+          undefined, e.id,
         ) || null;
       // November 1, 2026: normal basis follows the locked pitched camera-facing image rectangle.
       const sy=Math.sin(cam.yaw),cy=Math.cos(cam.yaw),sp=Math.sin(cam.pitch||0),cp=Math.cos(cam.pitch||0);
-      ctx.liveNormalSurface={center:[e.x,e.y,(e.z||0)+(f.h*.5-(sheet.groundInset||0))*scale/p.scale],right:[cy,-sy,0],up:[-sy*sp,-cy*sp,cp],facing:[-sy*cp,-cy*cp,-sp],size:[f.w*scale/p.scale,f.h*scale/p.scale]};
+      ctx.liveNormalSurface={ownerId:e.id,center:[e.x,e.y,(e.z||0)+(f.h*.5-(sheet.groundInset||0))*scale/p.scale],right:[cy,-sy,0],up:[-sy*sp,-cy*sp,cp],facing:[-sy*cp,-cy*cp,-sp],size:[f.w*scale/p.scale,f.h*scale/p.scale]};
       if(lit.frontierNormalImage){image.frontierNormalImage=lit.frontierNormalImage;image.frontierNormalStrength=lit.frontierNormalStrength??1;}
       ctx.drawImage(
         image,
@@ -1147,6 +1148,7 @@
       },
     );
     ctx.fogDepth = 0;
+    root.FrontierFirstPerson?.draw(ctx,game,cam);
     if (game.player.hp <= 0 && game.elapsed >= (game.deathUntil || 0)) {
       ctx.fillStyle = "#0c131bcc";
       ctx.fillRect(0, 0, game.viewWidth, 480);

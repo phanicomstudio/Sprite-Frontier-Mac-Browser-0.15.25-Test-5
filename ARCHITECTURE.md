@@ -98,3 +98,7 @@ Projectile emission is now always enabled; old map/weapon off or zero-brightness
 ## November 1, 2026 — mirrored antique door (0.16.20)
 
 The shared built-in antique door now uses the supplied mirrored two-sided assembly, retaining frame/leaf node IDs and hinge pivot. Known old clean built-in library payloads upgrade during import/restore; modified/custom models remain unchanged. Current provenance and validation are in ITERATION-0.16.20.md and FUNCTION-REFERENCE-0.16.20.md. Prior asset notes are historical.
+
+## November 1, 2026 — 0.16.21 presentation ownership
+
+`src/first-person.js` is loaded before render/application startup. It consumes project weapon `firstPerson` assignments and the active player sprite profile; it owns only overlay resources and transient sway/recovery state. The existing renderer performs its draw before screen/death effects and final palette composition. Alpha/albedo and physical launch remain authoritative. The shared normal owner provides reactive light response; passive owner-light exclusion is carried by light identity through live normal descriptors and scalar samples. Sun cache updates are oldest-first and never erase a budget-deferred valid caster; orthographic contact shadows remain separate.
