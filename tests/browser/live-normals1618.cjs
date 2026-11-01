@@ -45,7 +45,7 @@ const {
       };
 
       /* @function liveNormalsTest.sprite1618 — Inputs: physical lamp. Returns actual pixel from the original drawImage owner using the live mesh and unchanged quad/mask pipeline. GPU readback is test-only. */
-      function sprite(light){
+      function sprite(light,art=albedo){
         ctx.begin();
         ctx.breathing=null;
         ctx.underwater=null;
@@ -58,7 +58,7 @@ const {
         ctx.liveNormalSurface={
           center:[0,0,1],right:[1,0,0],up:[0,0,1],facing:[0,-1,0],size:[2,2]
         };
-        ctx.drawImage(albedo,0,0,4,4,0,0,64,64);
+        ctx.drawImage(art,0,0,4,4,0,0,64,64);
         ctx.liveNormalSurface=null;
         ctx.end();
         const gl=ctx.app.renderer.gl,p=new Uint8Array(4),r=ctx.app.renderer.resolution;
@@ -108,7 +108,8 @@ const {
         game.projectiles=oldProjectiles;
       }
 
-      const spriteRight=sprite(right),mesh=ctx.liveNormalMeshes[0],spriteLeft=sprite(left),spriteReuse=mesh===ctx.liveNormalMeshes[0];
+      const styled=new OffscreenCanvas(4,4);styled.getContext('2d').drawImage(albedo,0,0);styled.frontierNormalImage=normal;const styledRight=sprite(right,styled),styledLeft=sprite(left,styled);
+    const spriteRight=sprite(right),mesh=ctx.liveNormalMeshes[0],spriteLeft=sprite(left),spriteReuse=mesh===ctx.liveNormalMeshes[0];
 
       const raw={
         width:4,height:4,data:new Uint8Array(64).fill(255)
@@ -213,12 +214,12 @@ const {
       const unchanged=FrontierAutomaticNormals.image(original,'candy-armed')===original,actualNormal=original.frontierNormalImage?.naturalWidth;
 
       return {
-        waterRight,waterLeft,projectileRight,projectileLeft,spriteRight,spriteLeft,spriteReuse,geometryRight,geometryLeft,orthoRight,orthoLeft,terrainRight,terrainLeft,unchanged,actualNormal,status:FrontierAutomaticNormals.debug()
+        styledRight,styledLeft,waterRight,waterLeft,projectileRight,projectileLeft,spriteRight,spriteLeft,spriteReuse,geometryRight,geometryLeft,orthoRight,orthoLeft,terrainRight,terrainLeft,unchanged,actualNormal,status:FrontierAutomaticNormals.debug()
       };
 
     });
 
-    for(const [a,b]of [['spriteRight','spriteLeft'],['geometryRight','geometryLeft'],['orthoRight','orthoLeft'],['terrainRight','terrainLeft'],['waterRight','waterLeft'],['projectileRight','projectileLeft']]){
+    for(const [a,b]of [['spriteRight','spriteLeft'],['styledRight','styledLeft'],['geometryRight','geometryLeft'],['orthoRight','orthoLeft'],['terrainRight','terrainLeft'],['waterRight','waterLeft'],['projectileRight','projectileLeft']]){
       assert(result[a][0]>result[b][0]+25,a+' must respond to light direction '+JSON.stringify(result));
       assert.equal(result[a][3],result[b][3],'Lighting preserves alpha');
     }

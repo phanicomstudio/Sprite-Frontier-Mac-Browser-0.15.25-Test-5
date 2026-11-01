@@ -173,7 +173,7 @@
 
     const pos=mesh.geometry.getBuffer('aPosition'),uv=mesh.geometry.getBuffer('aUV');
     pos.data.set([0,0,sw,0,sw,sh,0,sh]);
-    const w=image.naturalWidth,h=image.naturalHeight;
+    const w=image.naturalWidth||image.width,h=image.naturalHeight||image.height;
     uv.data.set([sx/w,sy/h,(sx+sw)/w,sy/h,(sx+sw)/w,(sy+sh)/h,sx/w,(sy+sh)/h]);
     pos.update();
     uv.update();
