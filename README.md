@@ -193,3 +193,8 @@ See [ITERATION-0.16.11.md](ITERATION-0.16.11.md), [FUNCTION-REFERENCE-0.16.11.md
 ## 0.16.12 - October 29, 2026
 
 Editor fullscreen retains its toolbar and supports Escape plus a visible exit button; desktop F11 recovers from HTML fullscreen before toggling native fullscreen. Complete cumulative Windows release, same compatible 0.16.11 project profile. See ITERATION-0.16.12.md.
+
+
+## October 31, 2026 - 0.16.15 lighting regression protection
+
+Projectile lights now saves immediately through the existing map Undo/save owner, surviving playtest and reload. Other source parameters retain Apply. Run the new test:lighting gate after lighting, rendering or playtest-lifecycle changes. Local Sprite Fusion generation, native-resolution Apply and runtime normal lighting were reverified. See ITERATION-0.16.15.md for current behavior; earlier documentation remains historical.
