@@ -7,3 +7,5 @@ All 62 core scripts passed. The dedicated test:lighting gate passed radius/fallo
 The recent 0.16.14 shader projection and filtered-world visibility/submission regressions were rerun. Sprite Fusion vendored files were checked against their pinned SHA-256 provenance, including generated WASM/glue and license. No upstream generator code or rendering algorithm was changed for this correction.
 
 No test opens a user profile or modifies authored user projects. Per-weapon custom lights and explicitly disabled maps retain their existing semantics. Other numeric lighting drafts still require Apply. Regression tests reduce future risk without claiming that all possible future changes are proven safe.
+
+Packaged Windows acceptance also passed in an isolated test profile: the checkbox survived playtest, the actual shot factory produced a submitted projectile light, and the installed embedded Sprite Fusion WASM worker generated a normal PNG offline. Diagnostics and test profile are excluded from the final distribution.
