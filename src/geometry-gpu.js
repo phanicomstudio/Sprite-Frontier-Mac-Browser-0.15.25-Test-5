@@ -39,8 +39,8 @@
     const vertex = compile(
         gl.VERTEX_SHADER,
         `#version 300 es
- precision highp float;in vec3 aPosition;in vec2 aUV;in vec3 aWorld;uniform vec2 uViewport;out vec2 vUV;out float vDepth;out vec3 vWorld;
- void main(){float d=aPosition.z;vec2 xy=vec2(aPosition.x/uViewport.x*2.-1.,1.-aPosition.y/uViewport.y*2.);float near=.13,far=10000.;gl_Position=vec4(xy*d,((far+near)/(far-near))*d-2.*far*near/(far-near),d);vUV=aUV;vDepth=d;vWorld=aWorld;}`,
+ precision highp float;uniform float uOrtho;in vec3 aPosition;in vec2 aUV;in vec3 aWorld;uniform vec2 uViewport;out vec2 vUV;out float vDepth;out vec3 vWorld;
+ void main(){float d=aPosition.z;vec2 xy=vec2(aPosition.x/uViewport.x*2.-1.,1.-aPosition.y/uViewport.y*2.);float near=.13,far=10000.;gl_Position=uOrtho>.5?vec4(xy,(d-near)/(far-near)*2.-1.,1.):vec4(xy*d,((far+near)/(far-near))*d-2.*far*near/(far-near),d);vUV=aUV;vDepth=d;vWorld=aWorld;}`,
       ),
       fragment = compile(
         gl.FRAGMENT_SHADER,
@@ -63,13 +63,15 @@
   return false;
  }
  bool blocked(vec3 a,vec3 b,int index){vec4 xy=uBlockXY[index],zh=uBlockZH[index];if(uBlockRound[index].x>0.)return roundBlocked(a,b,xy,zh,uBlockRound[index]);vec2 da=a.xy-xy.xy,db=b.xy-xy.xy;vec3 p=vec3(zh.z*da.x+zh.w*da.y,-zh.w*da.x+zh.z*da.y,a.z-zh.x),q=vec3(zh.z*db.x+zh.w*db.y,-zh.w*db.x+zh.z*db.y,b.z-zh.x);vec3 lo=vec3(-xy.z,-xy.w,0.),hi=vec3(xy.z,xy.w,zh.y),d=q-p;float enter=.001,leave=.999;for(int k=0;k<3;k++){if(abs(d[k])<.000000001){if(p[k]<=lo[k]+.0001||p[k]>=hi[k]-.0001)return false;}else{float t0=(lo[k]-p[k])/d[k],t1=(hi[k]-p[k])/d[k];enter=max(enter,min(t0,t1));leave=min(leave,max(t0,t1));if(enter>=leave)return false;}}return enter<leave;}
+ ${root.FrontierLiveNormals?.tangentGLSL||"uniform sampler2D uNormal;uniform float uNormalOn;uniform float uNormalStrength;uniform vec4 uSun;vec3 mappedNormal(vec3 p,vec2 uv){return vec3(0.,0.,1.);}"}
  void main(){
+ vec3 surfaceNormal=mappedNormal(vWorld,vUV);
  // Shared prior-world inverse depth is uploaded without GPU readback. Allow a
  // conservative subcell gradient tolerance at structural contact boundaries.
  // Models depth-test against one another in this private context, so this input
  // excludes current models and cannot cause model self-masking.
  if(uOcclusionOn>.5){ivec2 cell=ivec2(clamp(floor(vec2(gl_FragCoord.x/uPhysicalSize.x,1.-gl_FragCoord.y/uPhysicalSize.y)*uOcclusionSize),vec2(0.),uOcclusionSize-vec2(1.)));float prior=texelFetch(uOcclusionDepth,cell,0).r,inverseDepth=1./vDepth,tolerance=max(.00001,fwidth(inverseDepth)*max(uPhysicalSize.x/uOcclusionSize.x,uPhysicalSize.y/uOcclusionSize.y)*.6);if(inverseDepth<prior-tolerance)discard;}
- color=texture(uImage,vUV)*uFactor;if(color.a<uCutoff)discard;if(uOpaque>0.5)color.a=1.;if(uLightCount>=0){vec3 shade=vec3(uAmbient);for(int i=0;i<8;i++){if(i>=uLightCount)break;float distance=length(vWorld-uLights[i].xyz);if(distance>=uLights[i].w)continue;bool shadow=false;for(int j=0;j<32;j++){if(j>=uBlockCount)break;if(blocked(vWorld,uLights[i].xyz,j)){shadow=true;break;}}if(!shadow)shade+=uLightColors[i].rgb*pow(1.-distance/uLights[i].w,uLightColors[i].w);}shade=min(shade,vec3(1.));if(uLightSteps>1.)shade=floor(shade*(uLightSteps-1.)+.5)/(uLightSteps-1.);color.rgb*=shade;}if(uFogColor.a>.5){float amount=clamp((vDepth-uFogRange.x)/max(.0001,uFogRange.y-uFogRange.x),0.,1.);color.rgb=mix(color.rgb,uFogColor.rgb,amount);}}`,
+ color=texture(uImage,vUV)*uFactor;if(color.a<uCutoff)discard;if(uOpaque>0.5)color.a=1.;if(uLightCount>=0){vec3 shade=vec3(uAmbient+(uNormalOn>.5?uSun.w*max(0.,dot(surfaceNormal,uSun.xyz)):0.));for(int i=0;i<8;i++){if(i>=uLightCount)break;float distance=length(vWorld-uLights[i].xyz);if(distance>=uLights[i].w)continue;bool shadow=false;for(int j=0;j<32;j++){if(j>=uBlockCount)break;if(blocked(vWorld,uLights[i].xyz,j)){shadow=true;break;}}if(!shadow)shade+=uLightColors[i].rgb*pow(1.-distance/uLights[i].w,uLightColors[i].w)*(uNormalOn>.5?max(0.,dot(surfaceNormal,normalize(uLights[i].xyz-vWorld))):1.);}shade=min(shade,vec3(1.));if(uLightSteps>1.)shade=floor(shade*(uLightSteps-1.)+.5)/(uLightSteps-1.);color.rgb*=shade;}if(uFogColor.a>.5){float amount=clamp((vDepth-uFogRange.x)/max(.0001,uFogRange.y-uFogRange.x),0.,1.);color.rgb=mix(color.rgb,uFogColor.rgb,amount);}}`,
       ),
       program = gl.createProgram();
     gl.attachShader(program, vertex);
@@ -106,6 +108,8 @@
       opaque = gl.getUniformLocation(program, "uOpaque");
     gl.uniform2f(viewport, logicalWidth, logicalHeight);
     gl.uniform1i(gl.getUniformLocation(program, "uImage"), 0);
+    gl.uniform1i(gl.getUniformLocation(program,"uNormal"),2);
+    const normalOn=gl.getUniformLocation(program,"uNormalOn"),normalStrength=gl.getUniformLocation(program,"uNormalStrength"),sunUniform=gl.getUniformLocation(program,"uSun"),ortho=gl.getUniformLocation(program,"uOrtho");
     gl.uniform1i(gl.getUniformLocation(program, "uOcclusionDepth"), 1);
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LEQUAL);
@@ -220,7 +224,9 @@
       smooth = false,
       lighting = null,
       occlusion = null,
+      orthographic = false,
     ) {
+      gl.useProgram(program);gl.uniform1f(ortho,orthographic?1:0);gl.uniform4f(sunUniform,...(lighting?.sun?.direction||[0,0,1]),lighting?.sun?.intensity||0);
       // Optional occlusion is a read-only snapshot of the CPU depth before model
       // submission. One upload replaces millions of CPU color/filter operations.
       gl.useProgram(program);
@@ -320,7 +326,10 @@
           );
           gl.uniform2f(occlusionUniforms.fogRange, fog.start, fog.end);
         } else gl.uniform4f(occlusionUniforms.fogColor, 0, 0, 0, 0);
-        texture(triangle.image, smooth, triangle.sampler);
+        // November 1: share the bounded upload cache between original albedo and separate normal data.
+        const normal=triangle.normal||triangle.image.normal;
+        gl.activeTexture(gl.TEXTURE2);texture(normal||triangle.image,true,triangle.sampler);gl.uniform1f(normalOn,normal?1:0);gl.uniform1f(normalStrength,triangle.normalScale??1);
+        gl.activeTexture(gl.TEXTURE0);texture(triangle.image, smooth, triangle.sampler);
         gl.uniform4fv(factor, triangle.factor || [1, 1, 1, 1]);
         gl.uniform1f(cutoff, triangle.cutoff ?? 0.001);
         gl.uniform1f(opaque, triangle.opaque ? 1 : 0);

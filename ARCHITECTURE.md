@@ -83,3 +83,8 @@ See ITERATION-0.16.16.md and FUNCTION-REFERENCE-0.16.16.md. Gameplay panels now 
 ## November 1, 2026 — automatic normal relief
 
 0.16.17 completes the previously pending default-normal integration. Static image-space relief is shared/prepared once, while live radius lights, fog, perspective sun shadows and isometric contact shadows keep their existing owners. Refer to ITERATION-0.16.17.md for processing/cache limits, override precedence and runtime resource closure. No map schema migration or new per-frame normal pass is introduced.
+
+
+## November 1, 2026 — live normals correction (0.16.18)
+
+The 0.16.17 fixed-relief default is superseded by real live normal-map lighting. Original albedo and locked sprite presentation remain unchanged. Map/player/projectile lights and outdoor sun direction drive a separate normal texture in existing world draws; custom overrides remain authoritative. See ITERATION-0.16.18.md and FUNCTION-REFERENCE-0.16.18.md for supported paths, deliberate shadow splits, limits, performance measurements and current validation successors.

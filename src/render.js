@@ -318,6 +318,10 @@
           e.y,
           (e.z || 0) + (e.height || 1.65) * 0.5,
         ) || null;
+      // November 1, 2026: normal basis follows the locked pitched camera-facing image rectangle.
+      const sy=Math.sin(cam.yaw),cy=Math.cos(cam.yaw),sp=Math.sin(cam.pitch||0),cp=Math.cos(cam.pitch||0);
+      ctx.liveNormalSurface={center:[e.x,e.y,(e.z||0)+(f.h*.5-(sheet.groundInset||0))*scale/p.scale],right:[cy,-sy,0],up:[-sy*sp,-cy*sp,cp],facing:[-sy*cp,-cy*cp,-sp],size:[f.w*scale/p.scale,f.h*scale/p.scale]};
+      if(lit.frontierNormalImage)image.frontierNormalImage=lit.frontierNormalImage;
       ctx.drawImage(
         image,
         f.x,
@@ -329,6 +333,8 @@
         f.w * scale,
         fullHeight,
       );
+      ctx.liveNormalSurface=null;
+      ctx.liveNormalSurface=null;
       ctx.assetLightTint = null;
       ctx.assetGlow = false;
       ctx.assetPools = mapPools;

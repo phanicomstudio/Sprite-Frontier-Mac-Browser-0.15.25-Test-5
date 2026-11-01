@@ -460,6 +460,7 @@
           this.world.vectorDisplay,
           this.world.vectorDisplay?.textures,
         ) || original;
+      if(original.frontierNormalImage)image.frontierNormalImage=original.frontierNormalImage;
       let texture = this.waterTextures.get(image);
       if (!texture) {
         texture = new P.Texture({
@@ -520,7 +521,14 @@
       positions.update();
       uvs.update();
       mesh.alpha = 1;
-      this.drawStage.addChild(mesh);
+      // November 1, 2026: animated water keeps its original positions, UV motion and painter order; the shared normal shader receives real surface points once per tile.
+      if(image.frontierNormalImage&&this.localLightFrame){
+        const batch=mesh.liveWaterBatch||={mesh,capacity:4};
+        const world=coords.map(/* @function pixiRenderer.waterWorld1618 — Inputs: original water UV/world pair. Returns XYZ on the authored water level; animated UVs remain separate from light positions. */function(c){return [c[0],c[1],root.FrontierWater?.level(this.world,c[0],c[1])||0];},this);
+        const lit=root.FrontierTerrainLighting.prepare(P,batch,texture,[{world:world.slice(0,3),p:points}],this.localLightFrame,this.game.viewWidth||640,mesh.tint,this.fog);
+        if(points.length===4){const inv=1/points[3].depth;batch.lightState.world.set([world[3][0]*inv,world[3][1]*inv,world[3][2]*inv,inv],12);batch.lightState.buffer.data=batch.lightState.world;batch.lightState.buffer.update();}
+        this.drawStage.addChild(lit);
+      }else this.drawStage.addChild(mesh);
     }
     /* @function pixi-renderer.terrainBatch1523 — Inputs: sorted terrain triangle records and shared static material. Draws the same projected positions, affine UVs and painter order through one reusable mesh. Preserves filtering and asset-style texture choice; does not alter CPU depth. Grows buffers only when necessary, submits only active indices, and returns without work for empty input. Static terrain only: callers keep animated water on waterQuad. */
     // October 13: optional radius lighting shares this geometry and preserves
@@ -537,6 +545,7 @@
             this.world.vectorDisplay,
             this.world.vectorDisplay?.textures,
           ) || original;
+      if(original.frontierNormalImage)image.frontierNormalImage=original.frontierNormalImage;
       let texture = this.waterTextures.get(image);
       if (!texture) {
         texture = new P.Texture({
@@ -813,15 +822,17 @@
         });
         cache.set(key, texture);
       }
-      const sprite =
+      // November 1, 2026: the live material draws the original rectangle in one mesh submission, without an offscreen normal filter.
+      const reactive=!!(this.liveNormalSurface&&image.frontierNormalImage&&this.localLightFrame&&root.FrontierLiveNormals);
+      const sprite = reactive ? root.FrontierLiveNormals.mesh(this,this.si,image,texture,sx,sy,sw,sh) :
         this.sprites[this.si] ||
         (this.sprites[this.si] = new P.Sprite(texture));
       this.si++;
-      sprite.texture = texture;
-      sprite.alpha = this.globalAlpha;
+      if(!reactive)sprite.texture = texture;
+      sprite.alpha = reactive?1:this.globalAlpha;
       // October 12, 2026: local illumination multiplies the world sprite only; normal/color filters and alpha remain independent.
       const light = this.assetLightTint;
-      sprite.tint = light
+      sprite.tint = !reactive && light
         ? (Math.round(light[0] * 255) << 16) |
           (Math.round(light[1] * 255) << 8) |
           Math.round(light[2] * 255)
@@ -834,13 +845,13 @@
         this.effectTime || 0,
       );
       if (poolFilter) sprite.filters = [...(sprite.filters || []), poolFilter];
-      sprite.texture.source.scaleMode =
+      texture.source.scaleMode =
         root.FrontierDisplay?.get().filtering === "smooth"
           ? "linear"
           : "nearest";
       const normal = this.assetNormal,
         l = this.assetLight;
-      if (normal?.complete && normal.naturalWidth && l) {
+      if (!reactive && normal?.complete && normal.naturalWidth && l) {
         let filter = this.normalFilters.get(normal);
         if (!filter) {
           const normalSource = new P.ImageSource({

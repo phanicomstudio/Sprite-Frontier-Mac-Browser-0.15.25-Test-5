@@ -1,3 +1,4 @@
+/* November 1, 2026 — 0.16.18 supersedes fixed relief: live consumers retain original albedo and use the real generated normal texture. Historical relief generation/cache records remain readable, but lit artwork is no longer displayed. */
 /* November 1, 2026: automatic, cached normal relief for world art only.
 * Uses the existing normal-lighting contract: static surface relief is prepared
 * once; live radius lights, darkness, fog and the separate shadow systems still
@@ -155,9 +156,10 @@
   }
 
   /* @function automaticNormals.url1617 — Inputs: original world material URL. Returns its pre-baked native-size relief URL when available and enabled; otherwise the original URL. UI/sky callers never use this service. Does not fetch or allocate pixels. */
+  /* @function automaticNormals.liveUrl1618 — Inputs: original URL. Returns it unchanged; fixed lit URLs are no longer chosen. Real normal lookup remains content-verified under load/image. */
   function url(path) {
 
-    return enabled?(root.FrontierAutomaticNormalManifest?.entries[path]?.lit||path):path;
+    return path; // November 1: only real normal textures are paired; fixed lit artwork is historical.
 
   }
 
@@ -172,7 +174,8 @@
 
       if(item.last+2000>performance.now()||item.pending)continue;
 
-      if(item.image)root.FrontierPixi?.releaseImage(item.image);
+      if(item.image){root.FrontierPixi?.releaseImage(item.image);root.FrontierLiveNormals?.releaseNormal(item.image);}
+      if(item.source.frontierNormalImage===item.image)delete item.source.frontierNormalImage;
 
       bytes-=item.bytes||0;
       cache.delete(key);
@@ -220,6 +223,7 @@
       } else image.src=uri;
 
       await image.decode();
+      if(!uri.startsWith('blob:'))image.frontierAutomaticSourceUri=uri;
       return image;
 
     } finally {
@@ -250,6 +254,7 @@
   }
 
   /* @function automaticNormals.load1617 — Inputs: material path and optional embedded original URI. Returns a decoded origin-clean image, using packaged relief only after verifying original source bytes. Replaced files/imports cannot silently display old cached art. Unmatched/new art stays original for the caller's one-time preparation. No full-size source decode is needed on a packaged cache hit. */
+  /* @function automaticNormals.liveLoad1618 — Inputs: source path and optional embedded URI. Returns original decoded albedo plus a separate verified normal image when packaged; future art prepares asynchronously through its existing owner. Never substitutes the historical lit WebP. */
   async function load(path,uri=path) {
 
     const record=enabled&&root.FrontierAutomaticNormalManifest?.entries[path];
@@ -265,8 +270,11 @@
       }).join('');
 
       if(hash===record.sha256){
-        const image=await read(record.lit);
-        image.frontierAutomaticPrepared=true;
+        const owned=URL.createObjectURL(original);
+        let image;try{image=await read(owned);}finally{URL.revokeObjectURL(owned);}
+        image.frontierAutomaticSourceHash=hash;
+        image.frontierNormalImage=await read(record.normal);
+        image.frontierAutomaticPrepared=false;
         return image;
       }
 
@@ -373,22 +381,8 @@
       type:'image/png'
     }));
 
-    const prepared=await root.FrontierNormalWorker.prepare(source,{
-      png,light
-    },signal);
-
-    if(!prepared)throw Error('Automatic normal preparation requires the existing worker backend');
-
-    const native=new OffscreenCanvas(width,height);
-    native.getContext('2d').drawImage(prepared.canvas,0,0);
-    prepared.canvas.width=prepared.canvas.height=1;
-
-    const lit=await dataUrl(await native.convertToBlob({
-      type:'image/png'
-    }));
-    return {
-      normal:png,lit,width,height,columns,rows
-    };
+    // November 1, 2026: supersedes native-size shaded copies. Only bounded real normal data is generated; old cache records may still contain historical lit PNGs.
+    return {normal:png,lit:'',width,height,columns,rows};
 
   }
 
@@ -477,19 +471,20 @@
           }
 
           if(record&&sourceHash!==record.sha256)record=null;
-          if(record)item.image=await read(record.lit);
+          if(record)item.image=await read(record.normal);
 
           else {
 
             const data=await generate(item.source,item.layout,sourceHash||sourceUri);
 
-            item.image=await read(data.lit);
+            item.image=await read(data.normal);
 
           }
 
-          if(item.image.naturalWidth!==item.source.naturalWidth||item.image.naturalHeight!==item.source.naturalHeight)throw Error('Automatic normal artwork dimensions changed');
+          if(!item.image.naturalWidth||!item.image.naturalHeight)throw Error('Automatic normal texture did not decode');
+          item.source.frontierNormalImage=item.image;
 
-          root.FrontierPixi?.releaseImage(item.source);
+          // Live albedo remains owned by its existing sprite cache.
 
           stats.loads++;
 
@@ -515,9 +510,10 @@
   }
 
   /* @function automaticNormals.image1617 — Inputs: original decoded sprite/material Image and optional profile/path. Returns same-size cached relief Image or original while pending, unsupported or over budget. Custom normal callers check their authored binding first. Lazy one-time registration is constant-time thereafter; no image reads, generation, geometry edits or new draw passes occur in this function. */
+  /* @function automaticNormals.liveImage1618 — Inputs: original image and profile/path. Returns that exact albedo, starting one bounded normal-map job when absent; publishes a separate normal atlas. No pixel shading, projection, alpha or frame changes. Normal detail budget reserves one MiB per queued source and cold eviction releases the normal GPU copy. Supersedes the historical relief-return contract above. */
   function image(source,profile) {
 
-    if(!enabled||!source?.naturalWidth)return source;
+    if(!enabled||!source?.naturalWidth||(source.frontierNormalImage&&!sources.has(source)))return source;
 
     if((blocked.get(source)||0)>performance.now())return source;
 
@@ -530,7 +526,7 @@
 
     if(!item) {
 
-      const path=sourcePath(source,profile),size=source.naturalWidth*source.naturalHeight*4;
+      const path=sourcePath(source,profile),size=512*512*4;
 
       item=cache.get(source);
 
@@ -571,14 +567,15 @@
 
     }
 
+    if(item.image&&!source.frontierNormalImage)source.frontierNormalImage=item.image;
     item.last=performance.now();
     stats.hits=Math.min(1000000,stats.hits+1);
-    return item.image||source;
+    return source;
 
   }
 
   /* @function automaticNormals.pixels1617 — Inputs: original decoded world-material pixel record, optional path and encoded-source SHA-256. Returns promise of same-size normal-relief pixels for asset loading. Retains original pixels on generation failure. No per-pixel work is added to CPU/GPU draw loops; geometry, UVs, alpha and live lighting remain owned by their existing renderers. */
-  async function pixels(original,path='',encodedSourceHash='') {
+  async function historicalReliefPixels1617(original,path='',encodedSourceHash='') {
 
     if(!enabled)return original;
     const packaged=encodedSourceHash&&Object.values(root.FrontierAutomaticNormalManifest?.entries||{}).find(/* @function automaticNormals.modelBake1617 — Inputs: packaged record. Finds identical embedded model-image bytes and native dimensions, allowing shared material bakes instead of another worker run. */function(record){return record.sha256===encodedSourceHash&&record.width===original.width&&record.height===original.height;});
@@ -621,6 +618,22 @@
       bitmap.close();
     }
 
+  }
+
+  /* @function automaticNormals.pixels1618 — Inputs: original native RGBA record, source label, optional encoded SHA and decoded normal. Returns original albedo with a separate bounded normal RGBA record. Reads/generates only while loading, never in drawing. Source hashes select packaged normals; failures preserve original artwork and report an issue. */
+  async function pixels(original,path='',encodedSourceHash='',normalImage=null){
+    if(!enabled)return original;
+    try{
+      const record=root.FrontierAutomaticNormalManifest?.entries[path]||Object.values(root.FrontierAutomaticNormalManifest?.entries||{}).find(/* @function automaticNormals.match1618 — Inputs: manifest entry. Returns exact encoded source/native-dimension agreement; no mutation. */function(e){return encodedSourceHash&&e.sha256===encodedSourceHash&&e.width===original.width&&e.height===original.height;});
+      if(!normalImage&&record&&encodedSourceHash===record.sha256)normalImage=await read(record.normal);
+      if(!normalImage){
+        const c=new OffscreenCanvas(original.width,original.height);c.getContext('2d').putImageData(new ImageData(original.data,original.width,original.height),0,0);
+        const bitmap=await createImageBitmap(c);
+        try{const digest=await crypto.subtle.digest('SHA-256',original.data);const data=await generate(bitmap,{},Array.from(new Uint8Array(digest)).join(','));normalImage=await read(data.normal);}finally{bitmap.close();}
+      }
+      const c=new OffscreenCanvas(normalImage.naturalWidth,normalImage.naturalHeight),ctx=c.getContext('2d',{willReadFrequently:true});ctx.drawImage(normalImage,0,0);
+      return {...original,normal:{width:c.width,height:c.height,data:ctx.getImageData(0,0,c.width,c.height).data}};
+    }catch(error){issue(path,error.message);return original;}
   }
 
   /* @function automaticNormals.set1617 — Inputs: Boolean transient diagnostic enable state. Enables defaults or returns originals without changing authored normal bindings, image files, lighting or camera presentation. Existing prepared images remain cached for comparison. */

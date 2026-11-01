@@ -27,7 +27,7 @@
           const original = {width:image.width,height:image.height,data:pixels.data};
           // November 1, 2026: built-ins are already baked; imported materials prepare once while loading.
           cache.set(url, image.frontierAutomaticPrepared ? original
-            : await root.FrontierAutomaticNormals?.pixels(original,url) || original);
+            : await root.FrontierAutomaticNormals?.pixels(original,url,image.frontierAutomaticSourceHash||'',image.frontierNormalImage) || original);
         } catch (error) {
           failed.add(url);
           console.warn("Room texture unavailable:", url, error.message);
