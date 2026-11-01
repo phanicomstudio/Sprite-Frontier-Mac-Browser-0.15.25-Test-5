@@ -10,7 +10,7 @@
     const panel = document.createElement("fieldset");
     panel.id = "localLightTools";
     panel.innerHTML =
-      '<legend>Map lighting</legend><p>Settings apply to the active map and are saved with it. Enable map lighting, set ambient brightness, then Apply. The default player light is a subtle warm pool with smooth six-metre falloff. Select Player light parameters below to adjust its radius, brightness, color and falloff. Add colored local lights below.</p><label><input id="localLightingEnabled" type="checkbox">Enable lighting on this map</label><label>Ambient brightness<input id="localAmbient" type="number" min="0" max="1" step="0.05"></label><label>Active light budget<input id="localBudget" type="number" min="1" max="8" step="1"></label><label>Brightness steps (0 = smooth)<input id="localSteps" type="number" min="0" max="32" step="1"></label><label><input id="localPlayerLight" type="checkbox">Subtle player light / smooth falloff</label><label><input id="localProjectileLight" type="checkbox">Projectile lights (saved immediately)</label><label><input id="sunShadowEnabled163" type="checkbox">Outdoor sprite sun shadows (never indoors)</label><label>Sun direction (degrees)<input id="sunAzimuth163" type="number" step="15"></label><label>Sun elevation (degrees)<input id="sunElevation163" type="number" min="10" max="85" step="5"></label><label>Sun shadow opacity<input id="sunOpacity163" type="number" min="0" max="0.6" step="0.05"></label><button id="localApplyCell">Apply map lighting</button><label>Selected light<select id="localLightSelection"></select></label><button id="localAddLight">Add light at author position</button><label>Name<input id="localLightName" maxlength="80"></label><label><input id="localSourceEnabled" type="checkbox">Source enabled</label><div id="localLightFields"></div><label>Color<input id="localColor" type="color"></label><label>Attach to event<select id="localAttachment"></select></label><button id="localApplySource">Apply selected light</button><button id="localDeleteSource">Delete selected light</button><p>Room primitives block these lights. Imported mesh and terrain shadow casting are not yet supported. HUD brightness is independent. Source coordinates are world positions, or offsets for an attached event.</p><p id="localLightDiagnostics" role="status"></p>';
+      '<legend>Map lighting</legend><p>Settings apply to the active map and are saved with it. Enable map lighting, set ambient brightness, then Apply. The default player light is a subtle warm pool with smooth six-metre falloff. Select Player light parameters below to adjust its radius, brightness, color and falloff. Add colored local lights below.</p><label><input id="localLightingEnabled" type="checkbox">Enable lighting on this map</label><label>Ambient brightness<input id="localAmbient" type="number" min="0" max="1" step="0.05"></label><label>Active light budget<input id="localBudget" type="number" min="1" max="8" step="1"></label><label>Brightness steps (0 = smooth)<input id="localSteps" type="number" min="0" max="32" step="1"></label><label><input id="localPlayerLight" type="checkbox">Subtle player light / smooth falloff</label><p>Projectiles always emit light. Color, radius and brightness remain configurable below.</p><label><input id="sunShadowEnabled163" type="checkbox">Outdoor sprite sun shadows (never indoors)</label><label>Sun direction (degrees)<input id="sunAzimuth163" type="number" step="15"></label><label>Sun elevation (degrees)<input id="sunElevation163" type="number" min="10" max="85" step="5"></label><label>Sun shadow opacity<input id="sunOpacity163" type="number" min="0" max="0.6" step="0.05"></label><button id="localApplyCell">Apply map lighting</button><label>Selected light<select id="localLightSelection"></select></label><button id="localAddLight">Add light at author position</button><label>Name<input id="localLightName" maxlength="80"></label><label><input id="localSourceEnabled" type="checkbox">Source enabled</label><div id="localLightFields"></div><label>Color<input id="localColor" type="color"></label><label>Attach to event<select id="localAttachment"></select></label><button id="localApplySource">Apply selected light</button><button id="localDeleteSource">Delete selected light</button><p>Room primitives block these lights. Imported mesh and terrain shadow casting are not yet supported. HUD brightness is independent. Source coordinates are world positions, or offsets for an attached event.</p><p id="localLightDiagnostics" role="status"></p>';
     document.getElementById("editor").append(panel);
     /* @function lightingEditor.control — Inputs: DOM ID. Returns: current control or null. No scene mutation. */
     function control(id) {
@@ -68,7 +68,9 @@
     function fill() {
       const light = chosen();
       control("localLightName").value = light?.name || "";
-      control("localSourceEnabled").checked = !!light?.enabled;
+      control("localSourceEnabled").checked = selected==="@projectiles"||!!light?.enabled;
+      control("localSourceEnabled").closest("label").hidden=selected==="@projectiles";
+      control("local-intensity").min=selected==="@projectiles"?"0.05":"0";
       control("localColor").value = light?.color || "#fff0cf";
       for (const key of [
         "x",
@@ -91,7 +93,7 @@
       control("localBudget").value = value.budget;
       control("localSteps").value = value.steps;
       control("localPlayerLight").checked = value.player.enabled;
-      control("localProjectileLight").checked = value.projectiles.enabled;
+
       control("localLightSelection").replaceChildren(
         new Option("None", ""),
         new Option("Player light parameters", "@player"),
@@ -130,24 +132,14 @@
               },
               projectiles: {
                 ...value.projectiles,
-                enabled: control("localProjectileLight").checked,
+                enabled: true,
               },
             });
           },
         );
       };
-    // October 31, 2026: the projectile switch is an immediate authored setting, not a form-only draft lost at F2. Other numeric/source drafts retain their existing Apply contract.
-    control("localProjectileLight").title="Saved immediately on this map; Undo restores the previous value.";
-    control("localProjectileLight").onchange =
-      /* @function lightingEditor.projectileSwitch1615 — Inputs: checkbox change ignored. Captures the requested Boolean before the original mutation restarts the preview. Commits only the projectile-emission switch, preserving all other saved lighting, sun and source parameters. Returns the original transaction success Boolean; rejection refreshes the authoritative switch through existing rollback. One toggle is one Undo step. */ function () {
-        const enabled=control("localProjectileLight").checked;
-        return api.mutate(
-          /* @function lightingEditor.commitProjectileSwitch1615 — Inputs: none. Validates a complete detached lighting record with only its map projectile default changed. Does not alter per-weapon overrides, ambient settings, normal bindings, budgets or temporary projectiles. */ function () {
-            const value=settings();
-            api.world().lighting=root.FrontierLocalLighting.validate({...value,projectiles:{...value.projectiles,enabled}});
-          },
-        );
-      };
+    // November 1, 2026: the user requires mandatory projectile lighting. The former switch and its immediate-save behavior are superseded; map validation now migrates old off values automatically.
+    /* Historical 0.16.15 handler rationale retained: the map checkbox previously committed immediately at F2 and used one Undo step, retaining unrelated lighting. That optional switch is removed in 0.16.19; projectile light enablement is no longer authorable. */
     control("localAddLight").onclick =
       /* @function lightingEditor.addSource — Inputs: click (unused). Returns: mutation result. Creates one warm radius source above current author position; lighting mode remains an explicit cell setting. */ function () {
         const id = "light-" + Date.now() + "-" + ++serial;

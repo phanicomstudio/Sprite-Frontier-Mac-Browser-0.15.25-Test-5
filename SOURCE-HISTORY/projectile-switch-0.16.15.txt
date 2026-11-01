@@ -1,0 +1,14 @@
+SUPERSEDED November 1, 2026 by mandatory projectile emission in 0.16.19. This is historical source/comment preservation, not active instructions or executable code.
+
+    // October 31, 2026: the projectile switch is an immediate authored setting, not a form-only draft lost at F2. Other numeric/source drafts retain their existing Apply contract.
+    control("localProjectileLight").title="Saved immediately on this map; Undo restores the previous value.";
+    control("localProjectileLight").onchange =
+      /* @function lightingEditor.projectileSwitch1615 — Inputs: checkbox change ignored. Captures the requested Boolean before the original mutation restarts the preview. Commits only the projectile-emission switch, preserving all other saved lighting, sun and source parameters. Returns the original transaction success Boolean; rejection refreshes the authoritative switch through existing rollback. One toggle is one Undo step. */ function () {
+        const enabled=control("localProjectileLight").checked;
+        return api.mutate(
+          /* @function lightingEditor.commitProjectileSwitch1615 — Inputs: none. Validates a complete detached lighting record with only its map projectile default changed. Does not alter per-weapon overrides, ambient settings, normal bindings, budgets or temporary projectiles. */ function () {
+            const value=settings();
+            api.world().lighting=root.FrontierLocalLighting.validate({...value,projectiles:{...value.projectiles,enabled}});
+          },
+        );
+      };
