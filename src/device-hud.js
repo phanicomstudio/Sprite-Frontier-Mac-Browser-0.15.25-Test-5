@@ -99,6 +99,9 @@
       for (const image of [images[4], images[5], images[6]])
         if (image.complete && image.naturalWidth)
           ctx.drawImage(image, 0, 0, 766, 681);
+      // October 31, 2026: tell the optional palette compositor only when pixels changed.
+      // DOM-only observation cannot detect canvas painting; avoid periodic full-HUD snapshots.
+      face.dataset.paintRevision1616 = String((Number(face.dataset.paintRevision1616) || 0) + 1);
       dirty = false;
       face.dataset.cerebralBand = String(band);
       face.dataset.blending = String(progress < 1);

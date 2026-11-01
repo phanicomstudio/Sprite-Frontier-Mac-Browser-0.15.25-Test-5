@@ -75,3 +75,7 @@ The runtime-only-neutral skill-o-matic.js controller is included in both engine 
 ## October 29, 2026 — current combined 0.16.11 behavior
 
 See [ITERATION-0.16.11.md](ITERATION-0.16.11.md), [FUNCTION-REFERENCE-0.16.11.md](FUNCTION-REFERENCE-0.16.11.md) and [LOCAL-0.16.11.md](LOCAL-0.16.11.md). These current chapters supersede earlier pending notes for inventory, crafting, catalog/recipe editing, connected rectangular construction, shared boundaries/openings and zoom-aware isometric visibility. Earlier explanations remain historical. The 24 starter materials are ordinary items; two descriptions and production recipe choices remain unauthored. TEST SCAN is intentionally a test skill. Fixed-artwork tools, sprite presentation and distinct shadow systems remain supported. Old bundled room examples are retired only from fresh projects, not deleted from saved projects.
+
+## November 1, 2026 — retained gameplay HUD filtering
+
+See ITERATION-0.16.16.md and FUNCTION-REFERENCE-0.16.16.md. Gameplay panels now have independent visual caches; static HUD frames do no recapture work. The original DOM still owns input and fail-safe presentation. Logical palette resolution is independent of display density. Automatic normals remain a separate pending integration; do not infer world-normal support from Sprite Fusion generation alone.
