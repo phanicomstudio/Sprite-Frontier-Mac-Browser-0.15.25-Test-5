@@ -324,3 +324,9 @@ Projectile emission is now always enabled; old map/weapon off or zero-brightness
 ## November 1, 2026 — mirrored antique door (0.16.20)
 
 The shared built-in antique door now uses the supplied mirrored two-sided assembly, retaining frame/leaf node IDs and hinge pivot. Known old clean built-in library payloads upgrade during import/restore; modified/custom models remain unchanged. Current provenance and validation are in ITERATION-0.16.20.md and FUNCTION-REFERENCE-0.16.20.md. Prior asset notes are historical.
+
+## November 1, 2026 — 0.16.21 first-person and lighting authoring
+
+Weapon definitions now include First-person character sprite profile and image import/path, animation rows/columns/FPS, scale and muzzle positions (0–1 of one frame). Enable that weapon's override, choose the character profile, import artwork and Apply. Candy's unholstered handgun has the supplied default frame. Holstering hides it. V toggles perspective camera; inward wheel at the nearest third-person limit also enters first-person. Isometric/fixed maps keep their own zoom.
+
+Environment → Map lighting: enable lighting; Ambient brightness 0 means dark and 1 fully bright. Add lamps/torches for localized illumination. Player light is independent per map and lights surroundings, not its owner. Nighttime exteriors may disable Outdoor sunlight. Projectiles always emit. Apply saves the existing map lighting record, including across editor/playtest and cell travel.

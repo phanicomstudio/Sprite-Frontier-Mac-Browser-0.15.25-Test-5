@@ -1,3 +1,5 @@
+/* November 1, 2026: depth comparisons include the projected receiver slope across one existing CPU-depth texel. This avoids low-resolution receiver self-rejection as the camera crosses depth-grid cells, while retaining foreground rejection and the separate sun/contact passes. No new texture samples or GPU readbacks. */
+/* November 1, 2026: budget-deferred casters retain their last valid receiver grid instead of disappearing and losing their cache. Tie order is stable; timed refresh still detects changed receivers without removing a deferred silhouette. */
 
   // October 30, 2026: use the active Pixi projection for screen and filter targets; direct clip-space positions invert/resize custom meshes during filtering.
 /* October 26, 2026: receiver-conforming outdoor sprite sun silhouettes.
@@ -11,7 +13,7 @@
   void main(){gl_Position=vec4((uProjectionMatrix*uWorldTransformMatrix*uTransformMatrix*vec3(aPosition,1.)).xy,0.,1.);vUV=aUV;vInverse=aInverse;vFog=aFog;vScreen=aPosition/uViewport;}`;
   const fragment=`#version 300 es
   precision highp float;uniform sampler2D uImage;uniform sampler2D uDepth;uniform vec2 uViewport;uniform vec2 uDepthSize;uniform float uOpacity;uniform float uOrtho;in vec2 vUV;in float vInverse;in float vFog;in vec2 vScreen;out vec4 color;
-  void main(){vec2 screen=vScreen;vec3 packed=texture(uDepth,screen).rgb;float inverse=(packed.r*65536.+packed.g*256.+packed.b)*255./16777215.*16.;if(inverse>vInverse+(uOrtho>.5?.002*vInverse*vInverse:.002))discard;float alpha=texture(uImage,uOrtho>.5?vUV:vUV/max(vInverse,.000001)).a;color=vec4(0.,0.,0.,alpha*uOpacity*(1.-vFog));}`;
+  void main(){vec2 screen=vScreen;vec3 packed=texture(uDepth,screen).rgb;float inverse=(packed.r*65536.+packed.g*256.+packed.b)*255./16777215.*16.;vec2 cell=uViewport/vec2(textureSize(uDepth,0));float receiverBias=abs(dFdx(vInverse))*cell.x+abs(dFdy(vInverse))*cell.y;if(inverse>vInverse+receiverBias+(uOrtho>.5?.002*vInverse*vInverse:.002))discard;float alpha=texture(uImage,uOrtho>.5?vUV:vUV/max(vInverse,.000001)).a;color=vec4(0.,0.,0.,alpha*uOpacity*(1.-vFog));}`;
   /* @function sunShadows.receiver163 â€” Inputs: live scene, world sprite-plane source point, normalized sun ray and caster ID. Returns nearest terrain/static-geometry hit with world coordinates/receiver key, or null. Rays are at most 32 m; shared sweep uses a numerical skin and does not mutate combat. */
   function receiver163(game,from,direction,id){
     const end={x:from.x+direction.x*32,y:from.y+direction.y*32,z:from.z+direction.z*32};
@@ -42,7 +44,7 @@
   }
   /* @function sunShadows.draw163 â€” Inputs: active Pixi drawing adapter, live game, active camera, visible entity candidates and projection callback. Returns count of submitted outdoor shadow meshes. Rebuilds at most two 45-ray grids per frame, caches at most 8 nearest casters, updates GPU depth from existing CPU data without readback, and rejects triangles crossing disconnected receivers. Interiors and disabled sun skip all work. Terrain/static mesh/custom collision must match visible receivers; transparent/noncollision decoration receives none. */
   function draw163(ctx,game,cam,entities,project){
-    const world=game.sourceWorld;if((world.interior&&!world.interior.outdoor)||!world.lighting?.enabled||!ctx.terrainDepth||!root.FrontierBallistics)return 0;
+    const world=game.sourceWorld;if(cam.orthographic)return 0;if((world.interior&&!world.interior.outdoor)||!world.lighting?.enabled||!ctx.terrainDepth||!root.FrontierBallistics)return 0;
     const sun=root.FrontierLocalLighting.sun163(world.lighting.sun);if(!sun.enabled||!sun.opacity||!root.FrontierLocalLighting.shadows169(world.lighting.shadows).sun)return 0;
     const P=root.PIXI,d=ctx.terrainDepth;let state=states.get(ctx);
     if(!state){state={slots:[],cache:new Map()};states.set(ctx,state);}
@@ -51,14 +53,16 @@
     for(let i=0;i<d.values.length;i++){const n=Math.min(16777215,Math.max(0,Math.round(d.values[i]/16*16777215))),j=i*4;state.pixels[j]=n>>16;state.pixels[j+1]=(n>>8)&255;state.pixels[j+2]=n&255;state.pixels[j+3]=255;}
     state.depth.update();state.depthFrame=game.elapsed;
     const candidates=[];for(const e of entities)if(!e.dead&&(e.kind==='player'||e.spriteProfile)&&Math.hypot(e.x-game.player.x,e.y-game.player.y)<24)candidates.push(e);
-    candidates.sort(/* @function sunShadows.nearest163 â€” Inputs: two eligible casters. Returns distance ordering so the bounded shadow budget prioritizes nearby gameplay actors; no source mutation. */function(a,b){return Math.hypot(a.x-game.player.x,a.y-game.player.y)-Math.hypot(b.x-game.player.x,b.y-game.player.y);});
+    candidates.sort(/* @function sunShadows.nearest163 â€” Inputs: two eligible casters. Returns distance ordering so the bounded shadow budget prioritizes nearby gameplay actors; no source mutation. */function(a,b){return Math.hypot(a.x-game.player.x,a.y-game.player.y)-Math.hypot(b.x-game.player.x,b.y-game.player.y)||String(a.id).localeCompare(String(b.id));});
+    // Oldest receiver grids own the next bounded refresh slots, so rotating the camera cannot starve later casters.
+    const refreshIds=new Set(candidates.slice(0,LIMIT).sort(/* @function sunShadows.refreshOrder1621 â€” Inputs: eligible caster pair. Returns oldest-cache-first order with stable ID ties; never reorders the actual painter/caster list. */function(a,b){return (state.cache.get(a.id)?.time??-Infinity)-(state.cache.get(b.id)?.time??-Infinity)||String(a.id).localeCompare(String(b.id));}).slice(0,2).map(/* @function sunShadows.refreshId1621 â€” Inputs: refresh candidate. Returns actor identity for bounded receiver updates; no mutation. */function(e){return e.id;}));
     let used=0,rebuilt=0;const retained=new Set();
     for(const e of candidates.slice(0,LIMIT)){
       const sheet=root.FrontierSprites?.sheet(e);if(!sheet?.image.complete||!sheet.image.naturalWidth)continue;
       const water=root.FrontierWater?.level(world,e.x,e.y);if(Number.isFinite(water)&&water>(e.z||0)+.05)continue;
       const selected=root.FrontierDirections.select(e,cam.yaw,sheet.direction,cam),frame=sheet.frames[selected.row*(sheet.columns||3)+selected.column];if(!frame)continue;
       const key=[e.x,e.y,e.z,frame.w,frame.h,frame.anchorX,cam.yaw,sun.azimuth,sun.elevation].join(':');let cached=state.cache.get(e.id);
-      if(!cached||cached.key!==key||(game.elapsed||0)-cached.time>.2){if(rebuilt>=2)continue;cached={key,time:game.elapsed||0,grid:receiverGrid163(game,e,frame,sheet,cam,sun)};state.cache.set(e.id,cached);rebuilt++;}
+      if(!cached||cached.key!==key||(game.elapsed||0)-cached.time>.2){if(rebuilt>=2||!refreshIds.has(e.id)){if(!cached)continue;}else{cached={key,time:game.elapsed||0,grid:receiverGrid163(game,e,frame,sheet,cam,sun)};state.cache.set(e.id,cached);rebuilt++;}}
       retained.add(e.id);const slot=state.slots[used]||(state.slots[used]=createSlot163(P,state.depth));let image=ctx.sources.get(sheet.image);
       if(!image){image=new P.ImageSource({resource:sheet.image,scaleMode:'linear'});ctx.sources.set(sheet.image,image);ctx.crops.set(sheet.image,new Map());}
       const points=[];
@@ -87,7 +91,7 @@
   const contacts166=new WeakMap();
   const contactFragment166=`#version 300 es
   precision highp float;uniform sampler2D uDepth;uniform float uOpacity;uniform float uSoftness;in vec2 vUV;in float vInverse;in float vFog;in vec2 vScreen;out vec4 color;
-  void main(){vec3 packed=texture(uDepth,vScreen).rgb;float inverse=(packed.r*65536.+packed.g*256.+packed.b)*255./16777215.*16.;if(inverse>vInverse+.002*vInverse*vInverse)discard;float radius=length(vUV*2.-1.);float alpha=1.-smoothstep(.3*(1.-uSoftness),1.,radius);color=vec4(0.,0.,0.,alpha*uOpacity*(1.-vFog));}`;
+  void main(){vec3 packed=texture(uDepth,vScreen).rgb;float inverse=(packed.r*65536.+packed.g*256.+packed.b)*255./16777215.*16.;vec2 cell=uViewport/vec2(textureSize(uDepth,0));float receiverBias=abs(dFdx(vInverse))*cell.x+abs(dFdy(vInverse))*cell.y;if(inverse>vInverse+receiverBias+.002*vInverse*vInverse)discard;float radius=length(vUV*2.-1.);float alpha=1.-smoothstep(.3*(1.-uSoftness),1.,radius);color=vec4(0.,0.,0.,alpha*uOpacity*(1.-vFog));}`;
   /* @function contactShadow.profile166 — Inputs: height above receiving floor in metres. Returns radius/opacity/softness, gently shrinking and softening over the first two metres. Landing restores the original contact size/density; no time integration, sun direction or actor mutation. */
   function contactProfile166(height){if(!Number.isFinite(height))throw Error("Contact shadow height must be finite.");const t=Math.max(0,Math.min(1,height/2));return {radius:.3*(1-.2*t),opacity:.16*(1-.5*t),softness:t};}
   /* @function contactShadow.slot166 — Inputs: Pixi namespace and shared packed receiver-depth source. Returns one reusable 9-vertex/24-index GPU blob slot with analytic soft radial alpha. No image assets, per-frame texture creation or CPU bitmap painting. */
@@ -107,7 +111,7 @@
     const sun=states.get(ctx);let depth=sun?.world===game.sourceWorld&&sun.depthFrame===game.elapsed?sun.depth:null;
     if(!depth){if(!state.depth||state.w!==d.w||state.h!==d.h){state.depth?.destroy();state.w=d.w;state.h=d.h;state.pixels=new Uint8Array(d.w*d.h*4);state.depth=new P.BufferImageSource({resource:state.pixels,width:d.w,height:d.h,format:'rgba8unorm',scaleMode:'nearest'});}for(let i=0;i<d.values.length;i++){const n=Math.min(16777215,Math.max(0,Math.round(d.values[i]/16*16777215))),j=i*4;state.pixels[j]=n>>16;state.pixels[j+1]=(n>>8)&255;state.pixels[j+2]=n&255;state.pixels[j+3]=255;}state.depth.update();depth=state.depth;}
     const candidates=[];for(const e of entities)if(e.groundShadow!==false&&!e.dead&&!e.hidden&&!e.transparent&&['player','monster','npc'].includes(e.kind)&&Math.hypot(e.x-game.player.x,e.y-game.player.y)<20)candidates.push(e);
-    candidates.sort(/* @function contactShadow.nearest166 — Inputs: eligible actor pair. Returns player-distance ordering for the fixed budget; no actor mutation. */function(a,b){return Math.hypot(a.x-game.player.x,a.y-game.player.y)-Math.hypot(b.x-game.player.x,b.y-game.player.y);});
+    candidates.sort(/* @function contactShadow.nearest166 — Inputs: eligible actor pair. Returns player-distance ordering for the fixed budget; no actor mutation. */function(a,b){return Math.hypot(a.x-game.player.x,a.y-game.player.y)-Math.hypot(b.x-game.player.x,b.y-game.player.y)||String(a.id).localeCompare(String(b.id));});
     let used=0,rebuilt=0;const retained=new Set(),details=[];
     for(const e of candidates.slice(0,8)){
       const water=root.FrontierWater?.level(game.sourceWorld,e.x,e.y);if(Number.isFinite(water)&&water>(e.z||0)+.05)continue;

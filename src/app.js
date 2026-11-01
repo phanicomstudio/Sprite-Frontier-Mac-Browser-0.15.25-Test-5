@@ -2967,6 +2967,12 @@
       // October 26 user correction: first-person zoom is unnecessary. Keep its original lens and ignore wheel without changing the third-person distance.
       if (game.camera.firstPerson && !game.editorFlight) return;
       if (hudMode) return;
+      // November 1: a fresh inward wheel action at the settled perspective limit enters first-person; orthographic/fixed paths returned above.
+      const minimum = FrontierParameters.get(world, "zoomMin");
+      if (!editing && !game.editorFlight && pixels < 0 && game.camera.distance <= minimum + .015) {
+        game.camera.firstPerson = true; zoomIntent = null;
+        $("camera").textContent = "Third person [V]"; return;
+      }
       const target = Math.max(
         FrontierParameters.get(world, "zoomMin"),
         Math.min(
@@ -3476,7 +3482,7 @@
     $("badge").lastElementChild.textContent =
       (world.interior?.mode === "fixed" ? "Fixed interior · " : "") +
       (game.camera.firstPerson ? "First person" : "Third person") +
-      " · prototype 0.16.20";
+      " · prototype 0.16.21";
     if (world.interior)
       $("intro").textContent =
         world.interior.mode === "fixed"

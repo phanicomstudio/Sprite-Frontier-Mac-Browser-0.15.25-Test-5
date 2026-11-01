@@ -275,3 +275,57 @@ The 0.16.17 fixed-relief default is superseded by real live normal-map lighting.
 ## November 1, 2026 — mandatory projectile lighting (0.16.19)
 
 Projectile emission is now always enabled; old map/weapon off or zero-brightness values upgrade automatically. There is no projectile-off UI. Runtime selection prioritizes projectile sources within the existing eight-light capacity, including maps with general lighting disabled. See ITERATION-0.16.19.md and FUNCTION-REFERENCE-0.16.19.md. Earlier optional-toggle contracts are historical.
+
+
+## Banked November 1, 2026 — passive player light excludes its owner
+
+Pending for the next iteration; not implemented in 0.16.20. The passive Diablo-style player light must illuminate nearby scenery and other actors, while contributing no illumination to the player that owns it, including that player's normal-map response. Match by light ownership/identity, not distance, sprite profile or light color. This avoids the chest hotspot visible in the supplied 0.16.20 screenshots.
+
+All other applicable lights must still illuminate the player normally: scene lights, outdoor sunlight and always-enabled projectile lights, including the player's own shots. Preserve ambient illumination, normal maps, player-light radius/falloff on surrounding surfaces and the deliberately separate perspective sun/isometric contact shadows. Do not disable normal mapping or mandatory projectile emission as a workaround.
+
+Verify with the passive light alone, then with a moving scene light and actual lit projectiles, across third-person, first-person-visible body/weapon paths where applicable, and isometric/fixed views. Check that surroundings and other actors still receive the passive pool, that actor/profile duplicates are not accidentally excluded, and that owner filtering adds no extra render pass or normal generation.
+
+
+## Banked November 1, 2026 — darkness controls and shadow stability
+
+Pending next-iteration requirements, not delivered changes:
+
+- Verify and clarify existing per-map ambient darkness and player-light controls. Interiors must support near-zero ambient with illumination from authored torches/lamps, the optional player pool and mandatory projectile lights. Support independent nighttime exterior darkness. Preserve authored settings across cell travel, editor/playtest and save/reload; do not make projectile emission optional.
+- Investigate the reported shadow flicker both during camera rotation and while idle. Reproduce before assigning a cause. Test perspective terrain/geometry-conforming sun shadows and isometric contact blobs separately, preserving the deliberate split between them. Also distinguish moving illumination/normal highlights from actual shadow instability.
+- Inspect receiver depth/masks and contact bias, camera-dependent caster selection/order, visibility/LOD boundaries, receiver-grid refresh scheduling and stationary cache reuse. These are diagnostic candidates, not confirmed causes. Preserve locked sprite tilt/proportions and shadow conformance to terrain/geometry; do not hide the issue by changing billboard presentation or disabling shadows.
+- Acceptance: stable stationary actor/camera shadows over time; smooth slow camera rotation; sloped terrain, floors/stairs and geometry edges; supported zoom levels and camera modes; no unexpected popping or alternate-frame masks. Include performance measurements without per-frame logging or GPU readbacks in production.
+
+
+## November 1, 2026 — Fallout Bakersfield visual reference discussion
+
+User supplied the local 6:24.3 extended gameplay MP4 by Saur X as the visual target to emulate with Sprite Frontier's own assets across first-person, third-person and orthographic/isometric views. Analysis sampled sixteen points across the footage plus close frames around the interior at 00:36, combat/muzzle flash at 01:48 and later street/interior sequences. This is visual-reference analysis, not confirmation of the game's exact renderer settings or an implemented rendering change.
+
+Observed target ingredients: muted cool gray/earth/rust palette; low ambient interiors with locally readable highlights; strong texture-authored material shading and wear; simple structural silhouettes with rich architectural detail; atmospheric separation of near/middle/distant ruins and a distinct sky; relatively coarse image detail with readable edges; detailed sprite-like character/weapon animation; brief bright warm muzzle flashes and authored death/remains effects. The flash's checkerboard edge does not establish full-screen dithering or an exact indexed palette. The video cannot establish whether normal maps, baked AO, SSAO, a specific LUT, or any particular sprite-tilt mode is used.
+
+Proposed discussion direction, not yet a committed implementation roster: create a small original-art ruined courtyard/interior reference scene and tune a shared visual profile for texture density/filtering, ambient/local light balance, restrained normal strength, fog/sky separation and color response. Then validate the same world and simulation in all three camera modes. First-person needs suitable hand/weapon presentation; third-person keeps the locked 0.15.17 sprite plane; isometric needs elevated directional sprite art, adjustable orthographic angles and existing occlusion/contact-shadow readability. Preserve the deliberate perspective sun/isometric contact-shadow split and mandatory projectile emission. Avoid claiming that a stronger dither filter or more normal-map contrast alone recreates the reference. Existing banked darkness/player-owner exclusion/shadow-stability fixes remain the immediate next-iteration work.
+
+## Banked November 1, 2026 — combat feel and companion isometric reference
+
+User clarified that Fallout Bakersfield is a gameplay/shooting reference as well as a visual reference, and identifies its creator as Alexander Berezin (Redguns88). User supplied Recording 2026-11-01 121012.mp4 as the companion New Blood isometric reference. Reviewed sixteen sampled frames across the 125.33-second recording: initial desert/road isometric scene, on-screen New Blood attribution, and later ornate urban/isometric and dialogue imagery. The recording contains multiple segments; do not assume every scene is the same project or infer its renderer implementation from the images.
+
+The intended direction is cohesive detailed prerendered-looking art across perspective and isometric presentation. Strong material wear, consistent light direction, restrained palette, grounded actors, readable silhouettes and environmental composition matter more than increasing normal strength or applying dithering. Preserve original assets, locked Sprite Frontier sprite presentation and deliberate camera/shadow splits.
+
+Add a combat-feel tuning pass to the upcoming roster: immediate input response; distinct per-weapon cadence/recovery; coordinated muzzle flash, sound and recoil; convincing projectile speed and launch placement; readable impacts, enemy hit/death reactions and aggression. These are tuning targets, not claims of measured Bakersfield timings or newly implemented behavior. Maintain actual swept-collision projectiles, mandatory lighting, existing accuracy and player/enemy weapon parity. Use shared combat simulation across first-, third-person and isometric cameras, with appropriate presentation in each. Compare a controlled encounter before/after and profile effects. No authorization to copy reference assets, introduce hitscan, or replace the game with turn-based combat is implied by this reference.
+
+## Banked November 1, 2026 — character-linked first-person weapon presentation
+
+User supplied Candy_Pistol_1stPerson_test.png, preserved unchanged as img/weapons/first-person/candy/pistol/armed-test.png. Verified 1920 x 1080 RGBA with transparency. This is one armed test frame, not a completed firing/reload animation. Retain its composition and alpha; do not treat the preview's black background as opaque artwork.
+
+Next iteration: provide first-person presentation assignments per player character and equipped weapon, including image/animation source, frame layout/timing, screen placement/scale and muzzle anchor. Organize assets under img/weapons/first-person/<character>/<weapon>/ so additional characters, weapons and animation states can be supplied later. Candy's pistol initially uses the supplied single frame. Future idle/fire/reload/equip states should be extensible without requiring nonexistent animation art now. Preserve third-person and isometric character presentation.
+
+Add subtle movement-driven first-person weapon sway/bob inspired by the Bakersfield reference. Scale with actual movement, use frame-rate-independent timing and smoothly settle at rest. Sway is presentation: do not move the camera, crosshair or gameplay aim merely to animate the hand. Coordinate the visible muzzle anchor, muzzle flash and projectile launch with existing collision-safe aiming, mandatory projectile light and character/weapon definitions. Preserve intended environment/projectile lighting while excluding the passive owner light under the separate banked rule. Verify 4:3/widescreen framing, movement/start/stop, weapon/character switches and camera switches; no per-frame asset generation or uploads. This is banked, not wired into the current runtime.
+
+## Banked November 1, 2026 — first-person entry and holster visibility
+
+The character/weapon-linked first-person hand artwork appears only in first-person while the weapon is unholstered. Holstering hides the armed overlay; do not invent an unarmed hand asset. Equipping/unholstering and camera changes must refresh the assignment correctly.
+
+In perspective 3D/third-person environments, scrolling inward beyond the closest permitted third-person zoom enters first-person. Trigger only on a fresh inward wheel action at the limit, with a deliberate threshold/debounce so a single large wheel delta cannot unexpectedly skip normal zoom. Keep first-person zoom disabled under the existing deliberate split; entering first-person is a camera-mode change, not additional magnification. Preserve existing explicit camera controls. Isometric/orthographic and fixed/prerendered map presentation must not enter first-person through wheel zoom. Test map travel, holster state, trackpad/high-resolution wheel input and camera-mode restrictions. This extends the banked first-person presentation work; not implemented in 0.16.20.
+
+## November 1, 2026 — implemented 0.16.21 roster
+
+The banked first-person Candy pistol/character assignments/sway/wheel entry, passive-owner light exclusion, clarified darkness/player-light workflow, bounded shadow cache stability and initial combat-feedback/engagement tuning are implemented. See ITERATION-0.16.21.md for exact behavior, limits and tests. Earlier pending chapters remain history. Bakersfield/New Blood visual recreation and a new comparison courtyard remain reference proposals, not finished art/content or claims of identical combat feel.

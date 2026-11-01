@@ -181,6 +181,7 @@
     if (settings.enabled&&settings.player.enabled)
       candidates.push({
         ...settings.player,
+        excludedOwnerId: player.id || "player",
         x: player.x + settings.player.x,
         y: player.y + settings.player.y,
         z: (player.z || 0) + settings.player.z,
@@ -367,7 +368,8 @@
     return enter < exit;
   }
   /* @function localLighting.sample — Inputs: active snapshot and world XYZ; optional reusable RGB output. Returns: ambient plus unblocked radius contributions clamped to one. Static-only samples cache at millimetre coordinates with a 16,384-entry bound. Dynamic samples never accumulate persistent per-projectile entries. Quantized steps are optional; alpha is untouched. */
-  function sample(snapshot, x, y, z, out = [1, 1, 1]) {
+  /* @function localLighting.ownerSample1621 — Inputs: snapshot, world XYZ, reusable RGB and optional actor ownerId. Returns sampled illumination. November 1, 2026: optional ownerId excludes only the passive light owned by this actor; all scene/projectile lighting remains applicable. Cache signatures include ownership. */
+  function sample(snapshot, x, y, z, out = [1, 1, 1], ownerId = null) {
     if (!snapshot) {
       out[0] = out[1] = out[2] = 1;
       return out;
@@ -389,7 +391,7 @@
         )
         .join(","),
       key =
-        signature +
+        signature + "/" + (ownerId || "") +
         "/" +
         x.toFixed(3) +
         "," +
@@ -406,6 +408,7 @@
     out[0] = out[1] = out[2] = snapshot.ambient;
     const point = [x, y, z];
     for (const light of snapshot.lights) {
+      if (ownerId && light.excludedOwnerId === ownerId) continue;
       const distance = Math.hypot(x - light.x, y - light.y, z - light.z);
       if (distance >= light.radius) continue;
       let blocked = false;

@@ -273,3 +273,7 @@ Projectile emission is now always enabled; old map/weapon off or zero-brightness
 ## November 1, 2026 — mirrored antique door (0.16.20)
 
 The shared built-in antique door now uses the supplied mirrored two-sided assembly, retaining frame/leaf node IDs and hinge pivot. Known old clean built-in library payloads upgrade during import/restore; modified/custom models remain unchanged. Current provenance and validation are in ITERATION-0.16.20.md and FUNCTION-REFERENCE-0.16.20.md. Prior asset notes are historical.
+
+## November 1, 2026 — 0.16.21 maintenance
+
+See ITERATION-0.16.21.md and FUNCTION-REFERENCE-0.16.21.md. Character-linked viewmodel draw lives in src/first-person.js; weapon overrides serialize assignments. Do not make sway alter aim/collision or convert the locked world billboard. Owner-specific lighting exclusion must not filter projectile sources. Keep cached shadows while bounded refresh is deferred, and preserve perspective sun versus orthographic contact ownership. New acceptance: tests/first-person1621.cjs and tests/browser/iteration1621.cjs, shadow1621.cjs; existing combat167 and lighting suites still run.
