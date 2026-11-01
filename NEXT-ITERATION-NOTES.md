@@ -261,3 +261,7 @@ See [ITERATION-0.16.11.md](ITERATION-0.16.11.md), [FUNCTION-REFERENCE-0.16.11.md
 ## November 1, 2026 — confirmed automatic-normal scope
 
 User selected world materials and character/prop sprites. Exclude UI and sky artwork. Custom authored normal maps must take priority. Generate/cache outside active gameplay; share results per source texture, preserve sprite-sheet frame boundaries and locked 0.15.17 presentation. Wire world-material consumers across rendering paths before enabling the default; generating unused normal PNGs is not completion. Keep projectile lights and the original dithering effect regression-tested.
+
+## November 1, 2026 — automatic normals completed in 0.16.17
+
+The pending scope above is now implemented for the supported world-image, sprite, furniture, material and model-albedo paths. UI/skies and authored overrides remain separate. See ITERATION-0.16.17.md for cached-relief behavior, budgets and validation; earlier pending notes remain historical.

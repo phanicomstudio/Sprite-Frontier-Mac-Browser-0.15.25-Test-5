@@ -1,0 +1,27 @@
+{
+  "source": "img/items/prop_boxed_pig!.png",
+  "sha256": "9b32141e35feb013153992125e7bd34ac74b82622e8962b4c9d949604afc4fc3",
+  "normal": "assets/automatic-normals/9b32141e35feb01315399212-relief2.normal.png",
+  "lit": "assets/automatic-normals/9b32141e35feb01315399212-relief2.lit.webp",
+  "width": 91,
+  "height": 115,
+  "normalWidth": 91,
+  "normalHeight": 115,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

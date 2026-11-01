@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/plants/$$Para Plant 8 Sodom Apple.png",
+  "sha256": "c5a23535adaff42aa4ba8dfeab917333889fb17750cff063536e37fd0ce1c2f5",
+  "normal": "assets/automatic-normals/c5a23535adaff42aa4ba8dfe-relief2.normal.png",
+  "lit": "assets/automatic-normals/c5a23535adaff42aa4ba8dfe-relief2.lit.webp",
+  "width": 294,
+  "height": 269,
+  "normalWidth": 294,
+  "normalHeight": 269,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/floors/prop_wood_floor1.png",
+  "sha256": "dfe364859743aed88ccffb0b02ad4f9b84c5f2c4fe92e47b57e2ad80b0b46a2f",
+  "normal": "assets/automatic-normals/dfe364859743aed88ccffb0b-relief2.normal.png",
+  "lit": "assets/automatic-normals/dfe364859743aed88ccffb0b-relief2.lit.webp",
+  "width": 2048,
+  "height": 1297,
+  "normalWidth": 512,
+  "normalHeight": 324,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

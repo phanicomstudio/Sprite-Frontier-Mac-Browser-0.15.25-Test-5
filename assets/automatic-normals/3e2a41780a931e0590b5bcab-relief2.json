@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/floors/prop_desert_tile_floor.png",
+  "sha256": "3e2a41780a931e0590b5bcabd1ca4d0bbe0644ab9b520191063e62d4478ea4fa",
+  "normal": "assets/automatic-normals/3e2a41780a931e0590b5bcab-relief2.normal.png",
+  "lit": "assets/automatic-normals/3e2a41780a931e0590b5bcab-relief2.lit.webp",
+  "width": 2048,
+  "height": 2048,
+  "normalWidth": 512,
+  "normalHeight": 512,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

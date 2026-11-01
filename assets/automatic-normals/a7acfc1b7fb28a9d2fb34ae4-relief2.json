@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/rugs/$$Furniture 1.png",
+  "sha256": "a7acfc1b7fb28a9d2fb34ae4bf89464691d9fd5f39a71ed4a6b04ef869dc4875",
+  "normal": "assets/automatic-normals/a7acfc1b7fb28a9d2fb34ae4-relief2.normal.png",
+  "lit": "assets/automatic-normals/a7acfc1b7fb28a9d2fb34ae4-relief2.lit.webp",
+  "width": 508,
+  "height": 725,
+  "normalWidth": 358,
+  "normalHeight": 511,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/trees/$$Twisted Tree D.png",
+  "sha256": "c824003b7539f11d80ffc7f7e82e9a5d2c45c8d3e3cd0976ab68cf672aa85959",
+  "normal": "assets/automatic-normals/c824003b7539f11d80ffc7f7-relief2.normal.png",
+  "lit": "assets/automatic-normals/c824003b7539f11d80ffc7f7-relief2.lit.webp",
+  "width": 2125,
+  "height": 2795,
+  "normalWidth": 389,
+  "normalHeight": 512,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

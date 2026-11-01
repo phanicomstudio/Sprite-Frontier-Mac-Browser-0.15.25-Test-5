@@ -1,0 +1,27 @@
+{
+  "source": "img/items/prop_Aelita1.png",
+  "sha256": "f4544c5c7d2540782c4957d82118d49d40eb0ab1e2e6769d42e31bd38f675934",
+  "normal": "assets/automatic-normals/f4544c5c7d2540782c4957d8-relief2.normal.png",
+  "lit": "assets/automatic-normals/f4544c5c7d2540782c4957d8-relief2.lit.webp",
+  "width": 48,
+  "height": 93,
+  "normalWidth": 48,
+  "normalHeight": 93,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

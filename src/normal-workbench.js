@@ -16,6 +16,9 @@
     panel.id = "normalWorkbench";
     panel.innerHTML = `<h3>Sprite lighting workbench</h3><p>Sprite Fusion runs locally. It estimates relief from silhouette and painted shading; use your original render normal pass when physically exact normals are needed. Native pixels and sheet frames are preserved. Up to 4,194,304 pixels including processing padding.</p><label>Sprite profile<select id="normalProfile"></select></label><button id="normalLoadProfile">Load this sprite artwork</button><button id="normalApply">Apply lighting to this sprite on current map</button><button id="normalRemove">Remove this sprite lighting from current map</button><label>Artwork<input id="normalSource" type="file" accept="image/png,image/webp,image/jpeg"></label><label>View<select id="normalView"><option value="lit">Lighting preview</option><option value="normal">Normal map</option><option value="height">Height</option></select></label><canvas id="normalCanvas" width="512" height="320"></canvas><label>Brush<select id="normalBrush"><option value="raise">Raise</option><option value="lower">Recess</option><option value="smooth">Smooth</option><option value="light">Move preview light</option></select></label><label>Brush size<input id="normalSize" type="range" min="2" max="70" value="20"></label><label>Shape strength<input id="normalStrength" type="range" min="0" max="12" step="0.1" value="4"></label><button id="normalGenerate">Generate Sprite Fusion normals</button><button id="normalFlat">Flat surface</button><button id="normalUndo">Undo stroke</button><button id="normalExport">Export normal PNG</button><button id="heightExport">Export height PNG</button><label>Import normal PNG<input id="normalImport" type="file" accept="image/png"></label><p id="normalStatus" role="status"></p><label>Import height PNG<input id="heightImport" type="file" accept="image/png"></label><button id="closeNormals">Return to editor</button>`;
     document.body.append(panel);
+    // November 1, 2026: automatic preparation status is separate from manual preview/errors.
+    const autoStatus=document.createElement("p");autoStatus.id="automaticNormalsStatus";
+    panel.insertBefore(autoStatus,panel.children[1]);
     const $ =
         /* @function normal-workbench.$.3 — Returns document get element by id using id. Inputs: id. Uses: document get element by id. Returns: document get element by id using id. */ (
           id,
@@ -569,7 +572,10 @@
             ) => new Option(id, id),
           ),
         );
-        panel.showModal();
+        // November 1, 2026: explain the default independently from custom per-map overrides.
+      const auto=root.FrontierAutomaticNormals?.debug();
+      if(auto)autoStatus.textContent="Automatic normal relief is enabled for world materials and sprites ("+auto.packaged+" packaged defaults). UI and sky are excluded. Imported art prepares once; custom sprite normals take priority. Live lights and shadows remain independent. "+auto.pending+" images pending, "+auto.generationPending+" generation tasks; "+auto.failures+" preparation failures. "+(auto.issues.at(-1)?.message||"");
+      panel.showModal();
       };
     panel.addEventListener("cancel", /* @function normalWorkbench.cancelOnEscape — Inputs: dialog cancel event ignored. Returns nothing; aborts generation before the native dialog closes. No authored changes. */ function(){generationJob?.abort();});
     $("closeNormals").onclick =

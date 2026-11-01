@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/ground/mythos-mossy-stone.png",
+  "sha256": "92649d33c4b0418f065011443cc3a02eda6f3825776c54ddd4d85ed1a32ab299",
+  "normal": "assets/automatic-normals/92649d33c4b0418f06501144-relief2.normal.png",
+  "lit": "assets/automatic-normals/92649d33c4b0418f06501144-relief2.lit.webp",
+  "width": 384,
+  "height": 384,
+  "normalWidth": 384,
+  "normalHeight": 384,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

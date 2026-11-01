@@ -1,6 +1,6 @@
 {
   "name": "phanicom-sprite-frontier",
-  "version": "0.16.16",
+  "version": "0.16.17",
   "private": true,
   "description": "Offline vector billboard exploration prototype",
   "scripts": {
@@ -19,7 +19,8 @@
     "test:integration1611": "node tests/construction1611.cjs && node tests/crafting1611.cjs && node tests/visibility1611.cjs && node tests/browser/inventory1611.cjs && node tests/browser/catalog1611.cjs && node tests/browser/transactions1611.cjs && node tests/browser/authoring1611.cjs && node tests/browser/doors1611.cjs && node tests/browser/visibility1611.cjs && node tests/function-comments1516.cjs",
     "test:dither": "node tests/palette168.cjs && node tests/browser/palette168.cjs && node tests/browser/projection1614.cjs && node tests/browser/dither1614.cjs && node tests/browser/dither-performance1616.cjs && node tests/function-comments1516.cjs",
     "test:fullscreen": "node tests/browser/fullscreen1612.cjs && node tests/function-comments1516.cjs",
-    "test:lighting": "node tests/lighting1524.cjs && node tests/weapon-definitions1524.cjs && node tests/sprite-lighting159.cjs && node tests/normal-bindings159.cjs && node tests/normal-cache159.cjs && node tests/browser/projectile-light-setting1615.cjs && node tests/browser/terrain-lighting1524.cjs && node tests/browser/spritefusion160.cjs && node tests/function-comments1516.cjs"
+    "test:normals": "node tests/automatic-normal-assets1617.cjs && node tests/browser/automatic-normals1617.cjs && node tests/browser/normal-performance1617.cjs && node tests/runtime-package1524.cjs && node tests/desktop-export1524.cjs && node tests/function-comments1516.cjs",
+    "test:lighting": "node tests/lighting1524.cjs && node tests/weapon-definitions1524.cjs && node tests/sprite-lighting159.cjs && node tests/normal-bindings159.cjs && node tests/normal-cache159.cjs && node tests/browser/projectile-light-setting1615.cjs && node tests/browser/terrain-lighting1524.cjs && node tests/browser/spritefusion160.cjs && node tests/browser/automatic-normals1617.cjs && node tests/function-comments1516.cjs"
   },
   "dependencies": {
     "pixi.js": "8.22.0"

@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/walls/prop_wall_4.png",
+  "sha256": "3e8117c83b5819d6dc76cc6cd06cdcd423f126e5e4b7301c165e812436f5c9db",
+  "normal": "assets/automatic-normals/3e8117c83b5819d6dc76cc6c-relief2.normal.png",
+  "lit": "assets/automatic-normals/3e8117c83b5819d6dc76cc6c-relief2.lit.webp",
+  "width": 2048,
+  "height": 1297,
+  "normalWidth": 512,
+  "normalHeight": 324,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 0
+  },
+  "wrap": true,
+  "compression": "webp-lossless-rgba-verified"
+}

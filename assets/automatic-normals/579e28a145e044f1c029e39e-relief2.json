@@ -1,0 +1,27 @@
+{
+  "source": "img/items/prop_Coil Sausage1.png",
+  "sha256": "579e28a145e044f1c029e39e66bfac5f8d685a0ed380488fadbf921fb5090ca5",
+  "normal": "assets/automatic-normals/579e28a145e044f1c029e39e-relief2.normal.png",
+  "lit": "assets/automatic-normals/579e28a145e044f1c029e39e-relief2.lit.webp",
+  "width": 78,
+  "height": 72,
+  "normalWidth": 78,
+  "normalHeight": 72,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

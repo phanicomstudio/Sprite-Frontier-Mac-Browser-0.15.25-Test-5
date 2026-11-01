@@ -79,3 +79,7 @@ See [ITERATION-0.16.11.md](ITERATION-0.16.11.md), [FUNCTION-REFERENCE-0.16.11.md
 ## November 1, 2026 — retained gameplay HUD filtering
 
 See ITERATION-0.16.16.md and FUNCTION-REFERENCE-0.16.16.md. Gameplay panels now have independent visual caches; static HUD frames do no recapture work. The original DOM still owns input and fail-safe presentation. Logical palette resolution is independent of display density. Automatic normals remain a separate pending integration; do not infer world-normal support from Sprite Fusion generation alone.
+
+## November 1, 2026 — automatic normal relief
+
+0.16.17 completes the previously pending default-normal integration. Static image-space relief is shared/prepared once, while live radius lights, fog, perspective sun shadows and isometric contact shadows keep their existing owners. Refer to ITERATION-0.16.17.md for processing/cache limits, override precedence and runtime resource closure. No map schema migration or new per-frame normal pass is introduced.

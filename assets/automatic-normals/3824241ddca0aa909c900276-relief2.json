@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/plants/$$Poppie 1.png",
+  "sha256": "3824241ddca0aa909c900276f7cf9bb411b99b6395e853c0d388ae0648a267cd",
+  "normal": "assets/automatic-normals/3824241ddca0aa909c900276-relief2.normal.png",
+  "lit": "assets/automatic-normals/3824241ddca0aa909c900276-relief2.lit.webp",
+  "width": 230,
+  "height": 274,
+  "normalWidth": 230,
+  "normalHeight": 274,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

@@ -1,0 +1,27 @@
+{
+  "source": "img/items/prop_Sausage and Kraut 1.png",
+  "sha256": "f9cf4f86b5d46ad7e30a6a23da2c3c9030c997946c4cf904d8b9bb65f276b78b",
+  "normal": "assets/automatic-normals/f9cf4f86b5d46ad7e30a6a23-relief2.normal.png",
+  "lit": "assets/automatic-normals/f9cf4f86b5d46ad7e30a6a23-relief2.lit.webp",
+  "width": 122,
+  "height": 65,
+  "normalWidth": 122,
+  "normalHeight": 65,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

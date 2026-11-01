@@ -38,7 +38,8 @@
     bank = next;
   }
   /* Historical contract retained; October 14 reviewed explanation follows. @function normal-render-cache.image.4 — Handles image within normal render cache. Inputs: source; profile; next. Updates: item canvas width; item canvas height; bytes; item reserved; item. Uses: clear; next entries find; cache get; item cancel abort. Returns: source; item canvas or source. */
-  /* @function normalRenderCache.reviewedimage_4 — Returns prepared normal-shaded sprite sheet or starts asynchronous preparation. Inputs: loaded source Image/canvas, profile ID and validated bank next. Returns source immediately while pending/missing/overbudget/failed, otherwise cached full-sheet canvas. Bank identity change clears ownership; source replacement cancels/releases prior item. Reserves width*height*4 bytes, bounds sides8192/pixels8million/retained64MiB; transient decode/canvas/driver memory not fully covered by this accounting. One failed same-source item does not retry until source/bank changes. Synchronous setup errors propagate; async failures are recorded and reclaim reservation. */ function image(
+  /* @function normalRenderCache.reviewedimage_4 — Returns prepared normal-shaded sprite sheet or starts asynchronous preparation. Inputs: loaded source Image/canvas, profile ID and validated bank next. Returns source immediately while pending/missing/overbudget/failed, otherwise cached full-sheet canvas. Bank identity change clears ownership; source replacement cancels/releases prior item. Reserves width*height*4 bytes, bounds sides8192/pixels8million/retained64MiB; transient decode/canvas/driver memory not fully covered by this accounting. One failed same-source item does not retry until source/bank changes. Synchronous setup errors propagate; async failures are recorded and reclaim reservation. */
+  /* @function normalRenderCache.automaticFallback1617 — Inputs: original sprite Image, profile ID and optional authored normal bank. Returns original/prepared authored artwork when a binding exists, otherwise the shared automatic relief fallback. November 1 supersedes the historical missing-binding return contract above. Authored worker preparation and its 64 MiB limit remain unchanged; automatic images have a separate bounded owner. Neither path changes frame coordinates or source alpha. */ function image(
     source,
     profile,
     next,
@@ -50,7 +51,9 @@
         e,
       ) => e.profile === profile,
     );
-    if (!binding) return source;
+    // November 1, 2026: authored bindings keep priority and always shade original art.
+    // Automatic relief is a same-size cached fallback, never another per-frame pass.
+    if (!binding) return root.FrontierAutomaticNormals?.image(source,profile) || source;
     let item = cache.get(profile);
     if (item?.source === source) return item.canvas || source; // Replacing a source within the same bank must cancel its job and release its reservation.
     if (item) {

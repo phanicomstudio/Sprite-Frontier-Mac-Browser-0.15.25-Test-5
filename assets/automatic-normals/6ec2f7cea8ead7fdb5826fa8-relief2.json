@@ -1,0 +1,29 @@
+{
+  "source": "img/characters/Candy_Armed_8R_3C.png",
+  "sha256": "6ec2f7cea8ead7fdb5826fa870284447fe7d73affaf91371260bade5d6794c64",
+  "normal": "assets/automatic-normals/6ec2f7cea8ead7fdb5826fa8-relief2.normal.png",
+  "lit": "assets/automatic-normals/6ec2f7cea8ead7fdb5826fa8-relief2.lit.webp",
+  "width": 1200,
+  "height": 4800,
+  "normalWidth": 126,
+  "normalHeight": 512,
+  "columns": 3,
+  "rows": 8,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15,
+    "frame_width": 42,
+    "frame_height": 64
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

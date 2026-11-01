@@ -305,3 +305,7 @@ Use the direct Build tools rather than the historical category/Scene tool prereq
 ## October 29, 2026 — current combined 0.16.11 behavior
 
 See [ITERATION-0.16.11.md](ITERATION-0.16.11.md), [FUNCTION-REFERENCE-0.16.11.md](FUNCTION-REFERENCE-0.16.11.md) and [LOCAL-0.16.11.md](LOCAL-0.16.11.md). These current chapters supersede earlier pending notes for inventory, crafting, catalog/recipe editing, connected rectangular construction, shared boundaries/openings and zoom-aware isometric visibility. Earlier explanations remain historical. The 24 starter materials are ordinary items; two descriptions and production recipe choices remain unauthored. TEST SCAN is intentionally a test skill. Fixed-artwork tools, sprite presentation and distinct shadow systems remain supported. Old bundled room examples are retired only from fresh projects, not deleted from saved projects.
+
+## November 1, 2026 — automatic normal detail
+
+0.16.17 generates default normal detail automatically for imported world artwork and sprites. Use normal sprite/material/model import tools; custom sprite or room/furniture normals and model normal assignments retain priority. Environment → Sprite normals reports the preparation snapshot and recent issues. See ITERATION-0.16.17.md for supported layouts and bounds. The game uses cached relief through its existing lighting paths, without another normal filter on each frame.

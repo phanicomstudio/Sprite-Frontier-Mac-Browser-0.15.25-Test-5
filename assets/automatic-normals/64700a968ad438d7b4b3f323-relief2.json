@@ -1,0 +1,27 @@
+{
+  "source": "img/items/prop_Big Ammo Mag B2.png",
+  "sha256": "64700a968ad438d7b4b3f32394acec976d7f0e1c1a31122a61823192ef4f967a",
+  "normal": "assets/automatic-normals/64700a968ad438d7b4b3f323-relief2.normal.png",
+  "lit": "assets/automatic-normals/64700a968ad438d7b4b3f323-relief2.lit.webp",
+  "width": 129,
+  "height": 177,
+  "normalWidth": 129,
+  "normalHeight": 177,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

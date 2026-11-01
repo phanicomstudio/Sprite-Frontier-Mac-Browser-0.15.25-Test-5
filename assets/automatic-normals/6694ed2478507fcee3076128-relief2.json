@@ -1,0 +1,27 @@
+{
+  "source": "img/items/prop_Magic Mushrooms1.png",
+  "sha256": "6694ed2478507fcee3076128ae13a2b95507e31fe13ee8c0d644ab258fb0fb2f",
+  "normal": "assets/automatic-normals/6694ed2478507fcee3076128-relief2.normal.png",
+  "lit": "assets/automatic-normals/6694ed2478507fcee3076128-relief2.lit.webp",
+  "width": 68,
+  "height": 112,
+  "normalWidth": 68,
+  "normalHeight": 112,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

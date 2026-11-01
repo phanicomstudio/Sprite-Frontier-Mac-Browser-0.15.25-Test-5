@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/rugs/prop_afghan_war_rug.png",
+  "sha256": "d03fbeff403d35cb98443795485418137021b16420b671c9e0dae26d8ea37f73",
+  "normal": "assets/automatic-normals/d03fbeff403d35cb98443795-relief2.normal.png",
+  "lit": "assets/automatic-normals/d03fbeff403d35cb98443795-relief2.lit.webp",
+  "width": 1306,
+  "height": 1667,
+  "normalWidth": 401,
+  "normalHeight": 511,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

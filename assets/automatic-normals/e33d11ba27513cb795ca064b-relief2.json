@@ -1,0 +1,27 @@
+{
+  "source": "img/items/prop_cryo_mod1.png",
+  "sha256": "e33d11ba27513cb795ca064ba9e0940d13d8f1647cbf3e7b0fa94d5546f5f7e9",
+  "normal": "assets/automatic-normals/e33d11ba27513cb795ca064b-relief2.normal.png",
+  "lit": "assets/automatic-normals/e33d11ba27513cb795ca064b-relief2.lit.webp",
+  "width": 143,
+  "height": 64,
+  "normalWidth": 143,
+  "normalHeight": 64,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

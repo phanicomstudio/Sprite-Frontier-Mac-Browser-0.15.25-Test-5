@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/trees/$$Joshua Tree 2.png",
+  "sha256": "b4a985f116777734d7757a1855bdd76ce6e090f239e7083c27a381eca718bd4b",
+  "normal": "assets/automatic-normals/b4a985f116777734d7757a18-relief2.normal.png",
+  "lit": "assets/automatic-normals/b4a985f116777734d7757a18-relief2.lit.webp",
+  "width": 1039,
+  "height": 1782,
+  "normalWidth": 298,
+  "normalHeight": 512,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}
