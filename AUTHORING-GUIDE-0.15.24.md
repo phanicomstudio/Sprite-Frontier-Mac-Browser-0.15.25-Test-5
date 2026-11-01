@@ -330,3 +330,7 @@ The shared built-in antique door now uses the supplied mirrored two-sided assemb
 Weapon definitions now include First-person character sprite profile and image import/path, animation rows/columns/FPS, scale and muzzle positions (0–1 of one frame). Enable that weapon's override, choose the character profile, import artwork and Apply. Candy's unholstered handgun has the supplied default frame. Holstering hides it. V toggles perspective camera; inward wheel at the nearest third-person limit also enters first-person. Isometric/fixed maps keep their own zoom.
 
 Environment → Map lighting: enable lighting; Ambient brightness 0 means dark and 1 fully bright. Add lamps/torches for localized illumination. Player light is independent per map and lights surroundings, not its owner. Nighttime exteriors may disable Outdoor sunlight. Projectiles always emit. Apply saves the existing map lighting record, including across editor/playtest and cell travel.
+
+## November 1, 2026 — first-person corrections in 0.16.22
+
+Wheel outward now returns to third person; this supersedes 0.16.21's explicit lack of wheel-out return. Sway uses a wider, fixed-time smoothed cycle rather than travelled-distance phase. Native weapon parameters expose separate image flash anchors and camera-relative physical projectile spawn offsets. See ITERATION-0.16.22.md for the exact authoring route and defaults.

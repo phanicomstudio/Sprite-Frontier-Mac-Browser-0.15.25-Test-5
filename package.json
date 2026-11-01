@@ -1,6 +1,6 @@
 {
   "name": "phanicom-sprite-frontier",
-  "version": "0.16.21",
+  "version": "0.16.22",
   "private": true,
   "description": "Offline vector billboard exploration prototype",
   "scripts": {
@@ -22,7 +22,8 @@
     "test:door-asset": "node tests/antique-door1620.cjs && node tests/browser/doors1611.cjs && node tests/function-comments1516.cjs",
     "test:normals": "node tests/automatic-normal-assets1617.cjs && node tests/browser/live-normals1618.cjs && node tests/browser/automatic-normals1618.cjs && node tests/browser/normal-performance1618.cjs && node tests/runtime-package1524.cjs && node tests/desktop-export1524.cjs && node tests/function-comments1516.cjs",
     "test:lighting": "node tests/lighting1524.cjs && node tests/weapon-definitions1524.cjs && node tests/sprite-lighting159.cjs && node tests/normal-bindings159.cjs && node tests/normal-cache159.cjs && node tests/browser/projectile-light-always1619.cjs && node tests/browser/terrain-lighting1524.cjs && node tests/browser/spritefusion160.cjs && node tests/browser/live-normals1618.cjs && node tests/function-comments1516.cjs",
-    "test:iteration1621": "node tests/first-person1621.cjs && node tests/browser/iteration1621.cjs && node tests/browser/shadow1621.cjs && node tests/browser/combat167.cjs && node tests/function-comments1516.cjs"
+    "test:iteration1621": "node tests/first-person1621.cjs && node tests/browser/iteration1621.cjs && node tests/browser/shadow1621.cjs && node tests/browser/combat167.cjs && node tests/function-comments1516.cjs",
+    "test:iteration1622": "node tests/first-person1621.cjs && node tests/first-person1622.cjs && node tests/browser/iteration1621.cjs && node tests/function-comments1516.cjs"
   },
   "dependencies": {
     "pixi.js": "8.22.0"

@@ -72,13 +72,18 @@ const assert=require('node:assert/strict'),path=require('node:path'),{
       g.player.holstered=true;
       const hidden=FrontierFirstPerson.assignment(g.player)===null;
 
+      const oldZ=p.z;p.z=100;p.holstered=false;
+      p.weapon.firstPerson=FrontierFirstPerson.validate({'candy-armed':{...def,spawnForward:.7,spawnRight:-.2,spawnUp:-.25}});
+      const expected=FrontierFirstPerson.muzzle(p,g,FrontierRender.camera(g)),actual=MF.createProjectile(g,p,p.weapon,{x:0,y:1,z:0});
+      const spawnMatch=Math.hypot(actual.position.x-expected.x,actual.position.y-expected.y,actual.position.z-expected.z)<1e-8;
+      p.z=oldZ;
       return {
-        owner,other,lit,shown,hidden,width:image.naturalWidth,weapon:g.player.weapon.id
+        owner,other,lit,shown,hidden,spawnMatch,width:image.naturalWidth,weapon:g.player.weapon.id
       };
 
     });
 
-    assert(result.shown&&result.hidden);
+    assert(result.shown&&result.hidden);assert(result.spawnMatch,"Actual projectile must use configured first-person origin");
     assert.equal(result.width,1920);
     assert(result.owner.every(/* @function iteration1621.dark â€” Inputs: RGB channel. Requires no owner contribution at zero ambient. */function(n){
       return n===0;
@@ -114,6 +119,9 @@ const assert=require('node:assert/strict'),path=require('node:path'),{
     });
 
     assert(wheel,'Inward wheel at perspective minimum enters first person');
+  await page.locator('#view').dispatchEvent('wheel',{deltaY:100,deltaMode:0});
+  assert.equal(await page.evaluate(/* @function iteration1622.outwardWheel — Inputs: none. Reads the actual camera handler after outward wheel input; first-person must return to third person without changing its lens. */function(){return testHost1611.roomApi.game().camera.firstPerson;}),false);
+
 
     await page.evaluate(/* @function iteration1621.isoSetup ï¿½ Inputs: none. Sets real isometric presentation and resets first-person state to test restricted wheel entry. */function(){
       const g=testHost1611.roomApi.game();
