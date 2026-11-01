@@ -56,7 +56,7 @@ assert.equal(retained.get("handgun").damage, 5);
 assert.equal(retained.get("handgun").cooldown, 12);
 service.apply({handgun:{light:{enabled:true,color:'#ff3300',radius:3,intensity:2,falloff:1,flicker:0.1}}});
 assert.equal(retained.get('handgun').light.radius,3);assert.equal(retained.get('handgun').light.color,'#ff3300');
-service.apply({handgun:{light:{enabled:false}}});assert.equal(retained.get('handgun').light.enabled,false);
+service.apply({handgun:{light:{enabled:false}}});/* November 1: old per-weapon off behavior is superseded by mandatory emission. */assert.equal(retained.get('handgun').light.enabled,true);
 assert.throws(/* @function weaponDefinitionsTest.lightBounds — Inputs: none. Returns: apply result only on erroneous acceptance; validates finite bounded projectile radius before host mutation. */ ()=>service.apply({handgun:{light:{enabled:true,radius:101}}}));
 service.apply(undefined);assert.equal(retained.get('handgun').light,undefined);
 console.log(

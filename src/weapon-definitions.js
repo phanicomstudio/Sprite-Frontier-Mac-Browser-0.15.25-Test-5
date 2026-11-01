@@ -100,7 +100,7 @@
               ].includes(field)
             )
               throw Error("Unsupported projectile light field: " + field);
-          const light = root.FrontierLocalLighting.source(
+          const light = root.FrontierLocalLighting.projectile(
             v,
             "weapon-projectile-light",
           );
@@ -256,15 +256,12 @@
       const lightMode = field(row, "Projectile light mode", "select", "");
       for (const [label, key] of [
         ["Inherit cell/projectile settings", "inherit"],
-        ["Disable for this weapon", "off"],
         ["Custom projectile light", "custom"],
       ])
         lightMode.append(new Option(label, key));
       const light = draft[id]?.light ?? weapon.light;
       lightMode.value = light
-        ? light.enabled === false
-          ? "off"
-          : "custom"
+        ? "custom"
         : "inherit";
       const lightFields = {
         color: field(
@@ -276,7 +273,7 @@
       };
       for (const [key, label, min, max, initial] of [
         ["radius", "Projectile light radius (metres)", 0.05, 100, 2],
-        ["intensity", "Projectile light brightness (0–4)", 0, 4, 1.2],
+        ["intensity", "Projectile light brightness (0.05–4)", 0.05, 4, 1.2],
         ["falloff", "Projectile light falloff", 0.5, 4, 2],
         ["flicker", "Projectile light flicker (0–0.3)", 0, 0.3, 0],
       ]) {
@@ -309,7 +306,7 @@
           const values = draft[row.id]?.soundAsset ? {soundAsset: structuredClone(draft[row.id].soundAsset)} : {};
           for (const [key, control] of Object.entries(row.fields))
             values[key] = numbers[key] ? Number(control.value) : control.value;
-          if (row.lightMode.value === "off") values.light = { enabled: false };
+          // November 1: per-weapon off mode is superseded; every projectile emits.
           if (row.lightMode.value === "custom") {
             values.light = { enabled: true };
             for (const [key, control] of Object.entries(row.lightFields))

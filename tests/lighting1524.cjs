@@ -13,10 +13,10 @@ const ceilingWorld={...world,interior:{primitives:[{x:2,y:2,z:2,w:5,d:5,h:.2}]}}
 frame=lighting.frame({...game,sourceWorld:ceilingWorld},0);assert.equal(lighting.sample(frame,2,2,3)[0],.1,'Ceiling prevents light leaking to stacked upper floor');
 const projectileWorld={lighting:lighting.validate({enabled:true,ambient:.1,player:{enabled:false},projectiles:{enabled:true},budget:2})};
 const projectileGame={...game,sourceWorld:projectileWorld,projectiles:[{id:'1',map:'a',x:2,y:2,z:1},{id:'2',map:'a',x:3,y:2,z:1},{id:'3',map:'a',x:4,y:2,z:1},{id:'foreign',map:'b',x:2,y:2,z:1}]};
-frame=lighting.frame(projectileGame,0);assert.equal(frame.lights.length,2);assert.equal(frame.droppedLights,1);assert.equal(frame.cache.size,0);
+frame=lighting.frame(projectileGame,0);/* November 1: projectiles use up to the existing eight shader slots even when decorative budget is two. */assert.equal(frame.lights.length,3);assert.equal(frame.droppedLights,0);assert.equal(frame.cache.size,0);
 projectileGame.projectiles=[];assert.equal(lighting.frame(projectileGame,1).lights.length,0,'Despawn leaves no retained projectile lights');
 projectileGame.projectiles=[{id:'native-position',map:'a',position:{x:2,y:2,z:1}}];assert.equal(lighting.frame(projectileGame,1).lights[0].x,2,'Native spatial projectile position feeds emission');
-projectileGame.projectiles[0].light={enabled:false};assert.equal(lighting.frame(projectileGame,1).lights.length,0,'Weapon opt-out overrides global projectile emission');
+projectileGame.projectiles[0].light={enabled:false};/* November 1, 2026: supersedes the old weapon-opt-out assertion; user requires all projectiles lit. */assert.equal(lighting.frame(projectileGame,1).lights.length,1,'Legacy weapon off flags cannot suppress emission');
 const restored=lighting.validate(JSON.parse(JSON.stringify(world.lighting)));assert.equal(restored.lights[0].radius,4);assert.throws(/* @function lightingTest.invalidBudget — Inputs: none. Returns: validator result or throws for an unsupported active budget. */ function(){return lighting.validate({budget:9});});
 console.log('PASS radius falloff, ambient, thin-wall/ceiling blocking, static caching, projectile budget/despawn/cell isolation and persistence');
 
@@ -25,3 +25,6 @@ const itemGame={...game,sourceWorld:{lighting:lighting.validate({enabled:true,am
 assert(lighting.sample(lighting.frame(itemGame,0),2,2,.4)[0]>0.9);
 itemGame.hubDrops=[];assert.equal(lighting.sample(lighting.frame(itemGame,0),2,2,.4)[0],0,'Picking up removes its source');
 console.log('PASS dropped item light placement and pickup removal');
+
+// November 1, 2026: canonical persistence upgrades old off/zero records, without turning general map lighting on.
+const mandatory=lighting.validate(JSON.parse(JSON.stringify({enabled:false,projectiles:{enabled:false,intensity:0}})));assert.equal(mandatory.enabled,false);assert.equal(mandatory.projectiles.enabled,true);assert(mandatory.projectiles.intensity>0);

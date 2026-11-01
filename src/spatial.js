@@ -312,10 +312,10 @@
         ...muzzle,
       };
       // October 12, 2026: optional weapon emission settings are copied into this shot, so weapon changes cannot retarget a live light.
-      if (weapon.light && root.FrontierLocalLighting)
-        shot.light = root.FrontierLocalLighting.source(
-          { ...game.sourceWorld?.lighting?.projectiles, ...weapon.light },
-          "weapon-projectile-light",
+      // November 1, 2026: emission itself is mandatory; the validator upgrades old off/zero values and supplies positive defaults even when no weapon light override exists.
+      if (root.FrontierLocalLighting)
+        shot.light = root.FrontierLocalLighting.projectile(
+          {...game.sourceWorld?.lighting?.projectiles,...weapon.light},"weapon-projectile-light"
         );
       shot.previousPosition = {
         ...muzzle,
