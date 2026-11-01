@@ -319,3 +319,8 @@ The 0.16.17 fixed-relief default is superseded by real live normal-map lighting.
 ## November 1, 2026 — mandatory projectile lighting (0.16.19)
 
 Projectile emission is now always enabled; old map/weapon off or zero-brightness values upgrade automatically. There is no projectile-off UI. Runtime selection prioritizes projectile sources within the existing eight-light capacity, including maps with general lighting disabled. See ITERATION-0.16.19.md and FUNCTION-REFERENCE-0.16.19.md. Earlier optional-toggle contracts are historical.
+
+
+## November 1, 2026 — mirrored antique door (0.16.20)
+
+The shared built-in antique door now uses the supplied mirrored two-sided assembly, retaining frame/leaf node IDs and hinge pivot. Known old clean built-in library payloads upgrade during import/restore; modified/custom models remain unchanged. Current provenance and validation are in ITERATION-0.16.20.md and FUNCTION-REFERENCE-0.16.20.md. Prior asset notes are historical.
