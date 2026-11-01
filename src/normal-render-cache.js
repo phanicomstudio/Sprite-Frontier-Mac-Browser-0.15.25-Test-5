@@ -53,7 +53,9 @@
     );
     // November 1, 2026: authored bindings keep priority and always shade original art.
     // Automatic relief is a same-size cached fallback, never another per-frame pass.
-    if (!binding) return root.FrontierAutomaticNormals?.image(source,profile) || source;
+    if (!binding){root.FrontierLiveNormals?.authored(source,null);return root.FrontierAutomaticNormals?.image(source,profile) || source;}
+    // November 1, 2026: custom PNG now feeds the live directional shader; old relief path below is historical.
+    if(root.FrontierLiveNormals){root.FrontierLiveNormals.authored(source,binding);return source;}
     let item = cache.get(profile);
     if (item?.source === source) return item.canvas || source; // Replacing a source within the same bank must cancel its job and release its reservation.
     if (item) {

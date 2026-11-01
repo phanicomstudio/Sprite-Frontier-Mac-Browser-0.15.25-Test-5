@@ -574,7 +574,7 @@
         );
         // November 1, 2026: explain the default independently from custom per-map overrides.
       const auto=root.FrontierAutomaticNormals?.debug();
-      if(auto)autoStatus.textContent="Automatic normal relief is enabled for world materials and sprites ("+auto.packaged+" packaged defaults). UI and sky are excluded. Imported art prepares once; custom sprite normals take priority. Live lights and shadows remain independent. "+auto.pending+" images pending, "+auto.generationPending+" generation tasks; "+auto.failures+" preparation failures. "+(auto.issues.at(-1)?.message||"");
+      if(auto)autoStatus.textContent="Live normal-map lighting is enabled for world materials and sprites ("+auto.packaged+" packaged defaults). UI and sky are excluded. Imported art prepares once; custom sprite normals take priority. Normals react to map, player and projectile lights. Preview direction controls only the workbench lamp; shadow systems remain separate. "+auto.pending+" images pending, "+auto.generationPending+" generation tasks; "+auto.failures+" preparation failures. "+(auto.issues.at(-1)?.message||"");
       panel.showModal();
       };
     panel.addEventListener("cancel", /* @function normalWorkbench.cancelOnEscape — Inputs: dialog cancel event ignored. Returns nothing; aborts generation before the native dialog closes. No authored changes. */ function(){generationJob?.abort();});

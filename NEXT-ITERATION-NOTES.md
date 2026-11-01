@@ -265,3 +265,8 @@ User selected world materials and character/prop sprites. Exclude UI and sky art
 ## November 1, 2026 — automatic normals completed in 0.16.17
 
 The pending scope above is now implemented for the supported world-image, sprite, furniture, material and model-albedo paths. UI/skies and authored overrides remain separate. See ITERATION-0.16.17.md for cached-relief behavior, budgets and validation; earlier pending notes remain historical.
+
+
+## November 1, 2026 — live normals correction (0.16.18)
+
+The 0.16.17 fixed-relief default is superseded by real live normal-map lighting. Original albedo and locked sprite presentation remain unchanged. Map/player/projectile lights and outdoor sun direction drive a separate normal texture in existing world draws; custom overrides remain authoritative. See ITERATION-0.16.18.md and FUNCTION-REFERENCE-0.16.18.md for supported paths, deliberate shadow splits, limits, performance measurements and current validation successors.

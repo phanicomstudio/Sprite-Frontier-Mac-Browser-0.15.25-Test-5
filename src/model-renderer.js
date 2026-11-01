@@ -151,6 +151,8 @@
       overrideImage: image,
       overrideSampler: override ? { wrapS: 10497, wrapT: 10497 } : null,
       texture: pbr.baseColorTexture?.index,
+      normalTexture: image?undefined:m.normalTexture?.index,
+      normalScale:m.normalTexture?.scale??1,
       alphaMode: m.alphaMode || "OPAQUE",
       cutoff: m.alphaCutoff ?? 0.5,
       coverage,
@@ -431,6 +433,10 @@
       color =
         surface.colorScratch1523 ||
         (surface.colorScratch1523 = new Float64Array(4));
+    // November 1: retained transparent/fixed CPU fallback also uses real directional normals.
+    const normalImage=m.overrideImage?.normal||state.pixels[asset.json.textures?.[m.normalTexture]?.source]||image?.normal;
+    const liveBasis=normalImage&&m.lighting?root.FrontierLiveNormals?.basis(vertices,cam):null;
+    const normalScratch=surface.normalScratch1618||=(new Float64Array(4)),lightScratch=surface.lightScratch1618||=(new Float64Array(3)),pointScratch=surface.pointScratch1618||=[0,0,0],decodedNormal=surface.decodedNormal1618||=[0,0,1];
     let written = 0; /* October 12: triangle rasterization is synchronous and non-reentrant; reuse one surface-owned RGBA scratch and index existing projected vertices rather than allocating three edge pairs per triangle. Exact arithmetic/sampling stays unchanged. */
     /* October 12, 2026: constrain each scanline to the triangle's horizontal span instead of scanning its entire bounding box. Expand by one sample to preserve floating-point edge inclusion; existing barycentric tests remain authoritative. This saves work without changing density or sampling. */
     for (let y = y0; y <= y1; y++) {
@@ -514,7 +520,14 @@
           smooth,
           color,
         );
-        if (vertexLight)
+        if(liveBasis){
+          sampleInto1523(normalImage,sampler,[1,1,1,1],wa*a.uv[0]+wb*b.uv[0]+wc*c.uv[0],wa*a.uv[1]+wb*b.uv[1]+wc*c.uv[1],smooth,normalScratch);
+          for(let axis=0;axis<3;axis++){decodedNormal[axis]=normalScratch[axis]/127.5-1;pointScratch[axis]=wa*a.point[axis]+wb*b.point[axis]+wc*c.point[axis];}
+          decodedNormal[0]*=m.normalScale??1;decodedNormal[1]*=m.normalScale??1;
+          root.FrontierLiveNormals.sample(m.lighting,pointScratch,decodedNormal,liveBasis,lightScratch);
+          for(let channel=0;channel<3;channel++)color[channel]*=lightScratch[channel];
+        }
+        if (vertexLight&&!liveBasis)
           for (let channel = 0; channel < 3; channel++)
             color[channel] *=
               wa * vertexLight[0][channel] +
@@ -599,7 +612,7 @@
   }
   /* @function model-renderer.gpuRoom1523 — Inputs: live Pixi adapter, game viewport and camera, room faces. Returns reusable GPU backend for supported opaque perspective room surfaces, or null for Canvas/fixed-camera/transparent fallback. Density changes release old upload and GPU resources before recreation. No gameplay mutation; creation failures fall back with one warning. */
   function gpuRoom1523(ctx, game, cam, faces) {
-    if (!ctx.app || cam.orthographic || !root.FrontierGeometryGPU) return null;
+    if (!ctx.app || !root.FrontierGeometryGPU) return null;
     const density = root.FrontierDisplay?.get().scale || 1,
       width = game.viewWidth || 640;
     let state = gpuRooms.get(ctx);
@@ -706,7 +719,7 @@
       }
     }
     if (gpu) {
-      gpu.draw(gpuTriangles, !!root.FrontierDisplay?.smooth(), game.lightFrame);
+      gpu.draw(gpuTriangles, !!root.FrontierDisplay?.smooth(), game.lightFrame,null,!!cam.orthographic);
       ctx.sources?.get(gpu.canvas)?.update();
       ctx.save();
       ctx.globalAlpha = 1;
@@ -952,7 +965,7 @@
     cam,
     models,
   ) {
-    if (!ctx.app || cam.orthographic || !root.FrontierGeometryGPU) return null;
+    if (!ctx.app || !root.FrontierGeometryGPU) return null;
     for (const entity of models) {
       if ((entity.modelCoverage ?? 1) < 1) return null;
       const asset =
@@ -1237,6 +1250,8 @@
                 mat.overrideImage ||
                 state.pixels[texture?.source] ||
                 whitePixel,
+              normal:mat.overrideImage?.normal||state.pixels[asset.json.textures?.[mat.normalTexture]?.source],
+              normalScale:mat.normalScale,
               factor: mat.factor,
               opaque: true,
               sampler:
@@ -1270,6 +1285,7 @@
         !!root.FrontierDisplay?.smooth(),
         game.lightFrame,
         prior,
+        !!cam.orthographic,
       );
       ctx.sources?.get(gpu.backend.canvas)?.update();
       ctx.save();

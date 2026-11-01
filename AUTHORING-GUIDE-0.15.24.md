@@ -309,3 +309,8 @@ See [ITERATION-0.16.11.md](ITERATION-0.16.11.md), [FUNCTION-REFERENCE-0.16.11.md
 ## November 1, 2026 — automatic normal detail
 
 0.16.17 generates default normal detail automatically for imported world artwork and sprites. Use normal sprite/material/model import tools; custom sprite or room/furniture normals and model normal assignments retain priority. Environment → Sprite normals reports the preparation snapshot and recent issues. See ITERATION-0.16.17.md for supported layouts and bounds. The game uses cached relief through its existing lighting paths, without another normal filter on each frame.
+
+
+## November 1, 2026 — live normals correction (0.16.18)
+
+The 0.16.17 fixed-relief default is superseded by real live normal-map lighting. Original albedo and locked sprite presentation remain unchanged. Map/player/projectile lights and outdoor sun direction drive a separate normal texture in existing world draws; custom overrides remain authoritative. See ITERATION-0.16.18.md and FUNCTION-REFERENCE-0.16.18.md for supported paths, deliberate shadow splits, limits, performance measurements and current validation successors.

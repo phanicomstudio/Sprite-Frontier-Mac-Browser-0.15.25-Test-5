@@ -254,6 +254,8 @@
     const entry = cache(world),
       blockers = entry.blockers.slice(0, MAX_BLOCKERS);
     return {
+      // November 1, 2026: outdoor normal response shares authored sun orientation; it does not create another shadow system or light-budget entry.
+      sun: !world.interior&&settings.sun?.enabled ? {direction:[Math.sin(settings.sun.azimuth*Math.PI/180)*Math.cos(settings.sun.elevation*Math.PI/180),Math.cos(settings.sun.azimuth*Math.PI/180)*Math.cos(settings.sun.elevation*Math.PI/180),Math.sin(settings.sun.elevation*Math.PI/180)],intensity:.35}:null,
       ambient: settings.ambient,
       steps: settings.steps,
       lights,
@@ -462,7 +464,7 @@
   function appearanceFilter163(value){const v=appearance163(value);return v.mode==="neutral" ? "none" : "contrast("+v.contrast+") saturate("+v.saturation+") blur("+v.softness+"px)";}
   /* @function localLighting.shadows169 — Inputs: optional shared shadow draft. Returns a detached pair of finite 0-4 strength multipliers. Sun and isometric contact effects remain separate; invalid values reject before adoption. Defaults retain sun and make the previously faint contacts more readable. */
   function shadows169(value={}){const sun=value.sun??1,contact=value.contact??1.75;finite(sun,"Sun shadow strength",0,4);finite(contact,"Isometric ground shadow strength",0,4);return {sun,contact};}
-  root.FrontierLocalLighting = {shadows169,appearance163,appearanceFilter163,sun163,spriteSunShadow163,
+  root.FrontierLocalLighting = { shadows169,appearance163,appearanceFilter163,sun163,spriteSunShadow163,
     validate,
     source,
     frame,
