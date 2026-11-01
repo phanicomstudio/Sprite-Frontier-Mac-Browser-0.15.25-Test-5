@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/ground/mythos-moss.png",
+  "sha256": "4e54e355d5be273c6ff6aaa030f57bc0f8dca2b3e6d55e928a99f10306857669",
+  "normal": "assets/automatic-normals/4e54e355d5be273c6ff6aaa0-relief2.normal.png",
+  "lit": "assets/automatic-normals/4e54e355d5be273c6ff6aaa0-relief2.lit.webp",
+  "width": 384,
+  "height": 384,
+  "normalWidth": 384,
+  "normalHeight": 384,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

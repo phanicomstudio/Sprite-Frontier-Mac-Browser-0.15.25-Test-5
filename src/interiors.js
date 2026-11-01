@@ -705,8 +705,11 @@
       ctx.vectorDisplay = null;
       ctx.assetNormal = image(cam.room.normal);
       ctx.assetLight = cam.room.light;
+      // November 1, 2026: explicit room normals retain the existing GPU/light path.
+      // Otherwise use cached automatic relief; projection and authored image scale stay unchanged.
+      const artwork=cam.room.normal?im:root.FrontierAutomaticNormals?.image(im,cam.room.image)||im;
       ctx.drawImage(
-        im,
+        artwork,
         0,
         0,
         im.naturalWidth,
@@ -730,8 +733,10 @@
     if (!im?.complete || !im.naturalWidth) return;
     ctx.assetNormal = image(e.normal);
     ctx.assetLight = ctx.world.interior.light;
+    // November 1, 2026: a custom furniture normal always takes priority.
+    const artwork=e.normal?im:root.FrontierAutomaticNormals?.image(im,e.image)||im;
     ctx.drawImage(
-      im,
+      artwork,
       0,
       0,
       im.naturalWidth,

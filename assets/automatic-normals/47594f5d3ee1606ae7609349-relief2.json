@@ -1,0 +1,27 @@
+{
+  "source": "img/items/prop_Bottle of Absinthe1.png",
+  "sha256": "47594f5d3ee1606ae7609349432faf0c04175e08a8e06e32842ce7b074936bce",
+  "normal": "assets/automatic-normals/47594f5d3ee1606ae7609349-relief2.normal.png",
+  "lit": "assets/automatic-normals/47594f5d3ee1606ae7609349-relief2.lit.webp",
+  "width": 43,
+  "height": 160,
+  "normalWidth": 43,
+  "normalHeight": 160,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

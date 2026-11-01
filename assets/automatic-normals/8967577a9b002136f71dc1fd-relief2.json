@@ -1,0 +1,27 @@
+{
+  "source": "img/items/prop_Glass of Absinthe1.png",
+  "sha256": "8967577a9b002136f71dc1fdd022ae692fd2ff3bc12a3fd694d9ceb612912f84",
+  "normal": "assets/automatic-normals/8967577a9b002136f71dc1fd-relief2.normal.png",
+  "lit": "assets/automatic-normals/8967577a9b002136f71dc1fd-relief2.lit.webp",
+  "width": 64,
+  "height": 66,
+  "normalWidth": 64,
+  "normalHeight": 66,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

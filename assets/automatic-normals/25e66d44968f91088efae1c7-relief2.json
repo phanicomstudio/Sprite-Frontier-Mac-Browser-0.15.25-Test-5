@@ -1,0 +1,27 @@
+{
+  "source": "img/items/prop_creamed_dumplings_with_butter1.png",
+  "sha256": "25e66d44968f91088efae1c75382624c74ee1fd498042682bb39b7e074c884a2",
+  "normal": "assets/automatic-normals/25e66d44968f91088efae1c7-relief2.normal.png",
+  "lit": "assets/automatic-normals/25e66d44968f91088efae1c7-relief2.lit.webp",
+  "width": 124,
+  "height": 130,
+  "normalWidth": 124,
+  "normalHeight": 130,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

@@ -1,0 +1,29 @@
+{
+  "source": "img/characters/$Candy 1.png",
+  "sha256": "8761ba8e53d1f6ce16e13a44a7101dfbca448956469a538c7ebf91e94f44a402",
+  "normal": "assets/automatic-normals/8761ba8e53d1f6ce16e13a44-relief2.normal.png",
+  "lit": "assets/automatic-normals/8761ba8e53d1f6ce16e13a44-relief2.lit.webp",
+  "width": 1200,
+  "height": 2400,
+  "normalWidth": 255,
+  "normalHeight": 512,
+  "columns": 3,
+  "rows": 4,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15,
+    "frame_width": 85,
+    "frame_height": 128
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

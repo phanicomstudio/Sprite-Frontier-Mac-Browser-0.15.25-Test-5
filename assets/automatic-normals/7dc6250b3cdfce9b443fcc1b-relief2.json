@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/trees/$$Thorny Tree B.png",
+  "sha256": "7dc6250b3cdfce9b443fcc1bbfb7d96ef5ef26b5642c8029c6bb5b7d714d031c",
+  "normal": "assets/automatic-normals/7dc6250b3cdfce9b443fcc1b-relief2.normal.png",
+  "lit": "assets/automatic-normals/7dc6250b3cdfce9b443fcc1b-relief2.lit.webp",
+  "width": 971,
+  "height": 1257,
+  "normalWidth": 395,
+  "normalHeight": 512,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

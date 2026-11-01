@@ -1,3 +1,4 @@
+/* November 1, 2026: automatic imported-asset preparation also uses this exact generator at load time. This supersedes the historical authoring-only statement below; there is still no per-frame generation. Upstream bytes, license, native manual limits and cancellation remain unchanged. */
 /* October 22, 2026: exact upstream Sprite Fusion Rust/WASM generator, pinned in
  * vendor/spritefusion. Blob workers and embedded bytes support offline file://
  * packages. Generation is authoring-only; runtime shading retains its owner. */

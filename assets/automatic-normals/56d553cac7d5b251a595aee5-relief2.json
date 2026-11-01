@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/furniture/$$Furniture 2.png",
+  "sha256": "56d553cac7d5b251a595aee51e6420416f8de8bdbbc8e9b77664209eb01ddf9b",
+  "normal": "assets/automatic-normals/56d553cac7d5b251a595aee5-relief2.normal.png",
+  "lit": "assets/automatic-normals/56d553cac7d5b251a595aee5-relief2.lit.webp",
+  "width": 448,
+  "height": 690,
+  "normalWidth": 332,
+  "normalHeight": 512,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

@@ -1,3 +1,7 @@
+## November 1, 2026 — automatic normal defaults, 0.16.17
+
+See ITERATION-0.16.17.md and FUNCTION-REFERENCE-0.16.17.md for the current cache, asset-role, import/export and override contract. This supersedes manual-only normal-generation descriptions below while preserving the original workbench and pinned upstream generator.
+
 ## October 22, 2026 — current iteration 0.16.0
 
 See EDITOR-REDESIGN-0.16.0.md for the implemented foundation, migration limits and remaining milestones, and SPRITEFUSION-0.16.0.md for local native-resolution generation, licensing and build provenance. Earlier explanations below remain historical; this dated entry supersedes conflicting UI, generation and normal-budget descriptions.

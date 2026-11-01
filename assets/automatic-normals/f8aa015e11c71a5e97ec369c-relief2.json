@@ -1,0 +1,27 @@
+{
+  "source": "img/items/prop_chiban_chicken1.png",
+  "sha256": "f8aa015e11c71a5e97ec369c6f354c31ddb5fc5d9221b5505d3a22bbd040dac5",
+  "normal": "assets/automatic-normals/f8aa015e11c71a5e97ec369c-relief2.normal.png",
+  "lit": "assets/automatic-normals/f8aa015e11c71a5e97ec369c-relief2.lit.webp",
+  "width": 69,
+  "height": 112,
+  "normalWidth": 69,
+  "normalHeight": 112,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

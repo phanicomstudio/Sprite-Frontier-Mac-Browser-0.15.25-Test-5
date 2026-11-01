@@ -1,0 +1,27 @@
+{
+  "source": "img/items/prop_Communication Device1.png",
+  "sha256": "9b5eeee13d145581a5c4d95c5c7326801495717d822b403f2719d94ead55bfd2",
+  "normal": "assets/automatic-normals/9b5eeee13d145581a5c4d95c-relief2.normal.png",
+  "lit": "assets/automatic-normals/9b5eeee13d145581a5c4d95c-relief2.lit.webp",
+  "width": 367,
+  "height": 212,
+  "normalWidth": 367,
+  "normalHeight": 212,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

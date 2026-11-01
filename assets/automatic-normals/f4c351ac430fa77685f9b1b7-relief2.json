@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/trees/$$Morel Tree 5.png",
+  "sha256": "f4c351ac430fa77685f9b1b78d011001a68574f2ece6c55ee1483db0a758cd6e",
+  "normal": "assets/automatic-normals/f4c351ac430fa77685f9b1b7-relief2.normal.png",
+  "lit": "assets/automatic-normals/f4c351ac430fa77685f9b1b7-relief2.lit.webp",
+  "width": 1862,
+  "height": 1796,
+  "normalWidth": 512,
+  "normalHeight": 493,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

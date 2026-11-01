@@ -1,0 +1,27 @@
+{
+  "source": "img/interiors/Room_Test_A.png",
+  "sha256": "b56ef3a32e25a3f7975610c3ab39fc1fd3165dc3a338368ab2b41195655536ea",
+  "normal": "assets/automatic-normals/b56ef3a32e25a3f7975610c3-relief2.normal.png",
+  "lit": "assets/automatic-normals/b56ef3a32e25a3f7975610c3-relief2.lit.webp",
+  "width": 1129,
+  "height": 636,
+  "normalWidth": 512,
+  "normalHeight": 288,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 0
+  },
+  "wrap": true,
+  "compression": "webp-lossless-rgba-verified"
+}

@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/decor/prop_mexican_blanket_2.png",
+  "sha256": "09eba79fef38ad95b5d12605d8729038dfc1718bab9fc5f2bf0bdf0d47daffce",
+  "normal": "assets/automatic-normals/09eba79fef38ad95b5d12605-relief2.normal.png",
+  "lit": "assets/automatic-normals/09eba79fef38ad95b5d12605-relief2.lit.webp",
+  "width": 1036,
+  "height": 1801,
+  "normalWidth": 294,
+  "normalHeight": 512,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

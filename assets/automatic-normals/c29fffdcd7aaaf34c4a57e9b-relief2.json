@@ -1,0 +1,27 @@
+{
+  "source": "img/items/prop_Box Of Sugar Cubes1.png",
+  "sha256": "c29fffdcd7aaaf34c4a57e9b76c5af748e747d55b51d58b88b5c00c6236f697b",
+  "normal": "assets/automatic-normals/c29fffdcd7aaaf34c4a57e9b-relief2.normal.png",
+  "lit": "assets/automatic-normals/c29fffdcd7aaaf34c4a57e9b-relief2.lit.webp",
+  "width": 35,
+  "height": 43,
+  "normalWidth": 35,
+  "normalHeight": 43,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

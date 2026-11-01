@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/ceilings/prop_tin_ceiling1.png",
+  "sha256": "b317b1e96eba27ed2c631c5a9ce93aba485ed9167000495f76529a162a2a28cd",
+  "normal": "assets/automatic-normals/b317b1e96eba27ed2c631c5a-relief2.normal.png",
+  "lit": "assets/automatic-normals/b317b1e96eba27ed2c631c5a-relief2.lit.webp",
+  "width": 2048,
+  "height": 1297,
+  "normalWidth": 512,
+  "normalHeight": 324,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 0
+  },
+  "wrap": true,
+  "compression": "webp-lossless-rgba-verified"
+}

@@ -28,6 +28,24 @@
       ? root.FrontierModelMaterials.uv(mapping, original)
       : original;
   }
+  /* @function modelRenderer.automaticAlbedo1617 — Inputs: decoded model asset and original ordered RGBA records. Returns a promise of prepared albedo records only. Explicit glTF normal-map materials retain original base color; normal/roughness/emissive channels are never modified. The shared single-worker queue runs before model texture readiness. */
+  async function automaticAlbedo1617(asset,pixels) {
+    if(!root.FrontierAutomaticNormals)return pixels;
+    const eligible=new Set(),authored=new Set();
+    for(const material of asset.json.materials||[]) {
+      const texture=material.pbrMetallicRoughness?.baseColorTexture;
+      const source=asset.json.textures?.[texture?.index]?.source;
+      if(source===undefined)continue;
+      if(material.normalTexture)authored.add(source);else eligible.add(source);
+    }
+    const result=pixels.slice();
+    for(const index of eligible)if(!authored.has(index)&&pixels[index]) {
+      const digest=await crypto.subtle.digest("SHA-256",asset.images[index].bytes);
+      const hash=Array.from(new Uint8Array(digest),/* @function modelRenderer.normalSource1617 — Inputs: encoded source digest byte. Returns fixed-width hex so embedded GLB images reuse identical packaged normal bakes. This runs once per material load, never per triangle. */function(byte){return byte.toString(16).padStart(2,"0");}).join("");
+      result[index]=await root.FrontierAutomaticNormals.pixels(pixels[index],"Model material "+index,hash);
+    }
+    return result;
+  }
   /* Historical contract retained; October 14, 2026 reviewed explanation follows. @function model-renderer.prepare.2 — Handles prepare within model renderer. Inputs: asset. Updates: state promise. Uses: textures has; textures get; textures set; promise all using asset images map using a callback then using a callback catch. Returns: textures get using asset; state. */
   /* @function model-renderer.prepare.2Reviewed — Prepares shared model texture pixels once per asset identity. Inputs: decoded asset with embedded image bytes and MIME types. Returns the cached state immediately, including its asynchronous promise; successful decode publishes RGBA byte records and ready=true. Failure is captured as state.error and leaves ready=false, without an automatic retry. Does not change asset data; browser image/canvas APIs are required. */ function prepare(
     asset,
@@ -64,10 +82,11 @@
     )
       .then(
         /* Historical contract retained; October 14, 2026 reviewed explanation follows. @function model-renderer.callback.4 — Provides the callback for promise all using asset images map using a callback then. Inputs: p. Updates: state pixels; state ready. */
-  /* @function model-renderer.callback.4Reviewed — Publishes the completed batch of decoded texture records. Inputs: ordered pixel records matching asset.images. Returns nothing; stores the records and marks the shared preparation state ready only after every image succeeds. No asset mutation or further decoding. */ (
+  /* @function model-renderer.callback.4Reviewed — Publishes the completed batch of decoded texture records. Inputs: ordered pixel records matching asset.images. Returns nothing; stores the records and marks the shared preparation state ready only after every image succeeds. No asset mutation or further decoding. */ async (
           p,
         ) => {
-          state.pixels = p;
+          // November 1: only albedo without authored model normals uses automatic relief.
+          state.pixels = await automaticAlbedo1617(asset,p);
           state.ready = true;
         },
       )

@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/walls/prop_wood_panel_wall2.png",
+  "sha256": "819357fdecbf65ecb0c3aa57ef091e1b8f4faf5db0df7c2fc9a66d77a61ab9d6",
+  "normal": "assets/automatic-normals/819357fdecbf65ecb0c3aa57-relief2.normal.png",
+  "lit": "assets/automatic-normals/819357fdecbf65ecb0c3aa57-relief2.lit.webp",
+  "width": 2048,
+  "height": 1297,
+  "normalWidth": 512,
+  "normalHeight": 324,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

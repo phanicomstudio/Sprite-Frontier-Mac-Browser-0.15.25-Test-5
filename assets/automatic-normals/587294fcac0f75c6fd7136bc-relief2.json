@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/trees/$$Para Plant 2.png",
+  "sha256": "587294fcac0f75c6fd7136bccdd7093ee4d57eb3989e38ff595aacf4135c4829",
+  "normal": "assets/automatic-normals/587294fcac0f75c6fd7136bc-relief2.normal.png",
+  "lit": "assets/automatic-normals/587294fcac0f75c6fd7136bc-relief2.lit.webp",
+  "width": 1351,
+  "height": 2696,
+  "normalWidth": 256,
+  "normalHeight": 512,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

@@ -1,0 +1,29 @@
+{
+  "source": "img/characters/$Chiban VK 2.png",
+  "sha256": "0242553a508ddbc1cbe32474e57399de68063fde1fb22996f0148d0fb5adab76",
+  "normal": "assets/automatic-normals/0242553a508ddbc1cbe32474-relief2.normal.png",
+  "lit": "assets/automatic-normals/0242553a508ddbc1cbe32474-relief2.lit.webp",
+  "width": 1200,
+  "height": 2400,
+  "normalWidth": 255,
+  "normalHeight": 512,
+  "columns": 3,
+  "rows": 4,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15,
+    "frame_width": 85,
+    "frame_height": 128
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

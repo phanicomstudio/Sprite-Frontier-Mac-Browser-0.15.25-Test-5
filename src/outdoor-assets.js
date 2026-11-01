@@ -567,10 +567,14 @@
     if (!a) return null;
     if (!images.has(id)) {
       const im = new Image();
-      im.src = a.dataURL;
+      // November 1, 2026: packaged relief replaces albedo at load time, not per tile.
       images.set(id, im);
+      if(root.FrontierAutomaticNormals)root.FrontierAutomaticNormals.load(a.image,a.dataURL).then(/* @function outdoorAssets.normalLoaded1617 — Inputs: content-verified material Image. Publishes the same-size prepared art once, preserving source data and existing shared image ownership. */function(loaded){images.set(id,loaded);},/* @function outdoorAssets.normalFailed1617 — Inputs: failed asset read ignored. Restores original embedded art; normal preparation failure cannot remove terrain. */function(){im.src=a.dataURL;});
+      else im.src=a.dataURL;
     }
-    return images.get(id);
+    const original=images.get(id);
+    return original.frontierAutomaticPrepared ? original
+      : root.FrontierAutomaticNormals?.image(original,a.image) || original;
   }
   /* @function outdoor-assets.install.4 — Handles install within outdoor assets. Inputs: no explicit arguments; uses enclosing module state. Uses: frontier sprites sheet; frontier muzzle load; assets filter using a callback map; assets filter. */ function install() {
     for (const a of assets)

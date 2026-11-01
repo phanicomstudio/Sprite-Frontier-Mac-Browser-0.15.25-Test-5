@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/walls/prop_cantina_1.png",
+  "sha256": "073eea989cc7b594a426ad9a722560d195125acfa4f806867529f947072f7a3a",
+  "normal": "assets/automatic-normals/073eea989cc7b594a426ad9a-relief2.normal.png",
+  "lit": "assets/automatic-normals/073eea989cc7b594a426ad9a-relief2.lit.webp",
+  "width": 2048,
+  "height": 1365,
+  "normalWidth": 512,
+  "normalHeight": 341,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

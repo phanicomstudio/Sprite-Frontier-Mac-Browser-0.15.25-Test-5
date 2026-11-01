@@ -16,6 +16,12 @@ try{
  const projectEntry={...entry,html:entry.html+'<script>window.FRONTIER_EXPORTED_PROJECT='+JSON.stringify({maps:[{world:{texture:'custom/wall.png'}}]})+';</script>'};
  const local=build(source,projectEntry,path.join(fixture,'local-assets'));assert(local.files.includes('custom/wall.png'));assert.deepEqual(fs.readFileSync(path.join(fixture,'local-assets/custom/wall.png')),pixels);
  assert.throws(/* @function runtimePackageTest.authoredMissing — Inputs: none. Returns attempted build with missing authored texture. Verifies offline closure rejects before creating a destination. */function(){build(source,{...entry,html:entry.html+'<script>window.FRONTIER_EXPORTED_PROJECT='+JSON.stringify({texture:'custom/missing.png'})+';</script>'},path.join(fixture,'missing-authored'));},/ENOENT/);assert(!fs.existsSync(path.join(fixture,'missing-authored')));
+ // November 1: real copy-owner coverage for new generated banks and license closure.
+ for(const folder of ['assets/automatic-normals','vendor/spritefusion'])fs.mkdirSync(path.join(source,folder),{recursive:true});
+ fs.writeFileSync(path.join(source,'src/automatic-normal-manifest.js'),'window.normalFixture=true;');fs.writeFileSync(path.join(source,'src/spritefusion-normal-generator.js'),'window.generatorFixture=true;');
+ fs.writeFileSync(path.join(source,'assets/automatic-normals/default.normal.png'),pixels);fs.writeFileSync(path.join(source,'assets/automatic-normals/default.lit.webp'),pixels);fs.writeFileSync(path.join(source,'vendor/spritefusion/LICENSE'),'Pinned upstream license fixture');
+ const normals=build(source,{html:'<script src="src/automatic-normal-manifest.js"></script><script src="src/spritefusion-normal-generator.js"></script>',scripts:['src/automatic-normal-manifest.js','src/spritefusion-normal-generator.js'],omitted:[]},path.join(fixture,'automatic-normals'));
+ for(const file of ['assets/automatic-normals/default.normal.png','assets/automatic-normals/default.lit.webp','vendor/spritefusion/LICENSE'])assert(normals.files.includes(file),'Automatic normal runtime closure: '+file);
  console.log('PASS runtime package copies source comments/binary assets, omits editor sources and rejects overwrite/traversal/missing resources');
 }finally{
  // Delete only the uniquely owned fixture immediately under the verified temp
