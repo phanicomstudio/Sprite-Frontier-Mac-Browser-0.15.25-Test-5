@@ -60,6 +60,13 @@
 
   }
 
+  /* @function firstPerson.alignFacing1623 — Inputs: active game. Returns whether perspective player facing was aligned to camera yaw. Updates actor and movement facing together when leaving first-person, so stale pre-entry front-facing art cannot return. Fixed/isometric presentation is excluded; world position, camera, sprite tilt and weapon accuracy are untouched. */
+  function alignFacing(game){
+    if(game.sourceWorld.presentation?.mode==='isometric'||game.sourceWorld.interior?.mode==='fixed')return false;
+    const x=Math.sin(game.camera.yaw),y=Math.cos(game.camera.yaw);
+    game.player.facingX=x;game.player.facingY=y;game.player.movementFacing={x,y};return true;
+  }
+
   /* @function firstPerson.motion1622 — Inputs: transient state, elapsed seconds and travelled metres. Returns smooth pixel offsets. A fixed 0.85 Hz cadence is independent of run speed; speed controls only a bounded amplitude. Teleports contribute no motion, and exponential filters settle gently at rest without per-frame allocations outside the return record. */
   function motion(state,dt,distance){
     const moving=dt>0&&distance<1?Math.min(1,distance/dt/.7):0;
@@ -178,7 +185,7 @@
   }
 
   root.FrontierFirstPerson={
-    validate,assignment,motion,muzzle,draw
+    validate,assignment,alignFacing,motion,muzzle,draw
   };
 
 })(typeof window==='undefined'?globalThis:window);

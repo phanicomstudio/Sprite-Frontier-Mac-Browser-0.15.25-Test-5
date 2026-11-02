@@ -281,3 +281,7 @@ See ITERATION-0.16.21.md and FUNCTION-REFERENCE-0.16.21.md. Character-linked vie
 ## November 1, 2026 — 0.16.22 first-person fixes
 
 Keep fixed-time smoothed sway separate from projectile aim. First-person spawn offsets are validated weapon/character data and feed MF.createProjectile through the existing spatial/ballistics ownership chain. Flash anchors remain image coordinates. Wheel return does not enable first-person zoom or alter orthographic maps. See ITERATION-0.16.22.md and tests/first-person1622.cjs.
+
+## November 1, 2026 — 0.16.23 maintenance
+
+First-person camera cy, DOM reticle and projectile optical ray must agree on viewport center. Do not reuse third-person's raised reticle bias. Both perspective exit routes call FrontierFirstPerson.alignFacing to synchronize actor and movement heading; fixed/isometric behavior remains independent. Regression: tests/browser/aim1623.cjs.

@@ -208,7 +208,8 @@
     ) {
       const shot = originalCreate(game, owner, weapon, direction),
         cam = FrontierRender.camera(game),
-        pitch = cam.pitch + Math.atan(((cam.cy ?? 96) - 96) / 360),
+        // November 1, 2026: first-person shoots along its centered optical axis; third-person retains the original raised crosshair compensation.
+        pitch = game.camera.firstPerson && !cam.orthographic ? cam.pitch : cam.pitch + Math.atan(((cam.cy ?? 96) - 96) / 360),
         muzzle = root.FrontierFirstPerson?.muzzle(owner,game,cam) || root.FrontierMuzzle?.point(owner, game) || {
           x: owner.x,
           y: owner.y,

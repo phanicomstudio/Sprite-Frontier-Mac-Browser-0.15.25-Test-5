@@ -333,3 +333,7 @@ The banked first-person Candy pistol/character assignments/sway/wheel entry, pas
 ## November 1, 2026 — implemented 0.16.22 corrections
 
 User-reported missing wheel-out return, small jittery run-accelerated sway and unclear first-person launch calibration are corrected. See ITERATION-0.16.22.md. Prior 0.16.21 wheel/sway behavior is superseded; lighting, shadow and projectile guarantees remain.
+
+## November 1, 2026 — implemented 0.16.23 corrections
+
+Centered first-person crosshair/projectile aim and camera-direction player facing on first-person exit are implemented; see ITERATION-0.16.23.md. This supersedes accidental reuse of the third-person raised aiming point and stale pre-entry actor facing. Existing deliberate camera, lighting and shadow splits remain intact.

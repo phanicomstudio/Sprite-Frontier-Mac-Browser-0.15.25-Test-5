@@ -2186,6 +2186,7 @@
         );
         return;
       }
+      if(game.camera.firstPerson)FrontierFirstPerson.alignFacing(game);
       game.camera.firstPerson = !game.camera.firstPerson;
       $("camera").textContent = game.camera.firstPerson
         ? "Third person [V]"
@@ -2968,6 +2969,7 @@
       // November 1, 2026: outward wheel leaves first-person; inward wheel never magnifies its lens. Fixed/isometric paths have already returned.
       if (game.camera.firstPerson && !game.editorFlight) {
         if (!editing && pixels > 0) {
+          FrontierFirstPerson.alignFacing(game);
           game.camera.firstPerson = false;
           game.camera.distance = Math.min(FrontierParameters.get(world,"zoomMax"),Math.max(FrontierParameters.get(world,"zoomMin")+.35,game.camera.distance));
           zoomIntent = null; $("camera").textContent = "First person [V]";
@@ -3402,7 +3404,10 @@
     }
     FrontierInspection.update(hudMode);
     const reticle = $("crosshair"),
-      fixed = cursorAim164();
+      fixed = cursorAim164(),
+      firstPersonAim = game.camera.firstPerson && !fixed;
+    // November 1: the first-person marker owns viewport center; fixed/isometric and third-person retain their original marker owners.
+    if(firstPersonAim){reticle.style.left="50%";reticle.style.top="50%";}
     /* October 10, 2026: the DOM aiming marker stays sharp but follows the warped world point. Its forward transform is the inverse of screenPoint's click sampling. */
     if (fixed && game.pointer) {
       const width = FrontierDisplay.get().width,
@@ -3447,13 +3452,13 @@
         !editing &&
         !game.player.holstered,
     );
-    if (!fixed) {
+    if (!fixed && !firstPersonAim) {
       reticle.style.left = "";
       reticle.style.top = "";
     }
     const barrel = FrontierMuzzle.barrel(game.player, game),
       origin = barrel && FrontierMuzzle.point(game.player, game);
-    if (origin && !fixed) {
+    if (origin && !fixed && !firstPersonAim) {
       const target = {
           x: origin.x + barrel.x * 60,
           y: origin.y + barrel.y * 60,
@@ -3490,7 +3495,7 @@
     $("badge").lastElementChild.textContent =
       (world.interior?.mode === "fixed" ? "Fixed interior · " : "") +
       (game.camera.firstPerson ? "First person" : "Third person") +
-      " · prototype 0.16.22";
+      " · prototype 0.16.23";
     if (world.interior)
       $("intro").textContent =
         world.interior.mode === "fixed"
