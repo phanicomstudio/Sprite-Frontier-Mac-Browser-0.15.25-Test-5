@@ -1,3 +1,5 @@
+
+  // October 30, 2026: use the active Pixi projection for screen and filter targets; direct clip-space positions invert/resize custom meshes during filtering.
 /* October 26, 2026: receiver-conforming outdoor sprite sun silhouettes.
  * Own code; no Daggerfall assets or renderer code. Reuses swept geometry and
  * current sprite alpha; actor billboard tilt and frame presentation stay locked. */
@@ -5,8 +7,8 @@
   "use strict";
   const states=new WeakMap(),COLS=4,ROWS=8,LIMIT=8;
   const vertex=`#version 300 es
-  precision highp float;in vec2 aPosition;in vec2 aUV;in float aInverse;in float aFog;uniform vec2 uViewport;out vec2 vUV;out float vInverse;out float vFog;out vec2 vScreen;
-  void main(){gl_Position=vec4(aPosition.x/uViewport.x*2.-1.,1.-aPosition.y/uViewport.y*2.,0.,1.);vUV=aUV;vInverse=aInverse;vFog=aFog;vScreen=aPosition/uViewport;}`;
+  precision highp float;in vec2 aPosition;in vec2 aUV;in float aInverse;in float aFog;uniform vec2 uViewport;uniform mat3 uProjectionMatrix;uniform mat3 uWorldTransformMatrix;uniform mat3 uTransformMatrix;out vec2 vUV;out float vInverse;out float vFog;out vec2 vScreen;
+  void main(){gl_Position=vec4((uProjectionMatrix*uWorldTransformMatrix*uTransformMatrix*vec3(aPosition,1.)).xy,0.,1.);vUV=aUV;vInverse=aInverse;vFog=aFog;vScreen=aPosition/uViewport;}`;
   const fragment=`#version 300 es
   precision highp float;uniform sampler2D uImage;uniform sampler2D uDepth;uniform vec2 uViewport;uniform vec2 uDepthSize;uniform float uOpacity;uniform float uOrtho;in vec2 vUV;in float vInverse;in float vFog;in vec2 vScreen;out vec4 color;
   void main(){vec2 screen=vScreen;vec3 packed=texture(uDepth,screen).rgb;float inverse=(packed.r*65536.+packed.g*256.+packed.b)*255./16777215.*16.;if(inverse>vInverse+(uOrtho>.5?.002*vInverse*vInverse:.002))discard;float alpha=texture(uImage,uOrtho>.5?vUV:vUV/max(vInverse,.000001)).a;color=vec4(0.,0.,0.,alpha*uOpacity*(1.-vFog));}`;
@@ -75,7 +77,7 @@
       }
       slot.geometry.getBuffer('aPosition').update();slot.geometry.getBuffer('aUV').update();slot.geometry.indexBuffer.update();slot.invBuffer.update();slot.fogBuffer.update();
       slot.shader.resources.uImage=image;slot.shader.resources.uDepth=state.depth;slot.shader.resources.shadowUniforms.uniforms.uViewport.set([game.viewWidth||640,480]);slot.shader.resources.shadowUniforms.uniforms.uDepthSize.set([d.w,d.h]);slot.shader.resources.shadowUniforms.uniforms.uOpacity=Math.min(.9,sun.opacity*root.FrontierLocalLighting.shadows169(world.lighting.shadows).sun);slot.shader.resources.shadowUniforms.uniforms.uOrtho=cam.orthographic?1:0;
-      ctx.flushStroke();ctx.app.stage.addChild(slot.mesh);used++;
+      ctx.flushStroke();(ctx.drawStage||ctx.app.stage).addChild(slot.mesh);used++;
     }
     for(const id of state.cache.keys())if(!retained.has(id))state.cache.delete(id);
     game.sunShadowDebug={casters:used,rebuilt,rays:rebuilt*(COLS+1)*(ROWS+1),receiverConforming:true,outdoors:true};return used;
@@ -114,7 +116,7 @@
       const receiver=cached.grid[4],floor=receiver.key.startsWith('terrain:')?root.FrontierTerrain.height(game.sourceWorld,e.x,e.y):receiver.z-.008,height=Math.max(0,(e.z||0)-floor),profile=contactProfile166(height),slot=state.slots[used]||(state.slots[used]=contactSlot166(P,depth)),points=[];
       for(let i=0;i<9;i++){const hit=cached.grid[i],ratio=profile.radius/.3,x=e.x+((hit?.x??cached.x)-cached.x)*ratio,y=e.y+((hit?.y??cached.y)-cached.y)*ratio,z=hit?.key.startsWith('terrain:')?root.FrontierTerrain.height(game.sourceWorld,x,y)+.008:hit?.z,p=hit&&project(cam,x,y,z);points.push(p);slot.positions[i*2]=p?.x||0;slot.positions[i*2+1]=p?.y||0;slot.inverse[i]=p?1/Math.max(.13,p.depth):0;slot.uvs[i*2]=(i%3)/2;slot.uvs[i*2+1]=Math.floor(i/3)/2;slot.fog[i]=p?root.FrontierFog.amount(root.FrontierFog.settings(game),Math.hypot(x-game.player.x,y-game.player.y)):1;}
       let at=0;for(let row=0;row<2;row++)for(let col=0;col<2;col++){const a=row*3+col;for(const triangle of [[a,a+1,a+3],[a+1,a+4,a+3]]){const valid=triangle.every(/* @function contactShadow.connected166 — Inputs: vertex index. Returns whether receiver/projection exists on the same connected surface as its triangle peers, avoiding stretched blobs across void. */function(i){return !!points[i]&&cached.grid[i]?.key===cached.grid[triangle[0]]?.key;});for(const i of triangle)slot.indices[at++]=valid?i:0;}}
-      slot.geometry.getBuffer('aPosition').update();slot.geometry.getBuffer('aUV').update();slot.geometry.indexBuffer.update();slot.invBuffer.update();slot.fogBuffer.update();slot.shader.resources.uDepth=depth;const uniforms=slot.shader.resources.shadowUniforms.uniforms;uniforms.uViewport.set([game.viewWidth||640,480]);uniforms.uOpacity=Math.min(.8,profile.opacity*root.FrontierLocalLighting.shadows169(game.sourceWorld.lighting?.shadows).contact);uniforms.uSoftness=profile.softness;ctx.flushStroke();ctx.app.stage.addChild(slot.mesh);used++;details.push({id:e.id,height,floor,radius:profile.radius,opacity:uniforms.uOpacity});
+      slot.geometry.getBuffer('aPosition').update();slot.geometry.getBuffer('aUV').update();slot.geometry.indexBuffer.update();slot.invBuffer.update();slot.fogBuffer.update();slot.shader.resources.uDepth=depth;const uniforms=slot.shader.resources.shadowUniforms.uniforms;uniforms.uViewport.set([game.viewWidth||640,480]);uniforms.uOpacity=Math.min(.8,profile.opacity*root.FrontierLocalLighting.shadows169(game.sourceWorld.lighting?.shadows).contact);uniforms.uSoftness=profile.softness;ctx.flushStroke();(ctx.drawStage||ctx.app.stage).addChild(slot.mesh);used++;details.push({id:e.id,height,floor,radius:profile.radius,opacity:uniforms.uOpacity});
     }
     for(const id of state.cache.keys())if(!retained.has(id))state.cache.delete(id);game.contactShadowDebug={casters:used,rebuilt,rays:rebuilt*9,details};return used;
   }

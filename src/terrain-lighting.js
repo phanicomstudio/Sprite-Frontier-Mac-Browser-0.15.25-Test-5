@@ -1,3 +1,5 @@
+
+  // October 30, 2026: use the active Pixi projection for screen and filter targets; direct clip-space positions invert/resize custom meshes during filtering.
 /* October 29: terrain now receives the same depth-range fog as sprites/models, after local illumination. Range is renderer-relative in isometric views and never applies to sky. */
 /* October 13, 2026: batched outdoor radius illumination. Historical screen
  * positions, affine UV mapping and CPU shared depth remain unchanged. World
@@ -9,10 +11,10 @@
 ) {
   "use strict";
   const vertex = `#version 300 es
- precision highp float;in vec2 aPosition;in vec2 aUV;in vec4 aLightWorld;uniform vec2 uViewport;out vec2 vUV;out vec4 vLightWorld;
+ precision highp float;in vec2 aPosition;in vec2 aUV;in vec4 aLightWorld;uniform vec2 uViewport;uniform mat3 uProjectionMatrix;uniform mat3 uWorldTransformMatrix;uniform mat3 uTransformMatrix;out vec2 vUV;out vec4 vLightWorld;
  // UVs retain historical affine interpolation. XYZ/depth and inverse depth
  // reconstruct the actual world location independently of texture mapping.
- void main(){gl_Position=vec4(aPosition.x/uViewport.x*2.-1.,1.-aPosition.y/uViewport.y*2.,0.,1.);vUV=aUV;vLightWorld=aLightWorld;}`;
+ void main(){gl_Position=vec4((uProjectionMatrix*uWorldTransformMatrix*uTransformMatrix*vec3(aPosition,1.)).xy,0.,1.);vUV=aUV;vLightWorld=aLightWorld;}`;
   const fragment = `#version 300 es
  precision highp float;in vec2 vUV;in vec4 vLightWorld;uniform sampler2D uImage;uniform vec3 uTint;uniform vec4 uFogColor;uniform vec2 uFogRange;uniform int uLightCount;uniform int uBlockCount;uniform float uAmbient;uniform float uLightSteps;uniform vec4 uLights[8];uniform vec4 uLightColors[8];uniform vec4 uBlockXY[32];uniform vec4 uBlockZH[32];uniform vec4 uBlockRound[32];out vec4 color;
  // Open-segment room-volume shadow tests mirror geometry-gpu.js. Circular

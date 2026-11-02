@@ -34,6 +34,8 @@
       application,
     ) {
       this.app = application;
+      // October 30, 2026: retain one world owner before assembling pooled geometry; never reparent finished meshes for HUD composition.
+      this.drawStage = new P.Container();
       this.graphics = [];
       this.sprites = [];
       this.verticalMeshes = [];
@@ -67,8 +69,12 @@
     }
     // Reset per-frame state and reuse pooled display objects; removing children does not destroy cached GPU resources.
     /* Historical contract retained; October 14, 2026 reviewed explanation follows. @function pixi-renderer.begin.4 — Handles begin within pixi renderer. Inputs: no explicit arguments; uses enclosing module state. Updates: this gi; this si; this ti; this graphic; this pending stroke. Uses: this app stage remove children; this beam layer remove children; this beam layer add child; this beam clear. */
-    /* @function pixiRenderer.reviewed4 — Begins a logical frame. Inputs: none. Returns nothing; clears stage membership and beam commands, resets draw indices/styles/transforms/clips and transient stacks. Reuses GPU resource pools rather than destroying them. Must run before drawing; does not advance simulation. */ begin() {
+    /* @function pixiRenderer.reviewed4 — Begins a logical frame. Inputs: none. Returns nothing; clears root/world membership and beam commands, attaches the retained world owner before assembling pooled objects, and resets draw indices/styles/transforms/clips and transient stacks. Reuses GPU resource pools rather than destroying them. Must run before drawing; does not advance simulation. */ begin() {
       this.app.stage.removeChildren();
+      this.app.stage.filters = null;
+      this.drawStage.removeChildren();
+      this.drawStage.boundsArea = new P.Rectangle(0, 0, this.app.screen.width, this.app.screen.height);
+      this.app.stage.addChild(this.drawStage);
       this.gi = this.si = this.ti = this.vi = 0;
       this.graphic = null;
       this.pendingStroke = null;
@@ -106,7 +112,7 @@
     }
     // Reuse the next Graphics object; start a new draw group after a sprite or text to preserve painter order.
     /* Historical contract retained; October 14, 2026 reviewed explanation follows. @function pixi-renderer.gfx.6 — Handles gfx within pixi renderer. Inputs: no explicit arguments; uses enclosing module state. Updates: this graphics at this gi; g mask; this graphic masks at this gi minus 1; this graphic. Uses: g clear; mask clear; mask rect; mask fill. Returns: this graphic. */
-    /* @function pixiRenderer.reviewed6 — Obtains the current pooled vector group. Inputs: none. Returns reused/new Pixi Graphics, cleared for this frame and appended in painter order. Installs optional logical-pixel clip mask at group boundaries. Resources grow only to drawing high-water needs; Pixi errors propagate. */ gfx() {
+    /* @function pixiRenderer.reviewed6 — Obtains the current pooled vector group. Inputs: none. Returns reused/new Pixi Graphics, cleared for this frame and appended to the stable world owner in painter order. Installs optional logical-pixel clip mask at group boundaries. Resources grow only to drawing high-water needs; Pixi errors propagate. */ gfx() {
       if (!this.graphic) {
         const g =
           this.graphics[this.gi] || (this.graphics[this.gi] = new P.Graphics());
@@ -129,10 +135,10 @@
               Math.max(0, this.clipBottom),
             );
           mask.fill(0xffffff);
-          this.app.stage.addChild(mask);
+          this.drawStage.addChild(mask);
           g.mask = mask;
         }
-        this.app.stage.addChild(g);
+        this.drawStage.addChild(g);
         this.graphic = g;
       }
       return this.graphic;
@@ -367,7 +373,7 @@
       if (active && !this.beamAdded) {
         this.flushStroke();
         this.graphic = null;
-        this.app.stage.addChild(this.beamLayer);
+        this.drawStage.addChild(this.beamLayer);
         this.beamAdded = true;
         this.beamFilter.strength = v.radius;
         this.beamLayer.alpha = v.glow;
@@ -514,7 +520,7 @@
       positions.update();
       uvs.update();
       mesh.alpha = 1;
-      this.app.stage.addChild(mesh);
+      this.drawStage.addChild(mesh);
     }
     /* @function pixi-renderer.terrainBatch1523 — Inputs: sorted terrain triangle records and shared static material. Draws the same projected positions, affine UVs and painter order through one reusable mesh. Preserves filtering and asset-style texture choice; does not alter CPU depth. Grows buffers only when necessary, submits only active indices, and returns without work for empty input. Static terrain only: callers keep animated water on waterQuad. */
     // October 13: optional radius lighting shares this geometry and preserves
@@ -604,7 +610,7 @@
             this.fog,
           )
         : batch.mesh;
-      this.app.stage.addChild(mesh);
+      this.drawStage.addChild(mesh);
     }
     // Fill arbitrary primitive faces through the pooled graphics path.
     /* Historical contract retained; October 14, 2026 reviewed explanation follows. @function pixi-renderer.fill.24 — Handles fill within pixi renderer. Inputs: no explicit arguments; uses enclosing module state. Uses: this flush stroke; this gfx; g at method; this painted. */
@@ -746,10 +752,10 @@
         mask.clear();
         for (const r of regions) mask.rect(r.x, r.y, r.width, r.height);
         mask.fill(0xffffff);
-        this.app.stage.addChild(mask);
+        this.drawStage.addChild(mask);
         mesh.mask = mask;
       }
-      this.app.stage.addChild(mesh);
+      this.drawStage.addChild(mesh);
       if (
         this.vectorDisplay?.enabled &&
         (this.vectorDisplay.sprites !== "original" || this.assetGlow) &&
@@ -891,7 +897,7 @@
         for (const r of c.regions || [c])
           mask.rect(r.x, r.y, r.width, r.height);
         mask.fill(0xffffff);
-        this.app.stage.addChild(mask);
+        this.drawStage.addChild(mask);
         sprite.mask = mask;
       }
       // Raster glow joins the same half-resolution layer as vector line halos.
@@ -910,7 +916,7 @@
         glow.mask = sprite.mask;
         this.beamLayer.addChild(glow);
       }
-      this.app.stage.addChild(sprite);
+      this.drawStage.addChild(sprite);
       this.graphic = null;
     }
     // Reuse a Pixi Text object and set shared Checkbook font, position, anchor and opacity.
@@ -944,7 +950,7 @@
       );
       const q = this.point(x, y);
       text.position.set(...q);
-      this.app.stage.addChild(text);
+      this.drawStage.addChild(text);
       this.graphic = null;
     }
     // Submit the assembled stage once; Pixi owns GPU work.
@@ -952,7 +958,7 @@
     /* @function pixiRenderer.reviewed32 — Submits the assembled Pixi frame once. Inputs: none. Returns nothing; flushes vector strokes and applies reusable underwater, tone and breathing filters before rendering stage. Updates only captured effect uniforms/areas; DOM HUD is outside the passes. Does not step simulation or measure GPU elapsed time; renderer errors propagate. */ /* @function pixiRenderer.indexedEnd168 — Inputs: none. Submits original pooled world/effects, then optional original-plugin indexed pass and retained HUD compositor. Disabled maps keep the previous path; projection, sprite presentation and simulation remain unchanged. */ end() {
       this.flushStroke();
       const w = this.underwater;
-      this.app.stage.filters = null;
+      this.drawStage.filters = null;
       if (w?.underwaterEnabled && w.underwaterStrength > 0) {
         if (!this.underwaterFilter)
           this.underwaterFilter = new P.Filter({
@@ -972,13 +978,13 @@
         u.uTime = w.time * w.underwaterSpeed;
         u.uStrength = w.underwaterStrength;
         u.uFrequency = w.underwaterFrequency;
-        this.app.stage.filterArea = new P.Rectangle(
+        this.drawStage.filterArea = new P.Rectangle(
           0,
           0,
           this.app.screen.width,
           this.app.screen.height,
         );
-        this.app.stage.filters = [this.underwaterFilter];
+        this.drawStage.filters = [this.underwaterFilter];
       }
       // Desaturating HSL at fixed lightness equals mixing RGB with (max+min)/2.
       // Reuse one GPU filter and append after underwater distortion; DOM UI is outside it.
@@ -1001,14 +1007,14 @@
               toneUniforms: { uTone: { value: screenTone, type: "vec4<f32>" } },
             },
           });
-        this.app.stage.filterArea = new P.Rectangle(
+        this.drawStage.filterArea = new P.Rectangle(
           0,
           0,
           this.app.screen.width,
           this.app.screen.height,
         );
-        this.app.stage.filters = [
-          ...(this.app.stage.filters || []),
+        this.drawStage.filters = [
+          ...(this.drawStage.filters || []),
           this.toneFilter,
         ];
       }
@@ -1038,14 +1044,14 @@
         if (!this.breathingArea) this.breathingArea = new P.Rectangle();
         this.breathingArea.width = this.app.screen.width;
         this.breathingArea.height = this.app.screen.height;
-        this.app.stage.filterArea = this.breathingArea;
+        this.drawStage.filterArea = this.breathingArea;
         if (!this.breathingFilters) this.breathingFilters = [];
         this.breathingFilters.length = 0;
-        if (this.app.stage.filters)
-          for (const filter of this.app.stage.filters)
+        if (this.drawStage.filters)
+          for (const filter of this.drawStage.filters)
             this.breathingFilters.push(filter);
         this.breathingFilters.push(this.breathingFilter);
-        this.app.stage.filters = this.breathingFilters;
+        this.drawStage.filters = this.breathingFilters;
       }
       root.FrontierPaletteDither?.apply(this);
       this.app.renderer.render({
