@@ -110,3 +110,7 @@ The viewmodel module supplies a camera-relative launch origin only for the activ
 ## November 1, 2026 — 0.16.23 first-person aim
 
 First-person now uses its own centered optical axis/crosshair and matching projectile camera ray. Third-person raised-crosshair compensation and fixed/isometric pointer aim remain separate. Wheel-out and camera-button/V exit align actor and movement facing to camera yaw without moving the actor/camera. See ITERATION-0.16.23.md and FUNCTION-REFERENCE-0.16.23.md.
+
+## November 1, 2026 — 0.16.24 backdrop ownership
+
+src/horizon-fog.js follows sky and precedes geometry in the renderer. Effective fog color and camera projection determine one pooled background quad; terrain/models/sprites retain distance-fog ownership, so background does not wash near assets/HUD. Orthographic/interior paths skip the bank. FrontierFirstPerson.spriteScale supplies first-person-only stable pixel scale; existing frame, feet anchor, mask, normal and physics owners remain separate. Third-person math is preserved exactly.

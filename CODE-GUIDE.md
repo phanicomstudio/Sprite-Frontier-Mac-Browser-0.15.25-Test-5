@@ -285,3 +285,7 @@ Keep fixed-time smoothed sway separate from projectile aim. First-person spawn o
 ## November 1, 2026 — 0.16.23 maintenance
 
 First-person camera cy, DOM reticle and projectile optical ray must agree on viewport center. Do not reuse third-person's raised reticle bias. Both perspective exit routes call FrontierFirstPerson.alignFacing to synchronize actor and movement heading; fixed/isometric behavior remains independent. Regression: tests/browser/aim1623.cjs.
+
+## November 1, 2026 — 0.16.24 extension points
+
+Horizon background: src/horizon-fog.js and existing fog settings, one mesh inside world submission. Never turn this into a full-screen postprocess over foreground/UI. First-person sprite scale correction must remain restricted to gameplay perspective first-person; third-person and isometric return original scale. See FUNCTION-REFERENCE-0.16.24.md and horizon1624 acceptance.

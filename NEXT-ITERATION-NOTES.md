@@ -337,3 +337,15 @@ User-reported missing wheel-out return, small jittery run-accelerated sway and u
 ## November 1, 2026 — implemented 0.16.23 corrections
 
 Centered first-person crosshair/projectile aim and camera-direction player facing on first-person exit are implemented; see ITERATION-0.16.23.md. This supersedes accidental reuse of the third-person raised aiming point and stale pre-entry actor facing. Existing deliberate camera, lighting and shadow splits remain intact.
+
+## Banked November 1, 2026 — continuous horizon fog and sky blend
+
+Pending next iteration, not implemented in 0.16.23. User's supplied screenshot shows distance fog coloring distant assets/ground while empty space above remains a hard black sky gap. User requests a visible continuous bank/wall of atmospheric fog reaching the horizon and blending upward into the sky, referencing Castlevania 64. Fog must fill distant empty space as well as fade actual geometry, with a continuous color/density relationship at the horizon.
+
+This explicitly refines the previous "keep fog off the sky" requirement: preserve the upper sky's identity and avoid the old uniform plum full-screen/whole-sky tint, but allow an intentional horizon-localized fog-to-sky blend. Retain the selected distance-fog color (including Dusty Plum) and align the horizon bank with asset/terrain fog so seams, exposed map edges and hard cut-off bands do not remain. The apparent bank should follow the camera's real horizon/pitch rather than stick to a fixed screen stripe. This is an atmospheric visual layer, not solid collision geometry; it must not affect aim or projectiles.
+
+Maintain first-/third-person consistency and adapt appropriately to orthographic/isometric presentation without inventing a visible horizon in downward-facing views. Keep HUD, first-person weapon presentation, local lighting, reactive normal maps and mandatory projectile lights under their existing ownership. Preserve interior/prerendered presentation where a sky/horizon layer is inapplicable. Prefer a bounded inexpensive sky/background treatment over expensive volumetric simulation; measure performance and verify rotation, pitch, zoom, vector/textured rendering, sky transitions and terrain/asset silhouette blending. No implementation or new package requested in this banking turn.
+
+## November 1, 2026 — implemented 0.16.24 horizon and first-person scale
+
+The banked horizon fog request is implemented as a continuous camera-pitched far background bank with smooth upper-sky blend, driven by existing effective fog settings. The user's first-person tilt/zoom/receding observation is addressed initially through a first-person-only scale correction removing feet-depth/pitch coupling, preserving the camera-facing art plane and exact third-person behavior. See ITERATION-0.16.24.md for scope; no claim of a new upright billboard mode is made.
