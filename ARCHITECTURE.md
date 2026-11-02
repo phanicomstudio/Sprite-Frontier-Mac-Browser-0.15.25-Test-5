@@ -106,3 +106,7 @@ The shared built-in antique door now uses the supplied mirrored two-sided assemb
 ## November 1, 2026 — 0.16.22 launch ownership
 
 The viewmodel module supplies a camera-relative launch origin only for the active assigned first-person player. Spatial projectile creation consumes it before existing camera-target/spread calculation and the body-to-muzzle launch sweep. Third-person and NPC origins remain with their original sprite calibration. Sway is a fixed-time presentation signal and never changes physical launch. See FUNCTION-REFERENCE-0.16.22.md.
+
+## November 1, 2026 — 0.16.23 first-person aim
+
+First-person now uses its own centered optical axis/crosshair and matching projectile camera ray. Third-person raised-crosshair compensation and fixed/isometric pointer aim remain separate. Wheel-out and camera-button/V exit align actor and movement facing to camera yaw without moving the actor/camera. See ITERATION-0.16.23.md and FUNCTION-REFERENCE-0.16.23.md.

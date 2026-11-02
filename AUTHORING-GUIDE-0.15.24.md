@@ -334,3 +334,7 @@ Environment → Map lighting: enable lighting; Ambient brightness 0 means dark a
 ## November 1, 2026 — first-person corrections in 0.16.22
 
 Wheel outward now returns to third person; this supersedes 0.16.21's explicit lack of wheel-out return. Sway uses a wider, fixed-time smoothed cycle rather than travelled-distance phase. Native weapon parameters expose separate image flash anchors and camera-relative physical projectile spawn offsets. See ITERATION-0.16.22.md for the exact authoring route and defaults.
+
+## November 1, 2026 — first-person crosshair and facing
+
+First-person aiming is centered independently of third-person framing. Returning with wheel-out or V aligns player facing to the direction just viewed, so you see the player's back. Existing weapon image flash anchors and physical launch offsets remain configured as described for 0.16.22.

@@ -363,6 +363,8 @@
         y: p.y,
         z: (p.z || 0) + 1.55,
         cx,
+        // November 1, 2026: first-person projects its forward axis to the viewport center, independently of third-person framing.
+        cy: 240,
         yaw: c.yaw,
         pitch: c.pitch,
       };
