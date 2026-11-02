@@ -1,3 +1,4 @@
+/* October 26, 2026 — 0.16.5: paired-door returns reuse the successful departure approach side, facing away. Presentation effects do not own arrival orientation; blocked same-side arrivals reject rather than switching sides. */
 /* October 26, 2026 — 0.16.4: fixed and isometric play share cursor input and reticle routing; isometric zoom changes transient affine scale. Perspective mouse look and authored camera values remain unchanged. */
 /* October 26, 2026 — 0.16.3: paired-door arrivals, shared transform projection and map appearance are documented in ITERATION-0.16.3.md. Retained earlier contracts below are historical. */
 /* October 24, 2026 — 0.16.2 current behavior and units are described in ITERATION-0.16.2.md; earlier contracts below remain history. New camera/tactics helpers preserve existing owners and transactional validation. */
@@ -403,12 +404,16 @@
             vy: 0,
           });
           FrontierTerrain.ground(game.player, world, 0, [], game);
+          arrivalFacing165(t.entry);
+          if(t.doorDeparture)FrontierHubState.rememberDoorSide165(hubState,t.doorDeparture);
           travelCooldown = 1.5;
           return;
         }
         journey.set(activeRuntimeMap, captureRuntime());
         const shared = captureRuntime();
+        if(t.entry.doorId)shared.arrivalFirstPerson=game.camera.firstPerson;
         mapLibrary.switchTo(t.map, { travel: true, entry: t.entry, shared });
+        if(t.doorDeparture)FrontierHubState.rememberDoorSide165(hubState,t.doorDeparture);
       },
     complete:
       /* @function app.complete.13 — Handles complete within application input, simulation and editor coordination. Inputs: t. Uses: session restore continuation. */ (
@@ -586,6 +591,15 @@
     preview();
     FrontierEnemies.restore(game, state?.enemyState, reentry);
   }
+  /* @function app.arrivalFacing165 — Inputs: committed arrival with yaw radians; uses live player/world/camera. Returns nothing. Aligns movement/actor facing and perspective look with the outward arrival, or projects an outward torso target for fixed/isometric cursor aim without rotating authored cameras. Called after world position adoption so the next combat frame cannot restore stale pre-door heading. No authored settings change. */
+  function arrivalFacing165(entry) {
+    const x=Math.sin(entry.yaw),y=Math.cos(entry.yaw);
+    game.player.facingX=x;game.player.facingY=y;game.player.movementFacing={x,y};
+    if(world.interior?.mode === "fixed" || world.presentation?.mode === "isometric") {
+      const point=FrontierRender.project(FrontierRender.camera(game),game.player.x+x*2,game.player.y+y*2,(game.player.z||0)+1);
+      if(point)game.pointer={x:point.x,y:point.y};
+    } else game.camera.yaw=entry.yaw;
+  }
   /* @function app.attemptTravel.24 — Handles attempt travel within application input, simulation and editor coordination. Inputs: exit. Updates: travel cooldown; pending travel. Uses: map library get; dest world interior entrances find; dest world travel entrances find; log. Returns: without a result; without a result. */ function attemptTravel(
     exit,
   ) {
@@ -597,7 +611,7 @@
     const dest = mapLibrary.get(exit.map),
       entry =
         ["auto-door"].includes(exit.entrance) || exit.entrance?.startsWith("door:")
-          ? dest && FrontierHubWorkbench.doorArrival163(dest.world,mapLibrary.active,exit.entrance)
+          ? dest && FrontierHubWorkbench.doorArrival163(dest.world,mapLibrary.active,exit.entrance,hubState,exit.map)
           : exit.entrance === "spawn" && dest
           ? { ...dest.world.spawn, yaw: 0 }
           : dest?.world.cell?.arrivals?.find(
@@ -620,6 +634,9 @@
       travelCooldown = 2;
       return;
     }
+    const doorDeparture=FrontierHubWorkbench.doorDeparture165(world,mapLibrary.active,exit,game.player);
+    // Reserve persistence capacity before any presentation or map commit; never evict an earlier route to make room.
+    if(doorDeparture && hubState.doorSides.length>=100000 && FrontierHubState.doorSide165(hubState,doorDeparture.map,doorDeparture.doorId)===undefined){log("Cannot remember another door approach; transfer cancelled.");return;}
     if (
       FrontierInterior.blocked(
         dest.world,
@@ -648,12 +665,13 @@
         ) => Math.hypot(e.x - entry.x, e.y - entry.y) < e.radius + 0.13,
       )
     ) {
-      log("Arrival entrance is blocked. Move it in the Room editor.");
+      log(entry.doorId ? "The arrival side is blocked. Clear that side; the door will not place you behind it." : "Arrival entrance is blocked. Move it in the Room editor.");
       travelCooldown = 2;
       return;
     }
     pendingTravel = {
       map: exit.map,
+      doorDeparture,
       entry,
       effect: exit.transition?.effect,
       door: exit.transition,
@@ -3342,7 +3360,7 @@
     $("badge").lastElementChild.textContent =
       (world.interior?.mode === "fixed" ? "Fixed interior · " : "") +
       (game.camera.firstPerson ? "First person" : "Third person") +
-      " · prototype 0.16.4";
+      " · prototype 0.16.5";
     if (world.interior)
       $("intro").textContent =
         world.interior.mode === "fixed"
@@ -3851,6 +3869,8 @@
             walkHold: 0,
           });
           FrontierTerrain.ground(game.player, world, 0, [], game);
+          if(typeof options.shared?.arrivalFirstPerson === "boolean" && world.interior?.mode !== "fixed" && world.presentation?.mode !== "isometric")game.camera.firstPerson=options.shared.arrivalFirstPerson;
+          arrivalFacing165(options.entry);
           exitTouched.clear();
           for (const e of world.interior?.exits || world.travel?.exits || [])
             if (Math.hypot(e.x - game.player.x, e.y - game.player.y) < e.radius)
