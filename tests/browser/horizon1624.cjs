@@ -26,7 +26,7 @@ const assert=require('node:assert/strict'),path=require('node:path'),{
         pitch:0,cy:240
       },P=PIXI;
 
-      /* @function horizon1624.draw — Inputs: camera pitch radians. Returns selected GPU pixels and mesh identity from the real horizon layer. No readback exists in production. */function draw(pitch){
+      /* @function horizon1624.draw — Inputs: camera pitch radians. Returns selected GPU pixels and mesh identity from the real horizon layer. No readback exists in production. */function draw(pitch,outdoorIsometric=false){
         ctx.begin?.();
         ctx.drawStage.removeChildren();
         ctx.fillStyle='#204080';
@@ -34,7 +34,7 @@ const assert=require('node:assert/strict'),path=require('node:path'),{
         ctx.fogDepth=0;
         ctx.fillRect(0,0,640,480);
         FrontierHorizonFog.draw(ctx,game,{
-          ...cam,pitch
+          ...cam,pitch,orthographic:outdoorIsometric,outdoorIsometric
         });
         const mesh=ctx.drawStage.children.at(-1);
         ctx.app.renderer.render({
@@ -60,12 +60,14 @@ const assert=require('node:assert/strict'),path=require('node:path'),{
 
       const first=draw(0),second=draw(.4);
       return {
-        first:first.output,second:second.output,reused:first.mesh===second.mesh
+        first:first.output,second:second.output,iso:draw(0,true).output,reused:first.mesh===second.mesh
       };
     });
     assert.deepEqual(result.first.top,[32,64,128,255]);
     assert.deepEqual(result.first.horizon,[102,82,99,255]);
-    assert.deepEqual(result.first.bottom,[32,64,128,255]);
+    assert.deepEqual(result.first.bottom,[102,82,99,255]);
+    assert.deepEqual(result.iso.top,[102,82,99,255]);
+    assert.deepEqual(result.iso.bottom,[102,82,99,255]);
     assert(result.reused);
     assert.notDeepEqual(result.second.horizon,result.first.horizon);
     await page.waitForTimeout(600);

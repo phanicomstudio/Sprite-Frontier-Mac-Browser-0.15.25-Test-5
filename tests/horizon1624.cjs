@@ -17,7 +17,7 @@ const game={
 
 assert.equal(p.horizon,240);
 assert.equal(FrontierHorizonFog.opacity(p,240),1);
-assert.equal(FrontierHorizonFog.opacity(p,480),0);
+assert.equal(FrontierHorizonFog.opacity(p,480),1);
 assert.equal(FrontierHorizonFog.opacity(p,0),0);
 assert(FrontierHorizonFog.opacity(p,p.horizon-p.fade/2)>.49);
 
@@ -27,6 +27,11 @@ assert(FrontierHorizonFog.profile(game,{
 assert.equal(FrontierHorizonFog.profile(game,{
   ...cam,orthographic:true
 }),null);
+
+const iso=FrontierHorizonFog.profile(game,{...cam,orthographic:true,outdoorIsometric:true});
+assert.equal(iso.color,p.color);
+assert.equal(FrontierHorizonFog.opacity(iso,0),1);
+assert.equal(FrontierHorizonFog.opacity(iso,480),1);
 
 game.sourceWorld.interior={
   mode:'geometry'

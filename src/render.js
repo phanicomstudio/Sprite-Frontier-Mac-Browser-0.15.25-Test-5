@@ -500,6 +500,9 @@
     ctx.vectorDisplay =
       game.sourceWorld.vectorDisplay || root.FrontierVector?.defaults;
     ctx.fog = root.FrontierViewVisibility?.fog(game,cam)||root.FrontierFog?.settings(game);
+    if (!game.sourceWorld.interior || game.sourceWorld.interior.outdoor) {
+      ctx.fog = {...ctx.fog, edgeBounds: FrontierWorld.dimensions(game.sourceWorld)};
+    }
     ctx.fogDepth = 0;
     ctx.imageSmoothingEnabled = false;
     const sin = Math.sin(cam.yaw),

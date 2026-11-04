@@ -138,7 +138,7 @@
           h: 0.15,
           color: "#ffffff",
           texture: "img/materials/ceilings/prop_tin_ceiling1.png",
-          tileSize: 2,
+          tileSize: 4,
         },
         {
           id: "saloon-west",

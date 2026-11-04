@@ -17,7 +17,7 @@
  void main(){gl_Position=vec4((uProjectionMatrix*uWorldTransformMatrix*uTransformMatrix*vec3(aPosition,1.)).xy,0.,1.);vUV=aUV;vLightWorld=aLightWorld;}`;
   const normalGLSL=root.FrontierLiveNormals?.tangentGLSL||"uniform sampler2D uNormal;uniform float uNormalOn;uniform float uNormalStrength;uniform vec4 uSun;vec3 mappedNormal(vec3 p,vec2 uv){return vec3(0.,0.,1.);}";
   const fragment = `#version 300 es
- precision highp float;in vec2 vUV;in vec4 vLightWorld;uniform sampler2D uImage;uniform vec3 uTint;uniform vec4 uFogColor;uniform vec2 uFogRange;uniform int uLightCount;uniform int uBlockCount;uniform float uAmbient;uniform float uLightSteps;uniform vec4 uLights[8];uniform vec4 uLightColors[8];uniform vec4 uBlockXY[32];uniform vec4 uBlockZH[32];uniform vec4 uBlockRound[32];out vec4 color;
+ precision highp float;in vec2 vUV;in vec4 vLightWorld;uniform sampler2D uImage;uniform vec3 uTint;uniform vec4 uFogColor;uniform vec2 uFogRange;uniform vec2 uFogBounds;uniform int uLightCount;uniform int uBlockCount;uniform float uAmbient;uniform float uLightSteps;uniform vec4 uLights[8];uniform vec4 uLightColors[8];uniform vec4 uBlockXY[32];uniform vec4 uBlockZH[32];uniform vec4 uBlockRound[32];out vec4 color;
  ${normalGLSL}
  // Open-segment room-volume shadow tests mirror geometry-gpu.js. Circular
  // rings/arcs approximate faceted boundaries; no texture or pixel readback.
@@ -34,7 +34,11 @@
  }
  bool blocked(vec3 a,vec3 b,int index){vec4 xy=uBlockXY[index],zh=uBlockZH[index];if(uBlockRound[index].x>0.)return roundBlocked(a,b,xy,zh,uBlockRound[index]);vec2 da=a.xy-xy.xy,db=b.xy-xy.xy;vec3 p=vec3(zh.z*da.x+zh.w*da.y,-zh.w*da.x+zh.z*da.y,a.z-zh.x),q=vec3(zh.z*db.x+zh.w*db.y,-zh.w*db.x+zh.z*db.y,b.z-zh.x);vec3 lo=vec3(-xy.z,-xy.w,0.),hi=vec3(xy.z,xy.w,zh.y),d=q-p;float enter=.001,leave=.999;for(int k=0;k<3;k++){if(abs(d[k])<.000000001){if(p[k]<=lo[k]+.0001||p[k]>=hi[k]-.0001)return false;}else{float t0=(lo[k]-p[k])/d[k],t1=(hi[k]-p[k])/d[k];enter=max(enter,min(t0,t1));leave=min(leave,max(t0,t1));if(enter>=leave)return false;}}return enter<leave;}
 
- void main(){vec3 point=vLightWorld.xyz/max(.0000001,vLightWorld.w),shade=vec3(uAmbient);vec3 surfaceNormal=mappedNormal(point,vUV);if(uNormalOn>.5)shade+=vec3(uSun.w*max(0.,dot(surfaceNormal,uSun.xyz)));for(int i=0;i<8;i++){if(i>=uLightCount)break;float distance=length(point-uLights[i].xyz);if(distance>=uLights[i].w)continue;bool shadow=false;for(int j=0;j<32;j++){if(j>=uBlockCount)break;if(blocked(point,uLights[i].xyz,j)){shadow=true;break;}}if(!shadow)shade+=uLightColors[i].rgb*pow(1.-distance/uLights[i].w,uLightColors[i].w)*(uNormalOn>.5?max(0.,dot(surfaceNormal,normalize(uLights[i].xyz-point))):1.);}shade=min(shade,vec3(1.));if(uLightSteps>1.)shade=floor(shade*(uLightSteps-1.)+.5)/(uLightSteps-1.);color=texture(uImage,vUV);color.rgb*=uTint*shade;float fog=uFogColor.a*clamp((1./max(.0000001,vLightWorld.w)-uFogRange.x)/max(.0001,uFogRange.y-uFogRange.x),0.,1.);color.rgb=mix(color.rgb,uFogColor.rgb,fog);}`;
+ void main(){vec3 point=vLightWorld.xyz/max(.0000001,vLightWorld.w),shade=vec3(uAmbient);vec3 surfaceNormal=mappedNormal(point,vUV);if(uNormalOn>.5)shade+=vec3(uSun.w*max(0.,dot(surfaceNormal,uSun.xyz)));for(int i=0;i<8;i++){if(i>=uLightCount)break;float distance=length(point-uLights[i].xyz);if(distance>=uLights[i].w)continue;bool shadow=false;for(int j=0;j<32;j++){if(j>=uBlockCount)break;if(blocked(point,uLights[i].xyz,j)){shadow=true;break;}}if(!shadow)shade+=uLightColors[i].rgb*pow(1.-distance/uLights[i].w,uLightColors[i].w)*(uNormalOn>.5?max(0.,dot(surfaceNormal,normalize(uLights[i].xyz-point))):1.);}shade=min(shade,vec3(1.));if(uLightSteps>1.)shade=floor(shade*(uLightSteps-1.)+.5)/(uLightSteps-1.);color=texture(uImage,vUV);color.rgb*=uTint*shade;float fog=uFogColor.a*clamp((1./max(.0000001,vLightWorld.w)-uFogRange.x)/max(.0001,uFogRange.y-uFogRange.x),0.,1.);if(uFogBounds.x>0.&&uFogColor.a>0.){
+ vec2 inset=min(point.xy,uFogBounds-point.xy);
+ float edge=min(inset.x,inset.y);
+ fog=max(fog,1.-smoothstep(.1,1.5,edge));
+ }color.rgb=mix(color.rgb,uFogColor.rgb,fog);}`;
   /* @function terrainLighting.prepare — Inputs: Pixi namespace, reused terrain batch, shared texture, sorted near-clipped cells, bounded light snapshot, logical viewport width and historical tint. Returns a shared-geometry lit mesh with updated uniform/buffer data. World coordinates are metres, depths positive camera-forward metres. Creates one shader/attribute buffer at batch capacity, never one mesh per tile. Does not modify geometry positions, UVs, depth grids or source textures. Throws GPU/schema errors rather than silently dropping lighting. */
   function prepare(P, batch, texture, cells, snapshot, width, tint, fog) {
     let state = batch.lightState;
@@ -53,6 +57,7 @@
         uViewport: { value: new Float32Array([width, 480]), type: "vec2<f32>" },
         uTint: { value: new Float32Array(3), type: "vec3<f32>" },
         uFogColor: { value: new Float32Array(4), type: "vec4<f32>" },
+        uFogBounds: { value: new Float32Array(2), type: "vec2<f32>" },
         uFogRange: { value: new Float32Array([0,1]), type: "vec2<f32>" },
         uLightCount: { value: 0, type: "i32" },
         uBlockCount: { value: 0, type: "i32" },
@@ -80,6 +85,7 @@
       batch.lightState = state;
     }
     const uniforms = state.shader.resources.terrainUniforms.uniforms;
+    uniforms.uFogBounds.set([fog?.edgeBounds?.width||0,fog?.edgeBounds?.height||0]);
     const fogColor=parseInt((fog?.color||'#000000').slice(1),16);uniforms.uFogColor.set([((fogColor>>16)&255)/255,((fogColor>>8)&255)/255,(fogColor&255)/255,fog?.enabled?1:0]);uniforms.uFogRange.set([fog?.start||0,fog?.end||1]);
     uniforms.uViewport[0] = width;
     uniforms.uTint[0] = ((tint >> 16) & 255) / 255;

@@ -3495,7 +3495,7 @@
     $("badge").lastElementChild.textContent =
       (world.interior?.mode === "fixed" ? "Fixed interior · " : "") +
       (game.camera.firstPerson ? "First person" : "Third person") +
-      " · prototype 0.16.24";
+      " · prototype 0.16.26";
     if (world.interior)
       $("intro").textContent =
         world.interior.mode === "fixed"

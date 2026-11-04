@@ -47,7 +47,7 @@ function create(base){
           },floor:{
             texture:'img/materials/floors/prop_wood_floor1.png',tileSize:2
           },ceiling:{
-            texture:'img/materials/ceilings/prop_tin_ceiling1.png',tileSize:2
+            texture:'img/materials/ceilings/prop_tin_ceiling1.png',tileSize:4
           }
         },overrides:[]
       });
