@@ -225,7 +225,9 @@
       detail=root.FrontierViewVisibility?.detail(ctx.game,e,p,cam,selectedFrame)||{frame:selectedFrame,light:null},
       {row,column:col}=detail.frame,
       f = sheet.frames[row * (sheet.columns || 3) + col],
-      scale = ((e.height || 1.65) * p.scale) / (sheet.referenceHeight || 310);
+      // November 1: first-person alone stabilizes feet-depth scale; the locked third-person plane/proportions remain exact.
+      pixelScale = root.FrontierFirstPerson?.spriteScale(ctx.game,e,cam,p) ?? p.scale,
+      scale = ((e.height || 1.65) * pixelScale) / (sheet.referenceHeight || 310);
     const level = root.FrontierWater?.level(ctx.world, e.x, e.y),
       waterline = root.FrontierWater?.obscures(
         ctx.world,
@@ -321,7 +323,7 @@
         ) || null;
       // November 1, 2026: normal basis follows the locked pitched camera-facing image rectangle.
       const sy=Math.sin(cam.yaw),cy=Math.cos(cam.yaw),sp=Math.sin(cam.pitch||0),cp=Math.cos(cam.pitch||0);
-      ctx.liveNormalSurface={ownerId:e.id,center:[e.x,e.y,(e.z||0)+(f.h*.5-(sheet.groundInset||0))*scale/p.scale],right:[cy,-sy,0],up:[-sy*sp,-cy*sp,cp],facing:[-sy*cp,-cy*cp,-sp],size:[f.w*scale/p.scale,f.h*scale/p.scale]};
+      ctx.liveNormalSurface={ownerId:e.id,center:[e.x,e.y,(e.z||0)+(f.h*.5-(sheet.groundInset||0))*scale/pixelScale],right:[cy,-sy,0],up:[-sy*sp,-cy*sp,cp],facing:[-sy*cp,-cy*cp,-sp],size:[f.w*scale/pixelScale,f.h*scale/pixelScale]};
       if(lit.frontierNormalImage){image.frontierNormalImage=lit.frontierNormalImage;image.frontierNormalStrength=lit.frontierNormalStrength??1;}
       ctx.drawImage(
         image,
@@ -504,11 +506,14 @@
       cos = Math.cos(cam.yaw);
     // Vector study: clear the textured placeholder and draw a world-space grid.
     // October 26: distance fog belongs to geometry; the clear/sky is never a fog-colored full-screen overlay.
+    // Superseded November 1 at the horizon only: a far-background bank is intentional; upper sky and foreground are not uniformly tinted.
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, game.viewWidth, 480);
     if (cam.orthographic && !cam.outdoorIsometric) FrontierInterior.background(ctx, game, cam);
     else if ((!game.sourceWorld.interior || game.sourceWorld.interior.outdoor) || game.sourceWorld.sky?.panorama)
       FrontierSky.draw(ctx, game, cam, project);
+    // November 1, 2026: a horizon-localized background bank fills distant gaps; upper sky and foreground geometry remain independent.
+    root.FrontierHorizonFog?.draw(ctx,game,cam);
     /* October 10, 2026: interior geometry owns its floor depth. Outdoor terrain would hide coplanar room floors and must stay outside cells. */
     if ((!game.sourceWorld.interior || game.sourceWorld.interior.outdoor))
       root.FrontierOutdoorAssets?.draw(ctx, game, cam, project);

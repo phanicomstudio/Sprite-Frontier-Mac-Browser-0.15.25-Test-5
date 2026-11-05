@@ -338,3 +338,7 @@ Wheel outward now returns to third person; this supersedes 0.16.21's explicit la
 ## November 1, 2026 — first-person crosshair and facing
 
 First-person aiming is centered independently of third-person framing. Returning with wheel-out or V aligns player facing to the direction just viewed, so you see the player's back. Existing weapon image flash anchors and physical launch offsets remain configured as described for 0.16.22.
+
+## November 1, 2026 — 0.16.24 horizon atmosphere
+
+The earlier "fog never affects sky" wording is superseded specifically at the horizon: a localized background bank blends into upper sky while retaining its identity. Environment distance-fog controls also govern this bank; disabling fog disables it. No new menu is required. Outdoor first-/third-person horizon tracks look pitch; indoor/fixed and orthographic/isometric views preserve their separate presentation. First-person sprite scale is stabilized against pitch while third-person remains unchanged. See ITERATION-0.16.24.md.

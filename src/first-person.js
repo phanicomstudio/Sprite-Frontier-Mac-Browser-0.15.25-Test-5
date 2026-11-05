@@ -60,6 +60,13 @@
 
   }
 
+  /* @function firstPerson.spriteScale1624 — Inputs: active game, sprite actor, camera and projected feet. Returns logical pixels/metre. First-person only uses horizontal camera-forward distance to prevent looking up/down from changing scale through feet-height depth. The image remains camera-facing with unchanged proportions/anchoring; third-person/isometric return the original scale exactly. No physical position, aim, collision or frame metadata changes. */
+  function spriteScale(game,actor,cam,p){
+    if(!game?.camera.firstPerson||game.authoring||cam.orthographic)return p.scale;
+    const forward=(actor.x-cam.x)*Math.sin(cam.yaw)+(actor.y-cam.y)*Math.cos(cam.yaw);
+    return forward>.13?360/forward:p.scale;
+  }
+
   /* @function firstPerson.alignFacing1623 — Inputs: active game. Returns whether perspective player facing was aligned to camera yaw. Updates actor and movement facing together when leaving first-person, so stale pre-entry front-facing art cannot return. Fixed/isometric presentation is excluded; world position, camera, sprite tilt and weapon accuracy are untouched. */
   function alignFacing(game){
     if(game.sourceWorld.presentation?.mode==='isometric'||game.sourceWorld.interior?.mode==='fixed')return false;
@@ -185,7 +192,7 @@
   }
 
   root.FrontierFirstPerson={
-    validate,assignment,alignFacing,motion,muzzle,draw
+    validate,assignment,spriteScale,alignFacing,motion,muzzle,draw
   };
 
 })(typeof window==='undefined'?globalThis:window);
