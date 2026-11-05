@@ -1,0 +1,27 @@
+{
+  "source": "img/items/prop_Korzekoff1.png",
+  "sha256": "681d1b932edda8adccf946cf0af3eb367579776e15f75857230d798d17bd525f",
+  "normal": "assets/automatic-normals/681d1b932edda8adccf946cf-relief2.normal.png",
+  "lit": "assets/automatic-normals/681d1b932edda8adccf946cf-relief2.lit.webp",
+  "width": 35,
+  "height": 182,
+  "normalWidth": 35,
+  "normalHeight": 182,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

@@ -152,6 +152,7 @@
     r.floor = polygon(r.floor, bounds);
     if (root.FrontierRoomLayout)
       r.layout = root.FrontierRoomLayout.validate(r.layout, bounds);
+    if(r.construction){r.construction=root.FrontierConstruction.validate(r.construction);r.primitives=root.FrontierConstruction.compile(r.construction,r.primitives).primitives;}
     const ids = new Set();
     const lists = ["blockers", "sprites", "primitives", "entrances", "exits"];
     for (const key of lists) {
@@ -305,6 +306,7 @@
       camera: r.camera,
       floor: r.floor,
       ...(r.layout ? { layout: r.layout } : {}),
+      ...(r.construction?{construction:r.construction}:{}),
       ...Object.fromEntries(
         lists.map(
           /* @function interiors.callback.10 — Returns a list of k, r at k. Inputs: k. Returns: a list of k, r at k. */ (
@@ -601,7 +603,7 @@
         (c.screenY + dx * c.axisXY + dy * c.axisYY - z * c.heightScale) *
           cam.fit,
       scale: c.heightScale * cam.fit,
-      depth: cam.outdoorIsometric ? ((x-cam.x)*Math.sin(cam.yaw)+(y-cam.y)*Math.cos(cam.yaw))*Math.cos(cam.pitch)+(z-cam.z)*Math.sin(cam.pitch) : 24 + ((x - 9) * Math.sin(cam.yaw) + (y - 9) * Math.cos(cam.yaw)),
+      depth: cam.outdoorIsometric ? 30+(((x-cam.x)*Math.sin(cam.yaw)+(y-cam.y)*Math.cos(cam.yaw))*Math.cos(cam.pitch)+(z-cam.z)*Math.sin(cam.pitch))*.02 : 24 + ((x - 9) * Math.sin(cam.yaw) + (y - 9) * Math.cos(cam.yaw)),
     };
   }
   /* @function interiors.groundPoint.28 — Handles ground point within interior rooms and their camera. Inputs: cam; sx; sy. Returns: a record containing x, y. */ function groundPoint(
@@ -703,8 +705,15 @@
       ctx.vectorDisplay = null;
       ctx.assetNormal = image(cam.room.normal);
       ctx.assetLight = cam.room.light;
+      // November 1, 2026: explicit room normals retain the existing GPU/light path.
+      // Otherwise use cached automatic relief; projection and authored image scale stay unchanged.
+      const artwork=cam.room.normal?im:root.FrontierAutomaticNormals?.image(im,cam.room.image)||im;
+      // November 1: fixed artwork receives live light on its calibrated image plane. A normal image cannot infer hidden scene depth; authored floor/collision geometry remains separate.
+      if(ctx.assetNormal?.complete&&ctx.assetNormal.naturalWidth)artwork.frontierNormalImage=ctx.assetNormal;
+      const center=groundPoint(cam,cam.ox+cam.room.imageWidth*cam.fit*.5,cam.oy+cam.room.imageHeight*cam.fit*.5),sy=Math.sin(cam.yaw),cy=Math.cos(cam.yaw),sp=Math.sin(cam.pitch||0),cp=Math.cos(cam.pitch||0),unit=cam.room.camera.heightScale||100;
+      ctx.liveNormalSurface={center:[center.x,center.y,0],right:[cy,-sy,0],up:[-sy*sp,-cy*sp,cp],facing:[-sy*cp,-cy*cp,-sp],size:[cam.room.imageWidth/unit,cam.room.imageHeight/unit]};
       ctx.drawImage(
-        im,
+        artwork,
         0,
         0,
         im.naturalWidth,
@@ -714,6 +723,7 @@
         cam.room.imageWidth * cam.fit,
         cam.room.imageHeight * cam.fit,
       );
+      ctx.liveNormalSurface=null;
       ctx.assetNormal = null;
       ctx.assetLight = null;
       ctx.vectorDisplay = style;
@@ -728,8 +738,13 @@
     if (!im?.complete || !im.naturalWidth) return;
     ctx.assetNormal = image(e.normal);
     ctx.assetLight = ctx.world.interior.light;
+    // November 1, 2026: a custom furniture normal always takes priority.
+    const artwork=e.normal?im:root.FrontierAutomaticNormals?.image(im,e.image)||im;
+    if(ctx.assetNormal?.complete&&ctx.assetNormal.naturalWidth)artwork.frontierNormalImage=ctx.assetNormal;
+    const cam=root.FrontierRender.camera(ctx.game),sy=Math.sin(cam.yaw),cy=Math.cos(cam.yaw),sp=Math.sin(cam.pitch||0),cp=Math.cos(cam.pitch||0);
+    ctx.liveNormalSurface={center:[e.x,e.y,(e.z||0)+e.height*.5],right:[cy,-sy,0],up:[-sy*sp,-cy*sp,cp],facing:[-sy*cp,-cy*cp,-sp],size:[e.width,e.height]};
     ctx.drawImage(
-      im,
+      artwork,
       0,
       0,
       im.naturalWidth,
@@ -739,6 +754,7 @@
       e.width * p.scale,
       e.height * p.scale,
     );
+    ctx.liveNormalSurface=null;
     ctx.assetNormal = null;
     ctx.assetLight = null;
   }

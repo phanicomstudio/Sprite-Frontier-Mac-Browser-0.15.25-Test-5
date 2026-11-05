@@ -213,11 +213,13 @@
             event.inspection.length > 2000)
         )
           throw Error("Invalid inspection text.");
+        if(event.groundShadow!==undefined && typeof event.groundShadow!=="boolean")throw Error("Ground shadow must be enabled or disabled.");
         if (event.extensions?.enemy) root.FrontierEnemies?.validate(event.extensions.enemy);
         return {
           ...(event.spatial === undefined
             ? {}
             : { spatial: root.FrontierModelEvents.validate(event.spatial) }),
+          ...(event.groundShadow===undefined?{}:{groundShadow:event.groundShadow}),
           activity: event.activity || "distance",
           vectorTreatment: event.vectorTreatment || "map",
           ...(event.topics

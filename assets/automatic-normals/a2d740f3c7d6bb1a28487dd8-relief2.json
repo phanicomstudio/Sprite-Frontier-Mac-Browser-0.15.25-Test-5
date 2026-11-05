@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/plants/$$Puff Star.png",
+  "sha256": "a2d740f3c7d6bb1a28487dd8b8e93e5910a2cd481d8b06360e1ec8c585a36fcb",
+  "normal": "assets/automatic-normals/a2d740f3c7d6bb1a28487dd8-relief2.normal.png",
+  "lit": "assets/automatic-normals/a2d740f3c7d6bb1a28487dd8-relief2.lit.webp",
+  "width": 340,
+  "height": 278,
+  "normalWidth": 340,
+  "normalHeight": 278,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/plants/Blood Flower A.png",
+  "sha256": "abc4f5b83200e0338102de1cd452d5cbc9608aab1d292a9588d07642a19cb6eb",
+  "normal": "assets/automatic-normals/abc4f5b83200e0338102de1c-relief2.normal.png",
+  "lit": "assets/automatic-normals/abc4f5b83200e0338102de1c-relief2.lit.webp",
+  "width": 170,
+  "height": 336,
+  "normalWidth": 170,
+  "normalHeight": 336,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

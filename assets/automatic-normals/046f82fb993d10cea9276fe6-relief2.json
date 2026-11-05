@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/shrubs/$$Thorny Bush.png",
+  "sha256": "046f82fb993d10cea9276fe6f0d7d6720fe0cbe57ff557a19ec4b3619f91ec3d",
+  "normal": "assets/automatic-normals/046f82fb993d10cea9276fe6-relief2.normal.png",
+  "lit": "assets/automatic-normals/046f82fb993d10cea9276fe6-relief2.lit.webp",
+  "width": 1957,
+  "height": 2517,
+  "normalWidth": 398,
+  "normalHeight": 512,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

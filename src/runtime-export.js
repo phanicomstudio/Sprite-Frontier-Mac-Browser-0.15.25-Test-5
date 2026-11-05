@@ -7,6 +7,8 @@
 ) {
   "use strict";
   const excluded = [
+    "construction-editor",
+    "catalog-editor",
     "editor",
     "editor-workbench",
     "event-context",
@@ -19,9 +21,10 @@
     "layout-editor",
     "normal-workbench",
     // October 22: generation and normalized authoring are editor-only.
-    "spritefusion-normal-generator",
+    // November 1, 2026: automatic imported artwork uses the generator at asset preparation.
+    // "spritefusion-normal-generator" was editor-only before automatic defaults.
     "authoring-scene",
-    "authoring-workspace",
+    "authoring-workspace", "authoring-tools169",
     "editor-tools",
     "effects-editor",
     "model-workbench",
@@ -48,9 +51,8 @@
       html = html.replace(tag, "");
       omitted.push(source);
     }
-    const fusionPayload="vendor/spritefusion/spritefusion-embedded.js";
-    html=html.replace('<script src="'+fusionPayload+'"></script>', "");
-    omitted.push(fusionPayload);
+    // November 1, 2026: retain the pinned local WASM payload for automatic new-asset preparation.
+    // Earlier exports omitted it together with the manual workbench; the workbench remains omitted.
     const encoded = JSON.stringify(checked)
       .replaceAll("<", "\\u003c")
       .replaceAll(">", "\\u003e")

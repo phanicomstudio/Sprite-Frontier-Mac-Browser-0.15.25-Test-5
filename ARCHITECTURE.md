@@ -55,3 +55,62 @@ map resources remain shared. Scene-transition owns transfer commit/resume and
 cancels previews. Every new callback/function has its own source contract; the
 current dated reference is FUNCTION-REFERENCE-0.15.17.md. Earlier explanations
 above remain historical where behavior differs.
+
+
+## October 28, 2026 - 0.16.8 palette output
+
+The original PhanicomPaletteDither v2 algorithm is ported in src/palette-dither.js, loaded after isometric and before world validation. Environment > Indexed palette / dithering owns map settings; original event commands use the existing interpreter and save/travel owners. The final Pixi pass can composite the retained HTML HUD; live door/melt layers and raw melt capture avoid frozen/double-indexed transitions. Prior appearance remains unchanged when disabled. See ITERATION-0.16.8.md and FUNCTION-REFERENCE-0.16.8.md for controls, source provenance, lifecycle, limits and validation. Existing documentation above is retained.
+
+
+## October 29, 2026 — 0.16.9 authoring and visibility boundaries
+
+See ITERATION-0.16.9.md, FUNCTION-REFERENCE-0.16.9.md and FEATURE-STATUS-0.16.9.md. The shared plan/Inspector are adapters over existing source collections and history, not a new authoritative scene format. New isometric visibility uses geometry-only depth to reveal pixels without changing collision or targeting. Contact blobs remain isometric-only; outdoor sun shadows remain separate. Native project firearms and map-local melee keep their established owners, with adjacent readable damage/sound controls. Advanced settings retain imported sound bytes. Full Buildings/Storeys/shared boundaries and host-attached door cutting remain explicit undelivered roadmap items, not inferred from UI labels.
+
+
+## October 29, 2026 — Skill-O-Matic prototype boundary
+
+The runtime-only-neutral skill-o-matic.js controller is included in both engine and gameplay exports. It owns DOM composition and transient selection/scroll state; app.js retains simulation pause, camera/cursor ownership, target reach/occlusion and inspection. TEST SCAN is a harmless integration probe with no persistent skill stat or event command. Original art and a locally defined vector LCD alphabet require no third-party font. UI clicks are consumed before ordinary interaction/weapon routing; restart/editor changes discard the probe. Original shader/HUD capture includes the new image/SVG layers. Full skill rules remain a separate future task.
+
+
+## October 29, 2026 — current combined 0.16.11 behavior
+
+See [ITERATION-0.16.11.md](ITERATION-0.16.11.md), [FUNCTION-REFERENCE-0.16.11.md](FUNCTION-REFERENCE-0.16.11.md) and [LOCAL-0.16.11.md](LOCAL-0.16.11.md). These current chapters supersede earlier pending notes for inventory, crafting, catalog/recipe editing, connected rectangular construction, shared boundaries/openings and zoom-aware isometric visibility. Earlier explanations remain historical. The 24 starter materials are ordinary items; two descriptions and production recipe choices remain unauthored. TEST SCAN is intentionally a test skill. Fixed-artwork tools, sprite presentation and distinct shadow systems remain supported. Old bundled room examples are retired only from fresh projects, not deleted from saved projects.
+
+## November 1, 2026 — retained gameplay HUD filtering
+
+See ITERATION-0.16.16.md and FUNCTION-REFERENCE-0.16.16.md. Gameplay panels now have independent visual caches; static HUD frames do no recapture work. The original DOM still owns input and fail-safe presentation. Logical palette resolution is independent of display density. Automatic normals remain a separate pending integration; do not infer world-normal support from Sprite Fusion generation alone.
+
+## November 1, 2026 — automatic normal relief
+
+0.16.17 completes the previously pending default-normal integration. Static image-space relief is shared/prepared once, while live radius lights, fog, perspective sun shadows and isometric contact shadows keep their existing owners. Refer to ITERATION-0.16.17.md for processing/cache limits, override precedence and runtime resource closure. No map schema migration or new per-frame normal pass is introduced.
+
+
+## November 1, 2026 — live normals correction (0.16.18)
+
+The 0.16.17 fixed-relief default is superseded by real live normal-map lighting. Original albedo and locked sprite presentation remain unchanged. Map/player/projectile lights and outdoor sun direction drive a separate normal texture in existing world draws; custom overrides remain authoritative. See ITERATION-0.16.18.md and FUNCTION-REFERENCE-0.16.18.md for supported paths, deliberate shadow splits, limits, performance measurements and current validation successors.
+
+
+## November 1, 2026 — mandatory projectile lighting (0.16.19)
+
+Projectile emission is now always enabled; old map/weapon off or zero-brightness values upgrade automatically. There is no projectile-off UI. Runtime selection prioritizes projectile sources within the existing eight-light capacity, including maps with general lighting disabled. See ITERATION-0.16.19.md and FUNCTION-REFERENCE-0.16.19.md. Earlier optional-toggle contracts are historical.
+
+
+## November 1, 2026 — mirrored antique door (0.16.20)
+
+The shared built-in antique door now uses the supplied mirrored two-sided assembly, retaining frame/leaf node IDs and hinge pivot. Known old clean built-in library payloads upgrade during import/restore; modified/custom models remain unchanged. Current provenance and validation are in ITERATION-0.16.20.md and FUNCTION-REFERENCE-0.16.20.md. Prior asset notes are historical.
+
+## November 1, 2026 — 0.16.21 presentation ownership
+
+`src/first-person.js` is loaded before render/application startup. It consumes project weapon `firstPerson` assignments and the active player sprite profile; it owns only overlay resources and transient sway/recovery state. The existing renderer performs its draw before screen/death effects and final palette composition. Alpha/albedo and physical launch remain authoritative. The shared normal owner provides reactive light response; passive owner-light exclusion is carried by light identity through live normal descriptors and scalar samples. Sun cache updates are oldest-first and never erase a budget-deferred valid caster; orthographic contact shadows remain separate.
+
+## November 1, 2026 — 0.16.22 launch ownership
+
+The viewmodel module supplies a camera-relative launch origin only for the active assigned first-person player. Spatial projectile creation consumes it before existing camera-target/spread calculation and the body-to-muzzle launch sweep. Third-person and NPC origins remain with their original sprite calibration. Sway is a fixed-time presentation signal and never changes physical launch. See FUNCTION-REFERENCE-0.16.22.md.
+
+## November 1, 2026 — 0.16.23 first-person aim
+
+First-person now uses its own centered optical axis/crosshair and matching projectile camera ray. Third-person raised-crosshair compensation and fixed/isometric pointer aim remain separate. Wheel-out and camera-button/V exit align actor and movement facing to camera yaw without moving the actor/camera. See ITERATION-0.16.23.md and FUNCTION-REFERENCE-0.16.23.md.
+
+## November 1, 2026 — 0.16.24 backdrop ownership
+
+src/horizon-fog.js follows sky and precedes geometry in the renderer. Effective fog color and camera projection determine one pooled background quad; terrain/models/sprites retain distance-fog ownership, so background does not wash near assets/HUD. Orthographic/interior paths skip the bank. FrontierFirstPerson.spriteScale supplies first-person-only stable pixel scale; existing frame, feet anchor, mask, normal and physics owners remain separate. Third-person math is preserved exactly.

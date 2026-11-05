@@ -1,0 +1,27 @@
+{
+  "source": "img/items/prop_Brieskuget Cheese1.png",
+  "sha256": "85096e78827e041787afdbbbd879be4a06c8a1c5da661f767a47a0ebbcf621ef",
+  "normal": "assets/automatic-normals/85096e78827e041787afdbbb-relief2.normal.png",
+  "lit": "assets/automatic-normals/85096e78827e041787afdbbb-relief2.lit.webp",
+  "width": 116,
+  "height": 48,
+  "normalWidth": 116,
+  "normalHeight": 48,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

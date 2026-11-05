@@ -460,9 +460,36 @@
       project.maps.push(...root.FrontierHubFixtures.create());
     const wilderness = project.maps.find(/* @function mapLibrary.wilderness162 — Inputs: bundled map. Returns textured wilderness identity match; no mutation. */ function(m){return m.id === "outdoor-assets-test";});
     if(wilderness){const iso=structuredClone(wilderness);iso.id="isometric-wilderness";iso.name="Isometric Textured Wilderness";iso.world.presentation=FrontierIsometric.validate({mode:"isometric"});
-      const pistol=FrontierEnemies.preset("handgun");pistol.hostile=false;pistol.coverChance=100;pistol.patrol=[[30,30],[34,30]];iso.world.events.push(FrontierEnemies.event("iso-pistol-test","Pistol patrol � retaliates when attacked",30,30,pistol,"enemy-chiban"));
+      const pistol=FrontierEnemies.preset("handgun");pistol.hostile=true;pistol.coverChance=25;pistol.patrol=[[30,30],[34,30]];iso.world.events.push(FrontierEnemies.event("iso-pistol-test","Pistol patrol - attacks on sight",30,30,pistol,"enemy-chiban"));
       const cover=FrontierEvents.create("iso-cover",32,29);cover.x=32;cover.y=29;cover.name="Static cover event";cover.height=2;cover.pages[0].graphic="chest";cover.pages[0].solid=true;iso.world.events.push(cover);project.maps.push(iso);}
 
+    if(wilderness){
+      const lake=structuredClone(wilderness.world);
+      lake.seed="swimming-lake";
+      lake.spawn={x:32,y:12};
+      lake.objects=[];lake.events=[];
+      lake.presentation=FrontierIsometric.validate({mode:"isometric"});
+      lake.terrain={...FrontierTerrain.validate(),edits:{}};
+      lake.water=FrontierWater.validate({color:"#275756",cells:{}});
+      // South: walk-in slope. East: stepped shelf. West: low ledge. North: high bank.
+      for(let y=15;y<=49;y++)for(let x=14;x<=50;x++){
+        const south=Math.min(1,(y-15)/8), east=x>=46?.5:1;
+        const west=x<=16?.65:1;
+        const depth=y===49?0:3.4*south*Math.min(east,west);
+        lake.terrain.edits[x+","+y]=-depth;
+        if(x<50&&y<49)lake.water.cells[x+","+y]=-.12;
+      }
+      for(let y=28;y<=35;y++)for(let x=13;x<=15;x++)lake.terrain.edits[x+","+y]=.35;
+      for(let y=28;y<=35;y++)for(let x=49;x<=51;x++)lake.terrain.edits[x+","+y]=-.48;
+      for(let y=49;y<=51;y++)for(let x=20;x<=44;x++)lake.terrain.edits[x+","+y]=1.35;
+      project.maps.push({id:"swimming-lake",name:"Swimming Lake Test",folder:"Test maps",world:FrontierWorld.validate(lake)});
+    }
+
+    // October 29 user authorization: fresh projects retire redundant old room fixtures. Saved/imported projects are adopted later without this filter; original fixture builders remain documented history.
+    const retiredRoomIds=new Set(['room-test','ruin-test','hub-saloon','hub-test','hub-shop','hub-home','hub-wilderness']);
+    project.maps=project.maps.filter(/* @function mapLibrary.currentExamples1611 — Inputs: fresh bundled map. Retains wilderness/demo while replacing only redundant shipped room examples; user saves are not filtered. */function(map){return !retiredRoomIds.has(map.id);});
+    delete demo.travel;demo.events=demo.events.filter(/* @function mapLibrary.retireOldGuide1611 — Inputs: fresh demo event. Removes only obsolete ruin-guide fixture; author-created events are not involved. */function(event){return event.id!=='hub-guide';});
+    project.maps.push(...root.FrontierDoorTests.create(api.world()));
     const label = document.createElement("label");
     label.textContent = "Active map";
     const picker = document.createElement("select");
@@ -763,6 +790,8 @@
       if (!["flat", "hills", "demo", "interior", "isometric"].includes(template))
         throw Error("Unknown map template.");
       const world = api.generate();
+      // October 29: newly authored cells inherit current shared shadow strengths; imported projects retain their own authored values.
+      world.lighting=root.FrontierLocalLighting.validate(world.lighting);world.lighting.shadows=root.FrontierLocalLighting.shadows169(api.world().lighting?.shadows);
       if (template !== "demo") {
         delete world.travel;
         world.objects = [];
@@ -925,6 +954,8 @@
     /* @function mapLibrary.restoreMembership1524 — Inputs: desired before/after membership record. Returns nothing. Keeps newest authored content for surviving IDs and restores archived records only for missing IDs. Rechecks direct incoming links before removing a cell; validates identities and all data before adoption. Does not undo unrelated world/property edits. */
     function restoreMembership1524(target) {
       const current = snapshot();
+      // October 29: shadow-strength edits share project-operation history but restore only their own fields, preserving later geometry, membership and event edits.
+      if(mapHistory1524.property169==="shadows"){const candidate=structuredClone(current);for(const map of candidate.maps){const prior=target.maps.find(/* @function mapLibrary.shadowHistoryTarget169 — Inputs: archived map. Returns stable-ID match, never matching by array position. */function(item){return item.id===map.id;});if(!prior)continue;map.world.lighting=root.FrontierLocalLighting.validate(map.world.lighting);if(prior.world.lighting?.shadows===undefined)delete map.world.lighting.shadows;else map.world.lighting.shadows=structuredClone(prior.world.lighting.shadows);}adoptManagement1524(validate(candidate));return;}
       for (const membership of [mapHistory1524.before, mapHistory1524.after])
         for (let index = 0; index < membership.maps.length; index++) {
           const latest = current.maps.find(
@@ -1326,9 +1357,12 @@
             incoming.gameplayDefaults.extensions.itemDefinitions,
             assetMerge.mapping,
           );
+          const oldRecipes=existing.gameplayDefaults.extensions.recipes,incomingRecipes=incoming.gameplayDefaults.extensions.recipes;
+          const mergedRecipes=oldRecipes!==undefined||incomingRecipes!==undefined?root.FrontierCrafting.merge(oldRecipes||[],incomingRecipes||[],mergedItems||root.FrontierItemDefinitions.defaults()):undefined;
           FrontierModelLibrary.restore(assetMerge.models);
           if (mergedItems !== undefined)
             project.gameplayDefaults.extensions.itemDefinitions = mergedItems;
+          if(mergedRecipes!==undefined)project.gameplayDefaults.extensions.recipes=mergedRecipes;
           project.models = assetMerge.models;
           project.templates = mergedTemplates.bank;
           project.maps.push(...incoming.maps);
@@ -1354,6 +1388,12 @@
       remember,
       switchTo,
       snapshot,
+      /* @function mapLibrary.shadowSettings169 — Inputs: validated strength pair. Returns nothing after one project map-operation transaction applying to every current cell; existing lights and per-event contact choices remain intact. Full-project validation precedes adoption, and existing map-operation Undo restores all worlds. */
+      shadowSettings169(value){const checked=root.FrontierLocalLighting.shadows169(value),current=snapshot(),candidate=structuredClone(current);for(const map of candidate.maps){map.world.lighting=root.FrontierLocalLighting.validate(map.world.lighting);map.world.lighting.shadows=checked;}commitManagement1524(validate(candidate),{maps:current.maps.slice(),active:current.active});mapHistory1524.property169="shadows";},
+      /* @function mapLibrary.weaponDamage169 — Inputs: complete validated native weapon override dictionary. Returns nothing after existing project-default adoption/history. Non-damage overrides are retained by the caller draft, and equipped clones refresh through normal session construction. Rejection preserves the old project. */
+      weaponDamage169(value){const before=structuredClone(project.gameplayDefaults),next=structuredClone(before);next.extensions.weaponDefinitions=root.FrontierWeaponDefinitions.validate(value);adoptGameplayDefaults(next);gameplayHistory.push({before,after:project.gameplayDefaults});refreshGameplayHistory();},
+      /* @function mapLibrary.catalog1611 — Inputs: complete item/recipe draft and live reference-bearing state. Returns nothing after one project defaults transaction. Stable-ID removal is conservatively refused when any exact reference remains in authored maps, templates, starting values, recipes or current inventory/ownership. Extra metadata and all unrelated extensions/history remain intact. */
+      catalog1611(value,runtime){const before=structuredClone(project.gameplayDefaults),next=structuredClone(before),items=root.FrontierItemDefinitions.validate(value.items),recipes=root.FrontierCrafting.validate(value.recipes,items),known=new Set(items.map(/* @function mapLibrary.itemIdentity1611 — Inputs: definition. Returns stable item ID for removal guard. */function(item){return item.id;}));const previous=before.extensions.itemDefinitions||root.FrontierItemDefinitions.defaults();const references=snapshot();delete references.gameplayDefaults.extensions.itemDefinitions;references.gameplayDefaults.extensions.recipes=recipes;const text=JSON.stringify([references,runtime]);for(const item of previous)if(!known.has(item.id)&&text.includes(JSON.stringify(item.id)))throw Error('Item is still referenced: '+item.name+'. Retarget its pickups, recipes or starting inventory before deleting.');next.extensions.itemDefinitions=items;next.extensions.recipes=recipes;adoptGameplayDefaults(next);gameplayHistory.push({before,after:project.gameplayDefaults});refreshGameplayHistory();},
       get gameplayDefaults /* Historical contract retained; October 14 reviewed explanation follows. @function map-library.gameplayDefaults.57 — Handles gameplay defaults within map library. Inputs: no explicit arguments; uses enclosing module state. Uses: structured clone. Returns: structured clone using project gameplay defaults. */
   /* @function mapLibrary.reviewedgameplayDefaults_57 — Returns an isolated starting-gameplay-value draft. Inputs: none. Returns structured clone of project defaults so dialog edits cannot mutate project before Apply. No writes; uncloneable unsupported data would throw, although schema requires portable values. */() {
         return structuredClone(project.gameplayDefaults);
@@ -1531,7 +1571,10 @@
                   ) => e.id === m.id,
                 )
               )
-                project.maps.push(m);
+                // Saved maps own their numeric IDs. A new bundled fixture
+                // may have been assigned an overlapping ID in a fresh catalog.
+                project.maps.push({...m, mzId:undefined});
+            project.maps = root.FrontierMapIdentities.assign(project.maps);
             const forest = project.maps.find(
               /* @function map-library.callback.80 — Returns m id equals "outdoor-assets-test". Inputs: m. Returns: m id equals "outdoor-assets-test". */ (
                 m,

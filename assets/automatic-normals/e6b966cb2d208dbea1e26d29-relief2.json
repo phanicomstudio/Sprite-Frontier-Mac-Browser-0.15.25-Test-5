@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/ground/seamless-earth.png",
+  "sha256": "e6b966cb2d208dbea1e26d29d2783b1dcacb90796188c1f7c08c95bf5e831bbf",
+  "normal": "assets/automatic-normals/e6b966cb2d208dbea1e26d29-relief2.normal.png",
+  "lit": "assets/automatic-normals/e6b966cb2d208dbea1e26d29-relief2.lit.webp",
+  "width": 1254,
+  "height": 1254,
+  "normalWidth": 512,
+  "normalHeight": 512,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 0
+  },
+  "wrap": true,
+  "compression": "webp-lossless-rgba-verified"
+}

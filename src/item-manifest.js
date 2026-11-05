@@ -1,4 +1,4 @@
-/* October 22, 2026: own-asset weapon/ammunition catalog; generated from data/items.json. */
+/* October 29, 2026: ordinary item catalog, including user-supplied starting definitions; generated from data/items.json. Source IDs/descriptions remain metadata, never executable notes. */
 window.FrontierItems = [
   {
     "id": "test-token",
@@ -761,6 +761,417 @@ window.FrontierItems = [
       "pickupMethod": "interact",
       "worldHeight": 0.25,
       "description": "Reserve ammunition for the pistol. Press R to reload its magazine."
+    }
+  },
+  {
+    "id": "material-junk-scrap",
+    "name": "Junk Scrap",
+    "price": 15,
+    "graphic": "chest",
+    "description": "Random pieces of discarded kipple, often useless but \nmay serve a purpose.",
+    "properties": {
+      "category": "item",
+      "description": "Random pieces of discarded kipple, often useless but \nmay serve a purpose."
+    },
+    "source": {
+      "project": "tiger-electronics",
+      "type": "item",
+      "id": 132,
+      "name": "Junk Scrap"
+    }
+  },
+  {
+    "id": "material-tech-scrap",
+    "name": "Tech Scrap",
+    "price": 25,
+    "graphic": "chest",
+    "description": "Jumbled fragments of outdated tech, their components \nbuzzing with the potential for some future use.",
+    "properties": {
+      "category": "item",
+      "description": "Jumbled fragments of outdated tech, their components \nbuzzing with the potential for some future use."
+    },
+    "source": {
+      "project": "tiger-electronics",
+      "type": "item",
+      "id": 134,
+      "name": "Tech Scrap"
+    }
+  },
+  {
+    "id": "material-metal-scrap",
+    "name": "Metal Scrap",
+    "price": 25,
+    "graphic": "chest",
+    "description": "Shards of old metal, can be recycled or used in \ncrafting.",
+    "properties": {
+      "category": "item",
+      "description": "Shards of old metal, can be recycled or used in \ncrafting."
+    },
+    "source": {
+      "project": "tiger-electronics",
+      "type": "item",
+      "id": 133,
+      "name": "Metal Scrap"
+    }
+  },
+  {
+    "id": "material-plastic-scrap",
+    "name": "Plastic Scrap",
+    "price": 0,
+    "graphic": "chest",
+    "description": "",
+    "properties": {
+      "category": "item",
+      "description": ""
+    },
+    "descriptionPending": true,
+    "priceUnspecified": true
+  },
+  {
+    "id": "material-telemetry-module",
+    "name": "Telemetry Module",
+    "price": 0,
+    "graphic": "chest",
+    "description": "Electronics box used to collect measurements and data \nfor monitoring and analysis.",
+    "properties": {
+      "category": "item",
+      "description": "Electronics box used to collect measurements and data \nfor monitoring and analysis."
+    },
+    "source": {
+      "project": "tiger-electronics",
+      "type": "item",
+      "id": 650,
+      "name": "Telemetry Module"
+    }
+  },
+  {
+    "id": "material-phaneton-battery",
+    "name": "Phaneton Battery",
+    "price": 0,
+    "graphic": "chest",
+    "description": "Battery containing refined Phaneton Condensate. Emits\na faint persistant hum. Used as a power source.",
+    "properties": {
+      "category": "item",
+      "description": "Battery containing refined Phaneton Condensate. Emits\na faint persistant hum. Used as a power source."
+    },
+    "source": {
+      "project": "tiger-electronics",
+      "type": "item",
+      "id": 651,
+      "name": "Phaneton Battery"
+    }
+  },
+  {
+    "id": "material-wires",
+    "name": "Wires",
+    "price": 20,
+    "graphic": "chest",
+    "description": "Thin, sturdy strands of metal, flexible but strong.\nPerfect for binding or short-term connections.",
+    "properties": {
+      "category": "item",
+      "description": "Thin, sturdy strands of metal, flexible but strong.\nPerfect for binding or short-term connections."
+    },
+    "source": {
+      "project": "tiger-electronics",
+      "type": "item",
+      "id": 145,
+      "name": "Wires"
+    }
+  },
+  {
+    "id": "material-wire-spool",
+    "name": "Wire Spool",
+    "price": 40,
+    "graphic": "chest",
+    "description": "A roll of wire, coiled tightly and ready for any task.\nIts use only limited by your imagination. Very pointy.",
+    "properties": {
+      "category": "item",
+      "description": "A roll of wire, coiled tightly and ready for any task.\nIts use only limited by your imagination. Very pointy."
+    },
+    "source": {
+      "project": "tiger-electronics",
+      "type": "item",
+      "id": 146,
+      "name": "Wire Spool"
+    }
+  },
+  {
+    "id": "material-magnetic-material",
+    "name": "Magnetic Material",
+    "price": 15,
+    "graphic": "chest",
+    "description": "A dense, metallic substance that hums with unnatural \nmagnetism, pulsing with attractive power...",
+    "properties": {
+      "category": "item",
+      "description": "A dense, metallic substance that hums with unnatural \nmagnetism, pulsing with attractive power..."
+    },
+    "source": {
+      "project": "tiger-electronics",
+      "type": "item",
+      "id": 150,
+      "name": "Magnetic Material"
+    }
+  },
+  {
+    "id": "material-phaneton-condensate",
+    "name": "Phaneton Condensate",
+    "price": 0,
+    "graphic": "chest",
+    "description": "",
+    "properties": {
+      "category": "item",
+      "description": ""
+    },
+    "descriptionPending": true,
+    "priceUnspecified": true
+  },
+  {
+    "id": "material-phanteton-condensate-cartridge",
+    "name": "Phanteton Condensate Cartridge",
+    "price": 25,
+    "graphic": "chest",
+    "description": "Writable Hard Imipolex Phaneton Condensate Cartridge.\nUse to record Interference Pattern of your Phaneron. ",
+    "properties": {
+      "category": "item",
+      "description": "Writable Hard Imipolex Phaneton Condensate Cartridge.\nUse to record Interference Pattern of your Phaneron. "
+    },
+    "source": {
+      "project": "tiger-electronics",
+      "type": "item",
+      "id": 154,
+      "name": "Phaneton Condensate Cartridge"
+    }
+  },
+  {
+    "id": "material-textile-filament",
+    "name": "Textile Filament",
+    "price": 20,
+    "graphic": "chest",
+    "description": "Textile filament for 3d printing. Textile properties\nbased on the weave pattern of the printed filament. ",
+    "properties": {
+      "category": "item",
+      "description": "Textile filament for 3d printing. Textile properties\nbased on the weave pattern of the printed filament. "
+    },
+    "source": {
+      "project": "tiger-electronics",
+      "type": "item",
+      "id": 163,
+      "name": "Textile Filament"
+    }
+  },
+  {
+    "id": "material-uncured-imipolex-resin",
+    "name": "Uncured Imipolex Resin",
+    "price": 150,
+    "graphic": "chest",
+    "description": "Imipolex resin for 3d printing both specialised and \nbasic Imipolex plastics.",
+    "properties": {
+      "category": "item",
+      "description": "Imipolex resin for 3d printing both specialised and \nbasic Imipolex plastics."
+    },
+    "source": {
+      "project": "tiger-electronics",
+      "type": "item",
+      "id": 166,
+      "name": "Uncured Imipolex Resin"
+    }
+  },
+  {
+    "id": "material-imipolex-cube",
+    "name": "Imipolex Cube",
+    "price": 400,
+    "graphic": "chest",
+    "description": "A compact, dense block of synthetic material, its \nsurfaces shifting subtly beyond comprehension.",
+    "properties": {
+      "category": "item",
+      "description": "A compact, dense block of synthetic material, its \nsurfaces shifting subtly beyond comprehension."
+    },
+    "source": {
+      "project": "tiger-electronics",
+      "type": "item",
+      "id": 131,
+      "name": "Imipolex Cube"
+    }
+  },
+  {
+    "id": "material-metallic-filament",
+    "name": "Metallic Filament",
+    "price": 30,
+    "graphic": "chest",
+    "description": "Filament infused with metal for 3D printing, ideal for \ndurable, high-strength creations.",
+    "properties": {
+      "category": "item",
+      "description": "Filament infused with metal for 3D printing, ideal for \ndurable, high-strength creations."
+    },
+    "source": {
+      "project": "tiger-electronics",
+      "type": "item",
+      "id": 164,
+      "name": "Metallic Filament"
+    }
+  },
+  {
+    "id": "material-organoid-plug",
+    "name": "Organoid Plug",
+    "price": 0,
+    "graphic": "chest",
+    "description": "A bio-mechanical plug carrying data and metabolic \nsupport between organoid or machine devices.",
+    "properties": {
+      "category": "item",
+      "description": "A bio-mechanical plug carrying data and metabolic \nsupport between organoid or machine devices."
+    },
+    "source": {
+      "project": "tiger-electronics",
+      "type": "item",
+      "id": 652,
+      "name": "Organoid Plug"
+    }
+  },
+  {
+    "id": "material-organoid-socket",
+    "name": "Organoid Socket",
+    "price": 0,
+    "graphic": "chest",
+    "description": "A receptive interface that identifies, conditions and \naccepts organoid and organoid to machine connections.",
+    "properties": {
+      "category": "item",
+      "description": "A receptive interface that identifies, conditions and \naccepts organoid and organoid to machine connections."
+    },
+    "source": {
+      "project": "tiger-electronics",
+      "type": "item",
+      "id": 653,
+      "name": "Organoid Socket"
+    }
+  },
+  {
+    "id": "material-organoid-phosphor-crt",
+    "name": "Organoid Phosphor CRT",
+    "price": 0,
+    "graphic": "chest",
+    "description": "A phosphor display adapted to render the unstable \nsignals of organoid computers.",
+    "properties": {
+      "category": "item",
+      "description": "A phosphor display adapted to render the unstable \nsignals of organoid computers."
+    },
+    "source": {
+      "project": "tiger-electronics",
+      "type": "item",
+      "id": 654,
+      "name": "Organoid Phosphor CRT"
+    }
+  },
+  {
+    "id": "material-neuro-uplink-board",
+    "name": "Neuro Uplink Board",
+    "price": 0,
+    "graphic": "chest",
+    "description": "A neural interface translating human nervous impulses \ninto machine commands.",
+    "properties": {
+      "category": "item",
+      "description": "A neural interface translating human nervous impulses \ninto machine commands."
+    },
+    "source": {
+      "project": "tiger-electronics",
+      "type": "item",
+      "id": 655,
+      "name": "Neuro Uplink Board"
+    }
+  },
+  {
+    "id": "material-organoid-networking-board",
+    "name": "Organoid Networking Board",
+    "price": 0,
+    "graphic": "chest",
+    "description": "A wetware communications board linking organoid \ncomputers and external systems.",
+    "properties": {
+      "category": "item",
+      "description": "A wetware communications board linking organoid \ncomputers and external systems."
+    },
+    "source": {
+      "project": "tiger-electronics",
+      "type": "item",
+      "id": 656,
+      "name": "Organoid Networking Board"
+    }
+  },
+  {
+    "id": "material-organoid-memory-board",
+    "name": "Organoid Memory Board",
+    "price": 0,
+    "graphic": "chest",
+    "description": "A cultivated memory lattice for storing data, learned \nbehavior and experience.",
+    "properties": {
+      "category": "item",
+      "description": "A cultivated memory lattice for storing data, learned \nbehavior and experience."
+    },
+    "source": {
+      "project": "tiger-electronics",
+      "type": "item",
+      "id": 657,
+      "name": "Organoid Memory Board"
+    }
+  },
+  {
+    "id": "material-muther-board",
+    "name": "Muther Board",
+    "price": 0,
+    "graphic": "chest",
+    "description": "A bio-mechanical backplane that binds and sustains an \norganoid computer system.",
+    "properties": {
+      "category": "item",
+      "description": "A bio-mechanical backplane that binds and sustains an \norganoid computer system."
+    },
+    "source": {
+      "project": "tiger-electronics",
+      "type": "item",
+      "id": 658,
+      "name": "MutherBoard"
+    }
+  },
+  {
+    "id": "material-organoid-processor",
+    "name": "Organoid Processor",
+    "price": 0,
+    "graphic": "chest",
+    "description": "A sealed neural computing module housing a cultivated \nartificial intelligence.",
+    "properties": {
+      "category": "item",
+      "description": "A sealed neural computing module housing a cultivated \nartificial intelligence."
+    },
+    "source": {
+      "project": "tiger-electronics",
+      "type": "item",
+      "id": 659,
+      "name": "Organoid Processor"
+    }
+  },
+  {
+    "id": "material-psy-block",
+    "name": "Psy Block",
+    "price": 0,
+    "graphic": "chest",
+    "description": "A foil blister pack of pink ephemerol tablets. Blocks \nnerve cascade impulse common with psychic phenomena.",
+    "properties": {
+      "category": "item",
+      "description": "A foil blister pack of pink ephemerol tablets. Blocks \nnerve cascade impulse common with psychic phenomena."
+    },
+    "source": {
+      "project": "tiger-electronics",
+      "type": "item",
+      "id": 660,
+      "name": "Psy Block"
+    }
+  },
+  {
+    "id": "weapon-starter-melee",
+    "name": "Melee weapon",
+    "price": 0,
+    "graphic": "chest",
+    "properties": {
+      "weaponProfile": "starter-melee",
+      "category": "weapon",
+      "description": "Your configured melee weapon."
     }
   }
 ];

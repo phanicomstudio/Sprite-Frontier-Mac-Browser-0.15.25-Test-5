@@ -295,3 +295,50 @@ portable project import and local reload. The generated gameplay package also
 retains embedded overrides through Save/Load and two-way cell travel. Starting
 value Undo history resets after importing a project so older records cannot
 remove item definitions used by newly imported maps.
+
+
+## October 29, 2026 — current 0.16.9 workflow
+
+Use the direct Build tools rather than the historical category/Scene tool prerequisites described above. Choose a piece/material then click the scene; choose Raise/Lower/Flatten/Smooth/Paint then drag outdoor ground. Plan shares selection/group movement/Undo; Isometric layout previews rotation/tilt before explicit map Apply. Events > Weapon damage and sounds contains all native projectile profiles and separate current-map melee, with optional imported audio and default restore. Environment contains Dithering, Shadow strength and Isometric visibility. See ITERATION-0.16.9.md for current steps and FEATURE-STATUS-0.16.9.md for gaps. Existing guides remain historical where those routes have moved.
+
+
+## October 29, 2026 — current combined 0.16.11 behavior
+
+See [ITERATION-0.16.11.md](ITERATION-0.16.11.md), [FUNCTION-REFERENCE-0.16.11.md](FUNCTION-REFERENCE-0.16.11.md) and [LOCAL-0.16.11.md](LOCAL-0.16.11.md). These current chapters supersede earlier pending notes for inventory, crafting, catalog/recipe editing, connected rectangular construction, shared boundaries/openings and zoom-aware isometric visibility. Earlier explanations remain historical. The 24 starter materials are ordinary items; two descriptions and production recipe choices remain unauthored. TEST SCAN is intentionally a test skill. Fixed-artwork tools, sprite presentation and distinct shadow systems remain supported. Old bundled room examples are retired only from fresh projects, not deleted from saved projects.
+
+## November 1, 2026 — automatic normal detail
+
+0.16.17 generates default normal detail automatically for imported world artwork and sprites. Use normal sprite/material/model import tools; custom sprite or room/furniture normals and model normal assignments retain priority. Environment → Sprite normals reports the preparation snapshot and recent issues. See ITERATION-0.16.17.md for supported layouts and bounds. The game uses cached relief through its existing lighting paths, without another normal filter on each frame.
+
+
+## November 1, 2026 — live normals correction (0.16.18)
+
+The 0.16.17 fixed-relief default is superseded by real live normal-map lighting. Original albedo and locked sprite presentation remain unchanged. Map/player/projectile lights and outdoor sun direction drive a separate normal texture in existing world draws; custom overrides remain authoritative. See ITERATION-0.16.18.md and FUNCTION-REFERENCE-0.16.18.md for supported paths, deliberate shadow splits, limits, performance measurements and current validation successors.
+
+
+## November 1, 2026 — mandatory projectile lighting (0.16.19)
+
+Projectile emission is now always enabled; old map/weapon off or zero-brightness values upgrade automatically. There is no projectile-off UI. Runtime selection prioritizes projectile sources within the existing eight-light capacity, including maps with general lighting disabled. See ITERATION-0.16.19.md and FUNCTION-REFERENCE-0.16.19.md. Earlier optional-toggle contracts are historical.
+
+
+## November 1, 2026 — mirrored antique door (0.16.20)
+
+The shared built-in antique door now uses the supplied mirrored two-sided assembly, retaining frame/leaf node IDs and hinge pivot. Known old clean built-in library payloads upgrade during import/restore; modified/custom models remain unchanged. Current provenance and validation are in ITERATION-0.16.20.md and FUNCTION-REFERENCE-0.16.20.md. Prior asset notes are historical.
+
+## November 1, 2026 — 0.16.21 first-person and lighting authoring
+
+Weapon definitions now include First-person character sprite profile and image import/path, animation rows/columns/FPS, scale and muzzle positions (0–1 of one frame). Enable that weapon's override, choose the character profile, import artwork and Apply. Candy's unholstered handgun has the supplied default frame. Holstering hides it. V toggles perspective camera; inward wheel at the nearest third-person limit also enters first-person. Isometric/fixed maps keep their own zoom.
+
+Environment → Map lighting: enable lighting; Ambient brightness 0 means dark and 1 fully bright. Add lamps/torches for localized illumination. Player light is independent per map and lights surroundings, not its owner. Nighttime exteriors may disable Outdoor sunlight. Projectiles always emit. Apply saves the existing map lighting record, including across editor/playtest and cell travel.
+
+## November 1, 2026 — first-person corrections in 0.16.22
+
+Wheel outward now returns to third person; this supersedes 0.16.21's explicit lack of wheel-out return. Sway uses a wider, fixed-time smoothed cycle rather than travelled-distance phase. Native weapon parameters expose separate image flash anchors and camera-relative physical projectile spawn offsets. See ITERATION-0.16.22.md for the exact authoring route and defaults.
+
+## November 1, 2026 — first-person crosshair and facing
+
+First-person aiming is centered independently of third-person framing. Returning with wheel-out or V aligns player facing to the direction just viewed, so you see the player's back. Existing weapon image flash anchors and physical launch offsets remain configured as described for 0.16.22.
+
+## November 1, 2026 — 0.16.24 horizon atmosphere
+
+The earlier "fog never affects sky" wording is superseded specifically at the horizon: a localized background bank blends into upper sky while retaining its identity. Environment distance-fog controls also govern this bank; disabling fog disables it. No new menu is required. Outdoor first-/third-person horizon tracks look pitch; indoor/fixed and orthographic/isometric views preserve their separate presentation. First-person sprite scale is stabilized against pitch while third-person remains unchanged. See ITERATION-0.16.24.md.

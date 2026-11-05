@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/trim/prop_wood_panel_divider1.png",
+  "sha256": "093b528cb21bc95592a9b2f0bc8617e2a8ad9273ec9460d21d327acfc93c643b",
+  "normal": "assets/automatic-normals/093b528cb21bc95592a9b2f0-relief2.normal.png",
+  "lit": "assets/automatic-normals/093b528cb21bc95592a9b2f0-relief2.lit.webp",
+  "width": 1145,
+  "height": 1373,
+  "normalWidth": 426,
+  "normalHeight": 512,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 0
+  },
+  "wrap": true,
+  "compression": "webp-lossless-rgba-verified"
+}

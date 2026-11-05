@@ -12,9 +12,9 @@
     if (!url) return null;
     if (cache.has(url)) return cache.get(url);
     cache.set(url, null);
-    const image = new Image();
+    let image = new Image();
     image.onload =
-      /* @function room-surfaces.decode — Inputs: none; reads the loaded image. Stores one shared RGBA buffer, returns nothing. Oversized or unreadable assets fail visibly without disrupting the scene. */ function () {
+      /* @function room-surfaces.decode — Inputs: none; reads the loaded image. Stores one shared RGBA buffer, returns nothing. Oversized or unreadable assets fail visibly without disrupting the scene. */ async function () {
         try {
           if (image.width > 4096 || image.height > 4096)
             throw Error("Room texture exceeds 4096 pixels");
@@ -24,11 +24,10 @@
           const ctx = canvas.getContext("2d", { willReadFrequently: true });
           ctx.drawImage(image, 0, 0);
           const pixels = ctx.getImageData(0, 0, image.width, image.height);
-          cache.set(url, {
-            width: image.width,
-            height: image.height,
-            data: pixels.data,
-          });
+          const original = {width:image.width,height:image.height,data:pixels.data};
+          // November 1, 2026: built-ins are already baked; imported materials prepare once while loading.
+          cache.set(url, image.frontierAutomaticPrepared ? original
+            : await root.FrontierAutomaticNormals?.pixels(original,url,image.frontierAutomaticSourceHash||'',image.frontierNormalImage) || original);
         } catch (error) {
           failed.add(url);
           console.warn("Room texture unavailable:", url, error.message);
@@ -39,7 +38,11 @@
         failed.add(url);
         console.warn("Room texture unavailable:", url);
       };
-    image.src = root.FrontierRoomTextureData?.[url] || url;
+    const resolved = root.FrontierRoomTextureData?.[url] || url;
+    if(root.FrontierAutomaticNormals) {
+      const decode=image.onload,failure=image.onerror;
+      root.FrontierAutomaticNormals.load(url,resolved).then(/* @function roomSurfaces.automaticLoaded1617 — Inputs: verified/prepared material Image. Reuses the original one-time pixel decoder after source-hash verification; coordinates/UVs and error ownership remain unchanged. */function(loaded){image=loaded;void decode();},failure);
+    } else image.src=resolved;
     return null;
   }
   /* @function room-surfaces.uv — Inputs: a face and its world point. Returns planar UV in repeats, using the face's dominant normal. This keeps adjoining panels aligned and textures unchanged when boxes resize. No mutation. */

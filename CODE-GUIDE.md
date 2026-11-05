@@ -1,3 +1,7 @@
+## November 1, 2026 — automatic normal defaults, 0.16.17
+
+See ITERATION-0.16.17.md and FUNCTION-REFERENCE-0.16.17.md for the current cache, asset-role, import/export and override contract. This supersedes manual-only normal-generation descriptions below while preserving the original workbench and pinned upstream generator.
+
 ## October 22, 2026 — current iteration 0.16.0
 
 See EDITOR-REDESIGN-0.16.0.md for the implemented foundation, migration limits and remaining milestones, and SPRITEFUSION-0.16.0.md for local native-resolution generation, licensing and build provenance. Earlier explanations below remain historical; this dated entry supersedes conflicting UI, generation and normal-budget descriptions.
@@ -244,3 +248,44 @@ Build Structures now opens a large, separate modal Tile Room Editor. The dock la
 The modal keeps settings and the grid in separate panes. It retains unsaved draft when closed normally; Apply/Discard are explicit. World movement is paused while this authoring window owns input; F2 closes it before switching mode. Existing mode-reset behavior for uncommitted drafts remains applicable. Original grid dimensional controls remain under Grid dimensions and room height.
 
 Delete current map still prevents deleting the last map or a map with incoming references. Rejections now explain the reason beside the buttons, including how to create a replacement map; no silent action or removed user files. Successful map deletion, map Undo/Redo and retained subsequent edits were exercised through the real controls. Optional authored encounter/courier examples remain under Optional examples and test maps. No prior controls/options were removed. See CONTROL-CHECKS-TEST-5.md for scope/evidence; this is not a certification of every possible engine workflow.
+
+
+## October 28, 2026 - 0.16.8 palette output
+
+The original PhanicomPaletteDither v2 algorithm is ported in src/palette-dither.js, loaded after isometric and before world validation. Environment > Indexed palette / dithering owns map settings; original event commands use the existing interpreter and save/travel owners. The final Pixi pass can composite the retained HTML HUD; live door/melt layers and raw melt capture avoid frozen/double-indexed transitions. Prior appearance remains unchanged when disabled. See ITERATION-0.16.8.md and FUNCTION-REFERENCE-0.16.8.md for controls, source provenance, lifecycle, limits and validation. Existing documentation above is retained.
+
+
+## October 29, 2026 — current combined 0.16.11 behavior
+
+See [ITERATION-0.16.11.md](ITERATION-0.16.11.md), [FUNCTION-REFERENCE-0.16.11.md](FUNCTION-REFERENCE-0.16.11.md) and [LOCAL-0.16.11.md](LOCAL-0.16.11.md). These current chapters supersede earlier pending notes for inventory, crafting, catalog/recipe editing, connected rectangular construction, shared boundaries/openings and zoom-aware isometric visibility. Earlier explanations remain historical. The 24 starter materials are ordinary items; two descriptions and production recipe choices remain unauthored. TEST SCAN is intentionally a test skill. Fixed-artwork tools, sprite presentation and distinct shadow systems remain supported. Old bundled room examples are retired only from fresh projects, not deleted from saved projects.
+
+
+## November 1, 2026 — live normals correction (0.16.18)
+
+The 0.16.17 fixed-relief default is superseded by real live normal-map lighting. Original albedo and locked sprite presentation remain unchanged. Map/player/projectile lights and outdoor sun direction drive a separate normal texture in existing world draws; custom overrides remain authoritative. See ITERATION-0.16.18.md and FUNCTION-REFERENCE-0.16.18.md for supported paths, deliberate shadow splits, limits, performance measurements and current validation successors.
+
+
+## November 1, 2026 — mandatory projectile lighting (0.16.19)
+
+Projectile emission is now always enabled; old map/weapon off or zero-brightness values upgrade automatically. There is no projectile-off UI. Runtime selection prioritizes projectile sources within the existing eight-light capacity, including maps with general lighting disabled. See ITERATION-0.16.19.md and FUNCTION-REFERENCE-0.16.19.md. Earlier optional-toggle contracts are historical.
+
+
+## November 1, 2026 — mirrored antique door (0.16.20)
+
+The shared built-in antique door now uses the supplied mirrored two-sided assembly, retaining frame/leaf node IDs and hinge pivot. Known old clean built-in library payloads upgrade during import/restore; modified/custom models remain unchanged. Current provenance and validation are in ITERATION-0.16.20.md and FUNCTION-REFERENCE-0.16.20.md. Prior asset notes are historical.
+
+## November 1, 2026 — 0.16.21 maintenance
+
+See ITERATION-0.16.21.md and FUNCTION-REFERENCE-0.16.21.md. Character-linked viewmodel draw lives in src/first-person.js; weapon overrides serialize assignments. Do not make sway alter aim/collision or convert the locked world billboard. Owner-specific lighting exclusion must not filter projectile sources. Keep cached shadows while bounded refresh is deferred, and preserve perspective sun versus orthographic contact ownership. New acceptance: tests/first-person1621.cjs and tests/browser/iteration1621.cjs, shadow1621.cjs; existing combat167 and lighting suites still run.
+
+## November 1, 2026 — 0.16.22 first-person fixes
+
+Keep fixed-time smoothed sway separate from projectile aim. First-person spawn offsets are validated weapon/character data and feed MF.createProjectile through the existing spatial/ballistics ownership chain. Flash anchors remain image coordinates. Wheel return does not enable first-person zoom or alter orthographic maps. See ITERATION-0.16.22.md and tests/first-person1622.cjs.
+
+## November 1, 2026 — 0.16.23 maintenance
+
+First-person camera cy, DOM reticle and projectile optical ray must agree on viewport center. Do not reuse third-person's raised reticle bias. Both perspective exit routes call FrontierFirstPerson.alignFacing to synchronize actor and movement heading; fixed/isometric behavior remains independent. Regression: tests/browser/aim1623.cjs.
+
+## November 1, 2026 — 0.16.24 extension points
+
+Horizon background: src/horizon-fog.js and existing fog settings, one mesh inside world submission. Never turn this into a full-screen postprocess over foreground/UI. First-person sprite scale correction must remain restricted to gameplay perspective first-person; third-person and isometric return original scale. See FUNCTION-REFERENCE-0.16.24.md and horizon1624 acceptance.

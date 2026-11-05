@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/ground/mythos-earth.png",
+  "sha256": "cc6c93545bcc09a07a03de431e52a5f0912de06582dbcf61320e8e915c431c77",
+  "normal": "assets/automatic-normals/cc6c93545bcc09a07a03de43-relief2.normal.png",
+  "lit": "assets/automatic-normals/cc6c93545bcc09a07a03de43-relief2.lit.webp",
+  "width": 384,
+  "height": 384,
+  "normalWidth": 384,
+  "normalHeight": 384,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

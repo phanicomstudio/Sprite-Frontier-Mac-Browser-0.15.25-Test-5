@@ -62,7 +62,7 @@
       Object.keys(value).length > 64
     )
       throw Error("Weapon settings must be a profile dictionary (up to 64).");
-    const result = {};
+    const result = {};let soundBytes169=0;
     for (const [id, fields] of Object.entries(value)) {
       if (
         !/^[a-z0-9_-]{1,64}$/i.test(id) ||
@@ -100,7 +100,7 @@
               ].includes(field)
             )
               throw Error("Unsupported projectile light field: " + field);
-          const light = root.FrontierLocalLighting.source(
+          const light = root.FrontierLocalLighting.projectile(
             v,
             "weapon-projectile-light",
           );
@@ -112,6 +112,8 @@
             falloff: light.falloff,
             flicker: light.flicker,
           };
+        } else if(key==="firstPerson") {checked[key]=root.FrontierFirstPerson.validate(v);
+        } else if(key==="soundAsset") {checked[key]=validateSound169(v);soundBytes169+=checked[key].src.length;if(soundBytes169>24000000)throw Error("Imported weapon sounds exceed the 24 MB encoded project budget.");
         } else if (key === "fireMode") {
           if (!["semi", "auto", "burst"].includes(v))
             throw Error("Invalid firing mode.");
@@ -211,6 +213,15 @@
         "text",
         draft[id]?.name ?? weapon.name ?? id,
       );
+      const assignments=structuredClone(draft[id]?.firstPerson || weapon.firstPerson || {});
+      const firstPersonFields={character:field(row,"First-person character sprite profile","text",Object.keys(assignments)[0]||"candy-armed"),src:field(row,"First-person image path (blank uses default)","text",Object.values(assignments)[0]?.src||(id==="handgun"?"img/weapons/first-person/candy/pistol/armed-test.png":""))};
+      for(const [key,label,fallback] of [["columns","Animation columns",1],["rows","Animation rows",1],["fps","Firing animation frames per second",8],["scale","First-person artwork scale",1],["muzzleX","Flash horizontal position on image (0–1)",.547],["muzzleY","Flash vertical position on image (0–1)",.483],["spawnForward","First-person projectile spawn forward (metres)",.45],["spawnRight","First-person projectile spawn right (metres)",.08],["spawnUp","First-person projectile spawn up from eye (metres)",-.15]])firstPersonFields[key]=field(row,label,"number",Object.values(assignments)[0]?.[key]??fallback);
+      const imageUpload=field(row,"Import first-person PNG/WebP","file","");imageUpload.accept="image/png,image/webp";
+      imageUpload.onchange=/* @function weaponDefinitions.importFirstPerson1621 — Inputs: file selection event unused. Embeds one PNG/WebP up to 8 MB in the draft only; project Apply remains the transaction boundary. Read failure reports to input validity without changing the saved project. */async function(){
+        const file=imageUpload.files[0];if(!file)return;
+        if(file.size>8000000||!["image/png","image/webp"].includes(file.type)){imageUpload.setCustomValidity("Choose PNG/WebP under 8 MB.");imageUpload.reportValidity();return;}
+        const reader=new FileReader();reader.onload=/* @function weaponDefinitions.firstPersonRead1621 — Inputs: completed file read unused. Updates editable source field, no gameplay state. */function(){firstPersonFields.src.value=reader.result;imageUpload.setCustomValidity("");};reader.onerror=/* @function weaponDefinitions.firstPersonFailure1621 — Inputs: read failure unused. Shows recoverable authoring error; keeps prior source. */function(){imageUpload.setCustomValidity("Image could not be read.");imageUpload.reportValidity();};reader.readAsDataURL(file);
+      };
       fields.fireMode = field(row, "Firing mode", "select", "");
       for (const mode of ["semi", "auto", "burst"])
         fields.fireMode.append(new Option(mode, mode));
@@ -255,15 +266,12 @@
       const lightMode = field(row, "Projectile light mode", "select", "");
       for (const [label, key] of [
         ["Inherit cell/projectile settings", "inherit"],
-        ["Disable for this weapon", "off"],
         ["Custom projectile light", "custom"],
       ])
         lightMode.append(new Option(label, key));
       const light = draft[id]?.light ?? weapon.light;
       lightMode.value = light
-        ? light.enabled === false
-          ? "off"
-          : "custom"
+        ? "custom"
         : "inherit";
       const lightFields = {
         color: field(
@@ -275,7 +283,7 @@
       };
       for (const [key, label, min, max, initial] of [
         ["radius", "Projectile light radius (metres)", 0.05, 100, 2],
-        ["intensity", "Projectile light brightness (0–4)", 0, 4, 1.2],
+        ["intensity", "Projectile light brightness (0.05–4)", 0.05, 4, 1.2],
         ["falloff", "Projectile light falloff", 0.5, 4, 2],
         ["flicker", "Projectile light flicker (0–0.3)", 0, 0.3, 0],
       ]) {
@@ -296,7 +304,7 @@
       enabled.onchange = refresh;
       lightMode.onchange = refresh;
       refresh();
-      rows.push({ id, enabled, fields, lightMode, lightFields });
+      rows.push({ id, enabled, fields, lightMode, lightFields, assignments, firstPersonFields });
       box.append(row);
     }
     parent.append(box);
@@ -304,10 +312,18 @@
       const result = {};
       for (const row of rows)
         if (row.enabled.checked) {
-          const values = {};
+          // October 29: advanced edits retain the imported firing sound owned by the simple weapon panel.
+          const values = draft[row.id]?.soundAsset ? {soundAsset: structuredClone(draft[row.id].soundAsset)} : {};
           for (const [key, control] of Object.entries(row.fields))
             values[key] = numbers[key] ? Number(control.value) : control.value;
-          if (row.lightMode.value === "off") values.light = { enabled: false };
+          values.firstPerson=structuredClone(row.assignments);
+          const character=row.firstPersonFields.character.value.trim();
+          if(row.firstPersonFields.src.value.trim()){
+            const definition={src:row.firstPersonFields.src.value.trim()};
+            for(const key of ["columns","rows","fps","scale","muzzleX","muzzleY","spawnForward","spawnRight","spawnUp"])definition[key]=Number(row.firstPersonFields[key].value);
+            values.firstPerson[character]=definition;
+          }else delete values.firstPerson[character];
+          // November 1: per-weapon off mode is superseded; every projectile emits.
           if (row.lightMode.value === "custom") {
             values.light = { enabled: true };
             for (const [key, control] of Object.entries(row.lightFields))
@@ -337,5 +353,7 @@
     parent.append(wrapper);
     return control;
   }
-  root.FrontierWeaponDefinitions = { validate, defaults, apply, editor };
+  /* @function weaponDefinitions.validateSound169 — Inputs: optional imported sound record. Returns detached name/data URL for WAV, OGG or MP3 within 2 MB decoded/2.8 MB encoded bounds. Rejects paths, arbitrary URLs and malformed base64 at the project boundary; actual media decoding occurs on explicit import/preview. No playback or registry mutation. */
+  function validateSound169(value){if(!value||typeof value.name!=="string"||value.name.length>120||typeof value.src!=="string"||value.src.length>2800000||!/^data:audio\/(?:wav|x-wav|wave|ogg|mpeg);base64,[A-Za-z0-9+/]+={0,2}$/.test(value.src))throw Error("Choose an embedded WAV, OGG or MP3 sound under 2 MB.");return {name:value.name,src:value.src};}
+  root.FrontierWeaponDefinitions = {validateSound169, validate, defaults, apply, editor };
 })(typeof window === "undefined" ? globalThis : window);

@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/floors/prop_tile_floor1.png",
+  "sha256": "a80039980b495da0c3d5fc510ad05f3bd02fbaabee9a8c9a8f1cf7b75c54c793",
+  "normal": "assets/automatic-normals/a80039980b495da0c3d5fc51-relief2.normal.png",
+  "lit": "assets/automatic-normals/a80039980b495da0c3d5fc51-relief2.lit.webp",
+  "width": 2048,
+  "height": 2020,
+  "normalWidth": 512,
+  "normalHeight": 505,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 0
+  },
+  "wrap": true,
+  "compression": "webp-lossless-rgba-verified"
+}

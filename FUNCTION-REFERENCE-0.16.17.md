@@ -1,0 +1,14 @@
+# Function reference — 0.16.17
+
+November 1, 2026. Earlier references remain historical.
+
+- `automaticNormals.sourcePath1617` resolves world/profile/item artwork identities without scanning UI. `url1617` is a manifest query; production `load1617` verifies encoded source identity before adopting a prepared material. `read1617` and `sourceBlob1617` keep local-file images origin-clean.
+- `image1617`, `reserve1617` and `drain1617` own a bounded source-identity cache, cold eviction, deferred single-flight loading, native-dimension validation and original-image fallback. They never alter authored frame bounds or source pixels. Failed adoption clears the candidate image and releases reservations.
+- `generateQueued1617` serializes all imported preparation; `generate1617`/`generateNow` prepares bounded frame-isolated detail with exact upstream WASM, wraps seamless material edges, repairs transparent normal padding and delegates native-size relief to the existing normal worker. Ninety-second cancellation frees workers. `dataUrl1617` encodes only completed derived PNGs.
+- `database1617` and `cached1617` own a separate regenerable, bounded IndexedDB cache, keyed by source/recipe/layout digests. No project save stores are opened or changed. Denied/full storage keeps session-only operation.
+- `pixels1617` prepares imported world/model albedo during loading and reuses a packaged bake when original encoded bytes match. `modelRenderer.automaticAlbedo1617` touches base-color images only, preserving authored normal assignments and unrelated texture channels. Existing model readiness waits for this stage.
+- Existing room, outdoor, water and interior-image owners call the shared service once per load or perform constant-time ready-image lookups. Authored sprite, room and furniture normals bypass the automatic fallback. The manual normal cache retains its separate limits and original artwork input.
+- `issue1617` and `debug1617` expose bounded preparation diagnostics. `set1617` is a transient comparison hook; production defaults are enabled. `settle1617` supports loading acceptance without taking ownership of gameplay state.
+- `automaticBake.scan1617`/`run1617` create offline defaults; `compress-automatic-normals.py` verifies lossless RGBA equivalence before removing only generated intermediate PNGs. Vendor source/license/hash provenance is unchanged.
+
+`automatic-normal-assets1617.cjs` verifies actual source hashes and resource closure. Browser acceptance checks native alpha/size, new imports, one-worker serialization, reload reuse, same-path replacement, real model albedo preparation, authored-normal priority and exclusions. `normal-performance1617.cjs` checks actual first/third/isometric draw ownership and no warm preparation, with machine-dependent timings reported separately. Runtime-package and native descriptor tests verify generated resources and licensing are included without reopening editor factories.

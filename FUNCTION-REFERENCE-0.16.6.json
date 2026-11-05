@@ -1,0 +1,43 @@
+{
+  "iteration": "0.16.6",
+  "date": "2026-10-26",
+  "addendum": true,
+  "owners": [
+    {
+      "owner": "app.arrivalPreview166, arrivalBlocked166",
+      "contract": "Destination world and world-metre candidate -> detached query context / standing-body obstruction. Reuses destination event models, shared geometry and existing page conditions; no active actor/source changes."
+    },
+    {
+      "owner": "app.arrivalPathBlocked166",
+      "contract": "Destination and paired-door candidate -> swept same-side corridor obstruction. Three body-height rays include thin geometry and omit only the transferred-through leaf. Runs only at transfer preflight."
+    },
+    {
+      "owner": "app.readableDoorArrival166; hubWorkbench.doorArrival163",
+      "contract": "Paired-door world entry -> first safe readable same-side 5\u201311-foot point, or null. Five-foot default supersedes one foot; bounded actual camera/body projection checks do not bypass collision or alter sprites."
+    },
+    {
+      "owner": "isometric.camera; app wheel/update",
+      "contract": "Transient camera scale 12\u2013200 px/m and logical-pixel anchor; authored base remains 12\u2013100. Full grounded-player framing and original inverse projection maintained. First-person zoom remains disabled."
+    },
+    {
+      "owner": "contactShadow.profile166",
+      "contract": "Finite height above floor metres -> bounded radius/opacity/softness. Rejects nonfinite height. Radius 0.30\u20130.24 m and opacity 0.16\u20130.08 over first two metres; grounded values restored on landing."
+    },
+    {
+      "owner": "contactShadow.grid166, slot166, draw166",
+      "contract": "Active scene/actor/Pixi/depth/projection -> nine receivers, pooled mesh slot, or bounded submitted count. Maximum eight actors and one nine-ray rebuild per frame. Analytic radial alpha, static receiver/depth clipping, shared sun depth upload when available; no image assets/readbacks/logging. Only isometric geometry gameplay."
+    },
+    {
+      "owner": "sunShadows.draw163; render.draw",
+      "contract": "Existing sun path publishes depth-frame identity for same-frame sharing; contact effect appends after model geometry before actors. Existing outdoor-sun restrictions and billboard presentation are unchanged."
+    },
+    {
+      "owner": "tests/browser/iteration166.cjs; updated door-return165 and earlier tests",
+      "contract": "Actual Chrome/native wheel/jump/door lifecycle plus pixel/timing evidence; controlled fixture settings only. Updated assertions explicitly supersede one-foot and 100 px/m historical expectations."
+    },
+    {
+      "owner": "authoringWorkspace.install; fullscreen166 UI acceptance",
+      "contract": "Moves the existing Fullscreen button to the main toolbar, retaining the original handler and export behavior. Playtest CSS keeps it above pause UI. Actual editor/playtest fullscreen entry and pause-menu exit are verified in Chrome/Windows, with asynchronous native state waits."
+    }
+  ]
+}

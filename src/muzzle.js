@@ -57,6 +57,8 @@
       if (p.aimMode !== undefined && !["cursor", "barrel"].includes(p.aimMode))
         throw Error("Invalid aiming mode.");
       const d = p.direction;
+      // October 29: optional two-view sheets select their actual left/right artwork in screen space, independently of continuous projectile aim.
+      if(d.horizontalRows!==undefined && (!d.horizontalRows || ![d.horizontalRows.left,d.horizontalRows.right].every(/* @function muzzle.horizontal169 — Inputs: row index. Returns valid existing artwork-row membership; no mutation or synthesized views. */function(row){return Number.isInteger(row)&&row>=0&&row<p.rows;})))throw Error("Invalid horizontal sprite rows.");
       if (
         !Array.isArray(d.walkSequence) ||
         !d.walkSequence.length ||

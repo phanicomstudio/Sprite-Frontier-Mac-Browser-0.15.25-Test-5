@@ -14,7 +14,7 @@ assert.equal(scope.FrontierSkyPanorama.catalog.length, 4);
 const settings = {
   enabled: true,
   layers: [],
-  panorama: { asset: "sky-4", orientation: 45, wrapBlend: true },
+  panorama: { asset: "sky-4", orientation: 45, wrapBlend: true, saturation:1.2, contrast:1.05 },
 };
 assert.deepEqual(
   JSON.parse(JSON.stringify(scope.FrontierSky.validate(settings))),

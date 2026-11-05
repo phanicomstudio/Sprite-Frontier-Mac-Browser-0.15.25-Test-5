@@ -156,12 +156,17 @@
     /* @function layoutEditor.materials — Inputs: none. Returns: three shared material descriptors with repeat/aspect defaults. Does not copy images or alter geometry dimensions. */
     function materials() {
       const value = {};
-      for (const role of ["wall", "floor", "ceiling"])
+      for (const role of ["wall", "floor", "ceiling"]) {
+        const texture = control("layout-material-" + role).value || undefined;
+        const saved = draft?.materials?.[role];
+        const baseRepeat = Number(control("layout-tile").value);
+        const defaultRepeat = texture === "img/materials/ceilings/prop_tin_ceiling1.png" ? baseRepeat * 2 : baseRepeat;
         value[role] = {
-          texture: control("layout-material-" + role).value || undefined,
-          tileSize: Number(control("layout-tile").value),
+          texture,
+          tileSize: saved?.texture === texture ? saved?.tileSize ?? defaultRepeat : defaultRepeat,
           preserveAspect: true,
         };
+      }
       return value;
     }
     /* @function layoutEditor.preview — Inputs: none. Returns: nothing. Compiles the draft to a transient 3D outline and reports capacity/geometry errors. The active world, collision and undo history remain untouched. */
@@ -412,7 +417,7 @@
                   },
                 )
                 .concat(generated.primitives);
-              r.layout = value;
+              r.layout = {...value, materials: materials()};
               if (generated.floor && !r.outdoor) r.floor = generated.floor;
               /* October 12: horizontal support alone cannot retain arrival Z when a floor is raised. Synchronize every entrance independently, even when the spawn was already supported. October 14: outdoor structures do not rewrite map spawns. */ if (!r.outdoor) root.FrontierRoomLayout.synchronizeArrivals(
                 api.world(),

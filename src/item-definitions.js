@@ -1,3 +1,4 @@
+  // October 29: zero-priced ordinary crafting items are valid; supersedes the positive-price-only limit in the retained October 13 contract.
 /* October 13, 2026: optional project item catalog. Definitions are shared
  * metadata; inventories and dropped stacks remain independent compact records.
  * Original data/items.json and item-manifest.js remain the inherited baseline. */
@@ -27,10 +28,10 @@
         throw Error("Items need unique IDs and readable names.");
       if (
         !Number.isSafeInteger(item.price) ||
-        item.price < 1 ||
+        item.price < 0 ||
         item.price > 1000000
       )
-        throw Error("Item price must be 1–1,000,000 whole gold.");
+        throw Error("Item price must be 0–1,000,000 whole gold.");
       for (const key of ["graphic", "spriteProfile", "modelId"])
         if (
           item[key] !== undefined &&
@@ -40,6 +41,7 @@
         )
           throw Error("Invalid item visual: " + key);
       const checked = root.FrontierEventSchema.json(item);
+      if(checked.inventoryImage!==undefined&&(typeof checked.inventoryImage!=='string'||checked.inventoryImage.length>750000||(checked.inventoryImage&&!/^img\/[^?#]*\.(png|webp|jpg|jpeg)$|^data:image\/png;base64,[A-Za-z0-9+/=]+$/i.test(checked.inventoryImage))||checked.inventoryImage.includes('..')))throw Error('Choose a local inventory image or bounded PNG data.');
       if (checked.properties?.worldHeight !== undefined && (!Number.isFinite(checked.properties.worldHeight) || checked.properties.worldHeight < 0.1 || checked.properties.worldHeight > 20))
         throw Error("Item world height must be 0.1–20 metres.");
       if (checked.properties?.pickupMethod !== undefined && !["interact", "touch"].includes(checked.properties.pickupMethod))
@@ -50,7 +52,7 @@
           throw Error("Invalid item sprite asset or dimensions.");
       }
       if (checked.properties?.light) checked.properties.light = root.FrontierLocalLighting.source(checked.properties.light, "item-light");
-      if (checked.properties?.weaponProfile !== undefined && (!root.PhanicomABS?.weapons.has(checked.properties.weaponProfile))) throw Error("Unknown item weapon profile.");
+      if (checked.properties?.weaponProfile !== undefined && (checked.properties.weaponProfile!=="starter-melee"&&!root.PhanicomABS?.weapons.has(checked.properties.weaponProfile))) throw Error("Unknown item weapon profile.");
       if (checked.properties?.restoreHp !== undefined &&
           (!Number.isFinite(checked.properties.restoreHp) || checked.properties.restoreHp < 0 || checked.properties.restoreHp > 1000000))
         throw Error("Item health recovery must be between 0 and 1,000,000 HP.");
@@ -113,7 +115,7 @@
           "text",
           item.spriteProfile || "",
         );
-      price.min = "1";
+      price.min = "0";
       price.max = "1000000";
       price.step = "1";
       const model = field(row, "Dropped model (optional)", "select", "");
@@ -142,7 +144,7 @@
       );
       row.append(advanced);
       // October 14: common item behavior is typed rather than buried in JSON.
-      const description = field(row, "Inventory description", "text", item.properties?.description || item.description || ""),
+      const description = field(row, "Inventory description", "textarea", item.properties?.description || item.description || ""),
         recovery = field(row, "Health restored when used (0 = cannot use)", "number", item.properties?.restoreHp || 0);
       recovery.min = "0";
       recovery.max = "1000000";

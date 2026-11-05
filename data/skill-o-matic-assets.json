@@ -1,0 +1,41 @@
+{
+  "status": "Original artwork used by the authorized 0.16.10 TEST SCAN prototype; full skill rules and inventory remain pending.",
+  "assets": [
+    {
+      "part": "A",
+      "file": "img/ui/skill-o-matic/Skill-o-matic-A.png",
+      "width": 1054,
+      "height": 1058,
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        255
+      ],
+      "sha256": "86f1d16e1f827701e4a6a27a68f81fcacce842c72d66cd36888bba35bda2acad"
+    },
+    {
+      "part": "B",
+      "file": "img/ui/skill-o-matic/Skill-o-matic-B.png",
+      "width": 647,
+      "height": 1502,
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        255
+      ],
+      "sha256": "20d06df6f95d60e017584b49e6590b6890ef58cb5ff8d38dc5bc96574471da83"
+    },
+    {
+      "part": "C",
+      "file": "img/ui/skill-o-matic/Skill-o-matic-C.png",
+      "width": 84,
+      "height": 176,
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        255
+      ],
+      "sha256": "3e5d333e5bd9250eb2318da8a32f21612e7e88f59fa3c738ed7c30a1f7bed88b"
+    }
+  ]
+}

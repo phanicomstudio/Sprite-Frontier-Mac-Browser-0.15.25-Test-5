@@ -1,3 +1,5 @@
+/* October 26, 2026 — 0.16.6: paired arrivals now begin five feet (1.524 m) away on the remembered side; app preflight may extend farther on that same side to obtain readable collision-safe third-person framing. Supersedes the one-foot offset below. */
+/* October 26, 2026 — 0.16.5: remembered approach sides supersede always using the destination authored normal on return trips. The same paired-door resolver serves every transfer presentation. */
 /* 2026-10-09: cell authoring and static inventory placement. This adapter keeps
 
 
@@ -41,11 +43,15 @@
         ? {
             map: v.map,
             entrance: v.entrance,
+            ...(v.arrivalYaw===undefined ? {} : {arrivalYaw: checkedArrivalYaw163(v.arrivalYaw)}),
             transition: root.FrontierDoorTransition.validate(v.transition),
           }
         : {}),
     };
   }
+
+  /* @function hubWorkbench.checkedArrivalYaw163 — Inputs: facing degrees. Returns finite authored yaw, rejecting malformed or excessively large values before commit; no state changes. */
+  function checkedArrivalYaw163(value){if(!Number.isFinite(value)||Math.abs(value)>36000)throw Error("Door facing must be finite degrees.");return value;}
 
   /* @function hub-workbench.dialog — Inputs: title and optional dismiss handler. Returns modal element with status/footer. Close removes it and restores pause through caller. All fields are large plain-language controls. */
 
@@ -425,7 +431,7 @@
         ),
         arrival = field(
           d,
-          "Arrival position and facing",
+          "Destination door / advanced arrival",
           "select",
           hub.entrance,
           [["Default map spawn", "spawn"]],
@@ -487,11 +493,12 @@
         );
 
       /* @function hubWorkbench.arrivalChoices1525 — Inputs: optional retained arrival ID. Returns nothing; rebuilds the destination picker from authored map arrivals and entrance records, displaying XYZ metres and facing degrees. No map edits; missing saved IDs remain visible for correction and authoritative Apply rejects them. */
-      function arrivalChoices1525(retain = "spawn") {
+      function arrivalChoices1525(retain = "auto-door") {
         const destination = maps.find(
           /* @function hubWorkbench.destinationChoice1525 — Inputs: map record. Returns selected stable map-ID match; no effects. */
           function (entry) { return entry.id === map.value; });
-        arrival.replaceChildren(new Option("Default map spawn", "spawn"));
+        arrival.replaceChildren(new Option("Automatic reciprocal door", "auto-door"),new Option("Advanced: default map spawn", "spawn"));
+        for(const event of destination?.world.events || [])if(event.extensions?.hub?.kind==="door")arrival.append(new Option("Door: "+(event.name||event.id),"door:"+event.id));
         const points = [...(destination?.world.cell?.arrivals || []),
           ...(destination?.world.interior?.entrances || []),
           ...(destination?.world.travel?.entrances || [])];
@@ -501,13 +508,14 @@
           seen.add(point.id);
           arrival.append(new Option((point.name || point.id) + " — X " + point.x + ", Y " + point.y + ", Z " + (point.z ?? "auto") + ", facing " + Math.round((point.yaw || 0) * 180 / Math.PI) + "°", point.id));
         }
-        if (!seen.has(retain)) arrival.append(new Option("Missing arrival: " + retain, retain));
+        if (!Array.from(arrival.options).some(/* @function hubWorkbench.hasArrivalChoice163 — Inputs: picker option. Returns retained selector match without map mutation. */function(option){return option.value===retain;})) arrival.append(new Option("Missing arrival: " + retain, retain));
         arrival.value = retain;
       }
       map.onchange = /* @function hubWorkbench.changedDestination1525 — Inputs: change ignored. Returns nothing; selects the new map's default spawn and updates available arrival choices. No mutation. */ function () { arrivalChoices1525(); };
-      arrivalChoices1525(hub.entrance || "spawn");
+      arrivalChoices1525(hub.entrance || "auto-door");
+      const doorFacing163=field(d,"Walkable-side facing (degrees; 0 north, 90 east)","number",hub.arrivalYaw ?? -(draft.spatial?.rotation?.[2]||0));
       const arrivalHelp = document.createElement("p");
-      arrivalHelp.textContent = "To create or move an arrival: open the destination map, then Cell settings / arrivals. Set its X/Y/Z and facing there; select its name here.";
+      arrivalHelp.textContent = "Automatic uses the only destination door leading back here. Otherwise choose a door by name. Arrival is one foot in front, facing away; rotate the destination door or set its walkable-side facing below. Coordinate arrivals remain advanced overrides.";
       arrival.parentElement.after(arrivalHelp);
 
       // October 13: retain exact composition JSON for unusual assemblies, but
@@ -784,7 +792,7 @@
           );
           if (
             !dest ||
-            (arrival.value !== "spawn" &&
+            (arrival.value !== "spawn" && arrival.value !== "auto-door" && !dest.world.events.some(/* @function hubWorkbench.destinationDoor163 — Inputs: authored event. Returns whether selected door identity exists; no mutation. */function(e){return e.extensions?.hub?.kind==="door" && arrival.value==="door:"+e.id;}) &&
               !dest.world.cell?.arrivals?.some(
                 /* @function hub-workbench.arrivalExists — Inputs: arrival. Returns selected ID match; no effects. */ (
                   a,
@@ -812,6 +820,7 @@
               kind: "door",
               map: map.value,
               entrance: arrival.value,
+              arrivalYaw:Number(doorFacing163.value),
               transition: read(),
             }),
           };
@@ -1082,7 +1091,7 @@
       const game = api.game(), p = game.player;
       if (!game.camera.firstPerson) return { x:p.x, y:p.y, z:p.z || 0 };
       const ray = root.FrontierModelTargeting.ray(game, (game.viewWidth || 640)/2, 96),
-        surface = root.FrontierPropEditor.surface(ray, game);
+        surface = root.FrontierPlacementSurface.surface(ray, game);
       if (!surface || surface.distance > 3 || surface.normal[2] < 0.5)
         throw Error("Aim at an upward floor, table or shelf within 3 metres.");
       const [x,y,z] = surface.point, height = carriedProperties1525(id).worldHeight || 0.35;
@@ -1120,16 +1129,17 @@
         store = api.state(),
         cell = root.FrontierHubState.cell(store, api.map());
       if (cell.drops.length >= 2000) throw Error("Cell drop capacity reached.");
-      const stack = root.FrontierHubState.consume(store, inventory, id, {
-          owner: { kind: "player" },
-          properties: definition.properties || {},
-          questProtected: definition.questProtected,
-        }),
-        record = root.FrontierHubState.drop(store, api.map(), stack, point);
-      // October 22: dropping the last copy releases an equipped pickup weapon;
-      // a second owned definition for the same profile keeps it available.
-      if(definition.properties?.weaponProfile===api.game().player.weapon.id&&!root.FrontierItems.some(/* @function hubWorkbench.otherOwnedWeapon — Inputs: catalog definition. Returns whether another remaining owned stack equips this same profile. Reads authoritative quantities after consume. */function(item){return item.properties?.weaponProfile===definition.properties.weaponProfile&&(inventory.get(item.id)||0)>0;}))root.PhanicomABS.equip(api.game(),'handgun');
+      // October 29: supersedes direct consume/drop and implicit pistol fallback. Validate on detached stock/details/cell first; store clocks and other cells retain their owner.
+      const draftInventory=new Map(inventory),draft={...store,carried:structuredClone(store.carried),cells:{...store.cells,[api.map()]:{...cell,drops:cell.drops.slice()}}};
+      const stack=root.FrontierHubState.consume(draft,draftInventory,id,{owner:{kind:'player'},properties:definition.properties||{},questProtected:!!definition.questProtected});
+      const profile=definition.properties?.weaponProfile,player=api.game().player;
+      const lastWeapon=profile&&!root.FrontierItems.some(/* @function hubWorkbench.remainingProfile1611 — Inputs: catalog item. Returns remaining real ownership for the dropped combat profile in the detached draft; no live mutation. */function(item){return item.properties?.weaponProfile===profile&&(draftInventory.get(item.id)||0)>0;});
+      if(lastWeapon&&root.FrontierArsenal.pool(root.PhanicomABS.weapons.get(profile))==='ammo9')stack.properties={...stack.properties,weaponMagazine:profile===player.weapon.id?player.ammoLoaded:(player.magazines?.[profile]||0)};
+      const record=root.FrontierHubState.drop(draft,api.map(),stack,point);
+      inventory.clear();for(const entry of draftInventory)inventory.set(...entry);store.carried=draft.carried;cell.drops=draft.cells[api.map()].drops;store.nextId=draft.nextId;
+      if(lastWeapon){player.magazines||={};player.magazines[profile]=0;if(player.weapon.id===profile){if(root.FrontierArsenal.pool(player.weapon)==='ammo9')player.ammoLoaded=0;player.holstered=true;}}
       dropSignature = "";
+      root.FrontierInventory?.syncAmmo(api.game());
       api.game().itemDropPreview = null;
       // Publish the confirmed static item immediately, even while inventory
       // pauses simulation. Zero time cannot advance cleanup or light timers.
@@ -1300,6 +1310,7 @@
       /* @function hub-workbench.refreshStorage — Inputs: none. Rebuilds panel after committed operation. Shows quantities, prices and current gold; returns nothing. No per-frame rebuild. */
 
       function refresh() {
+        root.FrontierInventory?.syncAmmo(api.game());
         list.replaceChildren();
         const state = api.session().state,
           info = document.createElement("p");
@@ -1309,7 +1320,7 @@
           const stack = stacks[i],
             def = catalog(stack.itemId),
             row = document.createElement("p"),
-            price = hub.kind === "container" ? 0 : def.price || 1;
+            price = hub.kind === "container" ? 0 : def.price ?? 1;
           row.textContent =
             def.name + " × " + stack.quantity + " — " + price + " gold";
           button(
@@ -1347,16 +1358,17 @@
               hub.kind === "container" ? "Store one" : "Sell one",
               /* @function hub-workbench.depositStock — Inputs: none. Transfers one carried item to this container/shop after capacity check. Merchant credits catalog sale value; properties extensibility remains in stock records. */ () => {
                 if (stacks.length >= 2000) throw Error("Storage is full.");
-                stacks.push(
-                  root.FrontierHubState.consume(store, state.inventory, id, {
-                    owner: { kind: "player" },
-                    properties: def.properties || {},
-                  }),
-                );
+                // October 29: store/sell a last-copy pistol with its real loaded magazine, just like dropping it; no free reload or ammunition loss.
+                const profile=def.properties?.weaponProfile,player=api.game().player;
+                const lastWeapon=profile&&!root.FrontierItems.some(/* @function hubWorkbench.remainingStoredProfile1611 — Inputs: catalog item. Returns ownership after this one-item deposit, accounting for alternate definitions sharing a profile. No live mutation. */function(item){return item.properties?.weaponProfile===profile&&((state.inventory.get(item.id)||0)-(item.id===id?1:0))>0;});
+                const stack=root.FrontierHubState.consume(store,state.inventory,id,{owner:{kind:'player'},properties:def.properties||{}});
+                if(lastWeapon&&root.FrontierArsenal.pool(root.PhanicomABS.weapons.get(profile))==='ammo9')stack.properties={...stack.properties,weaponMagazine:profile===player.weapon.id?player.ammoLoaded:(player.magazines?.[profile]||0)};
+                stacks.push(stack);
+                if(lastWeapon){player.magazines||={};player.magazines[profile]=0;if(player.weapon.id===profile){if(root.FrontierArsenal.pool(player.weapon)==='ammo9')player.ammoLoaded=0;player.holstered=true;}}
                 if (hub.kind === "merchant")
                   state.gold =
                     (state.gold || 0) +
-                    Math.max(1, Math.floor((def.price || 1) / 2));
+                    Math.max(0, Math.floor((def.price ?? 1) / 2));
                 refresh();
               },
             );
@@ -1390,6 +1402,7 @@
           const inv = api.session().state.inventory;
           root.FrontierHubState.carry(store, inv, stack);
           root.FrontierHubState.pickup(store, api.map(), hit.target.dropId);
+          root.FrontierInventory?.syncAmmo(api.game());
           dropSignature = "";
           api.log("Picked up " + catalog(stack.itemId).name + ".");
         }
@@ -1399,7 +1412,7 @@
       if (!raw) return false;
       const hub = validateEvent(raw);
       if (hub.kind === "door") {
-        api.travel(hub);
+        api.travel({...hub,sourceDoorId:hit.event.id});
         return true;
       }
       storageDialog(hit.event, hub);
@@ -1506,5 +1519,40 @@
     };
   }
 
-  root.FrontierHubWorkbench = { validateEvent, create };
+  /* October 26, 2026: paired-door arrivals supersede coordinate picking as the new-door default; explicit legacy arrivals remain valid. */
+  /* @function hubWorkbench.doorArrival163 — Inputs: destination world, source cell ID and arrival selector (auto-door or door:eventID). October 26 current inputs additionally accept optional saved hub store and destination cell ID. Returns fresh world-metre position/yaw radians on its remembered approach side (otherwise authored front), or null if missing/ambiguous. Door local +Y is its walkable front; model Z rotation is degrees. Uses authored arrivalYaw when supplied; never guesses between several return doors or mutates maps. Runtime collision checks must accept the result before transfer. */
+  function doorArrival163(world, source, selector, store, destinationMap) {
+    const candidates=[];
+    for(const event of world.events || []) {
+      const link=event.extensions?.hub;
+      if(link?.kind!=="door")continue;
+      if(selector==="auto-door" ? link.map===source : selector==="door:"+event.id)candidates.push(event);
+    }
+    if(candidates.length!==1)return null;
+    const door=candidates[0], degrees=door.extensions.hub.arrivalYaw;
+    const baseYaw=degrees===undefined ? -(door.spatial?.rotation?.[2]||0)*Math.PI/180 : degrees*Math.PI/180;
+    const side=root.FrontierHubState?.doorSide165(store,destinationMap,door.id) ?? 1;
+    const yaw=baseYaw+(side<0 ? Math.PI : 0);
+    return {x:door.x+Math.sin(yaw)*1.524,y:door.y+Math.cos(yaw)*1.524,
+      ...(door.heightOffset===undefined ? {} : {z:(root.FrontierTerrain?.height(world,door.x,door.y)||0)+door.heightOffset}),yaw,doorId:door.id};
+  }
+  /* @function hubWorkbench.doorDeparture165 — Inputs: source world/cell ID, transfer request (sourceDoorId from real interaction) and live player in world metres. Returns detached {map,doorId,side} or null for non-door/ambiguous legacy transfers. Projects approach onto the door's authored horizontal normal; exact-plane interaction falls back to opposite movement/facing. Does not mutate state, maps or actors. Effect names never affect side selection. */
+  function doorDeparture165(world,map,exit,player) {
+    // Ordinary map exits/teleports must not overwrite a nearby door's remembered side.
+    if(!exit.sourceDoorId && exit.kind!=="door")return null;
+    const candidates=[];
+    for(const door of world.events || []) {
+      const link=door.extensions?.hub;
+      if(link?.kind!=="door")continue;
+      if(exit.sourceDoorId ? door.id===exit.sourceDoorId : link.map===exit.map)candidates.push(door);
+    }
+    if(candidates.length!==1)return null;
+    const door=candidates[0],degrees=door.extensions.hub.arrivalYaw;
+    const yaw=degrees===undefined ? -(door.spatial?.rotation?.[2]||0)*Math.PI/180 : degrees*Math.PI/180;
+    const nx=Math.sin(yaw),ny=Math.cos(yaw);
+    let approach=(player.x-door.x)*nx+(player.y-door.y)*ny;
+    if(Math.abs(approach)<0.01)approach=-((player.movementFacing?.x ?? player.facingX ?? 0)*nx+(player.movementFacing?.y ?? player.facingY ?? 1)*ny);
+    return {map,doorId:door.id,side:approach<0 ? -1 : 1};
+  }
+  root.FrontierHubWorkbench = { validateEvent, create, doorArrival163, doorDeparture165 };
 })(typeof window === "undefined" ? globalThis : window);

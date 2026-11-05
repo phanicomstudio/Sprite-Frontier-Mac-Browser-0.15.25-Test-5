@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/roofs/Tex_Castle_roof_1.png",
+  "sha256": "d6fd65ff55b90b689004f90758298610be4d9ef2bd813716494dbff06c0450de",
+  "normal": "assets/automatic-normals/d6fd65ff55b90b689004f907-relief2.normal.png",
+  "lit": "assets/automatic-normals/d6fd65ff55b90b689004f907-relief2.lit.webp",
+  "width": 1536,
+  "height": 1024,
+  "normalWidth": 512,
+  "normalHeight": 341,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 0
+  },
+  "wrap": true,
+  "compression": "webp-lossless-rgba-verified"
+}

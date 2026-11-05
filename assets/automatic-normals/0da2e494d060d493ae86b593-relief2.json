@@ -1,0 +1,27 @@
+{
+  "source": "img/items/prop_perflurocarbon_blood1.png",
+  "sha256": "0da2e494d060d493ae86b5931011521da51acf2fbad133e67f6c396f4fa68fb8",
+  "normal": "assets/automatic-normals/0da2e494d060d493ae86b593-relief2.normal.png",
+  "lit": "assets/automatic-normals/0da2e494d060d493ae86b593-relief2.lit.webp",
+  "width": 50,
+  "height": 100,
+  "normalWidth": 50,
+  "normalHeight": 100,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

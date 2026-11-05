@@ -1,0 +1,32 @@
+{
+  "iteration": "0.16.7",
+  "date": "2026-10-28",
+  "addendum": true,
+  "baseline": "db7d41284089f345b8a53490481b04d7341a8bbc",
+  "owners": [
+    {
+      "owner": "sprites.mask167 / cover167",
+      "contract": "Decoded original image -> bounded cached one-byte alpha mask; game/static actor/world endpoints -> earliest opaque billboard contact, null miss or undefined legacy fallback. No movement collision change; metre world coordinates and exact displayed frame."
+    },
+    {
+      "owner": "isometric.aim / assist167; spatial.createProjectile",
+      "contract": "Logical cursor or desired world target -> continuous launch direction with slight unobstructed assistance. 1.02 relative strength; visual sector remains independent. Calibration controls origin, existing spread remains."
+    },
+    {
+      "owner": "enemyTactics.profile / tick",
+      "contract": "Validated event extension and elapsed seconds -> aggressive/balanced/defensive cover weighting and bounded cover/cooldown locomotion. Existing collision-aware move callback and weapon cadence retained."
+    },
+    {
+      "owner": "enemies.validate / defeated / update / reset / validateState / restore",
+      "contract": "Optional death/remains profile IDs, seconds and saved age validated; original death/respawn policy owns persistence; sprite sheet rendering consumes age without changing combat."
+    },
+    {
+      "owner": "enemyWorkbench.open / fill / read / apply; mzEditor.enemy167 / apply",
+      "contract": "Author drafts -> original transactional event updates preserving pages. MZ applies before switching; invalid drafts remain. Optional first-row death sequence and remains selection."
+    },
+    {
+      "owner": "ballistics.sweep / createProjectile; render.candy / draw",
+      "contract": "Swept static alpha/model cover; bounded calibrated discharge flashes and depth masking. Death sequence selects first row once; existing renderer locks artwork tilt and proportions."
+    }
+  ]
+}

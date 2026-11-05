@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/shrubs/$$Creosote 1 copy 2.png",
+  "sha256": "db31d97404e0f2d67a034396af0f3e14926df5c95266a18c22880a0972d791d5",
+  "normal": "assets/automatic-normals/db31d97404e0f2d67a034396-relief2.normal.png",
+  "lit": "assets/automatic-normals/db31d97404e0f2d67a034396-relief2.lit.webp",
+  "width": 754,
+  "height": 512,
+  "normalWidth": 512,
+  "normalHeight": 347,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

@@ -1,3 +1,4 @@
+/* October 29, 2026: starter melee keeps map-local ownership; optional validated embedded firing/swing SFX supersede the historical always-silent configure contract below. Default melee remains silent; legacy numeric edits retain imported audio. */
 /* Blood/Cerebral authoring and proximity effects. One world unit is one tile for
  * these rules, independent of the visible grid spacing. No per-frame asset loads. */
 /* Historical contract retained; October 14, 2026 reviewed explanation follows. @function cerebral.callback.1 — Provides the callback for a callback. Inputs: root. Updates: root frontier cerebral. */
@@ -54,6 +55,7 @@
     )
       throw Error("Cerebral thresholds must descend.");
     const m = r.melee;
+    if(m.sound!==undefined&&(typeof m.sound!=="string"||m.sound.length>120))throw Error("Invalid melee sound.");
     if (
       typeof m.name !== "string" ||
       !m.name.trim() ||
@@ -84,6 +86,8 @@
         arc: m.arc,
         cooldown: m.cooldown,
         spriteProfile: m.spriteProfile,
+        ...(m.soundAsset ? {soundAsset: root.FrontierWeaponDefinitions.validateSound169(m.soundAsset)} : {}),
+        sound: typeof m.sound === "string" && m.sound.length<=120 ? m.sound : "",
       },
     };
   }
@@ -162,7 +166,8 @@
       fireMode: "semi",
       ammoCost: 0,
       magazineSize: 12,
-      sound: "",
+      sound: m.sound || "",
+      soundAsset: m.soundAsset ? structuredClone(m.soundAsset) : undefined,
       audioProfile: "none",
       spriteProfile: m.spriteProfile,
     });

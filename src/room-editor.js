@@ -87,6 +87,7 @@
             throw Error("Choose a PNG, JPEG or WebP texture.");
           const image = await readImage(file);
           ensureSurfaceOption(image.src, file.name);
+          document.dispatchEvent(new CustomEvent("surfaceTextureImported169",{detail:{url:image.src,name:file.name}}));
           document.getElementById("roomSurface").value = image.src;
           texturePreview.src = image.src;
           texturePreview.hidden = false;

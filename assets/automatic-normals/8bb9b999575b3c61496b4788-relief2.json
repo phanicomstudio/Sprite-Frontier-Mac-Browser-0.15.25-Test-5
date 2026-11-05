@@ -1,0 +1,27 @@
+{
+  "source": "img/items/prop_box-o-waffles1.png",
+  "sha256": "8bb9b999575b3c61496b47883b2234ff47e271d00b525234ae632d240481e7c9",
+  "normal": "assets/automatic-normals/8bb9b999575b3c61496b4788-relief2.normal.png",
+  "lit": "assets/automatic-normals/8bb9b999575b3c61496b4788-relief2.lit.webp",
+  "width": 125,
+  "height": 166,
+  "normalWidth": 125,
+  "normalHeight": 166,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

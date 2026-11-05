@@ -214,6 +214,15 @@
       statistics: FrontierModelContainer.statistics(j),
     };
   }
+  /* @function modelLibrary.upgradeAntiqueDoor1620 — Inputs: stable asset ID, detached resource table and entry path. Upgrades only the exact historical built-in clean door identified by byte count and two independent whole-file rolling fingerprints. This is asset identity matching, not a security hash; canonical SHA-256 provenance is recorded with the asset. Other IDs and edited/custom payloads remain untouched. Runs only on import/restore, preserving node IDs, hinge transform and all map instances. */
+  function upgradeAntiqueDoor1620(id,files,entry){
+    const bytes=files[entry];
+    if(id!=="builtin-antique-door"||!root.FrontierAntiqueDoor||bytes?.length!==1613972)return;
+    let a=2166136261,b=5381;
+    for(const byte of bytes){a=Math.imul(a^byte,16777619)>>>0;b=(Math.imul(b,33)^byte)>>>0;}
+    if(a!==3917691026||b!==2612754138)return;
+    files[entry]=Uint8Array.from(atob(root.FrontierAntiqueDoor),/* @function modelLibrary.mirroredDoorByte1620 — Inputs: decoded canonical GLB character. Returns its byte without changing the serialized source project or other resources. */function(c){return c.charCodeAt(0);});
+  }
   /* Historical contract retained; October 14, 2026 reviewed explanation follows. @function model-library.importBundle.12 — Decodes and registers a model’s resource bundle under a shared asset identity. Inputs: value. Updates: total; files at p; decoded scene. Uses: /^[A-Za-z0-9_-]{1,60}$/ test; error; frontier model container resource path; object entries. Returns: a record containing copied fields, bytes, id. */
   /* @function model-library.reviewed12 — Imports and registers a complete model bundle. Inputs: stable ID/name/entry and dependent byte arrays. Returns decoded statistics plus total encoded bytes and ID. Copies/validates resource paths, limits bundle to 64 MiB, decodes and compiles source scene before replacing that asset ID. Failures propagate and leave existing asset records; revision may advance during an unsuccessful attempt. No remote fetching. */ function importBundle(
     value,
@@ -239,6 +248,9 @@
       files[p] = bytes;
     }
     if (!files[entry]) throw Error("Model entry file missing");
+    const originalDoorBytes1620=files[entry].length;
+    upgradeAntiqueDoor1620(value.id,files,entry);
+    total+=files[entry].length-originalDoorBytes1620;
     const bundle = {
         id: value.id,
         name: value.name.slice(0, 80),
@@ -364,6 +376,10 @@
           files[p] = bytes;
         }
         if (!files[entry]) throw Error("Model entry file missing");
+        const originalDoorBytes1620=files[entry].length;
+        upgradeAntiqueDoor1620(v.id,files,entry);
+        total+=files[entry].length-originalDoorBytes1620;
+        if(total>128*1024*1024)throw Error("Project model library exceeds 128 MiB after built-in door upgrade");
         const bundle = { id: v.id, name: v.name.slice(0, 80), entry, files },
           decoded = decode(bundle);
         if (root.FrontierModelScene)

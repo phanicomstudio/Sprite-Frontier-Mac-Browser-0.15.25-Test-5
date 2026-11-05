@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/ground/seamless-moss.png",
+  "sha256": "697ac9756dd1a62d1571338d3ecb2c17de26c67882334734cf9782d942b8dab4",
+  "normal": "assets/automatic-normals/697ac9756dd1a62d1571338d-relief2.normal.png",
+  "lit": "assets/automatic-normals/697ac9756dd1a62d1571338d-relief2.lit.webp",
+  "width": 1254,
+  "height": 1254,
+  "normalWidth": 512,
+  "normalHeight": 512,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 0
+  },
+  "wrap": true,
+  "compression": "webp-lossless-rgba-verified"
+}

@@ -1,0 +1,27 @@
+{
+  "source": "img/items/prop_custard_meal1.png",
+  "sha256": "f1156aba9f74e17f668e8251f37074c6677ed3e8b37ae494c81667246c1d5544",
+  "normal": "assets/automatic-normals/f1156aba9f74e17f668e8251-relief2.normal.png",
+  "lit": "assets/automatic-normals/f1156aba9f74e17f668e8251-relief2.lit.webp",
+  "width": 120,
+  "height": 67,
+  "normalWidth": 120,
+  "normalHeight": 67,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

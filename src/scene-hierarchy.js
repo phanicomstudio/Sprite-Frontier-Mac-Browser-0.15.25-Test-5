@@ -119,6 +119,7 @@
     for (const key of selectedKeys) if (!valid.has(key)) selectedKeys.delete(key);
     const query = search.value.trim().toLocaleLowerCase(),
       fragment = document.createDocumentFragment();
+    const structural=new Map();for(const ref of window.FrontierScene?.list()||[])if(ref.path?.length)structural.set(ref.group+':'+ref.id,ref.path);
     let total = 0,
       shown = 0;
     for (const group of groups) {
@@ -129,6 +130,7 @@
       const summary = document.createElement("summary");
       summary.textContent = group.name;
       section.append(summary);
+      const paths=new Map();
       let count = 0;
       for (const option of control.options) {
         if (!option.value || option.value.startsWith("@")) continue;
@@ -180,7 +182,7 @@
           deleteTargets([{group: group.id, id: option.value}], visible.findIndex(/* @function sceneHierarchy.deleteIndex — Inputs: visible entry. Returns stable key equality for focus restoration; no effects. */ function(entry){return entry.key === key;}));
         };
         row.append(button, remove);
-        section.append(row);
+        let target=section,pathKey='';for(const name of structural.get(key)||[]){pathKey+='/'+name;if(!paths.has(pathKey)){const groupNode=document.createElement('details'),label=document.createElement('summary');groupNode.open=true;label.textContent=name;groupNode.append(label);target.append(groupNode);paths.set(pathKey,groupNode);}target=paths.get(pathKey);}target.append(row);
       }
       if (count) fragment.append(section);
     }

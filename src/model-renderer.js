@@ -28,6 +28,24 @@
       ? root.FrontierModelMaterials.uv(mapping, original)
       : original;
   }
+  /* @function modelRenderer.automaticAlbedo1617 — Inputs: decoded model asset and original ordered RGBA records. Returns a promise of prepared albedo records only. Explicit glTF normal-map materials retain original base color; normal/roughness/emissive channels are never modified. The shared single-worker queue runs before model texture readiness. */
+  async function automaticAlbedo1617(asset,pixels) {
+    if(!root.FrontierAutomaticNormals)return pixels;
+    const eligible=new Set(),authored=new Set();
+    for(const material of asset.json.materials||[]) {
+      const texture=material.pbrMetallicRoughness?.baseColorTexture;
+      const source=asset.json.textures?.[texture?.index]?.source;
+      if(source===undefined)continue;
+      if(material.normalTexture)authored.add(source);else eligible.add(source);
+    }
+    const result=pixels.slice();
+    for(const index of eligible)if(!authored.has(index)&&pixels[index]) {
+      const digest=await crypto.subtle.digest("SHA-256",asset.images[index].bytes);
+      const hash=Array.from(new Uint8Array(digest),/* @function modelRenderer.normalSource1617 — Inputs: encoded source digest byte. Returns fixed-width hex so embedded GLB images reuse identical packaged normal bakes. This runs once per material load, never per triangle. */function(byte){return byte.toString(16).padStart(2,"0");}).join("");
+      result[index]=await root.FrontierAutomaticNormals.pixels(pixels[index],"Model material "+index,hash);
+    }
+    return result;
+  }
   /* Historical contract retained; October 14, 2026 reviewed explanation follows. @function model-renderer.prepare.2 — Handles prepare within model renderer. Inputs: asset. Updates: state promise. Uses: textures has; textures get; textures set; promise all using asset images map using a callback then using a callback catch. Returns: textures get using asset; state. */
   /* @function model-renderer.prepare.2Reviewed — Prepares shared model texture pixels once per asset identity. Inputs: decoded asset with embedded image bytes and MIME types. Returns the cached state immediately, including its asynchronous promise; successful decode publishes RGBA byte records and ready=true. Failure is captured as state.error and leaves ready=false, without an automatic retry. Does not change asset data; browser image/canvas APIs are required. */ function prepare(
     asset,
@@ -64,10 +82,11 @@
     )
       .then(
         /* Historical contract retained; October 14, 2026 reviewed explanation follows. @function model-renderer.callback.4 — Provides the callback for promise all using asset images map using a callback then. Inputs: p. Updates: state pixels; state ready. */
-  /* @function model-renderer.callback.4Reviewed — Publishes the completed batch of decoded texture records. Inputs: ordered pixel records matching asset.images. Returns nothing; stores the records and marks the shared preparation state ready only after every image succeeds. No asset mutation or further decoding. */ (
+  /* @function model-renderer.callback.4Reviewed — Publishes the completed batch of decoded texture records. Inputs: ordered pixel records matching asset.images. Returns nothing; stores the records and marks the shared preparation state ready only after every image succeeds. No asset mutation or further decoding. */ async (
           p,
         ) => {
-          state.pixels = p;
+          // November 1: only albedo without authored model normals uses automatic relief.
+          state.pixels = await automaticAlbedo1617(asset,p);
           state.ready = true;
         },
       )
@@ -132,6 +151,8 @@
       overrideImage: image,
       overrideSampler: override ? { wrapS: 10497, wrapT: 10497 } : null,
       texture: pbr.baseColorTexture?.index,
+      normalTexture: image?undefined:m.normalTexture?.index,
+      normalScale:m.normalTexture?.scale??1,
       alphaMode: m.alphaMode || "OPAQUE",
       cutoff: m.alphaCutoff ?? 0.5,
       coverage,
@@ -412,6 +433,10 @@
       color =
         surface.colorScratch1523 ||
         (surface.colorScratch1523 = new Float64Array(4));
+    // November 1: retained transparent/fixed CPU fallback also uses real directional normals.
+    const normalImage=m.overrideImage?.normal||state.pixels[asset.json.textures?.[m.normalTexture]?.source]||image?.normal;
+    const liveBasis=normalImage&&m.lighting?root.FrontierLiveNormals?.basis(vertices,cam):null;
+    const normalScratch=surface.normalScratch1618||=(new Float64Array(4)),lightScratch=surface.lightScratch1618||=(new Float64Array(3)),pointScratch=surface.pointScratch1618||=[0,0,0],decodedNormal=surface.decodedNormal1618||=[0,0,1];
     let written = 0; /* October 12: triangle rasterization is synchronous and non-reentrant; reuse one surface-owned RGBA scratch and index existing projected vertices rather than allocating three edge pairs per triangle. Exact arithmetic/sampling stays unchanged. */
     /* October 12, 2026: constrain each scanline to the triangle's horizontal span instead of scanning its entire bounding box. Expand by one sample to preserve floating-point edge inclusion; existing barycentric tests remain authoritative. This saves work without changing density or sampling. */
     for (let y = y0; y <= y1; y++) {
@@ -495,7 +520,14 @@
           smooth,
           color,
         );
-        if (vertexLight)
+        if(liveBasis){
+          sampleInto1523(normalImage,sampler,[1,1,1,1],wa*a.uv[0]+wb*b.uv[0]+wc*c.uv[0],wa*a.uv[1]+wb*b.uv[1]+wc*c.uv[1],smooth,normalScratch);
+          for(let axis=0;axis<3;axis++){decodedNormal[axis]=normalScratch[axis]/127.5-1;pointScratch[axis]=wa*a.point[axis]+wb*b.point[axis]+wc*c.point[axis];}
+          decodedNormal[0]*=m.normalScale??1;decodedNormal[1]*=m.normalScale??1;
+          root.FrontierLiveNormals.sample(m.lighting,pointScratch,decodedNormal,liveBasis,lightScratch);
+          for(let channel=0;channel<3;channel++)color[channel]*=lightScratch[channel];
+        }
+        if (vertexLight&&!liveBasis)
           for (let channel = 0; channel < 3; channel++)
             color[channel] *=
               wa * vertexLight[0][channel] +
@@ -580,7 +612,7 @@
   }
   /* @function model-renderer.gpuRoom1523 — Inputs: live Pixi adapter, game viewport and camera, room faces. Returns reusable GPU backend for supported opaque perspective room surfaces, or null for Canvas/fixed-camera/transparent fallback. Density changes release old upload and GPU resources before recreation. No gameplay mutation; creation failures fall back with one warning. */
   function gpuRoom1523(ctx, game, cam, faces) {
-    if (!ctx.app || cam.orthographic || !root.FrontierGeometryGPU) return null;
+    if (!ctx.app || !root.FrontierGeometryGPU) return null;
     const density = root.FrontierDisplay?.get().scale || 1,
       width = game.viewWidth || 640;
     let state = gpuRooms.get(ctx);
@@ -687,7 +719,7 @@
       }
     }
     if (gpu) {
-      gpu.draw(gpuTriangles, !!root.FrontierDisplay?.smooth(), game.lightFrame);
+      gpu.draw(gpuTriangles, !!root.FrontierDisplay?.smooth(), game.lightFrame,null,!!cam.orthographic);
       ctx.sources?.get(gpu.canvas)?.update();
       ctx.save();
       ctx.globalAlpha = 1;
@@ -706,6 +738,7 @@
       ctx.restore();
       game.roomBackend = "GPU color / CPU shared depth";
     } else {
+      root.FrontierIsometricVisibility169?.cutout(ctx,surface);
       composite(ctx, surface);
       game.roomBackend = "CPU";
     }
@@ -932,7 +965,7 @@
     cam,
     models,
   ) {
-    if (!ctx.app || cam.orthographic || !root.FrontierGeometryGPU) return null;
+    if (!ctx.app || !root.FrontierGeometryGPU) return null;
     for (const entity of models) {
       if ((entity.modelCoverage ?? 1) < 1) return null;
       const asset =
@@ -1139,7 +1172,7 @@
       const state = prepare(e.transitionSource || asset),
         preparedVertices = new WeakMap(),
         materials = new Map(),
-        fog = root.FrontierFog?.settings(game),
+        fog = root.FrontierViewVisibility?.fog(game,cam)||root.FrontierFog?.settings(game),
         basis = root.FrontierCameraBasis?.create(cam, FrontierRender.project),
         depths = new WeakMap();
       /* @function model-renderer.cachedDepth1523 — Inputs: immutable triangle vertex. Returns exact camera forward depth cached by transformed point for this draw only; no source/camera mutation. Legacy camera arithmetic remains authoritative. */
@@ -1217,6 +1250,8 @@
                 mat.overrideImage ||
                 state.pixels[texture?.source] ||
                 whitePixel,
+              normal:mat.overrideImage?.normal||state.pixels[asset.json.textures?.[mat.normalTexture]?.source],
+              normalScale:mat.normalScale,
               factor: mat.factor,
               opaque: true,
               sampler:
@@ -1250,6 +1285,7 @@
         !!root.FrontierDisplay?.smooth(),
         game.lightFrame,
         prior,
+        !!cam.orthographic,
       );
       ctx.sources?.get(gpu.backend.canvas)?.update();
       ctx.save();
@@ -1267,7 +1303,7 @@
         480,
       );
       ctx.restore();
-    } else composite(ctx, surface);
+    } else {root.FrontierIsometricVisibility169?.cutout(ctx,surface);composite(ctx, surface);}
     game.modelDebug = {
       instances,
       culled,

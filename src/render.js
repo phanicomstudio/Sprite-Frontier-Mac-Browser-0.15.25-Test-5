@@ -1,3 +1,4 @@
+/* October 28, 2026 - 0.16.7: see ITERATION-0.16.7.md for current combat/authoring behavior; older comments below are retained historical contracts where explicitly superseded. */
 // October 22, 2026: canvas labels use the registered gameplay face, or readable authoring face; prior release literals are superseded.
 /* October 14, 2026: transient editorFlight bypasses camera geometry clearance only in authoring; playtest retains normal camera collision and locked sprite presentation. */
 /* MAINTAINER GUIDE
@@ -215,14 +216,18 @@
       ? FrontierSprites.sheet(e)
       : root.FrontierCandy;
     if (!sheet?.image.complete || !sheet.image.naturalWidth) return false;
-    const { row, column: col } = FrontierDirections.select(
+    const selectedFrame = (e.dead && e.enemyConfig?.deathSprite && (e.deathAge||0)<(e.enemyConfig.deathSeconds||.6)) ? {row:0,column:Math.min((sheet.columns||3)-1,Math.floor((e.deathAge||0)/(e.enemyConfig.deathSeconds||.6)*(sheet.columns||3)))} : FrontierDirections.select(
         e,
         cam.yaw,
         sheet.direction,
         cam,
       ),
+      detail=root.FrontierViewVisibility?.detail(ctx.game,e,p,cam,selectedFrame)||{frame:selectedFrame,light:null},
+      {row,column:col}=detail.frame,
       f = sheet.frames[row * (sheet.columns || 3) + col],
-      scale = ((e.height || 1.65) * p.scale) / (sheet.referenceHeight || 310);
+      // First-person height follows the projected upright span; other views retain their original scale.
+      pixelScale = uprightSpriteScale(ctx.game, e, cam, p),
+      scale = ((e.height || 1.65) * pixelScale) / (sheet.referenceHeight || 310);
     const level = root.FrontierWater?.level(ctx.world, e.x, e.y),
       waterline = root.FrontierWater?.obscures(
         ctx.world,
@@ -308,14 +313,29 @@
           ctx.rect(r.x, r.y, r.width, r.height);
         ctx.clip();
       }
-      ctx.assetLightTint =
+      ctx.assetLightTint = detail.light ||=
         root.FrontierLocalLighting?.sample(
           ctx.localLightFrame,
           e.x,
           e.y,
           (e.z || 0) + (e.height || 1.65) * 0.5,
+          undefined, e.id,
         ) || null;
-      ctx.drawImage(
+      // November 1, 2026: normal basis follows the locked pitched camera-facing image rectangle.
+      const sy=Math.sin(cam.yaw),cy=Math.cos(cam.yaw),sp=Math.sin(cam.pitch||0),cp=Math.cos(cam.pitch||0);
+      ctx.liveNormalSurface={ownerId:e.id,center:[e.x,e.y,(e.z||0)+(f.h*.5-(sheet.groundInset||0))*scale/pixelScale],right:[cy,-sy,0],up:[-sy*sp,-cy*sp,cp],facing:[-sy*cp,-cy*cp,-sp],size:[f.w*scale/pixelScale,f.h*scale/pixelScale]};
+      if(lit.frontierNormalImage){image.frontierNormalImage=lit.frontierNormalImage;image.frontierNormalStrength=lit.frontierNormalStrength??1;}
+      const bands = ctx.drawSpriteBands && ctx.game?.camera.firstPerson &&
+        !ctx.game.authoring && !cam.orthographic
+        ? uprightSpriteBands(cam,e,f,(e.height||1.65)/(sheet.referenceHeight||310),sheet.groundInset||0,level,!!waterline)
+        : null;
+      if (bands) {
+        const points=bands.flatMap(b=>b.points);
+        const x=Math.min(...points.map(q=>q[0])),y=Math.min(...points.map(q=>q[1]));
+        const bounds={x,y,width:Math.max(...points.map(q=>q[0]))-x,height:Math.max(...points.map(q=>q[1]))-y};
+        const mask=root.FrontierTerrainOcclusion?.mask(ctx.terrainDepth,bounds,spriteDepth);
+        ctx.drawSpriteBands(image,f,bands,mask?.regions);
+      } else ctx.drawImage(
         image,
         f.x,
         f.y,
@@ -326,6 +346,8 @@
         f.w * scale,
         fullHeight,
       );
+      ctx.liveNormalSurface=null;
+      ctx.liveNormalSurface=null;
       ctx.assetLightTint = null;
       ctx.assetGlow = false;
       ctx.assetPools = mapPools;
@@ -340,7 +362,7 @@
   ) {
     // October 14: retain calibrated PNG projection in authoring; bypassing
     // this camera hid the artwork and misaligned the selection overlays.
-    const iso = root.FrontierIsometric?.camera(game);
+    const iso = game.swimming?.world === game.sourceWorld ? null : root.FrontierIsometric?.camera(game);
     if (iso) return iso;
     const fixed = root.FrontierInterior?.camera(game);
     if (fixed) return fixed;
@@ -353,6 +375,8 @@
         y: p.y,
         z: (p.z || 0) + 1.55,
         cx,
+        // November 1, 2026: first-person projects its forward axis to the viewport center, independently of third-person framing.
+        cy: 240,
         yaw: c.yaw,
         pitch: c.pitch,
       };
@@ -424,11 +448,12 @@
     y,
     z = 0,
   ) {
-    return (
+    const forward = (
       ((x - cam.x) * Math.sin(cam.yaw) + (y - cam.y) * Math.cos(cam.yaw)) *
         Math.cos(cam.pitch) +
       (z - cam.z) * Math.sin(cam.pitch)
     );
+    return cam.outdoorIsometric?30+forward*.02:forward;
   }
   // Project world XYZ into logical screen coordinates and scale; reject geometry behind the near plane.
   /* @function render.project.9 — Project world XYZ into logical screen coordinates and scale; reject geometry behind the near plane. Inputs: cam; x; y; assignment pattern. Uses: root frontier interior project; depth. Returns: root frontier interior project using cam, x, y; null. */ function project(
@@ -452,6 +477,37 @@
       depth: d,
     };
   }
+  // Measure upright sprites against the same perspective projection as their
+  // ground anchor. A screen-facing height derived from feet depth alone drifts
+  // relative to the terrain when the player pitches the camera.
+  function uprightSpriteScale(game, actor, cam, feet) {
+    if (!game?.camera.firstPerson || game.authoring || cam.orthographic)
+      return feet.scale;
+    const height = actor.height || 1.65;
+    const head = project(cam, actor.x, actor.y, (actor.z || 0) + height);
+    return head && head.y < feet.y ? (feet.y - head.y) / height : feet.scale;
+  }
+
+  // First-person gameplay only: project a vertical, yaw-facing atlas plane
+  // in eight bands to approximate perspective texture interpolation.
+  function uprightSpriteBands(cam, actor, frame, metresPerPixel, inset, water, submerged) {
+    const rightX = Math.cos(cam.yaw), rightY = -Math.sin(cam.yaw);
+    const left = -frame.anchorX * metresPerPixel;
+    const right = left + frame.w * metresPerPixel;
+    const top = (actor.z || 0) + (frame.h - inset) * metresPerPixel;
+    const bottom = submerged ? Math.min(frame.h, (top - water) / metresPerPixel) : frame.h;
+    const bands = [];
+    for (let i = 0; i < 8 && bottom > 0; i++) {
+      const sourceY = bottom * i / 8, endY = bottom * (i + 1) / 8;
+      const corners = [[left,sourceY],[right,sourceY],[right,endY],[left,endY]];
+      const projected = corners.map(([side,row]) =>
+        project(cam,actor.x+side*rightX,actor.y+side*rightY,top-row*metresPerPixel));
+      if (projected.some(point=>!point)) return null;
+      bands.push({sourceY,endY,points:projected.map(point=>[point.x,point.y])});
+    }
+    return bands;
+  }
+
   const grids = new WeakMap(),
     editBounds = new WeakMap();
   // Painter-order scene: sky → terrain grid → sorted sprites/props → editor overlays → travel/effects → death overlay.
@@ -484,17 +540,24 @@
       : null;
     ctx.vectorDisplay =
       game.sourceWorld.vectorDisplay || root.FrontierVector?.defaults;
-    ctx.fog = root.FrontierFog?.settings(game);
+    ctx.fog = root.FrontierViewVisibility?.fog(game,cam)||root.FrontierFog?.settings(game);
+    if (!game.sourceWorld.interior || game.sourceWorld.interior.outdoor) {
+      ctx.fog = {...ctx.fog, edgeBounds: FrontierWorld.dimensions(game.sourceWorld)};
+    }
     ctx.fogDepth = 0;
     ctx.imageSmoothingEnabled = false;
     const sin = Math.sin(cam.yaw),
       cos = Math.cos(cam.yaw);
     // Vector study: clear the textured placeholder and draw a world-space grid.
-    ctx.fillStyle = ctx.fog?.enabled ? ctx.fog.color : "#000";
+    // October 26: distance fog belongs to geometry; the clear/sky is never a fog-colored full-screen overlay.
+    // Superseded November 1 at the horizon only: a far-background bank is intentional; upper sky and foreground are not uniformly tinted.
+    ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, game.viewWidth, 480);
     if (cam.orthographic && !cam.outdoorIsometric) FrontierInterior.background(ctx, game, cam);
     else if ((!game.sourceWorld.interior || game.sourceWorld.interior.outdoor) || game.sourceWorld.sky?.panorama)
       FrontierSky.draw(ctx, game, cam, project);
+    // November 1, 2026: a horizon-localized background bank fills distant gaps; upper sky and foreground geometry remain independent.
+    root.FrontierHorizonFog?.draw(ctx,game,cam);
     /* October 10, 2026: interior geometry owns its floor depth. Outdoor terrain would hide coplanar room floors and must stay outside cells. */
     if ((!game.sourceWorld.interior || game.sourceWorld.interior.outdoor))
       root.FrontierOutdoorAssets?.draw(ctx, game, cam, project);
@@ -626,13 +689,14 @@
           segment(x, y, Math.min(x + step, x1), y);
     // Authoring ghost is a draw-only copy: dragging cannot change saved data
     // until the undoable pointer-up transaction commits.
+    const visibleBounds=root.FrontierViewVisibility.bounds(game,cam);
     let entities = root.FrontierActivity
       ? root.FrontierActivity.query(
           game,
-          cam.x - 52,
-          cam.y - 52,
-          cam.x + 52,
-          cam.y + 52,
+          visibleBounds.minX,
+          visibleBounds.minY,
+          visibleBounds.maxX,
+          visibleBounds.maxY,
         )
       : [...game.maps.frontier.entities, ...(game.sceneEvents || [])];
     // 2026-10-09: retain bounds-visible landmarks beyond the origin query without waking actors.
@@ -663,6 +727,7 @@
               }
             : e,
       );
+    if(game.authoring&&root.FrontierAuthorView?.state.storey)entities=entities.filter(/* @function render.storeyEntity1611 — Inputs: candidate entity. Preserves only actual isolated-storey members and unassigned exteriors in editor; runtime physics/activity are untouched. */function(e){return root.FrontierAuthorView.visible(game,e);});
     if (game.sourceWorld.interior) {
       const r = game.sourceWorld.interior;
       for (const e of r.sprites)
@@ -693,6 +758,9 @@
       });
     // Sort far to near for billboard occlusion. Player opacity stays 1; this is not a depth-buffer renderer.
     root.FrontierWater?.draw(ctx, game, cam, project);
+    // October 26: outdoor sprite silhouettes sit on the ground pass before models/actors, independent of billboard tilt. Interiors never receive sunlight shadows.
+    // Superseded within this iteration: ground-plane prototype retained as a documented helper, not the active render path.
+    root.FrontierIsometricVisibility169?.begin(ctx,game,cam);
     root.FrontierModelRenderer?.geometry(
       ctx,
       game,
@@ -704,6 +772,9 @@
       ),
     );
     root.FrontierModelRenderer?.draw(ctx, game, cam, entities);
+    root.FrontierSunShadows?.draw163(ctx,game,cam,entities,project);
+    // October 26: subtle isometric contact blobs remain on receiving floors while jumping; sunlight remains a separate effect.
+    root.FrontierContactShadows?.draw166(ctx,game,cam,entities,project);
     // Only horizontal room geometry belongs to the structural background pass.
     // Legacy MZ event priority never overrides world-space camera depth.
     const layer =
@@ -732,7 +803,7 @@
           q,
         ) =>
           q.p &&
-          q.p.depth < 45 &&
+          (cam.outdoorIsometric || q.p.depth < 45) &&
           !q.e.transparent &&
           !q.e.modelId &&
           q.e.kind !== "roomFace" &&
@@ -744,13 +815,14 @@
           b,
         ) => layer(a.e) - layer(b.e) || b.p.depth - a.p.depth,
       );
+    if(ctx.terrainDepth)ctx.terrainDepth.affineDepthScale=cam.outdoorIsometric?.02:0;
     for (const { e, p } of queue) {
       if (p.x < -250 || p.x > (game.viewWidth || 640) + 250) continue;
-      ctx.fogDepth = cam.outdoorIsometric ? Math.max(0,p.depth-depth(cam,game.player.x,game.player.y,game.player.z||0)) : p.depth;
-      const h = Math.min(1800, (e.height || 1.65) * p.scale),
+      ctx.fogDepth = p.depth;
+      const h = Math.min(1800, (e.height || 1.65) * uprightSpriteScale(game, e, cam, p)),
         w = h * 0.6;
       ctx.globalAlpha =
-        ((e.kind === "player" ? 1 : Math.max(0.18, 1 - (cam.outdoorIsometric ? Math.hypot(e.x-game.player.x,e.y-game.player.y) : p.depth) / 55)) *
+        ((e.kind === "player" ? 1 : (cam.outdoorIsometric ? 1 : Math.max(0.18,1-p.depth/55))) *
           (e.opacity ?? 255)) /
         255;
       ctx.save();
@@ -875,7 +947,7 @@
       for (const e of game.sceneEvents || []) {
         const p = project(cam, e.x, e.y, e.z || 0);
         if (e.isAmmo && p && p.depth < 14) {
-          ctx.fogDepth = cam.outdoorIsometric ? Math.max(0,p.depth-depth(cam,game.player.x,game.player.y,game.player.z||0)) : p.depth;
+          ctx.fogDepth = p.depth;
           ctx.fillStyle = "#8fbdff";
           ctx.font = "11px " + (root.FrontierFonts?.family() || "monospace");
           ctx.fillText(
@@ -897,7 +969,7 @@
           FrontierTerrain.height(game.sourceWorld, e.x, e.y),
         );
         if (p) {
-          ctx.fogDepth = cam.outdoorIsometric ? Math.max(0,p.depth-depth(cam,game.player.x,game.player.y,game.player.z||0)) : p.depth;
+          ctx.fogDepth = p.depth;
           if (cam.orthographic) {
             const outside = !FrontierInterior.inside(
                 game.sourceWorld.interior.floor,
@@ -957,6 +1029,7 @@
         }
       }
     }
+    root.FrontierIsometricVisibility169?.draw(ctx,game,cam,entities);
     if (game.authoring) {
       root.FrontierInterior?.outline(ctx, game.sourceWorld, cam, project);
       for (const e of game.sceneEvents || []) {
@@ -1066,7 +1139,7 @@
         s.z / 40 + FrontierTerrain.height(game.sourceWorld, s.x, s.y),
       );
       if (p) {
-        ctx.fogDepth = cam.outdoorIsometric ? Math.max(0,p.depth-depth(cam,game.player.x,game.player.y,game.player.z||0)) : p.depth;
+        ctx.fogDepth = p.depth;
         ctx.fillStyle = s.color;
         const size = Math.max(1, Math.min(7, (s.size * p.scale) / 80));
         ctx.fillRect(p.x, p.y, size, size);
@@ -1075,10 +1148,14 @@
     for (const flash of game.muzzleFlashes) {
       const p = project(cam, flash.x, flash.y, flash.z);
       if (p) {
-        ctx.fogDepth = cam.outdoorIsometric ? Math.max(0,p.depth-depth(cam,game.player.x,game.player.y,game.player.z||0)) : p.depth;
+        ctx.fogDepth = p.depth;
         ctx.fillStyle = flash.color || "#ffe5a1";
-        const s = Math.max(2, p.scale * 0.045);
-        ctx.fillRect(p.x - s / 2, p.y - s / 2, s, s);
+        const s = Math.max(3, Math.min(24,p.scale * .16)) * Math.max(.3,flash.life/flash.maxLife);
+        ctx.save();
+        const flashClip=root.FrontierTerrainOcclusion?.mask(ctx.terrainDepth,{x:p.x-s,y:p.y-s,width:s*2,height:s*2},p.depth);
+        if(flashClip){if(ctx.setGraphicClip)ctx.setGraphicClip(flashClip);else{ctx.beginPath();for(const region of flashClip.regions||[flashClip])ctx.rect(region.x,region.y,region.width,region.height);ctx.clip();}}
+        ctx.beginPath();ctx.moveTo(p.x-s,p.y);ctx.lineTo(p.x-s*.25,p.y-s*.25);ctx.lineTo(p.x,p.y-s);ctx.lineTo(p.x+s*.25,p.y-s*.25);ctx.lineTo(p.x+s,p.y);ctx.lineTo(p.x+s*.25,p.y+s*.25);ctx.lineTo(p.x,p.y+s);ctx.lineTo(p.x-s*.25,p.y+s*.25);ctx.closePath();ctx.fill();
+        ctx.fillStyle='#fff8dd';ctx.fillRect(p.x-s*.2,p.y-s*.2,s*.4,s*.4);ctx.restore();if(ctx.setGraphicClip)ctx.setGraphicClip(null);
       }
     }
     if (game.authoring && game.brushGhost) {
@@ -1122,6 +1199,7 @@
       },
     );
     ctx.fogDepth = 0;
+    root.FrontierFirstPerson?.draw(ctx,game,cam);
     if (game.player.hp <= 0 && game.elapsed >= (game.deathUntil || 0)) {
       ctx.fillStyle = "#0c131bcc";
       ctx.fillRect(0, 0, game.viewWidth, 480);
@@ -1139,6 +1217,7 @@
     }
     /* October 12, 2026: append native particles before the one GPU submission. The former application call appended after submission and the next begin cleared those objects before they could be displayed. effectDelta is the owning frame's simulation seconds; explicit standalone draws default to zero advancement. */
     root.FrontierNativeEffects?.draw(canvas, game, game.effectDelta ?? 0);
+    ctx.paletteDither=game.paletteDitherOverride||game.sourceWorld.paletteDither;
     root.FrontierPixi?.end();
   }
   // Draw the overview map independently of the perspective renderer; its coordinates are world X/Y.
@@ -1185,6 +1264,8 @@
     sy,
   ) {
     const cam = camera(game);
+    // October 29: outdoor isometric terrain shares the affine camera but not a flat artwork plane. Refine height so visible raised ground, brush centre and placement agree.
+    if(cam.outdoorIsometric){let point=FrontierInterior.groundPoint(cam,sx,sy);for(let i=0;i<10;i++){const z=FrontierTerrain.height(game.sourceWorld,point.x,point.y),next=FrontierInterior.groundPoint(cam,sx,sy+z*cam.room.camera.heightScale);if(Math.hypot(next.x-point.x,next.y-point.y)<.001)return {...next,z};point=next;}return {...point,z:FrontierTerrain.height(game.sourceWorld,point.x,point.y)};}
     if (cam.orthographic) return FrontierInterior.groundPoint(cam, sx, sy);
     const side = (sx - (cam.cx || 320)) / 360,
       up = ((cam.cy ?? 96) - sy) / 360,
@@ -1234,17 +1315,18 @@
     eventsOnly = false,
   ) {
     const cam = camera(game);
+    const visibleBounds=root.FrontierViewVisibility.bounds(game,cam);
     let nearest = null,
-      best = 45;
+      best = cam.outdoorIsometric?Infinity:45;
     let candidates = eventsOnly
       ? game.sceneEvents || []
       : root.FrontierActivity
         ? root.FrontierActivity.query(
             game,
-            cam.x - 52,
-            cam.y - 52,
-            cam.x + 52,
-            cam.y + 52,
+            visibleBounds.minX,
+            visibleBounds.minY,
+            visibleBounds.maxX,
+            visibleBounds.maxY,
           )
         : [...game.maps.frontier.entities, ...(game.sceneEvents || [])];
     if (!eventsOnly) {
@@ -1256,6 +1338,7 @@
         );
       candidates = candidates.concat(game.hubDrops || []);
     }
+    if(game.authoring&&root.FrontierAuthorView?.state.storey)candidates=candidates.filter(/* @function render.storeyPick1611 — Inputs: pick candidate. Uses the same actual ownership visibility as rendering so hidden storeys cannot intercept a click. */function(e){return root.FrontierAuthorView.visible(game,e);});
     const zone = root.FrontierModelTargeting?.pick(
       game,
       sx,

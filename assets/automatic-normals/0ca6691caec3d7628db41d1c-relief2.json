@@ -1,0 +1,27 @@
+{
+  "source": "img/items/prop_MUTHER Board1.png",
+  "sha256": "0ca6691caec3d7628db41d1cc4d30982d804d65cadcb88c1eff032130e885ff8",
+  "normal": "assets/automatic-normals/0ca6691caec3d7628db41d1c-relief2.normal.png",
+  "lit": "assets/automatic-normals/0ca6691caec3d7628db41d1c-relief2.lit.webp",
+  "width": 199,
+  "height": 180,
+  "normalWidth": 199,
+  "normalHeight": 180,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

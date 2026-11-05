@@ -22,6 +22,8 @@
     output,
     previewToken = 0,
     unlock;
+  /* @function seAudio.registerWeapon169 — Inputs: stable weapon profile ID and validated imported sound. Returns a bounded internal sound name, caching by immutable session asset identity. Reuses existing voice/preview ownership; does not add nodes per shot or replace manifest defaults. Invalid IDs/assets throw before registration. */
+  function registerWeapon169(id,asset){if(typeof id!=="string"||!/^[a-z0-9_-]{1,64}$/i.test(id))throw Error("Invalid weapon sound profile.");const name="weapon-custom:"+id,old=files.get(name);if(old?.asset!==asset){const checked=root.FrontierWeaponDefinitions.validateSound169(asset);files.set(name,{src:checked.src,asset});}return name;}
   // Resolve a manifest sound, reuse an available voice and apply global gain and pitch. Missing files return false.
   /* Historical contract retained; October 14, 2026 reviewed explanation follows. @function se-audio.play.3 — Resolve a manifest sound, reuse an available voice and apply global gain and pitch. Missing files return false. Inputs: name; assignment pattern; assignment pattern; assignment pattern; report; assignment pattern. Updates: voice; voice busy; voice group; audio onended; audio onerror. Uses: files get; error; pool find; pool push. Returns: false; false. */
   /* @function seAudio.reviewed3 — Schedules one named effect through the bounded shared voice pool. Inputs: manifest name, normalized gain (default 1), pitch ratio (1), pan (-1..1, default center), optional error reporter and ownership group. Returns false for missing name/full 24-voice pool, otherwise true after starting asynchronous playback. Reuses MediaElement/WebAudio nodes, clamps gain/rate/pan and throws if requested stereo requires unavailable unlocked Web Audio. Token checks prevent stale completion changing a reused voice; asynchronous failures report rather than claiming decode success. */ function play(
@@ -85,7 +87,7 @@
       voice.gain.gain.value = Math.max(0, Math.min(1, gain));
       voice.panner.pan.value = Math.max(-1, Math.min(1, pan));
     }
-    audio.src = "audio/se/" + encodeURIComponent(file);
+    audio.src = typeof file==="string" ? "audio/se/" + encodeURIComponent(file) : file.src;
     audio.volume = voice.source ? 1 : Math.max(0, Math.min(1, gain * volume));
     audio.playbackRate = Math.max(0.5, Math.min(1.5, pitch));
     audio.preservesPitch = false;
@@ -107,6 +109,12 @@
   root.PhanicomSE = {
     play,
     /* Historical contract retained; October 14, 2026 reviewed explanation follows. @function se-audio.has.8 — Returns files has using name. Inputs: name. Uses: files has. Returns: files has using name. */
+    /* @function seAudio.weaponAsset169 — Inputs: weapon ID, imported asset, gain/pitch and error reporter. Returns existing bounded-pool playback result. Decoding failures flow to the caller's default-sound fallback, and pool exhaustion does not allocate extra voices. */
+    weaponAsset169(id,asset,gain,pitch,report){return play(registerWeapon169(id,asset),gain,pitch,0,report);},
+    /* @function seAudio.previewWeapon169 — Inputs: weapon ID, imported asset and error reporter. Returns shared unlocked editor preview promise; original preview cancellation/voice limits remain authoritative. */
+    previewWeapon169(id,asset,report){return this.previewEvent({name:registerWeapon169(id,asset),volume:100,pitch:100,pan:0},report);},
+    /* @function seAudio.previewDefaultWeapon169 — Inputs: shipped weapon record. Returns a shared-unlock preview promise for its existing named/procedural sound. No override is authored and original runtime defaults remain intact. */
+    async previewDefaultWeapon169(weapon){await unlock?.();await context?.resume();root.PhanicomABS.playWeaponSound169(null,{...weapon,soundAsset:undefined},null);},
     has: /* @function seAudio.reviewed8 — Checks sound-name availability in the installed manifest. Inputs: exact name. Returns Boolean; membership does not prove the file decodes or exists at playback. No resource load. */ (
       name,
     ) =>

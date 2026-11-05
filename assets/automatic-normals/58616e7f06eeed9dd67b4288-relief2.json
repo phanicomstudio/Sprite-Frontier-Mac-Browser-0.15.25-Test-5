@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/windows/$$Window 3.png",
+  "sha256": "58616e7f06eeed9dd67b4288b1303f7dd25f9116f76f3137cfc9a2bf3f312a83",
+  "normal": "assets/automatic-normals/58616e7f06eeed9dd67b4288-relief2.normal.png",
+  "lit": "assets/automatic-normals/58616e7f06eeed9dd67b4288-relief2.lit.webp",
+  "width": 447,
+  "height": 404,
+  "normalWidth": 447,
+  "normalHeight": 404,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

@@ -1,0 +1,27 @@
+{
+  "source": "img/items/prop_Mi-Go Brain Cylinder1.png",
+  "sha256": "48b233a166f874ab5264ae61461828328524b87f4cdee07310515165a4b58a9c",
+  "normal": "assets/automatic-normals/48b233a166f874ab5264ae61-relief2.normal.png",
+  "lit": "assets/automatic-normals/48b233a166f874ab5264ae61-relief2.lit.webp",
+  "width": 56,
+  "height": 138,
+  "normalWidth": 56,
+  "normalHeight": 138,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

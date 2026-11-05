@@ -1,3 +1,5 @@
+/* November 1, 2026 — 0.16.19: projectile emission is mandatory. Old map/weapon off flags and zero brightness are migrated to positive emission. General lighting switches affect ambient/placed/player lights only; live projectile sources still run. The existing eight-light shader bound remains, with projectiles prioritized. This supersedes earlier opt-in/opt-out comments. */
+/* October 26, 2026: default radius lighting is enabled with 0.4 ambient; a subtle warm player light defaults on with six-metre smooth falloff. Earlier disabled-default comments below are superseded; explicit revision-1 map overrides survive. */
 /* October 12, 2026: independently authored radius lighting. Emission is separate
  * from enemy detection and exploration. No game assets or third-party lighting
  * implementation are used. World coordinates are metres with Z up. */
@@ -57,8 +59,8 @@
   /* @function localLighting.validate — Inputs: optional cell settings. Returns: independent lighting record; disabled by default preserves earlier cell appearance. Throws invalid capacities/parameters. Player/projectile emission is opt-in, and authored sources are limited to 128. */
   function validate(value = {}) {
     const v = {
-      enabled: false,
-      ambient: 0.35,
+      enabled: true,
+      ambient: 0.4,
       budget: 8,
       steps: 0,
       lights: [],
@@ -88,22 +90,18 @@
     return {
       ...v,
       lights,
+      shadows:shadows169(v.shadows),
+      sun:sun163(v.sun),
       player: source(
-        { enabled: false, radius: 4, z: 1.2, ...v.player },
+        { enabled: true, radius: 6, intensity: 0.45, falloff:2, color:"#fff0dc", z: 1.2, ...v.player },
         "player-light",
       ),
-      projectiles: source(
-        {
-          enabled: false,
-          radius: 2,
-          intensity: 1.2,
-          color: "#ffbd66",
-          z: 0,
-          ...v.projectiles,
-        },
-        "projectile-light",
-      ),
+      projectiles: projectile(v.projectiles),
     };
+  }
+  /* @function localLighting.projectile1619 — Inputs: optional map/weapon emission settings and source ID. Returns a detached validated light with emission always enabled and positive brightness. Legacy off/zero values migrate to 1.2 brightness; color/radius/falloff/flicker remain authorable and bounded. No map or runtime mutation. */
+  function projectile(value={},id="projectile-light"){
+    return source({radius:2,intensity:1.2,color:"#ffbd66",z:0,...value,enabled:true,intensity:value.intensity>0?value.intensity:1.2},id);
   }
   /* @function localLighting.color — Inputs: validated hexadecimal color. Returns: normalized RGB components. No mutation or image pixel processing. */
   function color(hex) {
@@ -139,13 +137,14 @@
     return entry;
   }
   /* @function localLighting.frame — Inputs: live game and elapsed scene seconds. Returns: bounded active lighting snapshot. Dynamic sources derive directly from current player/events/projectiles, so dead/despawned projectiles retain no light records. Source selection sorts by player distance and stable ID; diagnostics report dropped sources/blockers. */
+  /* @function localLighting.mandatoryFrame1619 — Inputs: live game and elapsed seconds. Returns active bounded lighting even when general map lighting is disabled if shots exist. Projectile false/zero flags cannot disable emission; sources prioritize projectiles and use up to the existing eight shader slots regardless of a smaller decorative budget. Off-map shots remain excluded; other lights and ambient preserve the map setting. No permanent projectile cache or per-frame logging. Supersedes earlier opt-in/nearest-only contracts. */
   function frame(game, time = 0) {
     const world = game.sourceWorld,
-      settings = world.lighting;
-    if (!settings?.enabled) return null;
+      settings = world.lighting||mandatoryDefaults1619;
+    if (!settings.enabled&&!(game.projectiles||[]).length) return null;
     const candidates = [],
       player = game.player;
-    for (const light of settings.lights) {
+    for (const light of settings.enabled?settings.lights:[]) {
       if (!light.enabled) continue;
       let x = light.x,
         y = light.y,
@@ -179,9 +178,10 @@
         dynamic: !!light.eventId || light.flicker > 0,
       });
     }
-    if (settings.player.enabled)
+    if (settings.enabled&&settings.player.enabled)
       candidates.push({
         ...settings.player,
+        excludedOwnerId: player.id || "player",
         x: player.x + settings.player.x,
         y: player.y + settings.player.y,
         z: (player.z || 0) + settings.player.z,
@@ -189,8 +189,9 @@
       });
     for (const p of game.projectiles || []) {
       if (p.map !== undefined && p.map !== game.currentMapId) continue;
-      const light = { ...settings.projectiles, ...p.light };
-      if (!light.enabled) continue;
+      // Mandatory even for old saves, disabled maps and old per-weapon opt-outs.
+      const light = { ...mandatoryDefaults1619.projectiles,...settings.projectiles, ...p.light,enabled:true };
+      if(!(light.intensity>0))light.intensity=1.2;
       const point = p.position || p;
       if (
         !Number.isFinite(point.x) ||
@@ -201,6 +202,7 @@
       candidates.push({
         ...light,
         id: "projectile-" + p.id,
+        projectile:true,
         x: point.x,
         y: point.y,
         z: point.z || 0,
@@ -216,7 +218,7 @@
         for (const host of collection) if (host.itemLight) itemHosts.hosts.push(host);
       itemHosts1525.set(game, itemHosts);
     }
-    for (const host of itemHosts.hosts) {
+    for (const host of settings.enabled?itemHosts.hosts:[]) {
       const light = host.itemLight;
       if (!light?.enabled || host.dead) continue;
       candidates.push({ ...light, id:"item-"+host.id,
@@ -228,7 +230,7 @@
         a,
         b,
       ) {
-        return (
+        return ((b.projectile?1:0)-(a.projectile?1:0)) || (
           (a.x - player.x) ** 2 +
             (a.y - player.y) ** 2 +
             (a.z - (player.z || 0)) ** 2 -
@@ -238,7 +240,7 @@
         );
       },
     );
-    const lights = candidates.slice(0, settings.budget);
+    const lights = candidates.slice(0,candidates.some(/* @function localLighting.projectileBudget1619 — Inputs: source candidate. Returns whether a live projectile needs the established eight-slot shader capacity; does not exceed it or mutate map budgets. */function(light){return light.projectile;})?MAX_LIGHTS:settings.budget);
     for (const light of lights) {
       light.rgb = color(light.color);
       if (light.flicker)
@@ -251,8 +253,10 @@
     const entry = cache(world),
       blockers = entry.blockers.slice(0, MAX_BLOCKERS);
     return {
-      ambient: settings.ambient,
-      steps: settings.steps,
+      // November 1, 2026: outdoor normal response shares authored sun orientation; it does not create another shadow system or light-budget entry.
+      sun: settings.enabled&&!world.interior&&settings.sun?.enabled ? {direction:[Math.sin(settings.sun.azimuth*Math.PI/180)*Math.cos(settings.sun.elevation*Math.PI/180),Math.cos(settings.sun.azimuth*Math.PI/180)*Math.cos(settings.sun.elevation*Math.PI/180),Math.sin(settings.sun.elevation*Math.PI/180)],intensity:.35}:null,
+      ambient: settings.enabled?settings.ambient:1,
+      steps: settings.enabled?settings.steps:0,
       lights,
       blockers,
       cache: entry.samples,
@@ -364,7 +368,8 @@
     return enter < exit;
   }
   /* @function localLighting.sample — Inputs: active snapshot and world XYZ; optional reusable RGB output. Returns: ambient plus unblocked radius contributions clamped to one. Static-only samples cache at millimetre coordinates with a 16,384-entry bound. Dynamic samples never accumulate persistent per-projectile entries. Quantized steps are optional; alpha is untouched. */
-  function sample(snapshot, x, y, z, out = [1, 1, 1]) {
+  /* @function localLighting.ownerSample1621 — Inputs: snapshot, world XYZ, reusable RGB and optional actor ownerId. Returns sampled illumination. November 1, 2026: optional ownerId excludes only the passive light owned by this actor; all scene/projectile lighting remains applicable. Cache signatures include ownership. */
+  function sample(snapshot, x, y, z, out = [1, 1, 1], ownerId = null) {
     if (!snapshot) {
       out[0] = out[1] = out[2] = 1;
       return out;
@@ -386,7 +391,7 @@
         )
         .join(","),
       key =
-        signature +
+        signature + "/" + (ownerId || "") +
         "/" +
         x.toFixed(3) +
         "," +
@@ -403,6 +408,7 @@
     out[0] = out[1] = out[2] = snapshot.ambient;
     const point = [x, y, z];
     for (const light of snapshot.lights) {
+      if (ownerId && light.excludedOwnerId === ownerId) continue;
       const distance = Math.hypot(x - light.x, y - light.y, z - light.z);
       if (distance >= light.radius) continue;
       let blocked = false;
@@ -428,8 +434,41 @@
     }
     return out;
   }
-  root.FrontierLocalLighting = {
+  /* October 26: legacy appearance is the default image treatment; explicit lighting remains independent. No geometry, billboard, UI typography or normal-map data is altered. */
+  /* @function localLighting.sun163 — Inputs: optional per-map sun settings. Returns bounded directional ground-shadow configuration; azimuth/elevation use degrees, opacity 0–0.6. Defaults enabled outdoors; render owner categorically excludes interiors. Invalid values throw before adoption. */
+  function sun163(value={}){const v={enabled:true,azimuth:135,elevation:45,opacity:0.24,...value};if(typeof v.enabled!=="boolean")throw Error("Sun enabled must be Boolean.");finite(v.azimuth,"Sun azimuth",-36000,36000);finite(v.elevation,"Sun elevation",10,85);finite(v.opacity,"Sun shadow opacity",0,0.6);return v;}
+  /* @function localLighting.spriteSunShadow163 — Inputs: active drawing adapter, live scene, projection camera, sprite-bearing entity and world-to-screen callback. Returns Boolean for a drawn alpha silhouette. Projects current artwork frame onto the local horizontal ground plane away from sun; reuses image/crop pools and restores all drawing state. Outdoors only, skips submerged/dead/missing frames and excessive offscreen shadows. This is a bounded ground-plane effect, not mesh/terrain shadow mapping or roof occlusion; it never changes locked actor billboarding. */
+  function spriteSunShadow163(ctx,game,cam,entity,project){
+    const world=game.sourceWorld,settings=world.lighting;
+    if((world.interior&&!world.interior.outdoor) || !settings?.enabled || entity.dead || !(entity.kind==="player" || entity.spriteProfile))return false;
+    const sun=sun163(settings.sun);if(!sun.enabled || !sun.opacity)return false;
+    const sheet=root.FrontierSprites?.sheet(entity);if(!sheet?.image.complete || !sheet.image.naturalWidth)return false;
+    const selected=root.FrontierDirections.select(entity,cam.yaw,sheet.direction,cam),frame=sheet.frames[selected.row*(sheet.columns||3)+selected.column];if(!frame)return false;
+    const z=entity.z ?? root.FrontierTerrain.height(world,entity.x,entity.y),water=root.FrontierWater?.level(world,entity.x,entity.y);if(Number.isFinite(water)&&water>z+0.05)return false;
+    const height=entity.height||1.65,metres=height/(sheet.referenceHeight||310),width=frame.w*metres,length=Math.min(8,frame.h*metres/Math.tan(sun.elevation*Math.PI/180)),angle=sun.azimuth*Math.PI/180;
+    const left=-frame.anchorX*metres,sideX=Math.cos(cam.yaw),sideY=-Math.sin(cam.yaw),dx=-Math.sin(angle)*length,dy=-Math.cos(angle)*length;
+    const bottom=project(cam,entity.x+sideX*left,entity.y+sideY*left,z+0.015),right=project(cam,entity.x+sideX*(left+width),entity.y+sideY*(left+width),z+0.015),top=project(cam,entity.x+sideX*left+dx,entity.y+sideY*left+dy,z+0.015);
+    if(!bottom||!right||!top || Math.hypot(top.x-bottom.x,top.y-bottom.y)>2000)return false;
+    const tint=ctx.assetLightTint,pools=ctx.assetPools,glow=ctx.assetGlow;ctx.save();
+    try{ctx.matrix=[(right.x-bottom.x)/frame.w,(right.y-bottom.y)/frame.w,(bottom.x-top.x)/frame.h,(bottom.y-top.y)/frame.h,top.x,top.y];ctx.globalAlpha=sun.opacity;ctx.assetLightTint=[0,0,0];ctx.assetPools=null;ctx.assetGlow=false;ctx.fogDepth=bottom.depth;ctx.drawImage(sheet.image,frame.x,frame.y,frame.w,frame.h,0,0,frame.w,frame.h);}
+    finally{ctx.restore();ctx.assetLightTint=tint;ctx.assetPools=pools;ctx.assetGlow=glow;}
+    return true;
+  }
+  /* @function localLighting.appearance163 — Inputs: optional per-cell appearance settings. Returns validated independent legacy/neutral profile with bounded contrast/saturation and softness in CSS pixels. Defaults provide restrained late-1990s image treatment; invalid input throws before project adoption. This is image treatment, not a replacement material or shadow renderer. */
+  function appearance163(value={}){
+    const v={mode:"legacy",contrast:1.04,saturation:0.94,softness:0.15,...value};
+    if(!["legacy","neutral"].includes(v.mode))throw Error("Choose legacy or neutral rendering.");
+    finite(v.contrast,"Image contrast",0.5,1.5);finite(v.saturation,"Image saturation",0,2);finite(v.softness,"Image softness",0,1);
+    return v;
+  }
+  /* @function localLighting.appearanceFilter163 — Inputs: validated or partial cell appearance. Returns CSS filter text for world canvas only; neutral bypasses treatment. Does not alter HUD/editor text, pixels stored in assets, collision or normal-map caches. */
+  function appearanceFilter163(value){const v=appearance163(value);return v.mode==="neutral" ? "none" : "contrast("+v.contrast+") saturate("+v.saturation+") blur("+v.softness+"px)";}
+  /* @function localLighting.shadows169 — Inputs: optional shared shadow draft. Returns a detached pair of finite 0-4 strength multipliers. Sun and isometric contact effects remain separate; invalid values reject before adoption. Defaults retain sun and make the previously faint contacts more readable. */
+  function shadows169(value={}){const sun=value.sun??1,contact=value.contact??1.75;finite(sun,"Sun shadow strength",0,4);finite(contact,"Isometric ground shadow strength",0,4);return {sun,contact};}
+  const mandatoryDefaults1619=validate();
+  root.FrontierLocalLighting = { shadows169,appearance163,appearanceFilter163,sun163,spriteSunShadow163,
     validate,
+    projectile,
     source,
     frame,
     sample,

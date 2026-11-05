@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/ground/mythos-forest-litter.png",
+  "sha256": "68dcf7e265b6d740701cc058986e3aded8eb8b566a19de487319d870c2314011",
+  "normal": "assets/automatic-normals/68dcf7e265b6d740701cc058-relief2.normal.png",
+  "lit": "assets/automatic-normals/68dcf7e265b6d740701cc058-relief2.lit.webp",
+  "width": 384,
+  "height": 384,
+  "normalWidth": 384,
+  "normalHeight": 384,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

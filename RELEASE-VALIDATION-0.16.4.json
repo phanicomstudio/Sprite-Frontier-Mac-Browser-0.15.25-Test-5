@@ -1,0 +1,881 @@
+{
+  "iteration": "0.16.4",
+  "date": "2026-10-26",
+  "platformDelivery": "Windows PC only, per explicit user request",
+  "firstPersonCorrection": "Original projection restored; wheel ignored without changing third-person distance. Initial zoom experiment superseded before delivery.",
+  "checks": {
+    "functionComments": {
+      "passed": true,
+      "maintainedFunctions": 6308
+    },
+    "mainGameplaySuite": {
+      "passed": true,
+      "command": "package.json scripts.test"
+    },
+    "affineZoom": {
+      "passed": true,
+      "projectionInversions": 54,
+      "scales": [
+        12,
+        38,
+        100
+      ],
+      "logicalWidths": [
+        640,
+        854
+      ]
+    },
+    "realBrowserInput": {
+      "native": false,
+      "isometric": {
+        "start": {
+          "x": 32,
+          "y": 32,
+          "pointer": {
+            "x": 540.3539376678091,
+            "y": 200.5008010443244
+          },
+          "yaw": 0,
+          "scale": 38,
+          "authored": 38
+        },
+        "fired": {
+          "shots": [
+            {
+              "direction": {
+                "x": 0.7603950170316957,
+                "y": -0.6484710510658193,
+                "z": -0.035842907289431784
+              },
+              "position": {
+                "x": 32.68696929245421,
+                "y": 31.86649732731614,
+                "z": 1.2029032258064516,
+                "yawOffset": 0,
+                "pitchOffset": 0
+              },
+              "facing": {
+                "x": 0.9109672197295201,
+                "y": -0.4124787565175549
+              },
+              "pointer": {
+                "x": 540.3539376678091,
+                "y": 200.5008010443244
+              },
+              "moving": true,
+              "frame": {
+                "sector": 2,
+                "count": 8
+              },
+              "axes": {
+                "originX": 32.276733309885174,
+                "originY": 32.276733309885174,
+                "screenX": 320,
+                "screenY": 280,
+                "axisXX": 26.870057685088806,
+                "axisYX": -26.870057685088803,
+                "axisXY": -13.4350288425444,
+                "axisYY": -13.435028842544401,
+                "heightScale": 38,
+                "yaw": 0.7853981633974483
+              }
+            },
+            {
+              "direction": {
+                "x": -0.7646947155281718,
+                "y": 0.6416550537629034,
+                "z": -0.05933619488823088
+              },
+              "position": {
+                "x": 32.042768555313714,
+                "y": 33.31487646456448,
+                "z": 1.3412903225806452,
+                "yawOffset": 0,
+                "pitchOffset": 0
+              },
+              "facing": {
+                "x": -0.9545659312175753,
+                "y": 0.2979998036219542
+              },
+              "pointer": {
+                "x": 100.45302834764831,
+                "y": 299.54073458731375
+              },
+              "moving": false,
+              "frame": {
+                "sector": 6,
+                "count": 8
+              },
+              "axes": {
+                "originX": 32.678822509939096,
+                "originY": 32.678822509939096,
+                "screenX": 320,
+                "screenY": 280,
+                "axisXX": 26.870057685088806,
+                "axisYX": -26.870057685088803,
+                "axisXY": -13.4350288425444,
+                "axisYY": -13.435028842544401,
+                "heightScale": 38,
+                "yaw": 0.7853981633974483
+              }
+            }
+          ],
+          "x": 32.678822509939096,
+          "y": 32.678822509939096,
+          "yaw": 0,
+          "pointer": {
+            "x": 100.45302834764831,
+            "y": 299.54073458731375
+          },
+          "reticle": "15.6958%"
+        },
+        "zoom": {
+          "effective": 62.0238768551204,
+          "authored": 38
+        }
+      },
+      "display": [
+        {
+          "aspect": "4:3",
+          "fullscreen": false,
+          "shots": 4,
+          "last": {
+            "direction": {
+              "x": 0.7653320372443339,
+              "y": -0.642189830179877,
+              "z": -0.0431172213967745
+            },
+            "position": {
+              "x": 33.341127917865506,
+              "y": 32.016517102012685,
+              "z": 1.2029032258064516,
+              "yawOffset": 0,
+              "pitchOffset": 0
+            },
+            "facing": {
+              "x": 0.9380342215839587,
+              "y": -0.3465426368246436
+            },
+            "pointer": {
+              "x": 500.2524735585125,
+              "y": 200.50080104432428
+            },
+            "moving": true,
+            "frame": {
+              "sector": 2,
+              "count": 8
+            },
+            "axes": {
+              "originX": 32.93089193529647,
+              "originY": 32.42675308458172,
+              "screenX": 320,
+              "screenY": 280,
+              "axisXX": 26.870057685088806,
+              "axisYX": -26.870057685088803,
+              "axisXY": -13.4350288425444,
+              "axisYY": -13.435028842544401,
+              "heightScale": 38,
+              "yaw": 0.7853981633974483
+            }
+          },
+          "scale": 40.427877198048606,
+          "display": {
+            "scale": 1,
+            "filtering": "crisp",
+            "width": 640,
+            "height": 480,
+            "pixelWidth": 640,
+            "pixelHeight": 480,
+            "rasterStep": 2
+          }
+        },
+        {
+          "aspect": "4:3",
+          "fullscreen": true,
+          "shots": 6,
+          "last": {
+            "direction": {
+              "x": 0.7651921899635825,
+              "y": -0.6420724843781773,
+              "z": -0.04715757863983094
+            },
+            "position": {
+              "x": 33.642751386448445,
+              "y": 31.714893633429746,
+              "z": 1.2029032258064516,
+              "yawOffset": 0,
+              "pitchOffset": 0
+            },
+            "facing": {
+              "x": 0.9325234467890516,
+              "y": -0.36110943104364784
+            },
+            "pointer": {
+              "x": 499.772471683505,
+              "y": 199.5408010443243
+            },
+            "moving": true,
+            "frame": {
+              "sector": 2,
+              "count": 8
+            },
+            "axes": {
+              "originX": 33.23251540387941,
+              "originY": 32.12512961599878,
+              "screenX": 320,
+              "screenY": 280,
+              "axisXX": 28.81835669803048,
+              "axisYX": -28.818356698030478,
+              "axisXY": -14.409178349015237,
+              "axisYY": -14.409178349015239,
+              "heightScale": 40.75531088766023,
+              "yaw": 0.7853981633974483
+            }
+          },
+          "scale": 43.25258002267325,
+          "display": {
+            "scale": 1,
+            "filtering": "crisp",
+            "width": 640,
+            "height": 480,
+            "pixelWidth": 640,
+            "pixelHeight": 480,
+            "rasterStep": 2
+          }
+        },
+        {
+          "aspect": "16:9",
+          "fullscreen": false,
+          "shots": 8,
+          "last": {
+            "direction": {
+              "x": 0.7542502957320986,
+              "y": -0.6552350576391599,
+              "z": -0.042113069570488625
+            },
+            "position": {
+              "x": 33.96903873955917,
+              "y": 31.388606280319024,
+              "z": 1.2029032258064516,
+              "yawOffset": 0,
+              "pitchOffset": 0
+            },
+            "facing": {
+              "x": 0.8907045853949631,
+              "y": -0.4545826014668696
+            },
+            "pointer": {
+              "x": 649.9664105380285,
+              "y": 200.14840799857578
+            },
+            "moving": true,
+            "frame": {
+              "sector": 2,
+              "count": 8
+            },
+            "axes": {
+              "originX": 33.55880275699013,
+              "originY": 31.79884226288806,
+              "screenX": 427,
+              "screenY": 280,
+              "axisXX": 30.90792332893994,
+              "axisYX": -30.907923328939937,
+              "axisXY": -15.453961664469967,
+              "axisYY": -15.453961664469968,
+              "heightScale": 43.71040435657464,
+              "yaw": 0.7853981633974483
+            }
+          },
+          "scale": 46.50448134486065,
+          "display": {
+            "scale": 1,
+            "filtering": "crisp",
+            "width": 854,
+            "height": 480,
+            "pixelWidth": 854,
+            "pixelHeight": 480,
+            "rasterStep": 2
+          }
+        },
+        {
+          "aspect": "16:9",
+          "fullscreen": true,
+          "shots": 10,
+          "last": {
+            "direction": {
+              "x": 0.7513816453866242,
+              "y": -0.6582680725852159,
+              "z": -0.045921319569825814
+            },
+            "position": {
+              "x": 34.321121348047576,
+              "y": 31.036523671830622,
+              "z": 1.2029032258064516,
+              "yawOffset": 0,
+              "pitchOffset": 0
+            },
+            "facing": {
+              "x": 0.8807058186516763,
+              "y": -0.4736636580877623
+            },
+            "pointer": {
+              "x": 649.9664105380285,
+              "y": 199.61507466524242
+            },
+            "moving": true,
+            "frame": {
+              "sector": 2,
+              "count": 8
+            },
+            "axes": {
+              "originX": 33.91088536547854,
+              "originY": 31.446759654399656,
+              "screenX": 427,
+              "screenY": 280,
+              "axisXX": 33.149000635866145,
+              "axisYX": -33.14900063586614,
+              "axisXY": -16.574500317933065,
+              "axisYY": -16.57450031793307,
+              "heightScale": 46.87976627835625,
+              "yaw": 0.7853981633974483
+            }
+          },
+          "scale": 49.819089669605454,
+          "display": {
+            "scale": 1,
+            "filtering": "crisp",
+            "width": 854,
+            "height": 480,
+            "pixelWidth": 854,
+            "pixelHeight": 480,
+            "rasterStep": 2
+          }
+        }
+      ],
+      "parity": [
+        {
+          "kind": "third",
+          "before": {
+            "x": 33.986234664081785,
+            "y": 31.371410355796414,
+            "yaw": 0.004,
+            "distance": 3.8,
+            "zoom": 1,
+            "focal": 360
+          },
+          "after": {
+            "x": 34.1406951314615,
+            "y": 31.991832126543404,
+            "yaw": 0.244,
+            "distance": 2.8006526953999975,
+            "zoom": 1,
+            "focal": 360,
+            "shots": 1
+          }
+        },
+        {
+          "kind": "first",
+          "before": {
+            "x": 34.1406951314615,
+            "y": 31.991832126543404,
+            "yaw": 0.248,
+            "distance": 2.8,
+            "zoom": 1,
+            "focal": 360
+          },
+          "after": {
+            "x": 34.40760791301416,
+            "y": 32.49466140715842,
+            "yaw": 0.488,
+            "distance": 2.8,
+            "zoom": 1,
+            "focal": 360,
+            "shots": 1
+          }
+        },
+        {
+          "kind": "fixed",
+          "before": {
+            "x": 9,
+            "y": 8,
+            "yaw": -0.7853981633974483,
+            "distance": 3.8,
+            "zoom": 1,
+            "focal": 360
+          },
+          "after": {
+            "x": 7.953781121550519,
+            "y": 8.980683915146168,
+            "yaw": -0.7853981633974483,
+            "distance": 3.8,
+            "zoom": 1.418827848771043,
+            "focal": 360,
+            "shots": 1,
+            "pointer": {
+              "x": 499.9182417144759,
+              "y": 190.30928840890988
+            }
+          }
+        }
+      ],
+      "sky": [
+        {
+          "style": "original",
+          "sky": 0,
+          "geometry": 42788
+        },
+        {
+          "style": "phosphor",
+          "sky": 0,
+          "geometry": 43033
+        },
+        {
+          "style": "outline",
+          "sky": 0,
+          "geometry": 7672
+        }
+      ],
+      "errors": []
+    },
+    "realWindowsExecutableInput": {
+      "native": true,
+      "isometric": {
+        "start": {
+          "x": 32,
+          "y": 32,
+          "pointer": {
+            "x": 539.4244513988721,
+            "y": 199.42446556503944
+          },
+          "yaw": 0,
+          "scale": 38,
+          "authored": 38
+        },
+        "fired": {
+          "shots": [
+            {
+              "direction": {
+                "x": 0.7618077621107261,
+                "y": -0.6468106818383765,
+                "z": -0.03584515933318822
+              },
+              "position": {
+                "x": 32.67452421310532,
+                "y": 31.854052247967253,
+                "z": 1.2029032258064516,
+                "yawOffset": 0,
+                "pitchOffset": 0
+              },
+              "facing": {
+                "x": 0.9150266854477337,
+                "y": -0.40339331293234665
+              },
+              "pointer": {
+                "x": 539.4244513988721,
+                "y": 199.42446556503944
+              },
+              "moving": true,
+              "frame": {
+                "sector": 2,
+                "count": 8
+              },
+              "axes": {
+                "originX": 32.26428823053629,
+                "originY": 32.26428823053629,
+                "screenX": 320,
+                "screenY": 280,
+                "axisXX": 26.870057685088806,
+                "axisYX": -26.870057685088803,
+                "axisXY": -13.4350288425444,
+                "axisYY": -13.435028842544401,
+                "heightScale": 38,
+                "yaw": 0.7853981633974483
+              }
+            },
+            {
+              "direction": {
+                "x": -0.764701291839973,
+                "y": 0.6416605719437104,
+                "z": -0.059191592909356945
+              },
+              "position": {
+                "x": 32.05543990883258,
+                "y": 33.327547818083346,
+                "z": 1.3412903225806452,
+                "yawOffset": 0,
+                "pitchOffset": 0
+              },
+              "facing": {
+                "x": -0.9559064905972834,
+                "y": 0.2936712128111738
+              },
+              "pointer": {
+                "x": 100.57554860112792,
+                "y": 300.1438881827176
+              },
+              "moving": false,
+              "frame": {
+                "sector": 6,
+                "count": 8
+              },
+              "axes": {
+                "originX": 32.691493863457964,
+                "originY": 32.691493863457964,
+                "screenX": 320,
+                "screenY": 280,
+                "axisXX": 26.870057685088806,
+                "axisYX": -26.870057685088803,
+                "axisXY": -13.4350288425444,
+                "axisYY": -13.435028842544401,
+                "heightScale": 38,
+                "yaw": 0.7853981633974483
+              }
+            }
+          ],
+          "x": 32.691493863457964,
+          "y": 32.691493863457964,
+          "yaw": 0,
+          "pointer": {
+            "x": 100.57554860112792,
+            "y": 300.1438881827176
+          },
+          "reticle": "15.7149%"
+        },
+        "zoom": {
+          "effective": 62.02483351226725,
+          "authored": 38
+        }
+      },
+      "display": [
+        {
+          "aspect": "4:3",
+          "fullscreen": false,
+          "shots": 4,
+          "last": {
+            "direction": {
+              "x": 0.7653372744846841,
+              "y": -0.6421942247463233,
+              "z": -0.0429585147185528
+            },
+            "position": {
+              "x": 33.35312044887444,
+              "y": 32.029867278041486,
+              "z": 1.2029032258064516,
+              "yawOffset": 0,
+              "pitchOffset": 0
+            },
+            "facing": {
+              "x": 0.9416747915331769,
+              "y": -0.33652427399958496
+            },
+            "pointer": {
+              "x": 499.8561077039934,
+              "y": 199.42446556503944
+            },
+            "moving": true,
+            "frame": {
+              "sector": 2,
+              "count": 8
+            },
+            "axes": {
+              "originX": 32.94288446630541,
+              "originY": 32.44010326061052,
+              "screenX": 320,
+              "screenY": 280,
+              "axisXX": 26.870057685088806,
+              "axisYX": -26.870057685088803,
+              "axisXY": -13.4350288425444,
+              "axisYY": -13.435028842544401,
+              "heightScale": 38,
+              "yaw": 0.7853981633974483
+            }
+          },
+          "scale": 40.50565449075648,
+          "display": {
+            "scale": 1,
+            "filtering": "crisp",
+            "width": 640,
+            "height": 480,
+            "pixelWidth": 640,
+            "pixelHeight": 480,
+            "rasterStep": 2
+          }
+        },
+        {
+          "aspect": "4:3",
+          "fullscreen": true,
+          "shots": 6,
+          "last": {
+            "direction": {
+              "x": 0.7651895430941362,
+              "y": -0.6420702633910012,
+              "z": -0.04723071043714372
+            },
+            "position": {
+              "x": 33.780326081796105,
+              "y": 31.602661645119824,
+              "z": 1.2029032258064516,
+              "yawOffset": 0,
+              "pitchOffset": 0
+            },
+            "facing": {
+              "x": 0.9311635038984021,
+              "y": -0.3646018774055484
+            },
+            "pointer": {
+              "x": 499.8561077039934,
+              "y": 199.92446556503944
+            },
+            "moving": true,
+            "frame": {
+              "sector": 2,
+              "count": 8
+            },
+            "axes": {
+              "originX": 33.37009009922707,
+              "originY": 32.01289762768886,
+              "screenX": 320,
+              "screenY": 280,
+              "axisXX": 28.81835669803048,
+              "axisYX": -28.818356698030478,
+              "axisXY": -14.409178349015237,
+              "axisYY": -14.409178349015239,
+              "heightScale": 40.75531088766023,
+              "yaw": 0.7853981633974483
+            }
+          },
+          "scale": 43.31015587422793,
+          "display": {
+            "scale": 1,
+            "filtering": "crisp",
+            "width": 640,
+            "height": 480,
+            "pixelWidth": 640,
+            "pixelHeight": 480,
+            "rasterStep": 2
+          }
+        },
+        {
+          "aspect": "16:9",
+          "fullscreen": false,
+          "shots": 8,
+          "last": {
+            "direction": {
+              "x": 0.7535917973452176,
+              "y": -0.6559923860874175,
+              "z": -0.04211166547811805
+            },
+            "position": {
+              "x": 34.18241528185002,
+              "y": 31.200572445065898,
+              "z": 1.2029032258064516,
+              "yawOffset": 0,
+              "pitchOffset": 0
+            },
+            "facing": {
+              "x": 0.8886481104949785,
+              "y": -0.4585897248235119
+            },
+            "pointer": {
+              "x": 650.3335558563508,
+              "y": 200.64389672525886
+            },
+            "moving": true,
+            "frame": {
+              "sector": 2,
+              "count": 8
+            },
+            "axes": {
+              "originX": 33.772179299280985,
+              "originY": 31.610808427634932,
+              "screenX": 427,
+              "screenY": 280,
+              "axisXX": 30.90792332893994,
+              "axisYX": -30.907923328939937,
+              "axisXY": -15.453961664469967,
+              "axisYY": -15.453961664469968,
+              "heightScale": 43.71040435657464,
+              "yaw": 0.7853981633974483
+            }
+          },
+          "scale": 46.451011321280404,
+          "display": {
+            "scale": 1,
+            "filtering": "crisp",
+            "width": 854,
+            "height": 480,
+            "pixelWidth": 854,
+            "pixelHeight": 480,
+            "rasterStep": 2
+          }
+        },
+        {
+          "aspect": "16:9",
+          "fullscreen": true,
+          "shots": 10,
+          "last": {
+            "direction": {
+              "x": 0.7515187340510945,
+              "y": -0.6581096222033872,
+              "z": -0.04594907543743685
+            },
+            "position": {
+              "x": 34.60984718894167,
+              "y": 30.77314053797425,
+              "z": 1.2029032258064516,
+              "yawOffset": 0,
+              "pitchOffset": 0
+            },
+            "facing": {
+              "x": 0.881136943180214,
+              "y": -0.47286117134210576
+            },
+            "pointer": {
+              "x": 649.7775662730176,
+              "y": 199.53278561414777
+            },
+            "moving": true,
+            "frame": {
+              "sector": 2,
+              "count": 8
+            },
+            "axes": {
+              "originX": 34.19961120637264,
+              "originY": 31.183376520543284,
+              "screenX": 427,
+              "screenY": 280,
+              "axisXX": 33.149000635866145,
+              "axisYX": -33.14900063586614,
+              "axisXY": -16.574500317933065,
+              "axisYY": -16.57450031793307,
+              "heightScale": 46.87976627835625,
+              "yaw": 0.7853981633974483
+            }
+          },
+          "scale": 49.87643670734713,
+          "display": {
+            "scale": 1,
+            "filtering": "crisp",
+            "width": 854,
+            "height": 480,
+            "pixelWidth": 854,
+            "pixelHeight": 480,
+            "rasterStep": 2
+          }
+        }
+      ],
+      "parity": [
+        {
+          "kind": "third",
+          "before": {
+            "x": 34.40076894348458,
+            "y": 30.982218783431335,
+            "yaw": 0,
+            "distance": 3.8,
+            "zoom": 1,
+            "focal": 360
+          },
+          "after": {
+            "x": 34.57830428111049,
+            "y": 31.70769169008881,
+            "yaw": 0.24,
+            "distance": 2.8007465858083767,
+            "zoom": 1,
+            "focal": 360,
+            "shots": 1
+          }
+        },
+        {
+          "kind": "first",
+          "before": {
+            "x": 34.57830428111049,
+            "y": 31.70769169008881,
+            "yaw": 0.24,
+            "distance": 2.8,
+            "zoom": 1,
+            "focal": 360
+          },
+          "after": {
+            "x": 35.253445425799036,
+            "y": 31.698776828977653,
+            "yaw": 1.584,
+            "distance": 2.8,
+            "zoom": 1,
+            "focal": 360,
+            "shots": 1
+          }
+        },
+        {
+          "kind": "fixed",
+          "before": {
+            "x": 9,
+            "y": 8,
+            "yaw": -0.7853981633974483,
+            "distance": 3.8,
+            "zoom": 1,
+            "focal": 360
+          },
+          "after": {
+            "x": 7.883489271288761,
+            "y": 9.046572696487726,
+            "yaw": -0.7853981633974483,
+            "distance": 3.8,
+            "zoom": 1.4187936967068329,
+            "focal": 360,
+            "shots": 1,
+            "pointer": {
+              "x": 500.66433320734603,
+              "y": 190.52594216965775
+            }
+          }
+        }
+      ],
+      "sky": [
+        {
+          "style": "original",
+          "sky": 0,
+          "geometry": 42737
+        },
+        {
+          "style": "phosphor",
+          "sky": 0,
+          "geometry": 43033
+        },
+        {
+          "style": "outline",
+          "sky": 0,
+          "geometry": 7903
+        }
+      ],
+      "errors": []
+    },
+    "regressions": {
+      "behavior162": true,
+      "fixedDiagonals159": true,
+      "ballistics1526": true,
+      "sky1524": true,
+      "fog10": true,
+      "desktopExport1524": true,
+      "iteration163": true
+    }
+  },
+  "performance": {
+    "extraRenderPasses": 0,
+    "productionReadbacks": 0,
+    "perFrameDiagnosticLogging": false,
+    "existingShadowBudgetVerified": {
+      "casters": 8,
+      "rebuildsPerFrame": 2,
+      "receiverRaysPerFrame": 90
+    },
+    "note": "No full cross-hardware performance guarantee. GPU readbacks and diagnostic memory metrics belong only to acceptance fixtures, never packaged defaults."
+  },
+  "limits": [
+    "No first-person zoom by user choice.",
+    "No Mac/browser distribution built for this milestone; browser source acceptance still ran.",
+    "No change to locked sprite tilt/proportions, calibrated frame/muzzle offsets, weapon spread, physical projectile owners or authoring data schema.",
+    "Old isometric movement-priority/four-world-cardinal prequantization is superseded by cursor direction and the existing supported frame-sector launch.",
+    "Native test used isolated muted profile; temporary diagnostic settings, profiles and logs excluded from package."
+  ],
+  "packageIntegrity": "Verified separately by full per-file SHA-256 manifest after source commit; archive verification report stored with local delivery."
+}

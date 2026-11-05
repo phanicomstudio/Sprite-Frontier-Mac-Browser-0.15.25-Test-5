@@ -1,0 +1,27 @@
+{
+  "source": "img/items/prop_Oozi Bio-Tech Battery1.png",
+  "sha256": "34d9f08c04e8dede60783f9b9508d8caad87f59c280dfe173584e36076776b29",
+  "normal": "assets/automatic-normals/34d9f08c04e8dede60783f9b-relief2.normal.png",
+  "lit": "assets/automatic-normals/34d9f08c04e8dede60783f9b-relief2.lit.webp",
+  "width": 39,
+  "height": 31,
+  "normalWidth": 39,
+  "normalHeight": 31,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

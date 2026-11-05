@@ -1,3 +1,6 @@
+/* October 29, 2026: 0.16.11 isolates its connected-room/catalog schema in a new desktop profile. Earlier profiles and user projects remain untouched; use Open Project to import explicitly. Supersedes shared-profile behavior below for this release. */
+/* October 26, 2026: 0.16.4 retains the 0.16.3 desktop profile intentionally: no schema change; existing local projects remain available. Historical isolation rationale follows. */
+/* October 26, 2026: 0.16.3 uses an independent desktop profile because default atmosphere/schema adoption must not overwrite earlier release profiles. Import an exported project explicitly; no saved data is copied or deleted. */
 /* Desktop lifecycle. The engine stays in its sandboxed renderer; this process
  * owns the window, fullscreen key, launch diagnostics and clean shutdown.
  * diagnostics.json beside the executable is an explicit, local-only test opt-in;
@@ -17,7 +20,7 @@ const fs = require("node:fs"),
 // exported project JSON explicitly; no legacy profile is copied or deleted.
 app.setPath(
   "userData",
-  path.join(app.getPath("appData"), "Sprite-Frontier-0.16.0"),
+  path.join(app.getPath("appData"), "Sprite-Frontier-0.16.11"),
 );
 const root = path.dirname(process.execPath);
 let diagnostics = null,
@@ -262,7 +265,9 @@ if (!app.requestSingleInstanceLock()) {
             input,
           ) => {
             if (input.type === "keyDown" && input.key === "F11") {
-              win.setFullScreen(!win.isFullScreen());
+              // October 29: HTML fullscreen owns the toolbar button; leave it first instead of nesting native fullscreen around a trapped viewport.
+              record('fullscreen-shortcut',{key:input.key});
+              win.webContents.executeJavaScript("document.fullscreenElement ? (navigator.keyboard?.unlock(), document.exitFullscreen().then(/* @function desktop.htmlFullscreenReleased1612 — Inputs: completed HTML fullscreen exit. Returns true so the native fallback does not immediately re-enter fullscreen. */function(){return true;})) : false",true).then(/* @function desktop.fullscreenFallback1612 — Inputs: whether HTML fullscreen was active. Toggles the existing native window only when HTML fullscreen did not own the screen. Closed windows are ignored; no renderer-supplied code is evaluated. */function(exited){record('fullscreen-released',{html:exited});if(!exited&&win&&!win.isDestroyed())win.setFullScreen(!win.isFullScreen());}).catch(/* @function desktop.fullscreenFailure1612 — Inputs: fixed-script evaluation failure. Forces the native window out of fullscreen as an emergency exit while recording the opt-in diagnostic failure. Closed windows are ignored. */function(error){record('fullscreen-release-failed',{message:error.message});if(win&&!win.isDestroyed())win.setFullScreen(false);});
               event.preventDefault();
             }
           },

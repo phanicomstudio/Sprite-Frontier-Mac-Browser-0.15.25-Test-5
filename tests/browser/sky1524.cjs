@@ -54,7 +54,9 @@ const { chromium, launch } = require("./environment.cjs"),
     await page.locator("#newMapName").fill("Sky authoring acceptance");
     await page.locator("#newMapTemplate").selectOption("interior");
     await page.locator("#confirmNewMap").click();
-    await page.getByRole("button", { name: "Map", exact: true }).click();
+    // October 26: migrated editor keeps sky under the Environment workspace.
+    await page.getByRole("button", { name: "Environment", exact: true }).click();
+    await page.getByRole("button", { name: "Sky & distant scenery", exact: true }).click();
     await page.locator("#skyTools").evaluate(
       /* @function skyTest.openSky — Inputs: real fieldset. Returns nothing; opens its actual disclosure after category selection. */ function (
         field,

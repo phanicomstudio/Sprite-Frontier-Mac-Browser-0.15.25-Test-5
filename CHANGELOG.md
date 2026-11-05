@@ -170,3 +170,18 @@ Current hub/door/item/model visibility changes are documented in HUB-DOOR-GUIDE.
 and ITERATION-0.15.17.md. 74 source checks and 18 browser acceptance commands pass;
 3,824 function comments are indexed. Native Electron automation could not launch;
 Mac is a complete browser edition. See TEST-REPORT-0.15.17.md for scope/limits.
+
+
+## 0.16.11 - October 29, 2026
+
+Combined original-art inventory, transparent D-pad controls, shared item/recipe authoring and atomic crafting; connected rectangular rooms/buildings/storeys, persistent component overrides, explicit shared walls and real door openings; focused door-test maps replace redundant fresh-project examples; zoom-aware isometric visibility, fog and cosmetic LOD. Existing saves, original sprite presentation, shadow-system splits and prior release documentation remain preserved. See ITERATION-0.16.11.md and TEST-REPORT-0.16.11.md.
+
+
+## 0.16.12 - October 29, 2026
+
+Editor fullscreen retains its toolbar and supports Escape plus a visible exit button; desktop F11 recovers from HTML fullscreen before toggling native fullscreen. Complete cumulative Windows release, same compatible 0.16.11 project profile. See ITERATION-0.16.12.md.
+
+
+## October 31, 2026 - 0.16.15 lighting regression protection
+
+Projectile lights now saves immediately through the existing map Undo/save owner, surviving playtest and reload. Other source parameters retain Apply. Run the new test:lighting gate after lighting, rendering or playtest-lifecycle changes. Local Sprite Fusion generation, native-resolution Apply and runtime normal lighting were reverified. See ITERATION-0.16.15.md for current behavior; earlier documentation remains historical.

@@ -101,7 +101,88 @@
       if (!p.walkHold) p.walkTime = 0;
     }
   }
+  // Water locomotion owns velocity while immersed, in metres and seconds.
+  // The ordinary movement controller resumes as soon as the player can wade.
+  function swim(game, keys, dt, pad) {
+    const p=game.player, world=game.sourceWorld, camera=game.camera;
+    const surface=window.FrontierWater.level(world,p.x,p.y);
+    const floor=window.FrontierTerrain.height(world,p.x,p.y);
+    let state=game.swimming;
+    if (!Number.isFinite(surface) || surface-floor<(state?.world === world ? .65 : .95) ||
+        world.interior?.mode==="fixed" || (world.flight?.mode||"ground")!=="ground") {
+      if(state?.world===world) Object.assign(camera,state.camera);
+      game.swimming=null;
+      return false;
+    }
+    if (state?.world!==world) {
+      if(surface-p.z<.85)return false;
+      state=game.swimming={world,camera:{firstPerson:camera.firstPerson,yaw:camera.yaw,pitch:camera.pitch,distance:camera.distance},
+        x:0,y:0,z:0,air:12,damageClock:0};
+      if(world.presentation?.mode==="isometric"){
+        camera.yaw=world.presentation.yaw;
+        camera.pitch=-.25;
+        camera.distance=7;
+        camera.firstPerson=false;
+        state.zoomRemaining=1;
+      }
+    }
+    if(state.zoomRemaining>0 && !camera.firstPerson){
+      camera.distance+=(4.5-camera.distance)*(1-Math.exp(-dt*4));
+      state.zoomRemaining-=dt;
+    }
+    const forward=Number(keys.has("w")||keys.has("arrowup"))-Number(keys.has("s")||keys.has("arrowdown"))+(pad.move?.forward||0);
+    const side=Number(keys.has("d"))-Number(keys.has("a"))+(pad.move?.strafe||0);
+    const rise=Number(keys.has("e")||!!pad.jump)-Number(keys.has("q"));
+    const yaw=camera.yaw, pitch=camera.pitch, sy=Math.sin(yaw),cy=Math.cos(yaw);
+    const f=forward*Math.cos(pitch);
+    let x=f*sy+side*cy,y=f*cy-side*sy,z=forward*Math.sin(pitch)+rise;
+    const magnitude=Math.hypot(x,y,z);
+    const speed=window.FrontierParameters.get(world,"playerSpeed")*.7;
+    if(magnitude>1){x/=magnitude;y/=magnitude;z/=magnitude;}
+    if(!magnitude)z=-.22;
+    const blend=1-Math.exp(-dt*5);
+    state.x+=(x*speed-state.x)*blend;
+    state.y+=(y*speed-state.y)*blend;
+    state.z+=(z*speed-state.z)*blend;
+    const oldX=p.x,oldY=p.y;
+    const steps=Math.max(1,Math.ceil(Math.hypot(state.x,state.y)*dt/.12));
+    for(let i=0;i<steps;i++){
+      const nx=p.x+state.x*dt/steps,ny=p.y+state.y*dt/steps;
+      const bank=window.FrontierTerrain.height(world,nx,ny);
+      // Upward input can step onto a reachable bank near the surface.
+      const ledge=bank>p.z+.2 && bank<=surface+.65 && p.z>=surface-.65 && (rise>0||forward>0);
+      const feet=p.z;
+      if(ledge)p.z=bank;
+      if(bank<=p.z+.2 && !window.FrontierTerrain.blocked(game,nx,ny)){
+        p.x=nx;p.y=ny;
+      } else p.z=feet;
+    }
+    game.playerStep=null;
+    p.grounded=false;
+    p.verticalVelocity=0;
+    const bottom=window.FrontierTerrain.height(world,p.x,p.y);
+    const target=Math.max(bottom,Math.min(surface-.35,p.z+state.z*dt));
+    const mesh=window.FrontierModelCollision.vertical(game,p,target);
+    p.z=window.FrontierRoomPhysics.vertical(world,p,mesh);
+    p.vx=p.x-oldX;p.vy=p.y-oldY;
+    game.moving=Math.hypot(p.vx,p.vy)>.001;
+    if(game.moving){
+      p.walkTime=(p.walkTime||0)+dt;
+      const length=Math.hypot(p.vx,p.vy);
+      p.facingX=p.vx/length;p.facingY=p.vy/length;
+    }
+    if(p.z+(p.height||1.65)*.9<surface){
+      state.air=Math.max(0,state.air-dt);
+      if(!state.air){
+        state.damageClock+=dt;
+        if(state.damageClock>=1){p.hp=Math.max(0,p.hp-5);state.damageClock-=1;}
+      }
+    } else {state.air=12;state.damageClock=0;}
+    return true;
+  }
+
   MF.frontierMovement = {
+    swim,
     tuning,
     movePlayer,
   };

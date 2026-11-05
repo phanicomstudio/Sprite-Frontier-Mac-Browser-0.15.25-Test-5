@@ -1,0 +1,27 @@
+{
+  "source": "img/items/prop_CPU Board1.png",
+  "sha256": "9881ff93bc5f3327a948aff17e0929ff5591748ea69cad63c6de82ef33cd4274",
+  "normal": "assets/automatic-normals/9881ff93bc5f3327a948aff1-relief2.normal.png",
+  "lit": "assets/automatic-normals/9881ff93bc5f3327a948aff1-relief2.lit.webp",
+  "width": 116,
+  "height": 136,
+  "normalWidth": 116,
+  "normalHeight": 136,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

@@ -398,13 +398,16 @@
     if (!images.has(name)) {
       if (images.size >= 8) images.delete(images.keys().next().value);
       const img = new Image();
-      img.src = name.startsWith("data:image/")
-        ? name
-        : "img/water/" + encodeURIComponent(name);
+      const original = name.startsWith("data:image/") ? name : "img/water/" + name;
       images.set(name, img);
+      if(root.FrontierAutomaticNormals)root.FrontierAutomaticNormals.load(original).then(/* @function water.normalLoaded1617 — Inputs: verified original/prepared Image. Publishes one shared texture-load result without changing water geometry, motion or transparency. */function(loaded){images.set(name,loaded);},/* @function water.normalFailed1617 — Inputs: read failure ignored. Falls back to the original URI; authored water data is unchanged. */function(){img.src=original;});
+      else img.src=original;
     }
     const img = images.get(name);
-    return img.complete && img.naturalWidth ? img : null;
+    if(!img.complete||!img.naturalWidth)return null;
+    const original=name.startsWith("data:image/")?name:"img/water/"+name;
+    return img.frontierAutomaticPrepared ? img
+      : root.FrontierAutomaticNormals?.image(img,original) || img;
   }
   // Iterate only the visible neighborhood. Terrain at cell centers defines shorelines.
   // Assemble only nearby surface tiles; retained GPU meshes supply UV animation.

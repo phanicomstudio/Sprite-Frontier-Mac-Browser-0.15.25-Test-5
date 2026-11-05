@@ -1,0 +1,226 @@
+{
+  "iteration": "0.16.7",
+  "date": "2026-10-28",
+  "baseline": "db7d41284089f345b8a53490481b04d7341a8bbc",
+  "delivery": "Reviewed source PR; no native packaging requested for this routine iteration",
+  "core": {
+    "passed": 66,
+    "total": 66
+  },
+  "browser": [
+    {
+      "test": "combat167",
+      "pass": true
+    },
+    {
+      "test": "behavior162",
+      "pass": true
+    },
+    {
+      "test": "event-interaction",
+      "pass": true
+    },
+    {
+      "test": "door-return165",
+      "pass": true
+    },
+    {
+      "test": "iteration166",
+      "pass": true
+    }
+  ],
+  "realInput164": {
+    "errors": [],
+    "cameraModes": [
+      "third",
+      "first",
+      "fixed"
+    ],
+    "sky": [
+      {
+        "style": "original",
+        "sky": 0,
+        "geometry": 42799
+      },
+      {
+        "style": "phosphor",
+        "sky": 0,
+        "geometry": 43033
+      },
+      {
+        "style": "outline",
+        "sky": 0,
+        "geometry": 7525
+      }
+    ]
+  },
+  "combat": {
+    "saved": {
+      "id": "enemy-1",
+      "cfg": {
+        "engage": 14,
+        "pursuit": 24,
+        "leash": 30,
+        "stop": 6,
+        "burst": 1,
+        "pause": 0.7,
+        "coverChance": 25,
+        "patrol": [
+          [
+            10,
+            12
+          ],
+          [
+            12,
+            12
+          ]
+        ],
+        "behavior": "aggressive",
+        "hp": 125,
+        "damage": 4,
+        "accuracy": 0,
+        "ammo": 100,
+        "moveSpeed": 0.9,
+        "detect": 14,
+        "delay": 30,
+        "weapon": "handgun",
+        "blood": "regular",
+        "respawn": "never",
+        "hostile": true,
+        "deathSprite": "enemy-chiban",
+        "remainsSprite": "enemy-turk",
+        "deathSeconds": 0.8
+      }
+    },
+    "result": {
+      "magRatio": 0.20400000000000126,
+      "warmCoverMs": 0.08600000023841858,
+      "coverViews": [
+        {
+          "mode": "isometric",
+          "yaw": 0,
+          "opaque": "pixel-tree",
+          "transparent": null
+        },
+        {
+          "mode": "isometric",
+          "yaw": 0.7853981633974483,
+          "opaque": "pixel-tree",
+          "transparent": null
+        },
+        {
+          "mode": "isometric",
+          "yaw": 1.5707963267948966,
+          "opaque": "pixel-tree",
+          "transparent": null
+        },
+        {
+          "mode": "isometric",
+          "yaw": 3.141592653589793,
+          "opaque": "pixel-tree",
+          "transparent": null
+        },
+        {
+          "mode": "third",
+          "opaque": "pixel-tree",
+          "transparent": null
+        },
+        {
+          "mode": "first",
+          "opaque": "pixel-tree",
+          "transparent": null
+        },
+        {
+          "mode": "fixed",
+          "opaque": "pixel-tree",
+          "transparent": null
+        }
+      ],
+      "angles": [
+        {
+          "angle": 0.13,
+          "delta": 1.1102230246251565e-16
+        },
+        {
+          "angle": 0.37,
+          "delta": -5.551115123125783e-17
+        },
+        {
+          "angle": 0.8,
+          "delta": 1.1102230246251565e-16
+        },
+        {
+          "angle": 1.2,
+          "delta": 2.220446049250313e-16
+        },
+        {
+          "angle": 2.1,
+          "delta": -4.440892098500626e-16
+        },
+        {
+          "angle": 3.7,
+          "delta": 4.440892098500626e-16
+        },
+        {
+          "angle": 5.8,
+          "delta": 5.551115123125783e-17
+        }
+      ],
+      "flashes": [
+        {
+          "calibrated": true,
+          "z": 1.575483870967742,
+          "life": 0.085
+        },
+        {
+          "calibrated": true,
+          "z": 1.575483870967742,
+          "life": 0.085
+        },
+        {
+          "calibrated": true,
+          "z": 1.575483870967742,
+          "life": 0.085
+        },
+        {
+          "calibrated": true,
+          "z": 1.5009677419354839,
+          "life": 0.085
+        },
+        {
+          "calibrated": true,
+          "z": 1.2029032258064516,
+          "life": 0.085
+        },
+        {
+          "calibrated": true,
+          "z": 1.1070967741935485,
+          "life": 0.085
+        },
+        {
+          "calibrated": true,
+          "z": 1.3412903225806452,
+          "life": 0.085
+        }
+      ],
+      "coverRecovered": true,
+      "deathSheet": "enemy-turk",
+      "remainsSheet": "enemy-chiban",
+      "savedAge": 1.1,
+      "opaque": {
+        "t": 0.4999999999999704,
+        "id": "pixel-tree",
+        "kind": "sprite"
+      },
+      "transparent": null
+    },
+    "errors": []
+  },
+  "commentCoverage": "PASS every maintained function has a source explanation: 6416 functions",
+  "limitations": [
+    "Alpha cover follows displayed camera-facing billboard plane; not a 3D sprite volume.",
+    "Unreadable/unloaded/oversized alpha assets retain configured legacy collision; nonsolid unreadable sprites cannot provide cover.",
+    "Death animation uses first row once; arbitrary animation timelines are not introduced.",
+    "Automated browser/source validation; no fresh native executable was packaged for this PR."
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/ground/Mythos_GroundDecals_3.png",
+  "sha256": "75ce7df1da30c088d1ee55c5d72fc5a0374e048676791287a5518a92ccc3e628",
+  "normal": "assets/automatic-normals/75ce7df1da30c088d1ee55c5-relief2.normal.png",
+  "lit": "assets/automatic-normals/75ce7df1da30c088d1ee55c5-relief2.lit.webp",
+  "width": 768,
+  "height": 768,
+  "normalWidth": 512,
+  "normalHeight": 512,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

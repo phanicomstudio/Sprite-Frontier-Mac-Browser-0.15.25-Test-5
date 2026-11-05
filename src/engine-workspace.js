@@ -154,12 +154,15 @@
       /* @function engineWorkspace.syncCategory — Inputs: none. Returns: nothing. Mirrors the existing category filter onto the disclosure wrapper; prevents empty captions for tools hidden by the authoritative tab controller. */
       function syncCategory() {
         group.hidden =
-          field.classList.contains("toolTabHidden") || field.hidden;
+          field.parentElement !== group || field.parentElement !== group || field.parentElement !== group || field.parentElement !== group || field.classList.contains("toolTabHidden") || field.hidden;
       }
       new MutationObserver(syncCategory).observe(field, {
         attributes: true,
         attributeFilter: ["class", "hidden"],
       });
+      new MutationObserver(syncCategory).observe(group, {childList:true});
+      new MutationObserver(syncCategory).observe(group, {childList:true});
+      new MutationObserver(syncCategory).observe(group, {childList:true});
       syncCategory();
     }
   }

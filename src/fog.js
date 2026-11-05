@@ -1,3 +1,4 @@
+/* October 26, 2026: default distance fog is Dusty Plum (#665263, from the OpenMW project haze color 0.40/0.32/0.39), enabled over 16–48 world metres. Existing explicit map overrides remain authorable. */
 /* Map atmosphere, separate from future normal-mapped lighting. Authored values
  * survive world export; runtime overrides let weather/day-night systems animate
  * fog without rewriting the map. Distances use existing world units. */
@@ -7,10 +8,10 @@
 ) {
   "use strict";
   const defaults = Object.freeze({
-    enabled: false,
-    start: 12,
-    end: 28,
-    color: "#081323",
+    enabled: true,
+    start: 16,
+    end: 48,
+    color: "#665263",
   });
   /* Historical contract retained; October 14 reviewed explanation follows. @function fog.validate.2 — Checks incoming values and constructs the supported data shape; rejects invalid data where the body throws. Inputs: assignment pattern. Uses: number is finite; /^#[0-9a-f]{6}$/i test; error; f color to lower case. Returns: a record containing enabled, start, end, color. */
   /* @function fog.reviewedvalidate_2 — Normalizes authored/runtime fog configuration. Inputs: optional partial record. Returns new enabled/start/end/color record merged with defaults. Distances are world metres; start finite nonnegative, end greater than start and at most200; color six-digit hex lowercased. Throws on invalid values before adoption; no state mutation and unknown fields omitted. */ function validate(

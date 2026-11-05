@@ -23,6 +23,9 @@ function build(source,entry,destination){
  for(const bank of ['img','audio','fonts'])collect(bank);
  // October 13: origin-clean lazy sky bytes are runtime resources, not editor catalogs.
  if(entry.scripts.includes('src/sky-panorama.js'))collect('assets/skyboxes');
+ // November 1, 2026: ship prepared normals/relief and the pinned generator's complete notices/source provenance.
+ if(entry.scripts.includes('src/automatic-normal-manifest.js'))collect('assets/automatic-normals');
+ if(entry.scripts.includes('src/spritefusion-normal-generator.js'))collect('vendor/spritefusion');
  // October 13, 2026: authored local textures/sounds outside the built-in banks
  // must accompany the game. Read the already escaped project JSON as data;
  // never evaluate its bootstrap script or resolve paths outside this engine.

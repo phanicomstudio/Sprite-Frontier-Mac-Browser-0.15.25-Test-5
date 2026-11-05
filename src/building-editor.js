@@ -14,6 +14,7 @@
     panel.id = "buildingTools";
     panel.innerHTML =
       '<legend>Build rooms and modules</legend><p>X: left/right. Y: forward/back. Z: up/down. Dimensions use world metres.</p><label>Piece<select id="buildingType"><option value="wall">Wall</option><option value="floor">Floor</option><option value="ceiling">Ceiling</option><option value="doorway">Doorway</option><option value="stairs">Straight stairs</option><option value="block">Block / landing</option><option value="shell">Enclosed room shell</option><option value="roundShell">Round tower room</option><option value="roundWall">Curved wall section</option><option value="roundFloor">Round floor</option><option value="roundCeiling">Round ceiling</option></select></label><div id="buildingDimensions"></div><label>Material<select id="buildingMaterial"><option value="">Plain white</option><option value="img/materials/walls/Tex_Castle_1.png">Castle stone</option><option value="img/materials/walls/Tex_Castle_2.png">Castle stone 2</option><option value="img/materials/roofs/Tex_Castle_roof_1.png">Castle roof tiles</option><option value="img/materials/walls/prop_wood_panel_wall1.png">Wood panel</option><option value="img/materials/floors/prop_wood_floor1.png">Wood floor</option><option value="img/materials/ceilings/prop_tin_ceiling1.png">Tin ceiling</option></select></label><label><input id="buildingConnect" type="checkbox" checked>Snap nearby connectors</label><button id="buildingPreview">Preview placement</button><button id="buildingConfirm" disabled>Place preview</button><button id="buildingCancel">Cancel preview</button><p id="buildingStatus" role="status">Choose a piece, adjust dimensions, then preview. Click a visible room surface to select it.</p><label>Highlight axis<select id="buildingAxis"><option value="x">X — left/right</option><option value="y">Y — forward/back</option><option value="z">Z — up/down</option></select></label><button id="buildingDuplicate">Duplicate selected surface</button><button id="buildingRotate">Rotate selected surface 90°</button><p>Drag the selected colored axis handle in the scene. Numeric fields remain under Interior authoring. Every confirmed change is one undo step.</p>';
+    const scenePlace=document.createElement("button");scenePlace.id="buildingPlaceScene";scenePlace.type="button";scenePlace.textContent="Place in scene";panel.prepend(scenePlace);
     host.prepend(panel);
     // Assembly and axis-space choices belong to the editor, not map gameplay.
     const transformOptions = document.createElement("div");
@@ -78,18 +79,23 @@
       field.append(input);
       element("buildingDimensions").append(field);
     }
+    const precise169=document.createElement("details"),preciseTitle169=document.createElement("summary");preciseTitle169.textContent="Precise position and advanced options";precise169.append(preciseTitle169);for(const key of ["x","y","z","turns","repeat","thickness","radius","segments","arc"])precise169.append(element("building-"+key).closest("label"));for(const control of [transformOptions,element("buildingAxis").closest("label"),element("buildingDuplicate"),element("buildingRotate"),element("buildingConnect").closest("label"),element("buildingPreview"),element("buildingConfirm")])precise169.append(control);panel.append(precise169);
     const overlay = document.createElement("canvas");
     overlay.id = "buildingOverlay";
     overlay.setAttribute("aria-hidden", "true");
     overlay.style.cssText =
       "position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:6";
     element("gameFrame").append(overlay);
+    let placing169=false;
     let ghost = null,
       selected = "",
       handles = [],
       drag = null,
       serial = 0,
       activeMap = null;
+    element("sceneTool").append(new Option("Place building piece","building"));
+    scenePlace.onclick=/* @function buildingEditor.arm169 - Inputs: click ignored. Arms scene placement without changing world data. Original dimensions/material draft and snapping remain authoritative; fixed artwork is rejected when previewing. */function(){placing169=true;element("sceneTool").value="building";status("Click ground or a floor to place this piece. Escape cancels. One click is one Undo step.");};
+    element("buildingType").addEventListener("change",/* @function buildingEditor.fields169 - Inputs: type change ignored. Shows relevant dimensions only; hidden advanced values remain intact. No authoring mutation. */function(){const type=element("buildingType").value;for(const key of ["depth","height","steps","radius","segments","arc","thickness"]){const relevant=key==="steps"?type==="stairs":key==="radius"||key==="segments"?type.startsWith("round"):key==="arc"?type==="roundWall":key==="depth"?!["wall","doorway"].includes(type):key==="height"?!["floor","ceiling","roundFloor","roundCeiling"].includes(type):true;element("building-"+key).closest("label").hidden=!relevant;}});
     element("buildingManipulation").onchange =
       /* @function buildingEditor.handleMode — Inputs: tool selection change. Returns nothing; cancels uncommitted drag and makes coordinate-space constraints visible. Turning is up-axis yaw; resizing uses local dimensions. No authored edits. */ function () {
         drag = null;
@@ -399,9 +405,10 @@
       };
     element("buildingCancel").onclick =
       /* @function buildingEditor.cancel — Inputs: click (unused). Returns: nothing. Clears only uncommitted preview and releases its records. Authored geometry is unchanged. */ function () {
-        ghost = null;
+        placing169=false;ghost = null;
         element("buildingConfirm").disabled = true;
-        status("Preview cancelled.");
+        if(element("sceneTool").value==="building")element("sceneTool").value="select";
+        status("Placement cancelled.");
       };
     element("buildingDuplicate").onclick =
       /* @function buildingEditor.duplicate — Inputs: click (unused). Returns: nothing. Creates shifted detached ghost copies of the selected piece or assembly for explicit confirmation, leaving the source unchanged. */ function () {
@@ -453,6 +460,13 @@
       /* @function buildingEditor.pickSurface — Inputs: pointer event. Returns: nothing. While authoring, selects nearest actual room face or begins constrained axis drag; captures handled events before legacy ground-placement tools. Empty space retains existing tool behavior. */ function (
         event,
       ) {
+        // October 29: direct placement commits through the existing preview/confirm owners.
+        if(api.editing()&&placing169&&element("sceneTool").value==="building"&&event.button===0&&!document.querySelector("dialog[open]")){
+          const p=pointer(event),point=root.FrontierRender.groundPoint(api.game(),p.x,p.y);
+          if(!point){status("Point at editable ground or a floor to place this piece.");return;}
+          element("building-x").value=point.x;element("building-y").value=point.y;element("building-z").value=point.z??root.FrontierTerrain.height(api.world(),point.x,point.y);
+          element("buildingPreview").onclick(event);if(ghost)element("buildingConfirm").click();event.preventDefault();event.stopImmediatePropagation();return;
+        }
         // October 13: explicit placed-model editing owns scene clicks, preventing
         // this earlier capture listener from selecting a room wall behind a prop.
         if (
@@ -676,6 +690,7 @@
       ctx.clearRect(0, 0, overlay.width, overlay.height);
       handles = [];
       if (!api.editing() || element("propEditPlaced")?.checked) return;
+      if(element("sceneTool").value==="brush"&&game.pointer){if(api.world().interior&&!api.world().interior.outdoor)return;const centre=root.FrontierRender.groundPoint(game,game.pointer.x,game.pointer.y);if(centre){const radius=Math.max(1,Math.min(12,Number(element("brushRadius").value)||3)),cam=root.FrontierRender.camera(game);ctx.beginPath();for(let i=0;i<=32;i++){const angle=i*Math.PI/16,x=centre.x+Math.cos(angle)*radius,y=centre.y+Math.sin(angle)*radius,z=root.FrontierTerrain.height(api.world(),x,y)+.025,p=root.FrontierRender.project(cam,x,y,z);if(p){if(i===0)ctx.moveTo(p.x,p.y);else ctx.lineTo(p.x,p.y);}}ctx.strokeStyle="#9df6b0";ctx.lineWidth=2;ctx.stroke();}return;}
       const camera = root.FrontierRender.camera(game),
         e = selection();
       if (ghost)
@@ -730,6 +745,7 @@
       ghost = value ? structuredClone(value) : null;
       element("buildingConfirm").disabled = true;
     }
+    document.addEventListener("keydown",/* @function buildingEditor.escape169 - Inputs: keyboard event. Cancels only transient scene placement on Escape, preserving committed pieces/history. No gameplay handling is intercepted. */function(event){if(event.key==="Escape"&&placing169)element("buildingCancel").click();});
     return { refresh, draw, previewLayout };
   }
   root.FrontierBuildingEditor = { create };

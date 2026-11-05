@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/plants/$$Palegranite.png",
+  "sha256": "75620b812310c7a78845b34221bc4658c88b02c62fce662e34be61f47dd5afcd",
+  "normal": "assets/automatic-normals/75620b812310c7a78845b342-relief2.normal.png",
+  "lit": "assets/automatic-normals/75620b812310c7a78845b342-relief2.lit.webp",
+  "width": 281,
+  "height": 280,
+  "normalWidth": 281,
+  "normalHeight": 280,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

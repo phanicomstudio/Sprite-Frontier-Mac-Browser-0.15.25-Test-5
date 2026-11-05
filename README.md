@@ -177,3 +177,24 @@ See ITERATION-0.16.2.md for isometric map creation and the textured wilderness t
 ## GitHub history (October 24, 2026)
 
 Current main is 0.16.2. See [rollback and release storage](docs/GITHUB-HISTORY.md).
+
+## October 26, 2026 — 0.16.3 source review
+
+Door pairing, shared movement/rotation handles and the first legacy rendering profile are implemented on the 0.16.3 review branch. Additional user direction makes ambient darkness, subtle player-light falloff and Dusty Plum distance fog defaults, with stronger per-map sky color and outdoor-only sprite sun silhouettes that deform across receiving surfaces. See [0.16.3 behavior, authoring and limits](ITERATION-0.16.3.md). Earlier releases, source explanations and locked sprite presentation remain preserved. Main remains the released 0.16.2 until review/merge; routine source delivery uses a pull request.
+
+October 26 local-delivery follow-up: complete Windows and Mac/browser packages are supplied in addition to this Git source review. The Windows build has an independent 0.16.3 profile and passed native acceptance. Its Export Game inventory gate now matches the redesigned editor and is covered by strict validation tests. See LOCAL-0.16.3.md.
+
+
+## October 29, 2026 — current combined 0.16.11 behavior
+
+See [ITERATION-0.16.11.md](ITERATION-0.16.11.md), [FUNCTION-REFERENCE-0.16.11.md](FUNCTION-REFERENCE-0.16.11.md) and [LOCAL-0.16.11.md](LOCAL-0.16.11.md). These current chapters supersede earlier pending notes for inventory, crafting, catalog/recipe editing, connected rectangular construction, shared boundaries/openings and zoom-aware isometric visibility. Earlier explanations remain historical. The 24 starter materials are ordinary items; two descriptions and production recipe choices remain unauthored. TEST SCAN is intentionally a test skill. Fixed-artwork tools, sprite presentation and distinct shadow systems remain supported. Old bundled room examples are retired only from fresh projects, not deleted from saved projects.
+
+
+## 0.16.12 - October 29, 2026
+
+Editor fullscreen retains its toolbar and supports Escape plus a visible exit button; desktop F11 recovers from HTML fullscreen before toggling native fullscreen. Complete cumulative Windows release, same compatible 0.16.11 project profile. See ITERATION-0.16.12.md.
+
+
+## October 31, 2026 - 0.16.15 lighting regression protection
+
+Projectile lights now saves immediately through the existing map Undo/save owner, surviving playtest and reload. Other source parameters retain Apply. Run the new test:lighting gate after lighting, rendering or playtest-lifecycle changes. Local Sprite Fusion generation, native-resolution Apply and runtime normal lighting were reverified. See ITERATION-0.16.15.md for current behavior; earlier documentation remains historical.

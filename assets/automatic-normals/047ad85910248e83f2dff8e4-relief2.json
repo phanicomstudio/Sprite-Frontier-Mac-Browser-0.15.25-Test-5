@@ -1,0 +1,27 @@
+{
+  "source": "img/items/prop_ammo2.png",
+  "sha256": "047ad85910248e83f2dff8e46d3698cb8eba7ab826538c94e3190afd31206e9c",
+  "normal": "assets/automatic-normals/047ad85910248e83f2dff8e4-relief2.normal.png",
+  "lit": "assets/automatic-normals/047ad85910248e83f2dff8e4-relief2.lit.webp",
+  "width": 134,
+  "height": 90,
+  "normalWidth": 134,
+  "normalHeight": 90,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

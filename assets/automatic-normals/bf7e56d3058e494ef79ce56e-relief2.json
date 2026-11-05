@@ -1,0 +1,27 @@
+{
+  "source": "img/items/prop_cornmuffin_and_chickenwrap1.png",
+  "sha256": "bf7e56d3058e494ef79ce56e9183f7c148b73519222f4843590e29f46c7b69cf",
+  "normal": "assets/automatic-normals/bf7e56d3058e494ef79ce56e-relief2.normal.png",
+  "lit": "assets/automatic-normals/bf7e56d3058e494ef79ce56e-relief2.lit.webp",
+  "width": 71,
+  "height": 53,
+  "normalWidth": 71,
+  "normalHeight": 53,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

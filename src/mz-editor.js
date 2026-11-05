@@ -71,6 +71,11 @@
     d.innerHTML =
       '<header><span id="mzEventTitle">Event Editor</span><button id="mzEventClose" aria-label="Close event editor">×</button></header><div class="mzEventHeader"><label>Name:<input id="mzEventName" maxlength="80"></label><label>Note:<input id="mzEventNote" maxlength="10000"></label><div id="mzPageActions"></div></div><nav id="mzPageTabs" aria-label="Event pages"></nav><div class="mzPageBody"><section class="mzPageSettings"><fieldset id="mzConditions"><legend>Conditions</legend></fieldset><div class="mzImageMovement"><fieldset><legend>Image</legend><button id="mzImage" class="mzChecker" aria-label="Select event image">(None)</button></fieldset><fieldset><legend>Autonomous Movement</legend><label>Type:<select id="mzMoveType"><option value="stationary">Fixed</option><option value="random">Random</option><option value="approach">Approach</option><option value="custom">Custom</option></select></label><button id="mzMoveRoute" disabled>Route…</button><label>Speed:<select id="mzMoveSpeed"></select></label><label>Frequency:<select id="mzMoveFrequency"></select></label></fieldset></div><div class="mzOptionsPriority"><fieldset id="mzOptions"><legend>Options</legend></fieldset><div><fieldset><legend>Trigger</legend><select id="mzTrigger"><option value="interact">Action Button</option><option value="playerTouch">Player Touch</option><option value="eventTouch">Event Touch</option><option value="autorun">Autorun</option><option value="parallel">Parallel</option></select></fieldset></div></div></section><fieldset class="mzContents"><legend>Contents</legend><div id="mzCommandList" tabindex="0" role="listbox" aria-label="Event commands" aria-multiselectable="true"></div></fieldset></div><details id="mzEngineSettings"><summary>Sprite Frontier properties and playtest</summary><div id="mzPlacement"></div><button id="mzPlaytest">Apply and playtest event</button></details><p id="mzEventStatus" class="mzStatus"></p><footer><button id="mzEventOK">OK</button><button id="mzEventCancel">Cancel</button><button id="mzEventApply">Apply</button></footer>';
     document.body.append(d);
+    const enemyButton=button('Enemy settings / create enemy...', /* @function mzEditor.enemy167 — Inputs: click ignored. Applies current event draft through existing validation before opening its enemy settings; invalid drafts remain here. Existing pages are retained. */ function(){if(!apply())return;d.close();root.FrontierEnemyTools?.open(draft.id);});
+    d.querySelector('.mzEventHeader').after(enemyButton);
+    const shadowLabel169=document.createElement('label'),shadow169=document.createElement('input');shadow169.type='checkbox';shadow169.id='mzGroundShadow';shadow169.checked=draft?.groundShadow!==false;shadowLabel169.append(shadow169,'Ground shadow (isometric only)');enemyButton.after(shadowLabel169);
+    shadow169.onchange=/* @function mzEditor.shadow169 — Inputs: checkbox change ignored. Records the per-event isometric contact setting in existing event draft history; Apply still owns world adoption. */function(){edit(/* @function mzEditor.shadowDraft169 — Inputs: none. Copies only current checkbox state into the isolated event draft. */function(){draft.groundShadow=shadow169.checked;});};
+    const paletteButton=button('Palette dither command...',/* @function mzEditor.addPalette168 — Inputs: click ignored. Opens original plugin commands and appends validated record through existing event draft history. */function(){root.FrontierPaletteDither.commandDialog(null,/* @function mzEditor.acceptPalette168 — Inputs: validated command. Appends to active page inside edit transaction without changing authored scene until Apply. */function(command){edit(/* @function mzEditor.paletteDraft168 — Inputs: none. Adds command to current page; edit owns validation/Undo. */function(){draft.pages[pageIndex].commands.push(command);});});});enemyButton.after(paletteButton);
     d.querySelector(".mzImageMovement fieldset").append(
       button(
         "Model, collision and interaction zones…",
@@ -623,6 +628,7 @@
     }
     /* @function mz-editor.refresh.45 — Handles refresh within mz editor. Inputs: no explicit arguments; uses enclosing module state. Updates: behavior summary text content; budget notice text content; extra notice text content; extra notice hidden; $ using "mzEventTitle" text content. Uses: settings; frontier events diagnostics; frontier event schema extra page conditions; $. Returns: without a result. */ function refresh() {
       if (!draft) return;
+      shadow169.checked=draft.groundShadow!==false;
       const p = draft.pages[pageIndex],
         m = settings(p);
       behaviorSummary.textContent = p.behavior
@@ -809,6 +815,7 @@
     /* @function mz-editor.editCommand.61 — Handles edit command within mz editor. Inputs: no explicit arguments; uses enclosing module state. Updates: initial create else. Uses: frontier gameplay dialogs open; frontier template dialogs replace; api world; api templates. Returns: without a result; without a result. */ function editCommand() {
       const index = Math.min(...selection),
         c = draft.pages[pageIndex].commands[index];
+      if(['SetDitherScale','SetDitherStrength','SetPaletteMode'].includes(c?.type)){root.FrontierPaletteDither.commandDialog(c,/* @function mzEditor.replacePalette168 — Inputs: validated original command. Replaces selected command through event draft history. */function(command){edit(/* @function mzEditor.paletteReplace168 — Inputs: none. Updates selected page command; edit owns validation/Undo. */function(){draft.pages[pageIndex].commands[index]=command;});});return;}
       if (c?.type === "screenBreathing") {
         FrontierBreathingDialog.open(
           c,
@@ -1306,7 +1313,7 @@
             e,
           ) => e.id === draft.id,
         );
-        api.mutate(
+        const accepted = api.mutate(
           /* @function mz-editor.callback.107 — Provides the callback for api mutate. Inputs: no explicit arguments; uses enclosing module state. Updates: list at index. Uses: api world; list find index; list push; clone. */ () => {
             const list = api.world().events,
               index = list.findIndex(
@@ -1320,6 +1327,7 @@
           /* @function mz-editor.callback.109 — Returns choose using checked id. Inputs: no explicit arguments; uses enclosing module state. Uses: choose. Returns: choose using checked id. */ () =>
             choose(checked.id),
         );
+        if(accepted===false){status("Event change rejected; correct placement before opening enemy settings.");return false;}
         draft = clone(checked);
         draftHistory = [];
         draftRedo = [];
@@ -1333,8 +1341,9 @@
           api.testEvent(returnId);
           returnButton.hidden = false;
         }
+        return true;
       } catch (e) {
-        status(e.message);
+        status(e.message);return false;
       }
     }
     $("mzEventOK").onclick =

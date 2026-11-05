@@ -13,3 +13,8 @@ Runtime prepares a full-size lit sheet once, preserving animation crop coordinat
 Verified: import/preview pixels, dimension rejection, profile Apply/Remove, live preparation/reuse/cleanup, Undo, project export/import, worker/reference pixel-alpha parity, cancellation, same-bank source replacement, and CPU fallback. Portable normal-worker browser fixture needs Playwright and Sharp; see tests/browser/README.md.
 
 The1200×4800 armed sheet retains23,040,000 prepared bytes. Worker processing measured about173ms; older CPU fallback measured about4seconds with a41.5ms worst task. Bitmap adoption/GPU upload and multi-direction visual crop comparison need further profiling. These are Windows Chrome measurements; macOS is untested. NORMAL-PERFORMANCE.json contains raw diagnostics. SPRITE-NORMALS-HISTORY.md retains earlier checkpoints.
+
+
+## October 31, 2026 - 0.16.15 lighting regression protection
+
+Projectile lights now saves immediately through the existing map Undo/save owner, surviving playtest and reload. Other source parameters retain Apply. Run the new test:lighting gate after lighting, rendering or playtest-lifecycle changes. Local Sprite Fusion generation, native-resolution Apply and runtime normal lighting were reverified. See ITERATION-0.16.15.md for current behavior; earlier documentation remains historical.

@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/walls/Tex_Castle_1.png",
+  "sha256": "eed7e5919a24fa5d3fafd09615966826173a02ff4db9d2bbd53aa958975e903f",
+  "normal": "assets/automatic-normals/eed7e5919a24fa5d3fafd096-relief2.normal.png",
+  "lit": "assets/automatic-normals/eed7e5919a24fa5d3fafd096-relief2.lit.webp",
+  "width": 1254,
+  "height": 1254,
+  "normalWidth": 512,
+  "normalHeight": 512,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 0
+  },
+  "wrap": true,
+  "compression": "webp-lossless-rgba-verified"
+}

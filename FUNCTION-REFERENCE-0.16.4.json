@@ -1,0 +1,49 @@
+{
+  "date": "2026-10-26",
+  "iteration": "0.16.4",
+  "type": "addendum; prior references preserved",
+  "owners": [
+    {
+      "owner": "app.cursorAim164",
+      "inputs": "Active world and edit mode from closure",
+      "returns": "Boolean: fixed/isometric gameplay uses cursor aim",
+      "effects": "None; shared routing prevents invisible mouse look in orthographic play"
+    },
+    {
+      "owner": "app pointer/capture/shoot/reticle handlers",
+      "inputs": "Real browser mouse deltas/positions, buttons and logical display",
+      "returns": "Existing handler result",
+      "effects": "Update bounded cursor, submit existing firing owner, position DOM reticle; preserve pause/capture gates"
+    },
+    {
+      "owner": "app wheel/update",
+      "inputs": "Wheel deltaMode/deltaY and simulation dt seconds",
+      "returns": "No result",
+      "effects": "Ease camera-local roomZoom/isoScale/distance; cancel on replacement, ignore pause/transfer and first-person gameplay wheel"
+    },
+    {
+      "owner": "isometric.camera/aim",
+      "inputs": "Live game and logical cursor XY",
+      "returns": "Affine camera or null; world torso target or null",
+      "effects": "No project writes; scale honors transient zoom, fixed artwork wins, movement cannot override distant cursor"
+    },
+    {
+      "owner": "render.draw",
+      "inputs": "Live game and canvas",
+      "returns": "No result",
+      "effects": "Neutral background clear; existing geometry depth fog retained; no global sky tint"
+    },
+    {
+      "owner": "tests/browser/iteration164.cjs",
+      "inputs": "Browser path or isolated Windows CDP endpoint",
+      "returns": "Promise; nonzero failure status on assertion/error",
+      "effects": "Actual keyboard/mouse/wheel/fullscreen acceptance; observation hooks and test-only GPU pixel readback; isolated fixture settings; evidence outside package"
+    },
+    {
+      "owner": "tests/zoom164.cjs",
+      "inputs": "Current source",
+      "returns": "Test exit status",
+      "effects": "54 affine projection inversions across 4:3/16:9, three scales and three yaws; fixed/free-flight camera precedence; authored scale isolation"
+    }
+  ]
+}

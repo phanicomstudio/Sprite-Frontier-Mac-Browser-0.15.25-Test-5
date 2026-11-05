@@ -54,6 +54,7 @@
           canvas.height = source.height;
         }
         capture(old);
+        overlay.className="frontierMeltCanvas"; // October 28: live GPU palette compositing owns this overlay only while indexing is enabled.
         overlay.setAttribute("aria-hidden", "true");
         Object.assign(overlay.style, {
           position: "absolute",

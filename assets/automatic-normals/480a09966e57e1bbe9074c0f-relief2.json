@@ -1,0 +1,27 @@
+{
+  "source": "img/items/prop_Moloko Triangle1.png",
+  "sha256": "480a09966e57e1bbe9074c0f1d1f60343aaf73b594d7b09be1dbd0da34e65f42",
+  "normal": "assets/automatic-normals/480a09966e57e1bbe9074c0f-relief2.normal.png",
+  "lit": "assets/automatic-normals/480a09966e57e1bbe9074c0f-relief2.lit.webp",
+  "width": 54,
+  "height": 59,
+  "normalWidth": 54,
+  "normalHeight": 59,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 1.15
+  },
+  "wrap": false,
+  "compression": "webp-lossless-rgba-verified"
+}

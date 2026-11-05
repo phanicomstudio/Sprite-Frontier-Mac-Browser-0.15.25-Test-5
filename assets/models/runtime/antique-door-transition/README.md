@@ -29,3 +29,10 @@ copying this asset. No supplied door sound files have been selected yet.
 
 October 12, 2026 — clean texture replacement for iteration 0.15.23.
 Selected Antique_Door_Assembly_Clean.glb from the supplied Antique_Door_Clean_Pack.zip, distributed as assembly.glb and mirrored in src/door-asset.js for offline loading. SHA-256: 7aa9bb5965b24cf8dc554f1dc872a6ec01c41c7a5b6b535b1e6d2a02dfad2aa1. Frame node 0 and hinge leaf node 1 retain identical geometry and transforms (96 and 80 triangles). The embedded texture is sufficient; Blender sources, preview images, separate leaf/frame duplicates and texture-edit instructions are omitted from runtime distribution. Prior releases and the supplied pack remain intact.
+
+
+November 1, 2026 — current mirrored replacement (0.16.20)
+
+Supersedes the historical resources above. `assembly.glb` is the exact supplied `Antique_Door_Assembly_Mirrored.glb` accompanying `Antique_Door_and_Frame_Mirrored.blend`, exported in the supplied Antique_Door_Mirrored folder. SHA-256: 90e3f8a67f0d15c42418732e8298800ec4862164e740deffdc3c43fbf57b8428; 1,728,984 bytes. Frame node 0 remains 96 triangles; leaf node 1 is now 12 triangles, with the same [0.007200002670288086,0,0] glTF hinge translation. The redundant 3D handle geometry is removed; the clean texture supplies the handle on both sides. Total 108 triangles.
+
+Front/back UV correspondence is validated at matching physical positions, allowing the rear view to appear properly mirrored. Built-in ID, dimensions, node IDs and pivot remain compatible with existing local doors and cinematic transitions. The offline JavaScript mirror contains identical GLB bytes. Old built-in clean payloads in saved libraries upgrade on import/restore using byte count plus dual whole-file fingerprints; custom IDs and modified payloads are preserved. Previous clean GLB is retained in tests/fixtures for migration acceptance and prior releases remain intact.

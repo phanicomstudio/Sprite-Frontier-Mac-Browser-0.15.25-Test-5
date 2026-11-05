@@ -1,3 +1,6 @@
+/* October 26, 2026 — 0.16.5: paired-door returns reuse the successful departure approach side, facing away. Presentation effects do not own arrival orientation; blocked same-side arrivals reject rather than switching sides. */
+/* October 26, 2026 — 0.16.4: fixed and isometric play share cursor input and reticle routing; isometric zoom changes transient affine scale. Perspective mouse look and authored camera values remain unchanged. */
+/* October 26, 2026 — 0.16.3: paired-door arrivals, shared transform projection and map appearance are documented in ITERATION-0.16.3.md. Retained earlier contracts below are historical. */
 /* October 24, 2026 — 0.16.2 current behavior and units are described in ITERATION-0.16.2.md; earlier contracts below remain history. New camera/tactics helpers preserve existing owners and transactional validation. */
 /* MAINTAINER GUIDE
  * Application coordinator: creates playtests, routes input, drives simulation and binds editor/HUD controls. Change gameplay rules in their modules; keep this file responsible for orchestration. Authored world and runtime game are separate objects: editor mutations restart a temporary playtest.
@@ -36,6 +39,7 @@
     captureAttempted = false,
     playPaused = false,
     hudMode = false;
+  let skillOMatic = null, inventoryScreen1611 = null, craftingMenu1611 = null;
   // Pause controls stay outside the canvas so they remain readable and usable
   // even when geometry hides the player. Escape and controller Start pause.
   const pausePanel = document.createElement("section");
@@ -294,7 +298,7 @@
     capture:
       /* @function app.capture.9 — Returns frontier pixi capture using canvas. Inputs: canvas. Uses: frontier pixi capture. Returns: frontier pixi capture using canvas. */ (
         canvas,
-      ) => FrontierPixi.capture(canvas),
+      ) => {if(!FrontierPaletteDither.captureRaw(FrontierPixi.current(),canvas))FrontierPixi.capture(canvas);},
   });
   const transitionEffect =
     /* @function app.transitionEffect.10 — Returns world transition effect equals "melt" and the inverse of match media using "(prefers-reduced-motion: reduce)" matches selects "melt" or "fade". Inputs: no explicit arguments; uses enclosing module state. Uses: match media. Returns: world transition effect equals "melt" and the inverse of match media using "(prefers-reduced-motion: reduce)" matches selects "melt" or "fade". */ /* @function app.transitionEffect1517 — Inputs: none. Returns cell-selected door/melt/fade/immediate mode, with reduced-motion preference forcing fade. No mutation; October 9 supersedes fade/melt-only selection above. */ () =>
@@ -401,12 +405,16 @@
             vy: 0,
           });
           FrontierTerrain.ground(game.player, world, 0, [], game);
+          arrivalFacing165(t.entry);
+          if(t.doorDeparture)FrontierHubState.rememberDoorSide165(hubState,t.doorDeparture);
           travelCooldown = 1.5;
           return;
         }
         journey.set(activeRuntimeMap, captureRuntime());
         const shared = captureRuntime();
+        if(t.entry.doorId)shared.arrivalFirstPerson=game.camera.firstPerson;
         mapLibrary.switchTo(t.map, { travel: true, entry: t.entry, shared });
+        if(t.doorDeparture)FrontierHubState.rememberDoorSide165(hubState,t.doorDeparture);
       },
     complete:
       /* @function app.complete.13 — Handles complete within application input, simulation and editor coordination. Inputs: t. Uses: session restore continuation. */ (
@@ -479,13 +487,14 @@
   let hubState = FrontierHubState.empty(),
     hubWorkbench;
   /* @function app.captureRuntime.18 — Handles capture runtime within application input, simulation and editor coordination. Inputs: no explicit arguments; uses enclosing module state. Uses: frontier event state capture; screen fade capture; screen flash capture; screen shake capture. Returns: a record containing copied fields, screenFade, screenFlash, screenShake, screenTone, behaviors, replacements, player. */
-  /* @function app.captureRuntime1527 — Inputs: none. Returns detached per-cell runtime snapshot including validated enemy ammo, death timers and changed death switches. Observes lethal transitions with zero elapsed time; existing actor records still own HP/position/death. Used by save and transfer; does not advance gameplay or alter authored enemies. */ function captureRuntime() {
+  /* @function app.captureRuntime1527 — Inputs: none. Returns detached per-cell runtime snapshot including validated enemy ammo, death timers and changed death switches. Observes lethal transitions with zero elapsed time; existing actor records still own HP/position/death. Used by save and transfer; does not advance gameplay or alter authored enemies. */ /* @function app.captureRuntime168 — Inputs: none. Returns existing validated cell/player/event snapshot plus optional transient palette override for save/travel; does not mutate authored map palette settings. */ function captureRuntime() {
     return {
       ...FrontierEventState.capture(session.state),
       screenFade: screenFade.capture(),
       screenFlash: screenFlash.capture(),
       screenShake: screenShake.capture(),
       screenTone: screenTone.capture(),
+      paletteDither: game.paletteDitherOverride ? FrontierPaletteDither.validate(game.paletteDitherOverride) : null,
       behaviors: session.captureBehaviors(),
       replacements: session.replacementReferences(),
       player: {
@@ -531,11 +540,13 @@
     };
   }
   /* @function app.restoreRuntime.22 — Handles restore runtime within application input, simulation and editor coordination. Inputs: state; shared. Updates: session state self switches; event x; event y; game scene signature; session state at k. Uses: screen tone restore; screen shake restore; screen flash restore; screen fade restore. */
-  /* @function app.restoreRuntime1527 — Inputs: optional saved cell state, shared player/session state and reentry boolean (false for save load; true only for real cell travel). Restores actors before enemy ammo/timers, applies reentry respawn only to dead configured enemies, and preserves shared inventory/equipment order. Throws malformed enemy state; caller validates portable saves before adoption. World metres and simulation seconds retain existing ownership. */ function restoreRuntime(
+  /* @function app.restoreRuntime1527 — Inputs: optional saved cell state, shared player/session state and reentry boolean (false for save load; true only for real cell travel). Restores actors before enemy ammo/timers, applies reentry respawn only to dead configured enemies, and preserves shared inventory/equipment order. Throws malformed enemy state; caller validates portable saves before adoption. World metres and simulation seconds retain existing ownership. */ /* @function app.restoreRuntime168 — Inputs: validated cell/shared snapshots and reentry flag. Restores existing gameplay owners plus validated optional palette override; legacy snapshots default to map appearance. No palette assets or author settings are replaced. */ function restoreRuntime(
     state,
     shared,
     reentry = false,
   ) {
+    const paletteOverride=shared?.paletteDither??state?.paletteDither;
+    game.paletteDitherOverride=paletteOverride ? FrontierPaletteDither.validate(paletteOverride) : null;
     if (shared?.screenTone || state?.screenTone)
       screenTone.restore(shared?.screenTone || state.screenTone);
     if (shared?.screenShake || state?.screenShake)
@@ -584,6 +595,84 @@
     preview();
     FrontierEnemies.restore(game, state?.enemyState, reentry);
   }
+  /* @function app.arrivalFacing165 — Inputs: committed arrival with yaw radians; uses live player/world/camera. Returns nothing. Aligns movement/actor facing and perspective look with the outward arrival, or projects an outward torso target for fixed/isometric cursor aim without rotating authored cameras. Called after world position adoption so the next combat frame cannot restore stale pre-door heading. No authored settings change. */
+  function arrivalFacing165(entry) {
+    const x=Math.sin(entry.yaw),y=Math.cos(entry.yaw);
+    game.player.facingX=x;game.player.facingY=y;game.player.movementFacing={x,y};
+    if(world.interior?.mode === "fixed" || world.presentation?.mode === "isometric") {
+      const point=FrontierRender.project(FrontierRender.camera(game),game.player.x+x*2,game.player.y+y*2,(game.player.z||0)+1);
+      if(point)game.pointer={x:point.x,y:point.y};
+    } else game.camera.yaw=entry.yaw;
+  }
+  /* @function app.arrivalPreview166 — Inputs: destination authored world and world-metre arrival. Returns a disposable collision/camera query context with destination event models and actor at rest. Reuses shared assets, never starts simulation, decodes artwork or mutates active actors/maps. Called only during transfer preflight. */
+  function arrivalPreview166(destination,entry) {
+    const player={...game.player,x:entry.x,y:entry.y,z:entry.z??FrontierTerrain.height(destination,entry.x,entry.y)};
+    return {sourceWorld:destination,player,camera:{...game.camera,yaw:entry.yaw},viewWidth:game.viewWidth,sceneEvents:(destination.events||[]).map(
+      /* @function app.arrivalHost166 — Inputs: authored destination event. Returns detached world model host for shared collision queries; source transform and assets remain unchanged. */
+      function(e){return {...e,modelId:e.spatial?.modelId||e.modelId,z:FrontierTerrain.height(destination,e.x,e.y)+(e.heightOffset||0)};}
+    )};
+  }
+  /* @function app.arrivalBlocked166 — Inputs: destination world and candidate world-metre arrival. Returns whether room, solid event, prop or actual model collision blocks the player's standing body. Uses source session conditions as before; queries never move live state or choose the opposite door side. */
+  function arrivalBlocked166(destination,entry) {
+    return (
+      FrontierInterior.blocked(
+        destination,
+        entry.x,
+        entry.y,
+        0.13,
+        entry.z ?? FrontierTerrain.height(destination, entry.x, entry.y),
+      ) ||
+      destination.events.some(
+        /* @function app.callback.27 — Provides the callback for dest world events some. Inputs: e. Uses: frontier events active page. Returns: chain and the inverse of page through and page priority does not equal "below" and page priority does not equal "above" and math hypot using e x minus entry x, e y minus entry y is less than 0.55. */ (
+          e,
+        ) => {
+          const page = e.pages[FrontierEvents.activePage(e, session.state)];
+          return (
+            page?.solid &&
+            !page.through &&
+            page.priority !== "below" &&
+            page.priority !== "above" &&
+            Math.hypot(e.x - entry.x, e.y - entry.y) < 0.55
+          );
+        },
+      ) ||
+      destination.objects.some(
+        /* @function app.callback.28 — Returns math hypot using e x minus entry x, e y minus entry y is less than e radius plus 0.13. Inputs: e. Returns: math hypot using e x minus entry x, e y minus entry y is less than e radius plus 0.13. */ (
+          e,
+        ) => Math.hypot(e.x - entry.x, e.y - entry.y) < e.radius + 0.13,
+      )
+
+    ) || !!FrontierModelCollision?.blocked(arrivalPreview166(destination,entry),entry.x,entry.y,.13);
+  }
+  /* @function app.arrivalPathBlocked166 — Inputs: destination and paired-door candidate in world metres. Returns whether geometry obstructs the same-side corridor from just outside the destination door to the standing point. Three body-height swept rays include thin walls/models/terrain; the destination door leaf itself is excluded because this is a transfer, not opening that leaf locally. Prevents the larger arrival offset from jumping through another wall. No actor/source mutation; evaluated only during transfer preflight. */
+  function arrivalPathBlocked166(destination,candidate) {
+    const door=destination.events.find(
+      /* @function app.arrivalDoor166 — Inputs: destination event. Returns stable target door identity match. */
+      function(e){return e.id===candidate.doorId;}
+    );
+    if(!door)return true;
+    const preview=arrivalPreview166(destination,candidate);
+    preview.sceneEvents=preview.sceneEvents.filter(
+      /* @function app.arrivalLeaf166 — Inputs: collision host. Returns whether it is not the transferred-through leaf, preserving every other obstruction. */
+      function(e){return e.id!==candidate.doorId;}
+    );
+    const x=door.x+Math.sin(candidate.yaw)*.35,y=door.y+Math.cos(candidate.yaw)*.35,z=candidate.z??FrontierTerrain.height(destination,x,y);
+    for(const height of [.16,.825,1.49])if(FrontierBallistics.sweep(preview,{x,y,z:z+height},{x:candidate.x,y:candidate.y,z:preview.player.z+height},.13,game.player.id,true))return true;
+    return false;
+  }
+  /* @function app.readableDoorArrival166 — Inputs: destination and paired-door arrival at five-foot minimum. Returns first clear same-side point with readable third-person framing, or null. Tries at most seven one-foot outward increments (5–11 feet); checks standing collision and actual collision-constrained camera/body projection. Fixed/isometric and first-person retain their own framing. No animation, actor teleport or camera clipping bypass occurs. */
+  function readableDoorArrival166(destination,entry) {
+    for(let step=0;step<7;step++) {
+      const candidate={...entry,x:entry.x+Math.sin(entry.yaw)*step*.3048,y:entry.y+Math.cos(entry.yaw)*step*.3048};
+      if(arrivalBlocked166(destination,candidate)||arrivalPathBlocked166(destination,candidate))continue;
+      const preview=arrivalPreview166(destination,candidate),camera=FrontierRender.camera(preview);
+      if(camera.orthographic || preview.camera.firstPerson)return candidate;
+      const point=FrontierRender.project(camera,preview.player.x,preview.player.y,preview.player.z);
+      const height=point&&point.scale*1.65;
+      if(point && height<=288 && point.y<=440 && point.y-height>=24)return candidate;
+    }
+    return null;
+  }
   /* @function app.attemptTravel.24 — Handles attempt travel within application input, simulation and editor coordination. Inputs: exit. Updates: travel cooldown; pending travel. Uses: map library get; dest world interior entrances find; dest world travel entrances find; log. Returns: without a result; without a result. */ function attemptTravel(
     exit,
   ) {
@@ -592,9 +681,11 @@
       pendingTravel
     )
       return;
-    const dest = mapLibrary.get(exit.map),
-      entry =
-        exit.entrance === "spawn" && dest
+    const dest = mapLibrary.get(exit.map);
+    let entry =
+        ["auto-door"].includes(exit.entrance) || exit.entrance?.startsWith("door:")
+          ? dest && FrontierHubWorkbench.doorArrival163(dest.world,mapLibrary.active,exit.entrance,hubState,exit.map)
+          : exit.entrance === "spawn" && dest
           ? { ...dest.world.spawn, yaw: 0 }
           : dest?.world.cell?.arrivals?.find(
               /* @function app.cellArrival — Inputs: arrival. Returns matching named doorway; no effects. */ (
@@ -612,44 +703,22 @@
               ) => e.id === exit.entrance,
             );
     if (!dest || !entry) {
-      log("Map exit needs an existing destination entrance.");
+      log("Choose a destination door; automatic pairing requires exactly one door leading back.");
       travelCooldown = 2;
       return;
     }
-    if (
-      FrontierInterior.blocked(
-        dest.world,
-        entry.x,
-        entry.y,
-        0.13,
-        entry.z ?? FrontierTerrain.height(dest.world, entry.x, entry.y),
-      ) ||
-      dest.world.events.some(
-        /* @function app.callback.27 — Provides the callback for dest world events some. Inputs: e. Uses: frontier events active page. Returns: chain and the inverse of page through and page priority does not equal "below" and page priority does not equal "above" and math hypot using e x minus entry x, e y minus entry y is less than 0.55. */ (
-          e,
-        ) => {
-          const page = e.pages[FrontierEvents.activePage(e, session.state)];
-          return (
-            page?.solid &&
-            !page.through &&
-            page.priority !== "below" &&
-            page.priority !== "above" &&
-            Math.hypot(e.x - entry.x, e.y - entry.y) < 0.55
-          );
-        },
-      ) ||
-      dest.world.objects.some(
-        /* @function app.callback.28 — Returns math hypot using e x minus entry x, e y minus entry y is less than e radius plus 0.13. Inputs: e. Returns: math hypot using e x minus entry x, e y minus entry y is less than e radius plus 0.13. */ (
-          e,
-        ) => Math.hypot(e.x - entry.x, e.y - entry.y) < e.radius + 0.13,
-      )
-    ) {
-      log("Arrival entrance is blocked. Move it in the Room editor.");
-      travelCooldown = 2;
+    const doorDeparture=FrontierHubWorkbench.doorDeparture165(world,mapLibrary.active,exit,game.player);
+    // Reserve persistence capacity before any presentation or map commit; never evict an earlier route to make room.
+    if(doorDeparture && hubState.doorSides.length>=100000 && FrontierHubState.doorSide165(hubState,doorDeparture.map,doorDeparture.doorId)===undefined){log("Cannot remember another door approach; transfer cancelled.");return;}
+    if(entry.doorId)entry=readableDoorArrival166(dest.world,entry);
+    if(!entry || arrivalBlocked166(dest.world,entry)) {
+      log(entry?.doorId ? "The arrival side has no clear, readable camera space. Clear that side; the door will not place you behind it." : "No safe arrival space. Move the entrance in the Room editor.");
+      travelCooldown=2;
       return;
     }
     pendingTravel = {
       map: exit.map,
+      doorDeparture,
       entry,
       effect: exit.transition?.effect,
       door: exit.transition,
@@ -916,6 +985,10 @@
   // and simulation continue. Returning preserves the existing camera orientation.
   /* @function app.toggleHUD.42 — and simulation continue. Returning preserves the existing camera orientation. Inputs: no explicit arguments; uses enclosing module state. Updates: hud mode; $ using "inventoryPanel" hidden; drag; game pointer. Uses: $ using "gameFrame" class list toggle; $; keys clear; mouse reset. Returns: without a result. */ function toggleHUD() {
     if (editing || session.busy) return;
+    // October 29: isolation belongs to an existing storey, never a stale ID from another cell.
+    if(window.FrontierAuthorView?.state.storey&&!world.interior?.construction?.storeys.some(/* @function app.validStorey1611 — Inputs: destination storey. Returns whether the current editor isolation still has an authored target; no world mutation. */function(storey){return storey.id===FrontierAuthorView.state.storey;}))FrontierAuthorView.state.storey='';
+    craftingMenu1611?.reset();
+    skillOMatic?.reset();
     hudMode = !hudMode;
     $("gameFrame").classList.toggle("hudCursor", hudMode);
     $("inventoryPanel").hidden = true;
@@ -934,6 +1007,8 @@
   // Remember whether gameplay owned mouse look before the inventory opened, then restore that mode on close.
   /* @function app.inventoryToggle.44 — Remember whether gameplay owned mouse look before the inventory opened, then restore that mode on close. Inputs: no explicit arguments; uses enclosing module state. Updates: $ using "inventoryPanel" hidden; inventory resume; play paused; drag; mouse paused. Uses: $; keys clear; mouse reset; document exit pointer lock. Returns: without a result. */ function inventoryToggle() {
     if (editing || session.busy) return;
+    craftingMenu1611?.reset();
+    skillOMatic?.reset();
     const opening = $("inventoryPanel").hidden;
     $("inventoryPanel").hidden = !opening;
     if (opening) inventoryResume = !mousePaused && !hudMode;
@@ -961,6 +1036,8 @@
   $("inventoryClose").onclick = inventoryToggle;
   /* @function app.journalToggle.47 — Handles journal toggle within application input, simulation and editor coordination. Inputs: no explicit arguments; uses enclosing module state. Updates: $ using "journalPanel" hidden; play paused. Uses: $; keys clear; release look; journal render. Returns: without a result. */ function journalToggle() {
     if (editing || session.busy) return;
+    craftingMenu1611?.reset();
+    skillOMatic?.reset();
     const opening = $("journalPanel").hidden;
     $("journalPanel").hidden = !opening;
     playPaused = opening;
@@ -988,7 +1065,7 @@
   // October 14: retain DOM focus/selection between frames; rebuild only on live state changes.
   let inventorySignature1525 = "", inventoryGame1525 = null;
   // Render inventory values from runtime state; ammo is displayed from combat reserve/loaded counts.
-  /* @function app.inventoryRender.49 — Render inventory values from runtime state; ammo is displayed from combat reserve/loaded counts. Inputs: no explicit arguments; uses enclosing module state. Updates: li text content. Uses: $; list replace children; a list of spread element filter; document create element. */ function inventoryRender() {
+  /* @function app.inventoryRender.49 — Render inventory values from runtime state; ammo is displayed from combat reserve/loaded counts. Inputs: no explicit arguments; uses enclosing module state. Updates: li text content. Uses: $; list replace children; a list of spread element filter; document create element. */ function inventoryRenderLegacy1525() {
     const list = $("inventoryItems");
     FrontierArsenal.prepare(game);
     const signature = JSON.stringify([...session.state.inventory]) + ":" + game.player.ammoReserve + ":" + game.player.ammoLoaded + ":" + game.player.hp + ":" + game.player.holstered + ":" + game.player.weapon.id + ":" + (game.itemDropPreview?.itemId || "");
@@ -1027,6 +1104,9 @@
     }
     hubWorkbench?.inventory(list);
   }
+  // October 29, 2026: supersedes the retained legacy list above. Real item ownership and the supplied original device now share the same inventory coordinator.
+  /* @function app.inventoryRender1611 — Inputs: none. Synchronizes the shared ammo mirror and one-time legacy equipment migration, then updates the original-art screen only when live values change. No authored values are changed. */
+  function inventoryRender(){FrontierArsenal.prepare(game);FrontierInventory.ensure(game,hubState);inventoryScreen1611?.render(FrontierInventory.rows(game),game.player.hp+':'+game.player.ammoLoaded+':'+game.player.ammoReserve);}
   // Stop old footsteps and create a fresh runtime copy. Authored world stays intact; switches, pickups and combat reset unless explicitly restored.
   /* @function app.restart.51 — Stop old footsteps and create a fresh runtime copy. Authored world stays intact; switches, pickups and combat reset unless explicitly restored. Inputs: assignment pattern; assignment pattern. Updates: $ using "seed" value; $ using "mapWidth" value; $ using "mapHeight" value; $ using "inventoryPanel" hidden; $ using "journalPanel" hidden. Uses: $; map library remember; footsteps stop; music stop. */ function restart(
     keepPosition = false,
@@ -1035,6 +1115,9 @@
   ) {
     // October 9: authoring/fresh playtests reset temporary drops; real cell
     // transfers explicitly preserve compact session state, as save import does.
+    craftingMenu1611?.reset();
+    window.FrontierConstructionTools?.cancel();
+    skillOMatic?.reset(); // October 29: transient test-skill UI never survives a session/cell replacement.
     if (!preserveHub) hubState = FrontierHubState.empty();
     $("seed").value = world.seed;
     $("mapWidth").value = world.width ?? world.size;
@@ -1139,6 +1222,7 @@
           speed,
           frames,
         ) => screenShake.start(power, speed, frames),
+      paletteDither: /* @function app.paletteDither168 — Inputs: original plugin command name and arguments. Applies validated transient effect to active game; event runtime owns dispatch and error reporting. */ function(name,args){FrontierPaletteDither.command(game,name,args);},
       screenTone:
         /* @function app.screenTone.63 — Handles screen tone within application input, simulation and editor coordination. Inputs: tone; frames. Uses: frontier pixi tone supported; error; screen tone start. */ (
           tone,
@@ -1332,6 +1416,8 @@
                 : null;
           const entity = {
             ...old,
+            localDoor:event.extensions?.localDoor,
+            localDoorOpen:!!event.extensions?.localDoor&&index>0,
             behaviorOwned: !!page.behavior,
             behaviorPhase: event.behaviorPhase,
             definitionRevision: event.definitionRevision || 0,
@@ -1388,6 +1474,7 @@
               !FrontierEvents.graphics.includes(page.mz.image.profile)
                 ? page.mz.image.profile
                 : event.spriteProfile || undefined,
+            groundShadow:event.groundShadow,
             vectorTreatment: event.vectorTreatment || "map",
             combat,
             maxHp: combat?.maxHp || 24,
@@ -1432,6 +1519,7 @@
       action();
       // October 22: capture generated-part intent inside the same Undo/rollback boundary.
       window.FrontierRoomLayout?.captureEdits(before, world);
+      window.FrontierConstruction?.capture(before,world);
       // October 12, 2026: update parent-relative wall decorations at the edit boundary before validating the resulting cell.
       window.FrontierRoomLayout?.synchronize(world);
       window.FrontierPropPlacement?.synchronize(world);
@@ -1555,6 +1643,11 @@
     active: /* @function app.authoringCell — Inputs: none. Returns stable active cell ID, keeping same-named objects in different cells distinct. */ function(){return mapLibrary?.active || "startup";},
     editing: /* @function app.authoringMode — Inputs: none. Returns whether authoring is active; no state mutation. */ function(){return editing;},
     history: /* @function app.authoringHistory — Inputs: none. Returns current scene Undo/Redo lengths for toolbar availability, without exposing snapshots or other history owners. */ function(){return {undo:history.length,redo:redoHistory.length};},
+    anchor: /* @function app.authoringAnchor163 — Inputs: typed selected scene reference and copied source record. Returns world XYZ using the current runtime placement elevation for props/events, or authored absolute Z for structure. Reads only; follows actual terrain/model support instead of putting handles below raised objects. */function(ref,record){let z=record.z||0;if(ref.kind==="event"||ref.kind==="object"){for(const entity of [...(game.sceneEvents||[]),...game.maps.frontier.entities])if(entity.id===ref.id){z=entity.z||0;break;}}return [record.x,record.y,z];},
+    project: /* @function app.authoringProjection163 — Inputs: world XYZ metres. Returns projected logical canvas point only while editing; uses actual active camera including fixed/isometric views. No mutation. */function(x,y,z){return editing ? FrontierRender.project(FrontierRender.camera(game),x,y,z) : null;},
+    weapons:/* @function app.weaponDamage169 — Inputs: optional project override draft. Returns detached current weapon definitions, or adopts through project-default history only while editing. Existing per-enemy overrides remain separately authored. */function(value){if(value===undefined)return structuredClone(mapLibrary.gameplayDefaults.extensions.weaponDefinitions||{});if(!editing)return false;mapLibrary.weaponDamage169(value);return true;},
+    shadows:/* @function app.shadowSettings169 — Inputs: shared strength draft. Applies only while editing through the existing whole-project transaction; throws on invalid data and preserves independent render systems. */function(value){if(!editing)return false;mapLibrary.shadowSettings169(value);return true;},
+    editEvent: /* @function app.inspectEvent1611 — Inputs: typed event reference. Opens the original event-page editor for that stable selection only in authoring; no property changes occur until original Apply. */function(ref){if(editing&&ref.kind==="event"){editor.choose(ref.id);editor.openEvent?.();}},
     mutate, removeMany:removeSceneSelection,
   });
   // Switch editor/playtest state, release capture and restart from authored data. F2 is the editor shortcut; Tab remains the HUD menu.
@@ -1661,11 +1754,13 @@
     if (!blocked(e.x + dx, e.y, radius, ignore)) e.x += dx;
     if (!blocked(e.x, e.y + dy, radius, ignore)) e.y += dy;
   }
+  /* @function app.cursorAim164 — Inputs: none; reads active source and edit mode. Returns true for gameplay cursor-aim cameras, excluding free-flight authoring. Shared by capture, pointer, firing, look and reticle so these paths cannot disagree. No mutation. */
+  function cursorAim164() { return !editing && (world.interior?.mode === "fixed" || (world.presentation?.mode === "isometric" && game.swimming?.world !== world)); }
   // Gate firing against editor, menu, event execution and death before calling the combat host.
   /* @function app.shoot.92 — Gate firing against editor, menu, event execution and death before calling the combat host. Inputs: no explicit arguments; uses enclosing module state. Updates: game room aim point. Uses: mf fire shot. */ function shoot() {
     if (!editing && !playPaused && !session.busy && !world.cell?.safe && game.player.hp > 0) {
       const point =
-        world.interior?.mode === "fixed"
+        cursorAim164()
           ? game.pointer || { x: FrontierDisplay.get().width / 2, y: 240 }
           : { x: FrontierDisplay.get().width / 2, y: 96 };
       game.roomAimPoint = point;
@@ -1810,6 +1905,14 @@
     log(name + ": " + text);
     clickFeedback();
   }
+  // October 29: this single prototype skill reuses actual reach/occlusion and inspection; no new probability or progression rules are inferred from the reference games.
+  skillOMatic = FrontierSkillOMatic.create({
+    allowed: /* @function app.skillAllowed — Inputs: none. Allows the prototype only in alive, idle gameplay, excluding editor, paused menus, dialogue and cell transitions. */ function(){return !editing&&!playPaused&&!session.busy&&!sceneTransition.busy&&game.player.hp>0;},
+    prepare: /* @function app.skillPrepare — Inputs: none. Returns prior cursor/look/pause ownership, releases held input and pauses world simulation while the chooser owns the cursor. Does not change camera orientation or authored data. */ function(){const prior={hud:hudMode,look:!mousePaused&&!hudMode,pause:playPaused};hudMode=true;$("gameFrame").classList.add("hudCursor");releaseLook(true);return prior;},
+    finish: /* @function app.skillFinish — Inputs: prior input ownership and whether target mode is requested. Restores the prior mode on cancel; target mode uses existing HUD cursor routing with simulation resumed. Clears held shots/keys without changing weapon or camera. */ function(prior,targeting){hudMode=targeting||!!prior?.hud;$("gameFrame").classList.toggle("hudCursor",hudMode);releaseLook(targeting?false:!!prior?.pause);if(!targeting&&prior?.look&&!prior.pause)captureLook();},
+    scan: /* @function app.skillScan — Inputs: logical display point. Returns reachable target display name after original inspection, or null for invalid/out-of-reach/occluded/dead target. No resources, health, inventory, event commands or saved skills are modified. */ function(point){const hit=nearbyTarget(point);if(!hit)return null;inspect(point);return hit.event?.name||hit.target.name||hit.target.kind;},
+    log
+  });
   // Intersect a screen ray with terrain and delegate placement at the resulting world coordinates.
   /* @function app.place.99 — Intersect a screen ray with terrain and delegate placement at the resulting world coordinates. Inputs: point. Uses: frontier render ground point; place at; log. */ function place(
     point,
@@ -2039,16 +2142,24 @@
         wide ? "1.7777777778" : "1.3333333333",
       );
     };
+  // October 29: the escape hatch lives inside either fullscreen target, above editor/dialog layers. Original pause handling remains unchanged in playtest.
+  const fullscreenExit1612=document.createElement('button');
+  fullscreenExit1612.id='fullscreenExit1612';fullscreenExit1612.type='button';fullscreenExit1612.textContent='Exit fullscreen [Esc]';fullscreenExit1612.hidden=true;
+  fullscreenExit1612.onclick=/* @function app.exitFullscreen1612 — Inputs: click ignored. Exits browser/HTML fullscreen only through its original API, unlocks captured keyboard keys and reports failure without changing authoring or gameplay state. Returns a promise; no world/history edits. */async function(){try{navigator.keyboard?.unlock();if(document.fullscreenElement)await document.exitFullscreen();}catch{log('Could not exit fullscreen. Press F11 to leave the desktop fullscreen window.');}};
+  document.addEventListener('keydown',/* @function app.editorFullscreenEscape1612 — Inputs: document keydown from any focused editor control. Escape exits editor HTML fullscreen before menu handlers can consume it; repeat is ignored. Playtest Escape retains its deliberate pause behavior. No edits are cancelled or committed. */function(event){if(editing&&document.fullscreenElement&&event.key==='Escape'&&!event.repeat){event.preventDefault();event.stopImmediatePropagation();void fullscreenExit1612.onclick();}},{capture:true});
   $("fullscreen").onclick =
     /* @function app.onclick.121 — Responds to a button or clickable control. Inputs: no explicit arguments; uses enclosing module state. Uses: document exit fullscreen; $ using "viewport" request fullscreen; $; log. */ async () => {
       try {
         if (document.fullscreenElement) await document.exitFullscreen();
         else {
-          await $("viewport").requestFullscreen();
-          try {
-            await navigator.keyboard?.lock(["Escape"]);
-          } catch {
-            /* Browser may reserve Escape; fullscreenchange below pauses after exit. */
+          // October 29, 2026: editor fullscreen must include its toolbar, and Escape must remain available. Supersedes viewport-only editor fullscreen with locked Escape.
+          await (editing ? document.documentElement : $("viewport")).requestFullscreen();
+          if (!editing) {
+            try {
+              await navigator.keyboard?.lock(["Escape"]);
+            } catch {
+              /* Browser may reserve Escape; fullscreenchange below pauses after exit. */
+            }
           }
         }
       } catch {
@@ -2058,6 +2169,9 @@
   document.addEventListener(
     "fullscreenchange",
     /* @function app.callback.122 — Provides the callback for document add event listener. Inputs: no explicit arguments; uses enclosing module state. Updates: $ using "fullscreen" text content. Uses: $. */ () => {
+      // Keep an explicit exit control inside the active fullscreen subtree, even for viewport-only playtests.
+      fullscreenExit1612.hidden=!document.fullscreenElement;
+      if(document.fullscreenElement)document.fullscreenElement.append(fullscreenExit1612);else{fullscreenExit1612.remove();navigator.keyboard?.unlock();}
       $("fullscreen").textContent = document.fullscreenElement
         ? "Exit fullscreen"
         : "Fullscreen";
@@ -2072,6 +2186,8 @@
         );
         return;
       }
+      if (game.swimming?.world === world) game.swimming.zoomRemaining = 0;
+      if(game.camera.firstPerson)FrontierFirstPerson.alignFacing(game);
       game.camera.firstPerson = !game.camera.firstPerson;
       $("camera").textContent = game.camera.firstPerson
         ? "Third person [V]"
@@ -2259,7 +2375,7 @@
     mousePaused = false;
     playPaused = false;
     captureAttempted = true;
-    if (world.interior?.mode === "fixed")
+    if (cursorAim164())
       game.pointer ||= {
         x: FrontierDisplay.get().width / 2,
         y: FrontierDisplay.get().height / 2,
@@ -2291,7 +2407,7 @@
     dx,
     dy,
   ) {
-    if (world.interior?.mode === "fixed") return;
+    if (cursorAim164()) return;
     game.camera.yaw += dx * FrontierParameters.get(world, "mouseYaw");
     game.camera.pitch = clampPitch(
       game.camera.pitch - dy * FrontierParameters.get(world, "mousePitch"),
@@ -2323,10 +2439,11 @@
     },
     { capture: true, passive: false },
   );
+  // October 29: hidden controls can retain focus after a menu closes. Only visible form controls suppress gameplay shortcuts; otherwise Inventory would fail after closing Skill-O-Matic.
   const form =
     /* @function app.form.150 — Returns /INPUT|SELECT|TEXTAREA|BUTTON/ test using event target tag name. Inputs: event. Uses: /INPUT|SELECT|TEXTAREA|BUTTON/ test. Returns: /INPUT|SELECT|TEXTAREA|BUTTON/ test using event target tag name. */ (
       event,
-    ) => /INPUT|SELECT|TEXTAREA|BUTTON/.test(event.target.tagName);
+    ) => /INPUT|SELECT|TEXTAREA|BUTTON/.test(event.target.tagName) && event.target.getClientRects().length > 0;
   document.addEventListener(
     "keydown",
     /* @function app.callback.151 — Provides the callback for document add event listener. Inputs: event. Updates: $ using "weaponProfile" value. Uses: number input controller key; event key to lower case; event prevent default; event stop propagation. Returns: without a result; without a result. */ (
@@ -2494,6 +2611,29 @@
         config,
       ) => doorPresentation.preview(config),
   });
+  craftingMenu1611=FrontierCraftingMenu.create({
+    allowed: /* @function app.craftingAllowed — Inputs: none. Accepts only alive, idle gameplay with no competing inventory, dialog or transition. No state mutation. */function(){return !editing&&!playPaused&&!session.busy&&!sceneTransition.busy&&game.player.hp>0;},
+    game: /* @function app.craftingGame — Inputs: none. Returns current original game owner after travel/restart. */function(){return game;},
+    state: /* @function app.craftingState — Inputs: none. Returns current hub ownership store, never a duplicated inventory. */function(){return hubState;},
+    recipes: /* @function app.craftingRecipes — Inputs: none. Returns validated current project recipes; absent recipes mean no invented combination. */function(){return mapLibrary?.gameplayDefaults?.extensions?.recipes||[];},
+    prepare: /* @function app.craftingPrepare — Inputs: none. Pauses simulation and releases original look with held input cleared; captures previous cursor/look state for restoration. */function(){skillOMatic?.reset();const prior={hud:hudMode,look:!mousePaused&&!hudMode};releaseLook(true);return prior;},
+    finish: /* @function app.craftingFinish — Inputs: acquired input state. Restores gameplay pause/cursor owner on close, without moving camera or editing stock. */function(prior){releaseLook(false);if(prior?.look&&!prior.hud)captureLook();}
+  });
+  if(!window.FRONTIER_RUNTIME_ONLY)window.FrontierConstructionTools=FrontierConstructionEditor.create({
+    world: /* @function app.constructionWorld — Inputs: none. Returns original authored world only to trusted transaction adapter. */function(){return world;},
+    game: /* @function app.constructionGame — Inputs: none. Returns actual current viewport/player for ground placement. */function(){return game;},
+    editing: /* @function app.constructionEditing — Inputs: none. Returns original authoring mode; gameplay cannot commit rooms. */function(){return editing;},
+    maps: /* @function app.constructionMaps — Inputs: none. Returns lightweight project map IDs/names for linked doors, not copied assets. */function(){return mapLibrary.snapshot().maps.map(/* @function app.constructionMapName — Inputs: detached map. Returns stable identity/name pair only. */function(m){return {id:m.id,name:m.name};});},
+    mutate
+  });
+  if(!window.FRONTIER_RUNTIME_ONLY)window.FrontierCatalogTools=FrontierCatalogEditor.create({
+    allowed: /* @function app.catalogAllowed — Inputs: none. Allows project-definition changes only in editor. */function(){return editing;},
+    read: /* @function app.catalogRead — Inputs: none. Returns detached effective project catalog and recipes. */function(){const e=mapLibrary.gameplayDefaults.extensions;return {items:e.itemDefinitions||FrontierItemDefinitions.defaults(),recipes:e.recipes||[]};},
+    save: /* @function app.catalogSave — Inputs: complete detached definition draft. Uses project history/validation and includes actual runtime ownership references in deletion guard. No edits are applied in play mode. */function(value){if(!editing)throw Error('Return to the editor first.');mapLibrary.catalog1611(value,{inventory:[...session.state.inventory],carried:hubState.carried,cells:hubState.cells});}
+  });
+  inventoryScreen1611=FrontierInventoryScreen.create($("inventoryPanel"),$("inventoryClose"),$("inventoryItems"),
+    /* @function app.inventoryAction1611 — Inputs: explicit physical action and selected stable item ID. Delegates equip/use/drop to their existing state owners and returns readable feedback; exceptions stay inside the open screen without consuming another item. */
+    function(action,id){if(action==='equip'){FrontierInventory.equip(game,id);return 'Equipped '+FrontierInventory.definition(id).name+'.';}if(action==='use')return 'Restored '+FrontierInventory.use(game,hubState,id)+' health.';if(action==='drop'){hubWorkbench.dropItem(id);return 'Placed '+FrontierInventory.definition(id).name+'.';}throw Error('Unsupported inventory action.');});
   // October 12: hub storage/drop logic remains shared gameplay; its cell-edit
   // buttons and context authoring bindings are installed only in the editor.
   if (!window.FRONTIER_RUNTIME_ONLY) {
@@ -2572,8 +2712,7 @@
       event,
     ) => {
       if (
-        world.interior?.mode === "fixed" &&
-        !editing &&
+        cursorAim164() &&
         document.pointerLockElement !== view
       )
         game.pointer = screenPoint(event);
@@ -2581,6 +2720,7 @@
         preventScroll: true,
       });
       if (session.busy && !editing) return;
+      if (skillOMatic?.target(screenPoint(event),event.button)) {event.preventDefault();return;}
       const activateOnly =
         !hudMode &&
         !editing &&
@@ -2633,7 +2773,7 @@
     /* @function app.callback.162 — Provides the callback for view add event listener. Inputs: event. Updates: game pointer; game brush ghost; drag moved; game drag ghost; drag x. Uses: view get bounding client rect; screen point; mouse motion; rotate. Returns: without a result; without a result. */ (
       event,
     ) => {
-      if (world.interior?.mode === "fixed" && !editing) {
+      if (cursorAim164()) {
         if (document.pointerLockElement === view) {
           const bounds = view.getBoundingClientRect(),
             point = game.pointer || {
@@ -2820,7 +2960,31 @@
         zoomIntent = { camera: game.camera, roomZoom: target };
         return;
       }
+      // October 26: pixels/metre is the orthographic zoom parameter; dolly distance has no effect on this camera. Never overwrite the authored presentation scale.
+      if (world.presentation?.mode === "isometric" && !game.editorFlight && game.swimming?.world !== world) {
+        const target = Math.max(12, Math.min(200, (prior?.isoScale ?? game.camera.isoScale ?? world.presentation.scale) * Math.exp(-pixels * 0.0007)));
+        zoomIntent = { camera: game.camera, isoScale: target };
+        return;
+      }
+      if (game.swimming?.world === world) game.swimming.zoomRemaining = 0;
+      // October 26 user correction: first-person zoom is unnecessary. Keep its original lens and ignore wheel without changing the third-person distance.
+      // November 1, 2026: outward wheel leaves first-person; inward wheel never magnifies its lens. Fixed/isometric paths have already returned.
+      if (game.camera.firstPerson && !game.editorFlight) {
+        if (!editing && pixels > 0) {
+          FrontierFirstPerson.alignFacing(game);
+          game.camera.firstPerson = false;
+          game.camera.distance = Math.min(FrontierParameters.get(world,"zoomMax"),Math.max(FrontierParameters.get(world,"zoomMin")+.35,game.camera.distance));
+          zoomIntent = null; $("camera").textContent = "First person [V]";
+        }
+        return;
+      }
       if (hudMode) return;
+      // November 1: a fresh inward wheel action at the settled perspective limit enters first-person; orthographic/fixed paths returned above.
+      const minimum = FrontierParameters.get(world, "zoomMin");
+      if (!editing && !game.editorFlight && pixels < 0 && game.camera.distance <= minimum + .015) {
+        game.camera.firstPerson = true; zoomIntent = null;
+        $("camera").textContent = "Third person [V]"; return;
+      }
       const target = Math.max(
         FrontierParameters.get(world, "zoomMin"),
         Math.min(
@@ -2856,8 +3020,8 @@
     if (zoomIntent && !playPaused) {
       if (zoomIntent.camera !== game.camera) zoomIntent = null;
       else {
-        const key = zoomIntent.roomZoom !== undefined ? "roomZoom" : "distance";
-        const current = game.camera[key] ?? 1;
+        const key = zoomIntent.roomZoom !== undefined ? "roomZoom" : zoomIntent.isoScale !== undefined ? "isoScale" : "distance";
+        const current = game.camera[key] ?? (key === "isoScale" ? world.presentation.scale : 1);
         const target = zoomIntent[key];
         game.camera[key] = current + (target - current) * (1 - Math.exp(-12 * dt));
         if (Math.abs(target - game.camera[key]) < 0.0001) {
@@ -2899,6 +3063,8 @@
     $("controllerStatus").textContent = pad.connected
       ? "Controller connected · standard layout"
       : "Controller: connect and press a button.";
+    // October 29: open menus retain input ownership even when a controller sends Start. It closes the owning menu rather than unpausing gameplay underneath it.
+    if(!$("inventoryPanel").hidden||craftingMenu1611?.opened()||skillOMatic?.opened()){for(const action of pad.actions){if(!$("inventoryPanel").hidden){if(action==='menuUp')inventoryScreen1611.scroll(-1);else if(action==='menuDown')inventoryScreen1611.scroll(1);else if(action==='pause')inventoryToggle();}else if(action==='pause'){craftingMenu1611?.reset();skillOMatic?.reset();}}return;}
     for (const action of pad.actions) {
       if (action === "pause") {
         playPaused = !playPaused;
@@ -2919,7 +3085,7 @@
       }
     }
     if (playPaused) return;
-    if (!editing) hubWorkbench?.tick(dt);
+    if (!editing) { FrontierInventory.ensure(game,hubState); hubWorkbench?.tick(dt); FrontierLocalDoors.update(game,dt); }
     if (!session.busy && !editing && !hudMode) {
       if (world.interior?.mode !== "fixed")
         game.camera.yaw += pad.look.x * 2.2 * dt;
@@ -2985,7 +3151,9 @@
       game.playerStep = null;
       game.player.grounded = false;
     }
-    if (!session.playerRouteActive)
+    const swimming = !editing && !session.playerRouteActive &&
+      MF.frontierMovement.swim(game, movementKeys, dt, pad);
+    if (!swimming && !session.playerRouteActive)
       MF.frontierMovement.movePlayer(
         game,
         movementKeys,
@@ -3000,7 +3168,7 @@
         pad.move,
       );
     if (
-      !editing && !FrontierFlight.update(
+      !editing && !swimming && !FrontierFlight.update(
         game.player,
         world,
         dt,
@@ -3149,10 +3317,7 @@
           },
           game.ui,
         );
-        PhanicomCombatCore.playGoldenEyeProfile(
-          cfg.audioProfile,
-          cfg.audioVolume,
-        );
+        PhanicomABS.playWeaponSound169(game,w,e);
         e.attackTime = FrontierEnemyTactics.afterShot(e);
       }
       if (!e.combat && distance < 1.05 && !e.attackTime && !e.stunTime) {
@@ -3216,7 +3381,8 @@
       !playPaused ||
       editing ||
       !$("inventoryPanel").hidden ||
-      !$("journalPanel").hidden;
+      !$("journalPanel").hidden ||
+      !!skillOMatic?.opened() || !!craftingMenu1611?.opened();
     FrontierBreathing.tick(
       game,
       dt,
@@ -3226,7 +3392,12 @@
     if (!sceneTransition.ownsWorldView) {
       /* October 12: native effects append inside draw before GPU submission, using this frame's paused/cinematic-aware delta. */ game.effectDelta =
         playPaused || editing || sceneTransition.busy ? 0 : dt;
+      const appearanceFilter163=(game.paletteDitherOverride||world.paletteDither)?.enabled ? "none" : FrontierLocalLighting.appearanceFilter163(world.appearance); // October 28: indexed output must not be recolored/blurred after quantization; authored appearance is preserved and resumes when disabled.
+      if(view.style.filter!==appearanceFilter163)view.style.filter=appearanceFilter163;
+      const sampling168=(game.paletteDitherOverride||world.paletteDither)?.enabled ? "pixelated" : (FrontierDisplay.get().filtering==="smooth"?"auto":"pixelated");if(view.style.imageRendering!==sampling168)view.style.imageRendering=sampling168; // October 28: nearest presentation preserves palette colors; local smoothing preference resumes when disabled.
       FrontierRender.draw(view, game);
+    } else if((game.paletteDitherOverride||world.paletteDither)?.enabled) {
+      FrontierPaletteDither.transition(FrontierPixi.current(),game.paletteDitherOverride||world.paletteDither);
     }
     // October 10: optional screen breathing uses a separate CSS scale so camera/sprite geometry and shake translation remain unchanged.
     /* Superseded October 10, 2026: reference radial breathing is now a scene filter; CSS stretching is removed to keep HUD and pointer space stable. */ view.style.scale =
@@ -3237,7 +3408,10 @@
     }
     FrontierInspection.update(hudMode);
     const reticle = $("crosshair"),
-      fixed = world.interior?.mode === "fixed";
+      fixed = cursorAim164(),
+      firstPersonAim = game.camera.firstPerson && !fixed;
+    // November 1: the first-person marker owns viewport center; fixed/isometric and third-person retain their original marker owners.
+    if(firstPersonAim){reticle.style.left="50%";reticle.style.top="50%";}
     /* October 10, 2026: the DOM aiming marker stays sharp but follows the warped world point. Its forward transform is the inverse of screenPoint's click sampling. */
     if (fixed && game.pointer) {
       const width = FrontierDisplay.get().width,
@@ -3277,18 +3451,18 @@
     }
     $("gameFrame").classList.toggle(
       "roomAiming",
-      world.interior?.mode === "fixed" &&
+      cursorAim164() &&
         !hudMode &&
         !editing &&
         !game.player.holstered,
     );
-    if (!fixed) {
+    if (!fixed && !firstPersonAim) {
       reticle.style.left = "";
       reticle.style.top = "";
     }
     const barrel = FrontierMuzzle.barrel(game.player, game),
       origin = barrel && FrontierMuzzle.point(game.player, game);
-    if (origin && !fixed) {
+    if (origin && !fixed && !firstPersonAim) {
       const target = {
           x: origin.x + barrel.x * 60,
           y: origin.y + barrel.y * 60,
@@ -3325,7 +3499,7 @@
     $("badge").lastElementChild.textContent =
       (world.interior?.mode === "fixed" ? "Fixed interior · " : "") +
       (game.camera.firstPerson ? "First person" : "Third person") +
-      " · prototype 0.16.2";
+      " · prototype 0.16.31";
     if (world.interior)
       $("intro").textContent =
         world.interior.mode === "fixed"
@@ -3647,7 +3821,7 @@
     };
   try {
     const saved = localStorage.getItem("phanicom-muzzles-0.15.22");
-    if (saved) FrontierMuzzle.load(JSON.parse(saved));
+    if (saved) FrontierMuzzle.load(FrontierEnemies.upgradeProfiles169(JSON.parse(saved)));
   } catch {}
   // Project rules are authored separately from event pages. Applying uses the
   // same validated/undoable mutation path as other editor changes.
@@ -3739,7 +3913,8 @@
                 i,
               ) => Number($("cerebral-threshold" + i).value),
             ),
-            melee: Object.fromEntries(
+            // October 29: numeric melee editing retains separately imported sound bytes.
+            melee: {...world.cerebral.melee, ...Object.fromEntries(
               [
                 "name",
                 "damage",
@@ -3757,7 +3932,7 @@
                     : Number($("melee-" + k).value),
                 ],
               ),
-            ),
+            )},
           });
         },
       );
@@ -3834,6 +4009,8 @@
             walkHold: 0,
           });
           FrontierTerrain.ground(game.player, world, 0, [], game);
+          if(typeof options.shared?.arrivalFirstPerson === "boolean" && world.interior?.mode !== "fixed" && world.presentation?.mode !== "isometric")game.camera.firstPerson=options.shared.arrivalFirstPerson;
+          arrivalFacing165(options.entry);
           exitTouched.clear();
           for (const e of world.interior?.exits || world.travel?.exits || [])
             if (Math.hypot(e.x - game.player.x, e.y - game.player.y) < e.radius)

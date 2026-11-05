@@ -1,0 +1,27 @@
+{
+  "source": "img/materials/ground/seamless-mossy-stone.png",
+  "sha256": "fc2712cbf00611bde746a82ce1c6ea05bc2a06c620367a9f8c35cd616e2b7e06",
+  "normal": "assets/automatic-normals/fc2712cbf00611bde746a82c-relief2.normal.png",
+  "lit": "assets/automatic-normals/fc2712cbf00611bde746a82c-relief2.lit.webp",
+  "width": 1254,
+  "height": 1254,
+  "normalWidth": 512,
+  "normalHeight": 512,
+  "columns": 1,
+  "rows": 1,
+  "light": {
+    "ambient": 0.4,
+    "strength": 0.6,
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "options": {
+    "strength": 1.5,
+    "detail": 6,
+    "smoothing": 0.6,
+    "volume": 0
+  },
+  "wrap": true,
+  "compression": "webp-lossless-rgba-verified"
+}
