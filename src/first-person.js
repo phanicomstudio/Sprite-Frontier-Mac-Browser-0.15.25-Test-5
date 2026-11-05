@@ -69,7 +69,7 @@
 
   /* @function firstPerson.alignFacing1623 — Inputs: active game. Returns whether perspective player facing was aligned to camera yaw. Updates actor and movement facing together when leaving first-person, so stale pre-entry front-facing art cannot return. Fixed/isometric presentation is excluded; world position, camera, sprite tilt and weapon accuracy are untouched. */
   function alignFacing(game){
-    if(game.sourceWorld.presentation?.mode==='isometric'||game.sourceWorld.interior?.mode==='fixed')return false;
+    if((game.sourceWorld.presentation?.mode==='isometric'&&game.swimming?.world!==game.sourceWorld)||game.sourceWorld.interior?.mode==='fixed')return false;
     const x=Math.sin(game.camera.yaw),y=Math.cos(game.camera.yaw);
     game.player.facingX=x;game.player.facingY=y;game.player.movementFacing={x,y};return true;
   }

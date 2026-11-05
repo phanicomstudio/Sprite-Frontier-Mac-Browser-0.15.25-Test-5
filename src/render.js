@@ -225,8 +225,8 @@
       detail=root.FrontierViewVisibility?.detail(ctx.game,e,p,cam,selectedFrame)||{frame:selectedFrame,light:null},
       {row,column:col}=detail.frame,
       f = sheet.frames[row * (sheet.columns || 3) + col],
-      // November 1: first-person alone stabilizes feet-depth scale; the locked third-person plane/proportions remain exact.
-      pixelScale = root.FrontierFirstPerson?.spriteScale(ctx.game,e,cam,p) ?? p.scale,
+      // First-person height follows the projected upright span; other views retain their original scale.
+      pixelScale = uprightSpriteScale(ctx.game, e, cam, p),
       scale = ((e.height || 1.65) * pixelScale) / (sheet.referenceHeight || 310);
     const level = root.FrontierWater?.level(ctx.world, e.x, e.y),
       waterline = root.FrontierWater?.obscures(
@@ -325,7 +325,17 @@
       const sy=Math.sin(cam.yaw),cy=Math.cos(cam.yaw),sp=Math.sin(cam.pitch||0),cp=Math.cos(cam.pitch||0);
       ctx.liveNormalSurface={ownerId:e.id,center:[e.x,e.y,(e.z||0)+(f.h*.5-(sheet.groundInset||0))*scale/pixelScale],right:[cy,-sy,0],up:[-sy*sp,-cy*sp,cp],facing:[-sy*cp,-cy*cp,-sp],size:[f.w*scale/pixelScale,f.h*scale/pixelScale]};
       if(lit.frontierNormalImage){image.frontierNormalImage=lit.frontierNormalImage;image.frontierNormalStrength=lit.frontierNormalStrength??1;}
-      ctx.drawImage(
+      const bands = ctx.drawSpriteBands && ctx.game?.camera.firstPerson &&
+        !ctx.game.authoring && !cam.orthographic
+        ? uprightSpriteBands(cam,e,f,(e.height||1.65)/(sheet.referenceHeight||310),sheet.groundInset||0,level,!!waterline)
+        : null;
+      if (bands) {
+        const points=bands.flatMap(b=>b.points);
+        const x=Math.min(...points.map(q=>q[0])),y=Math.min(...points.map(q=>q[1]));
+        const bounds={x,y,width:Math.max(...points.map(q=>q[0]))-x,height:Math.max(...points.map(q=>q[1]))-y};
+        const mask=root.FrontierTerrainOcclusion?.mask(ctx.terrainDepth,bounds,spriteDepth);
+        ctx.drawSpriteBands(image,f,bands,mask?.regions);
+      } else ctx.drawImage(
         image,
         f.x,
         f.y,
@@ -352,7 +362,7 @@
   ) {
     // October 14: retain calibrated PNG projection in authoring; bypassing
     // this camera hid the artwork and misaligned the selection overlays.
-    const iso = root.FrontierIsometric?.camera(game);
+    const iso = game.swimming?.world === game.sourceWorld ? null : root.FrontierIsometric?.camera(game);
     if (iso) return iso;
     const fixed = root.FrontierInterior?.camera(game);
     if (fixed) return fixed;
@@ -467,6 +477,37 @@
       depth: d,
     };
   }
+  // Measure upright sprites against the same perspective projection as their
+  // ground anchor. A screen-facing height derived from feet depth alone drifts
+  // relative to the terrain when the player pitches the camera.
+  function uprightSpriteScale(game, actor, cam, feet) {
+    if (!game?.camera.firstPerson || game.authoring || cam.orthographic)
+      return feet.scale;
+    const height = actor.height || 1.65;
+    const head = project(cam, actor.x, actor.y, (actor.z || 0) + height);
+    return head && head.y < feet.y ? (feet.y - head.y) / height : feet.scale;
+  }
+
+  // First-person gameplay only: project a vertical, yaw-facing atlas plane
+  // in eight bands to approximate perspective texture interpolation.
+  function uprightSpriteBands(cam, actor, frame, metresPerPixel, inset, water, submerged) {
+    const rightX = Math.cos(cam.yaw), rightY = -Math.sin(cam.yaw);
+    const left = -frame.anchorX * metresPerPixel;
+    const right = left + frame.w * metresPerPixel;
+    const top = (actor.z || 0) + (frame.h - inset) * metresPerPixel;
+    const bottom = submerged ? Math.min(frame.h, (top - water) / metresPerPixel) : frame.h;
+    const bands = [];
+    for (let i = 0; i < 8 && bottom > 0; i++) {
+      const sourceY = bottom * i / 8, endY = bottom * (i + 1) / 8;
+      const corners = [[left,sourceY],[right,sourceY],[right,endY],[left,endY]];
+      const projected = corners.map(([side,row]) =>
+        project(cam,actor.x+side*rightX,actor.y+side*rightY,top-row*metresPerPixel));
+      if (projected.some(point=>!point)) return null;
+      bands.push({sourceY,endY,points:projected.map(point=>[point.x,point.y])});
+    }
+    return bands;
+  }
+
   const grids = new WeakMap(),
     editBounds = new WeakMap();
   // Painter-order scene: sky → terrain grid → sorted sprites/props → editor overlays → travel/effects → death overlay.
@@ -778,7 +819,7 @@
     for (const { e, p } of queue) {
       if (p.x < -250 || p.x > (game.viewWidth || 640) + 250) continue;
       ctx.fogDepth = p.depth;
-      const h = Math.min(1800, (e.height || 1.65) * p.scale),
+      const h = Math.min(1800, (e.height || 1.65) * uprightSpriteScale(game, e, cam, p)),
         w = h * 0.6;
       ctx.globalAlpha =
         ((e.kind === "player" ? 1 : (cam.outdoorIsometric ? 1 : Math.max(0.18,1-p.depth/55))) *

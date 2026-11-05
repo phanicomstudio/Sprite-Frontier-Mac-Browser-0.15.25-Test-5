@@ -463,6 +463,28 @@
       const pistol=FrontierEnemies.preset("handgun");pistol.hostile=true;pistol.coverChance=25;pistol.patrol=[[30,30],[34,30]];iso.world.events.push(FrontierEnemies.event("iso-pistol-test","Pistol patrol - attacks on sight",30,30,pistol,"enemy-chiban"));
       const cover=FrontierEvents.create("iso-cover",32,29);cover.x=32;cover.y=29;cover.name="Static cover event";cover.height=2;cover.pages[0].graphic="chest";cover.pages[0].solid=true;iso.world.events.push(cover);project.maps.push(iso);}
 
+    if(wilderness){
+      const lake=structuredClone(wilderness.world);
+      lake.seed="swimming-lake";
+      lake.spawn={x:32,y:12};
+      lake.objects=[];lake.events=[];
+      lake.presentation=FrontierIsometric.validate({mode:"isometric"});
+      lake.terrain={...FrontierTerrain.validate(),edits:{}};
+      lake.water=FrontierWater.validate({color:"#275756",cells:{}});
+      // South: walk-in slope. East: stepped shelf. West: low ledge. North: high bank.
+      for(let y=15;y<=49;y++)for(let x=14;x<=50;x++){
+        const south=Math.min(1,(y-15)/8), east=x>=46?.5:1;
+        const west=x<=16?.65:1;
+        const depth=y===49?0:3.4*south*Math.min(east,west);
+        lake.terrain.edits[x+","+y]=-depth;
+        if(x<50&&y<49)lake.water.cells[x+","+y]=-.12;
+      }
+      for(let y=28;y<=35;y++)for(let x=13;x<=15;x++)lake.terrain.edits[x+","+y]=.35;
+      for(let y=28;y<=35;y++)for(let x=49;x<=51;x++)lake.terrain.edits[x+","+y]=-.48;
+      for(let y=49;y<=51;y++)for(let x=20;x<=44;x++)lake.terrain.edits[x+","+y]=1.35;
+      project.maps.push({id:"swimming-lake",name:"Swimming Lake Test",folder:"Test maps",world:FrontierWorld.validate(lake)});
+    }
+
     // October 29 user authorization: fresh projects retire redundant old room fixtures. Saved/imported projects are adopted later without this filter; original fixture builders remain documented history.
     const retiredRoomIds=new Set(['room-test','ruin-test','hub-saloon','hub-test','hub-shop','hub-home','hub-wilderness']);
     project.maps=project.maps.filter(/* @function mapLibrary.currentExamples1611 — Inputs: fresh bundled map. Retains wilderness/demo while replacing only redundant shipped room examples; user saves are not filtered. */function(map){return !retiredRoomIds.has(map.id);});
@@ -1549,7 +1571,10 @@
                   ) => e.id === m.id,
                 )
               )
-                project.maps.push(m);
+                // Saved maps own their numeric IDs. A new bundled fixture
+                // may have been assigned an overlapping ID in a fresh catalog.
+                project.maps.push({...m, mzId:undefined});
+            project.maps = root.FrontierMapIdentities.assign(project.maps);
             const forest = project.maps.find(
               /* @function map-library.callback.80 — Returns m id equals "outdoor-assets-test". Inputs: m. Returns: m id equals "outdoor-assets-test". */ (
                 m,

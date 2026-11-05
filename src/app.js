@@ -1755,7 +1755,7 @@
     if (!blocked(e.x, e.y + dy, radius, ignore)) e.y += dy;
   }
   /* @function app.cursorAim164 — Inputs: none; reads active source and edit mode. Returns true for gameplay cursor-aim cameras, excluding free-flight authoring. Shared by capture, pointer, firing, look and reticle so these paths cannot disagree. No mutation. */
-  function cursorAim164() { return !editing && (world.interior?.mode === "fixed" || world.presentation?.mode === "isometric"); }
+  function cursorAim164() { return !editing && (world.interior?.mode === "fixed" || (world.presentation?.mode === "isometric" && game.swimming?.world !== world)); }
   // Gate firing against editor, menu, event execution and death before calling the combat host.
   /* @function app.shoot.92 — Gate firing against editor, menu, event execution and death before calling the combat host. Inputs: no explicit arguments; uses enclosing module state. Updates: game room aim point. Uses: mf fire shot. */ function shoot() {
     if (!editing && !playPaused && !session.busy && !world.cell?.safe && game.player.hp > 0) {
@@ -2186,6 +2186,7 @@
         );
         return;
       }
+      if (game.swimming?.world === world) game.swimming.zoomRemaining = 0;
       if(game.camera.firstPerson)FrontierFirstPerson.alignFacing(game);
       game.camera.firstPerson = !game.camera.firstPerson;
       $("camera").textContent = game.camera.firstPerson
@@ -2960,11 +2961,12 @@
         return;
       }
       // October 26: pixels/metre is the orthographic zoom parameter; dolly distance has no effect on this camera. Never overwrite the authored presentation scale.
-      if (world.presentation?.mode === "isometric" && !game.editorFlight) {
+      if (world.presentation?.mode === "isometric" && !game.editorFlight && game.swimming?.world !== world) {
         const target = Math.max(12, Math.min(200, (prior?.isoScale ?? game.camera.isoScale ?? world.presentation.scale) * Math.exp(-pixels * 0.0007)));
         zoomIntent = { camera: game.camera, isoScale: target };
         return;
       }
+      if (game.swimming?.world === world) game.swimming.zoomRemaining = 0;
       // October 26 user correction: first-person zoom is unnecessary. Keep its original lens and ignore wheel without changing the third-person distance.
       // November 1, 2026: outward wheel leaves first-person; inward wheel never magnifies its lens. Fixed/isometric paths have already returned.
       if (game.camera.firstPerson && !game.editorFlight) {
@@ -3149,7 +3151,9 @@
       game.playerStep = null;
       game.player.grounded = false;
     }
-    if (!session.playerRouteActive)
+    const swimming = !editing && !session.playerRouteActive &&
+      MF.frontierMovement.swim(game, movementKeys, dt, pad);
+    if (!swimming && !session.playerRouteActive)
       MF.frontierMovement.movePlayer(
         game,
         movementKeys,
@@ -3164,7 +3168,7 @@
         pad.move,
       );
     if (
-      !editing && !FrontierFlight.update(
+      !editing && !swimming && !FrontierFlight.update(
         game.player,
         world,
         dt,
@@ -3495,7 +3499,7 @@
     $("badge").lastElementChild.textContent =
       (world.interior?.mode === "fixed" ? "Fixed interior · " : "") +
       (game.camera.firstPerson ? "First person" : "Third person") +
-      " · prototype 0.16.26";
+      " · prototype 0.16.31";
     if (world.interior)
       $("intro").textContent =
         world.interior.mode === "fixed"

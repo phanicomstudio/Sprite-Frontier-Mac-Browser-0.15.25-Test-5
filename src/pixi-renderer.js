@@ -728,6 +728,9 @@
       }
       const index = this.vi++;
       mesh.texture = texture;
+      const light = this.assetLightTint;
+      mesh.tint = light ? (Math.round(light[0]*255)<<16) |
+        (Math.round(light[1]*255)<<8) | Math.round(light[2]*255) : 0xffffff;
       mesh.alpha = this.globalAlpha;
       mesh.filters = this.spriteFog(this.fogAmount());
       mesh.mask = null;
